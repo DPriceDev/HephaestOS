@@ -18,7 +18,7 @@
 #define SYS_IO_H                        
 
 #include "kernel/types.h"
-#include "memory/register_addr.hpp"
+#include "kernel/memory/register_addr.hpp"
 
 
 namespace SYS
@@ -33,7 +33,7 @@ namespace SYS
 //
 inline void WriteAdrInt(int32_t addr, short data)
 {
-    auto addr_ptr = (int32_t*) addr;
+    auto addr_ptr = &addr;
     *addr_ptr = data;
 }
 
@@ -46,7 +46,7 @@ inline void WriteAdrInt(int32_t addr, short data)
 //
 inline void WriteAdrbyte(int addr, char data)
 {
-    auto addr_ptr = (volatile unsigned char*) addr;
+    auto addr_ptr = &addr;
     *addr_ptr = data;
 }
 
@@ -89,11 +89,11 @@ inline void outportb(unsigned int port, unsigned char value)
 //
 void memcpy( void *destination, void *source, unsigned long long num ){
     
-   char *csrc = (char *) source; 
-   char *cdest = (char *) destination; 
+   char *cStr = static_cast<char*>(source);
+   char *cDestination = static_cast<char*>(destination);
   
-   for (int i = 0; i < num; i++) 
-       cdest[i] = csrc[i]; 
+   for (unsigned long long i = 0; i < num; i++)
+       cDestination[i] = cStr[i];
 
 }
 
@@ -107,10 +107,10 @@ void memcpy( void *destination, void *source, unsigned long long num ){
 //
 void memset( void *destination, int value, unsigned long long num ){
     
-   char *cdest = (char *) destination; 
+   int *cDestination = static_cast<int*>(destination);
   
-   for (int i = 0; i < num; i++) 
-       cdest[i] = value; 
+   for (unsigned long long i = 0; i < num; i++)
+       cDestination[i] = value;
 
 }
 

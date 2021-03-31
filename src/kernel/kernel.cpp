@@ -23,20 +23,21 @@
 //
 //
 //
-extern "C" void kernelMain()
+extern "C" [[noreturn]] void kernelMain()
 {   
     TextDisplay td;
 
      td.clear();
 
-     td.Print("HephaestOS\n");
+     const char* test = "HephaestOS\n";
+
+     td.Print(test);
      td.Print("Version 1.0\n");
 
     getMemorySize();
 
-    while(1) {
+    while(true) {
 
-        auto test = ";";
     }
 }
 
