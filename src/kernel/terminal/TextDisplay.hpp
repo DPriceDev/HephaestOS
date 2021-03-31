@@ -22,19 +22,19 @@ public:
     TextDisplay();
     ~TextDisplay();
 
-    void Print(char* str, int colour = -1);
+    void Print(const char* str, char colour = -1);
     void clear();
 
-    void SetColour(int colour);
+    void SetColour(char colour);
 
-    void SetCursor(int x, int y);
-    void AdvanceCursor(int n);
-    void RetreatCursor(int n);
+    void SetCursor(unsigned int x, unsigned int y);
+    void AdvanceCursor(unsigned int n);
+    void RetreatCursor(unsigned int n);
 
 
 private:
-    int _cursor_x, _cursor_y;
-    int _colour;
+    unsigned int _cursor_x, _cursor_y;
+    char _colour;
 
     void UpdateCursorFromConsole();
 };

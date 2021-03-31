@@ -1,5 +1,4 @@
 global getMemorySize
 
 getMemorySize:
-
-.end
+            ret

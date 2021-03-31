@@ -37,7 +37,7 @@ TextDisplay::~TextDisplay()
 //       str    - char array to be printed to the screen.
 //       colour - colour, if chosen, to be printed in.
 //
-void TextDisplay::Print(char* str, int colour)
+void TextDisplay::Print(const char* str, char colour)
 {
     if(colour >= 0 && colour <= 15){
         SYS::PutStr(str, colour);
@@ -57,7 +57,7 @@ void TextDisplay::Print(char* str, int colour)
 // inputs:
 //       colour - colour to be changed to. (0 - 15)
 //
-void TextDisplay::SetColour(int colour)
+void TextDisplay::SetColour(char colour)
 {
     if(colour >= 0 && colour <= 15){
         _colour = colour;
@@ -75,7 +75,7 @@ void TextDisplay::SetColour(int colour)
 //       x - Location of the cursor in x (0 - 80)
 //       y - Location of the cursor in y (0 - 25+)
 //
-void TextDisplay::SetCursor(int x, int y)
+void TextDisplay::SetCursor(unsigned int x, unsigned int y)
 {
     if(x >= 0 && x <= SYS::DISP::WIDTH
         && x >= 0 && x <= SYS::DISP::SCREEN_BUFFER_SIZE)
@@ -99,16 +99,16 @@ void TextDisplay::SetCursor(int x, int y)
 // inputs:
 //       n - amount of characters to advance the cursor by.
 //
-void TextDisplay::AdvanceCursor(int n)
+void TextDisplay::AdvanceCursor(unsigned int n)
 {
     _cursor_x += n;
 
     // divide by coloumns to get number of rows
-    int r_count = _cursor_x / SYS::DISP::WIDTH;
+    unsigned int r_count = _cursor_x / SYS::DISP::WIDTH;
 
 
     // if greater than 80, get number of rows and subtract that in 
-    if(r_count){
+    if(r_count != 0) {
         _cursor_x -= (SYS::DISP::WIDTH * r_count);
 
         // advance y for number
@@ -126,7 +126,7 @@ void TextDisplay::AdvanceCursor(int n)
 // inputs:
 //       n - amount of characters to retreat the cursor by.
 //
-void TextDisplay::RetreatCursor(int n)
+void TextDisplay::RetreatCursor(unsigned int /* n */)
 {
 }
 
@@ -140,7 +140,7 @@ void TextDisplay::RetreatCursor(int n)
 //
 void TextDisplay::UpdateCursorFromConsole()
 {
-    int pos = SYS::DISP::CursorPosition();
+    unsigned int pos = SYS::DISP::CursorPosition();
 
     _cursor_y = pos / SYS::DISP::WIDTH;
 
