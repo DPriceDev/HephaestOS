@@ -15,6 +15,14 @@
  * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-extern "C" void init() {
+#include "kernel/boot/global_descriptor_table.h"
+#include "kernel/types.h"
+#include "multiboot_info.h"
 
+namespace kernel {
+
+    extern "C" void init(MultiBootInfo *multiBootInfo, uint32_t magic) {
+        auto tableSize = sizeof(globalDescriptorTable);
+        setGlobalDescriptorTable(globalDescriptorTable, tableSize);
+    }
 }

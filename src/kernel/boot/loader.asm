@@ -15,6 +15,7 @@
 ; along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 
 global loader
+global setGlobalDescriptorTable
 global stack_ptr
 
 extern kernelMain, init
@@ -39,6 +40,12 @@ MultiBootHeader:
                 dd              CHECKSUM
 
 ; ------------------------------------------------------------- ;
+; Global Descriptor Table
+gdtAddress:
+                DW              0                               ; table Pointer
+                DD              0                               ; table Size
+
+; ------------------------------------------------------------- ;
 ; BSS Memory Section
 section .bss
 align           16
@@ -51,9 +58,11 @@ section .text
 
 loader:
                 mov             esp, stack_ptr                  ; set esp (register for stack pointer) as the stack pointer.
-                push            eax                             ; push
+                push            eax                             ; push the magic number to the stack (2nd arg)
                 push            ebx                             ; push the multiboot info pointer to the stack (1st arg)
-                call            kernelMain
+                call            init
+
+                call            kernelMain                      ; call the main kernal method.
                 cli
 
 ; ------------------------------------------------------------- ;
@@ -61,6 +70,17 @@ loader:
 halt:
                 hlt
                 jmp             halt
+
+; ------------------------------------------------------------- ;
+; Setup Global Descriptor Table
+setGlobalDescriptorTable:
+               mov              eax, [esp + 4]                  ;
+               mov              [gdtAddress + 2], eax           ;
+               mov              ax, [esp + 8]                   ;
+               mov              [gdtAddress], ax                ;
+               lgdt             [gdtAddress]                    ; Load the Table from the table address
+               ret
+
 
 ;global loader
 ;

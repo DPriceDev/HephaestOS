@@ -28,7 +28,7 @@ namespace kernel {
 /**
  * Kernel Entry Point
  */
-    extern "C" [[noreturn]] void kernelMain(MultiBootInfo *multiBootInfo, uint32_t magic) {
+    extern "C" [[noreturn]] void kernelMain() {
         auto display = kernel::VideoBufferDisplay();
         auto terminal = kernel::Terminal{display};
 
