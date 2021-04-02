@@ -10,7 +10,6 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -m32 -fno-use-cxa-atexit -ffreestandi
 add_executable(kernel.elf
         kernel/kernel.cpp
         kernel/boot/loader.asm
-        kernel/memory/memory.asm
         kernel/terminal/Terminal.cpp kernel/drivers/video_buffer_display.cpp kernel/library/array.h)
 #target_link_libraries(kernel.elf PRIVATE project_options project_warnings)
 target_include_directories(kernel.elf PUBLIC .)

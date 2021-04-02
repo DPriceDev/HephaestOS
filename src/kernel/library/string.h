@@ -15,26 +15,21 @@
  * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <kernel/drivers/video_buffer_display.h>
-#include "kernel/terminal/Terminal.h"
-#include "kernel/memory/memory.h"
+#ifndef SYS_STRING_H
+#define SYS_STRING_H
 
-#define VERSION 1.0
+namespace kernel {
 
-/**
- * Kernel Entry Point
- */
-extern "C" [[noreturn]] void kernelMain()
-{
-    auto display = kernel::VideoBufferDisplay();
-    auto terminal = kernel::Terminal{ display };
+    template<typename T>
+    int Size(T str) {
 
-    terminal.clear();
+        int i(0);
 
-    terminal.println("HephaestOS");
-    terminal.println("Version 1.0", kernel::Display::cyan);
+        // count each characters in the characters.
+        for (; str[i]; i++);
 
-    while(true) {
-
+        return i;       // return count
     }
 }
+
+#endif

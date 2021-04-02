@@ -1,24 +1,25 @@
-////////////////////////////////////////////////////////////////////////////////
-// Title:           IO Calls and Functions
-// Filename:        IO.hpp, IO.cpp
-// Last Changed:    17/08/19
-// Created:         17/08/19
-// Author:          David Price
-//
-// Description:
-//
-//
-//
-// Changes:
-//      - 01:32 17/08/19: printf changed to PutStr and PutChar added.
-//      - 00:32 17/08/19: printf added.
-//      - 00:32 17/08/19: File Created.
-////////////////////////////////////////////////////////////////////////////////
+/* Copyright (C) 2021 David Price - All Rights Reserved
+ * This file is part of HephaistOS.
+ *
+ * HephaistOS is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HephaistOS is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 #ifndef HEPHAIST_OS_DRIVERS_IO_IO_H
 #define HEPHAIST_OS_DRIVERS_IO_IO_H
 
 #include "kernel/types.h"
-#include "kernel/memory/register_addr.hpp"
+#include "hardware/register_address.h"
 
 
 namespace kernel {

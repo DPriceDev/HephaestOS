@@ -1,18 +1,20 @@
-////////////////////////////////////////////////////////////////////////////////
-// Title:           Text Display Class
-// Filename:        Terminal.cpp
-// Last Changed:    17/08/19
-// Created:         17/08/19
-// Author:          David Price
-//
-// Description:
-//
-//
-//
-// Changes:
-//      - 00:07 17/08/19: Class created with default constructors.
-//      - 00:07 17/08/19: File Created.
-////////////////////////////////////////////////////////////////////////////////
+/* Copyright (C) 2021 David Price - All Rights Reserved
+ * This file is part of HephaistOS.
+ *
+ * HephaistOS is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HephaistOS is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 #ifndef HEPHAIST_OS_KERNEL_DISPLAY_H
 #define HEPHAIST_OS_KERNEL_DISPLAY_H
 
@@ -33,7 +35,7 @@ namespace kernel {
 
         void println(const char *string, Display::Colour colour = Display::white);
 
-        void clear(Display::Colour colour = Display::black);
+        void clear(Display::Colour backgroundColour = Display::black);
 
         [[maybe_unused]] void setTextColour(const Display::Colour &colour);
 
