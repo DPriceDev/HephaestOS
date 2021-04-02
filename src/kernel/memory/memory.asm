@@ -1,4 +1,0 @@
-global getMemorySize
-
-getMemorySize:
-            ret

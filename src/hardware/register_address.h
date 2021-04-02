@@ -15,31 +15,15 @@
  * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <kernel/drivers/video_buffer_display.h>
-#include "kernel/terminal/Terminal.h"
-#include "kernel/memory/memory.h"
-#include "kernel/boot/multiboot_info.h"
+#ifndef SYS_REG_ADDR_H
+#define SYS_REG_ADDR_H
+
 #include "kernel/types.h"
 
-#define VERSION 1.0
-
-namespace kernel {
-
-/**
- * Kernel Entry Point
- */
-    extern "C" [[noreturn]] void kernelMain(MultiBootInfo *multiBootInfo, uint32_t magic) {
-        auto display = kernel::VideoBufferDisplay();
-        auto terminal = kernel::Terminal{display};
-
-        terminal.clear();
-
-        terminal.println("HephaestOS");
-        terminal.println("Version 1.0", kernel::Display::cyan);
-
-
-        while (true) {
-
-        }
-    }
+namespace address {
+    constexpr kernel::uint32_t videoMemoryAddress = 0xb8000;
+    constexpr kernel::uint32_t videoCursorHighAddress = 0x3D5;
+    constexpr kernel::uint32_t videoCursorLowAddress = 0x3D4;
 }
+
+#endif

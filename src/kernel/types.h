@@ -1,16 +1,35 @@
+/* Copyright (C) 2021 David Price - All Rights Reserved
+ * This file is part of HephaistOS.
+ *
+ * HephaistOS is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HephaistOS is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 #ifndef __TYPES_H
 #define __TYPES_H
 
-    typedef char int8_t;
-    typedef unsigned char uint8_t;
-    
-    typedef short int16_t;
-    typedef unsigned short unint16_t;
-    
-    typedef int int32_t;
-    typedef unsigned int uint32_t;
-    
-    typedef long long int int64_t;
-    typedef unsigned long long int uint64_t;
+    namespace kernel {
+        using int8_t = char;
+        using uint8_t = unsigned char;
+
+        using int16_t = short;
+        using uint16_t = unsigned short;
+
+        using int32_t = int;
+        using uint32_t = unsigned int;
+
+        using int64_t = long long int;
+        using uint64_t = unsigned long long int;
+    }
 
 #endif
