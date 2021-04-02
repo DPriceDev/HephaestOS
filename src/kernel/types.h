@@ -1,16 +1,18 @@
 #ifndef __TYPES_H
 #define __TYPES_H
 
-    typedef char int8_t;
-    typedef unsigned char uint8_t;
-    
-    typedef short int16_t;
-    typedef unsigned short unint16_t;
-    
-    typedef int int32_t;
-    typedef unsigned int uint32_t;
-    
-    typedef long long int int64_t;
-    typedef unsigned long long int uint64_t;
+    namespace kernel {
+        using int8_t = char;
+        using uint8_t = unsigned char;
+
+        using int16_t = short;
+        using uint16_t = unsigned short;
+
+        using int32_t = int;
+        using uint32_t = unsigned int;
+
+        using int64_t = long long int;
+        using uint64_t = unsigned long long int;
+    }
 
 #endif

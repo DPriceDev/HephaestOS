@@ -1,9 +1,8 @@
 set(CMAKE_ASM_NASM_OBJECT_FORMAT elf32-i386)
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -m elf_i386")
 
-set(LINK ${CMAKE_HOME_DIRECTORY}/src/kernel/boot/linker.ld)
+set(LINK ${CMAKE_CURRENT_SOURCE_DIR}/linker.ld)
 set(CMAKE_CXX_LINK_EXECUTABLE "ld -g -T${LINK} <CMAKE_CXX_LINK_FLAGS> <LINK_FLAGS> <OBJECTS>  -o <TARGET> <LINK_LIBRARIES>")
-
 
 set(CMAKE_ASM_NASM_FLAGS "${CMAKE_ASM_NASM_FLAGS} -g")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -m32 -fno-use-cxa-atexit -ffreestanding -nostdlib -fno-builtin -fno-rtti -fno-exceptions")
@@ -11,10 +10,9 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -m32 -fno-use-cxa-atexit -ffreestandi
 add_executable(kernel.elf
         kernel/kernel.cpp
         kernel/boot/loader.asm
-        kernel/boot/boot32.asm
         kernel/memory/memory.asm
-        kernel/terminal/TextDisplay.cpp)
-target_link_libraries(kernel.elf PRIVATE project_options project_warnings)
+        kernel/terminal/Terminal.cpp kernel/drivers/video_buffer_display.cpp kernel/library/array.h)
+#target_link_libraries(kernel.elf PRIVATE project_options project_warnings)
 target_include_directories(kernel.elf PUBLIC .)
 
 add_custom_command(
@@ -29,7 +27,7 @@ add_custom_target(HephaistOS.iso
         COMMAND mkdir ${CMAKE_BINARY_DIR}/iso/boot/grub
         COMMAND echo ${CMAKE_BINARY_DIR}
         COMMAND cp ${CMAKE_BINARY_DIR}/kernel.elf ${CMAKE_BINARY_DIR}/iso/boot/
-        COMMAND echo 'set timeout-0' >> ${CMAKE_BINARY_DIR}/iso/boot/grub/grub.cfg
+        COMMAND echo 'set timeout-1' >> ${CMAKE_BINARY_DIR}/iso/boot/grub/grub.cfg
         COMMAND echo 'set default-0' >> ${CMAKE_BINARY_DIR}/iso/boot/grub/grub.cfg
         COMMAND echo 'menuentry \"HephaistOS\"{' >> ${CMAKE_BINARY_DIR}/iso/boot/grub/grub.cfg
         COMMAND echo ' multiboot /boot/kernel.elf' >> ${CMAKE_BINARY_DIR}/iso/boot/grub/grub.cfg

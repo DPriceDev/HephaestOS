@@ -31,7 +31,7 @@ int Size(T str){
 
     int i(0);
 
-    // count each character in the string.
+    // count each characters in the characters.
     for (; str[i]; i++);
 
     return i;       // return count

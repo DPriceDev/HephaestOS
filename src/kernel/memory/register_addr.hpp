@@ -15,10 +15,12 @@
 #ifndef SYS_REG_ADDR_H
 #define SYS_REG_ADDR_H
 
-#define VID_MEM_ADDR 0xb8000                // Video Memory Start Address
-#define DISP_HI_CUR_LOC 0x3D5               // Cursor Location High Address
-#define DISP_LO_CUR_LOC 0x3D4               // Cursor Location Low Address
+#include "kernel/types.h"
 
-
+namespace address {
+    constexpr kernel::uint32_t videoMemoryAddress = 0xb8000;
+    constexpr kernel::uint32_t videoCursorHighAddress = 0x3D5;
+    constexpr kernel::uint32_t videoCursorLowAddress = 0x3D4;
+}
 
 #endif

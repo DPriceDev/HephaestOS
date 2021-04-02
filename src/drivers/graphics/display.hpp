@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Title:           Display System Functions
-// Filename:        display.hpp
+// Filename:        mDisplay.hpp
 // Last Changed:    17/08/19
 // Created:         17/08/19
 // Author:          David Price
@@ -15,7 +15,7 @@
 #ifndef SYS_DISPLAY_H
 #define SYS_DISPLAY_H
 
-#include "drivers/io/IO.hpp"
+//#include "drivers/io/IO.hpp"
 #include "kernel/memory/register_addr.hpp"
 
 namespace SYS {
@@ -23,7 +23,7 @@ namespace SYS {
     namespace DISP {
 
         const unsigned int WIDTH(80);                                    //
-        const unsigned int D_WIDTH(WIDTH * 2);                             //
+        const unsigned int D_WIDTH(WIDTH * 2);                           //
         const unsigned int HEIGHT(25);                                   //
         const unsigned int SCREEN_SIZE(WIDTH * HEIGHT);                  //
 
@@ -45,11 +45,11 @@ namespace SYS {
         void MoveCursor(unsigned int x, unsigned int y) {
             unsigned char position = static_cast<unsigned char>((y * DISP::WIDTH) + x);
 
-            outportb(0x3D4, 0x0F);
-            outportb(0x3D5, position);
-
-            outportb(0x3D4, 0x0E);
-            outportb(0x3D5, position >> 8);
+//            outportb(0x3D4, 0x0F);
+//            outportb(0x3D5, position);
+//
+//            outportb(0x3D4, 0x0E);
+//            outportb(0x3D5, position >> 8);
         }
 
 // Function: MoveCursor
@@ -58,11 +58,11 @@ namespace SYS {
 // inputs: pos      - combined x and y position of cursor.
 //
         void MoveCursor(unsigned char pos) {
-            outportb(0x3D4, 0x0F);
-            outportb(0x3D5, pos);
-
-            outportb(0x3D4, 0x0E);
-            outportb(0x3D5, pos >> 8);
+//            outportb(0x3D4, 0x0F);
+//            outportb(0x3D5, pos);
+//
+//            outportb(0x3D4, 0x0E);
+//            outportb(0x3D5, pos >> 8);
         }
 
 //------------------------------------------------//
@@ -75,13 +75,14 @@ namespace SYS {
 
 //
         unsigned int CursorPosition() {
-            outportb(0x3D4, 0x0F);
-            unsigned int pos = inportb(0x3D5);
-
-            outportb(0x3D4, 0x0E);
-            pos += static_cast<unsigned int>(inportb(0x3D5) << 8);
-
-            return pos;
+//            outportb(0x3D4, 0x0F);
+//            unsigned int pos = inportb(0x3D5);
+//
+//            outportb(0x3D4, 0x0E);
+//            pos += static_cast<unsigned int>(inportb(0x3D5) << 8);
+//
+//            return pos;
+            return 0;
         }
 
 
@@ -91,10 +92,10 @@ namespace SYS {
 //       
 //
         void ScrollScreen() {
-            auto dest_ptr = reinterpret_cast<unsigned short *>(VID_MEM_ADDR);
-            auto source_ptr = reinterpret_cast<unsigned short *>(VID_MEM_ADDR + DISP::D_WIDTH);
+            auto dest_ptr = reinterpret_cast<unsigned short *>(address::videoMemoryAddress);
+            auto source_ptr = reinterpret_cast<unsigned short *>(address::videoMemoryAddress + DISP::D_WIDTH);
 
-            SYS::memcpy(dest_ptr, source_ptr, (DISP::SCREEN_SIZE - 1) * 2);
+//            SYS::memcpy(dest_ptr, source_ptr, (DISP::SCREEN_SIZE - 1) * 2);
         }
 
 //----------------------------------------------------------------------------//
@@ -119,7 +120,7 @@ namespace SYS {
 //       
 //
         void cls(unsigned char colour = 0x0F) {
-            auto dest_ptr = reinterpret_cast<unsigned char *>(VID_MEM_ADDR);
+            auto dest_ptr = reinterpret_cast<unsigned char *>(address::videoMemoryAddress);
 
             for (unsigned int c = 0; c < DISP::SCREEN_SIZE * 2; c += 2) {
                 *dest_ptr++ = BLANK;
@@ -134,15 +135,15 @@ namespace SYS {
 //----------------------------------------------------------------------------//
 // Function: PutStr
 // Desc: While in text mode, this function will write to the screen the 
-//       provided string (char array), in the provided foreground and,
-//       background colour, at the cursor location.
+//       provided characters (char array), in the provided foreground and,
+//       background textColour, at the cursor location.
 //
-// inputs: str      - char array holding string to output to screen.
-//         colour   - int holding colour value.
+// inputs: str      - char array holding characters to output to screen.
+//         textColour   - int holding textColour value.
 //
     void PutStr(const char *str, char fore_colour = 15 /*, int back_colour = 15 */) {
         // setup pointer to 0,0 location in the video memory.
-        auto VideoMemory = reinterpret_cast<unsigned char *>(VID_MEM_ADDR);
+        auto VideoMemory = reinterpret_cast<unsigned char *>(address::videoMemoryAddress);
 
         // while the is not empty.
         while (*str != 0) {
@@ -154,12 +155,12 @@ namespace SYS {
             }
 
             // update cursor location in the video memory pointer.
-            VideoMemory = reinterpret_cast<unsigned char *>(VID_MEM_ADDR
+            VideoMemory = reinterpret_cast<unsigned char *>(address::videoMemoryAddress
                                                             + DISP::CursorPosition()
                                                             + DISP::CursorPosition());
 
-            // add the string value and increment both memory and string.
-            // add colour value and increment the memory to next cursor location.
+            // add the characters value and increment both memory and characters.
+            // add textColour value and increment the memory to next cursor location.
             *VideoMemory++ = static_cast<unsigned char>(*str++);
             *VideoMemory++ = static_cast<unsigned char>(fore_colour);
 

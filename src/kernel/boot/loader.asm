@@ -60,9 +60,9 @@ clrScreen:
 
 
 ; ------------------------------------------------------------- ;
-; Converts an integer to a string value.
+; Converts an integer to a characters value.
 intToString:
-                xor             si, si                          ; Clear the di register to hold the resultant string.
+                xor             si, si                          ; Clear the di register to hold the resultant characters.
 intToString.loop:
 ;               add             si, 9
                 mov             byte [si], 0
@@ -87,12 +87,12 @@ printChar:
                 ret
 
 ; ------------------------------------------------------------- ;
-; prints a string to the screen. (precede: mov si, "string")
+; prints a characters to the screen. (precede: mov si, "characters")
 printString:
                 mov             ah, 0x0e                        ; 0x0e means 'Write Character in TTY mode'
 printString.loop:
                 lodsb
-                or			al, al				                ; al=current character
+                or			al, al				                ; al=current characters
                 jz			printString.finished			    ; null terminator found
                 int			10h
                 jmp			printString.loop
