@@ -18,23 +18,28 @@
 #include <kernel/drivers/video_buffer_display.h>
 #include "kernel/terminal/Terminal.h"
 #include "kernel/memory/memory.h"
+#include "kernel/boot/multiboot_info.h"
+#include "kernel/types.h"
 
 #define VERSION 1.0
+
+namespace kernel {
 
 /**
  * Kernel Entry Point
  */
-extern "C" [[noreturn]] void kernelMain()
-{
-    auto display = kernel::VideoBufferDisplay();
-    auto terminal = kernel::Terminal{ display };
+    extern "C" [[noreturn]] void kernelMain(MultiBootInfo *multiBootInfo, uint32_t magic) {
+        auto display = kernel::VideoBufferDisplay();
+        auto terminal = kernel::Terminal{display};
 
-    terminal.clear();
+        terminal.clear();
 
-    terminal.println("HephaestOS");
-    terminal.println("Version 1.0", kernel::Display::cyan);
+        terminal.println("HephaestOS");
+        terminal.println("Version 1.0", kernel::Display::cyan);
 
-    while(true) {
 
+        while (true) {
+
+        }
     }
 }

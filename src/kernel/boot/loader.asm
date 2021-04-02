@@ -17,9 +17,9 @@
 global loader
 global stack_ptr
 
-extern kernelMain
+extern kernelMain, init
 
-stackSize:      equ             0x4000
+stackSize:      equ             0x4000                          ; setup the stack size to be 16KB
 
 ; ------------------------------------------------------------- ;
 ; Multi-boot Header
@@ -34,89 +34,33 @@ CHECKSUM:       equ             -(MAGIC + FLAGS)
 section .mbheader
 align 4
 MultiBootHeader:
-                dd              MAGIC
+                dd              MAGIC                           ; dd defines Magic as a double word
                 dd              FLAGS
                 dd              CHECKSUM
+
+; ------------------------------------------------------------- ;
+; BSS Memory Section
+section .bss
+align           16
+stack:
+resb            stackSize
+stack_ptr:
 
 ; ------------------------------------------------------------- ;
 section .text
 
 loader:
-                mov             esp, stack+stackSize
-                push            eax
-                push            ebx
+                mov             esp, stack_ptr                  ; set esp (register for stack pointer) as the stack pointer.
+                push            eax                             ; push
+                push            ebx                             ; push the multiboot info pointer to the stack (1st arg)
                 call            kernelMain
                 cli
 
 ; ------------------------------------------------------------- ;
 ; Halts the CPU
 halt:
-  hlt
-  jmp halt
-
-; ------------------------------------------------------------- ;
-; clears the screen. FIX?
-clrScreen:
-                xor	            bx, bx		                    ; A faster method of clearing BX to 0
-                ret
-
-
-; ------------------------------------------------------------- ;
-; Converts an integer to a characters value.
-intToString:
-                xor             si, si                          ; Clear the di register to hold the resultant characters.
-intToString.loop:
-;               add             si, 9
-                mov             byte [si], 0
-                mov             bx, 10
-
-intToString.next_digit:
-                xor             dx, dx                          ; Clear previous remainder flag dx
-                div             bx                              ; eax /= 10
-                add             dl, '0'                         ; Convert the remainder to ASCII
-                dec             si                              ; store characters in reverse order
-                mov             [si], dl
-                test            ax, ax
-                jnz             intToString.next_digit          ; Repeat until eax==0
-                mov             ax,si
-                ret
-
-; ------------------------------------------------------------- ;
-; Prints a char to the screen. (precede: mov al, 'A')
-printChar:
-	            mov	            ah, 0x0e
-	            int	            0x10
-                ret
-
-; ------------------------------------------------------------- ;
-; prints a characters to the screen. (precede: mov si, "characters")
-printString:
-                mov             ah, 0x0e                        ; 0x0e means 'Write Character in TTY mode'
-printString.loop:
-                lodsb
-                or			al, al				                ; al=current characters
-                jz			printString.finished			    ; null terminator found
-                int			10h
-                jmp			printString.loop
-printString.finished:
-                ret
-
-newLine:
-                mov         DL, 10                              ;printing new line
-                mov         AH, 02h
-                int	        21h
-                mov         DL, 13
-                mov         AH, 02h
-                int	        21h
-                ret
-; ------------------------------------------------------------- ;
-; BSS Memory Section
-section .bss
-align           4
-stack:
-resb            stackSize
-stack_ptr:
-
+                hlt
+                jmp             halt
 
 ;global loader
 ;
@@ -189,3 +133,60 @@ stack_ptr:
 ;
 ;times 510 - ($-$$) db 0                                 ; pad remaining 510 bytes with zeroes
 ;dw 0xaa55                                               ; Boot Signiture
+
+
+;; ------------------------------------------------------------- ;
+;; clears the screen. FIX?
+;clrScreen:
+;                xor	            bx, bx		                    ; A faster method of clearing BX to 0
+;                ret
+;
+;
+;; ------------------------------------------------------------- ;
+;; Converts an integer to a characters value.
+;intToString:
+;                xor             si, si                          ; Clear the di register to hold the resultant characters.
+;intToString.loop:
+;;               add             si, 9
+;                mov             byte [si], 0
+;                mov             bx, 10
+;
+;intToString.next_digit:
+;                xor             dx, dx                          ; Clear previous remainder flag dx
+;                div             bx                              ; eax /= 10
+;                add             dl, '0'                         ; Convert the remainder to ASCII
+;                dec             si                              ; store characters in reverse order
+;                mov             [si], dl
+;                test            ax, ax
+;                jnz             intToString.next_digit          ; Repeat until eax==0
+;                mov             ax,si
+;                ret
+;
+;; ------------------------------------------------------------- ;
+;; Prints a char to the screen. (precede: mov al, 'A')
+;printChar:
+;	            mov	            ah, 0x0e
+;	            int	            0x10
+;                ret
+;
+;; ------------------------------------------------------------- ;
+;; prints a characters to the screen. (precede: mov si, "characters")
+;printString:
+;                mov             ah, 0x0e                        ; 0x0e means 'Write Character in TTY mode'
+;printString.loop:
+;                lodsb
+;                or			al, al				                ; al=current characters
+;                jz			printString.finished			    ; null terminator found
+;                int			10h
+;                jmp			printString.loop
+;printString.finished:
+;                ret
+;
+;newLine:
+;                mov         DL, 10                              ;printing new line
+;                mov         AH, 02h
+;                int	        21h
+;                mov         DL, 13
+;                mov         AH, 02h
+;                int	        21h
+;                ret
