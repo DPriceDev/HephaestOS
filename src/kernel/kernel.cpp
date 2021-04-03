@@ -23,16 +23,15 @@
 
 namespace kernel {
 
+    static const VideoBufferDisplay display { };
 /**
  * Kernel Entry Point
  */
     extern "C" [[noreturn]] void kernelMain() {
-        auto display = kernel::VideoBufferDisplay();
         auto terminal = kernel::Terminal{display};
 
         terminal.println("HephaestOS");
         terminal.println("Version 1.0", kernel::Display::cyan);
-
 
         while (true) {
 

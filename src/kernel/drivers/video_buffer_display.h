@@ -24,18 +24,23 @@
 
 namespace kernel {
 
-class VideoBufferDisplay : public Display {
-    const uint8_t cursorStart = 13;
-    const uint8_t cursorEnd = 15;
+// todo: implement memory to provide delete for destructor?
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wnon-virtual-dtor"
+    class VideoBufferDisplay : public Display {
+        const uint8_t cursorStart = 13;
+        const uint8_t cursorEnd = 15;
 
-    const uint32_t width{ 80 };
-    const uint32_t characterWidth{ width * 2 };
-    const uint32_t height{ 25 };
-    const uint32_t screenBufferLength{ characterWidth * height };
+        const uint32_t width{80};
+        const uint32_t characterWidth{width * 2};
+        const uint32_t height{25};
+        const uint32_t screenBufferLength{characterWidth * height};
 
     public:
+
         [[nodiscard]] const uint32_t &getWidth() const override;
-        [[nodiscard]] const uint32_t & getHeight() const override;
+
+        [[nodiscard]] const uint32_t &getHeight() const override;
 
         void clearDisplayBuffer(Display::Colour textColour, Display::Colour backgroundColour) const override;
 
@@ -44,6 +49,7 @@ class VideoBufferDisplay : public Display {
         uint32_t setDisplayBuffer(const Character *character, uint32_t length) const override;
 
         void showCursor() const override;
+
         void hideCursor() const override;
 
         void setCursorPosition(uint32_t x, uint32_t y) const override;
@@ -51,6 +57,7 @@ class VideoBufferDisplay : public Display {
         [[nodiscard]] Cursor getCursorPosition() const override;
     };
 
+#pragma GCC diagnostic pop
 }
 
 #endif //HEPHAISTOS_VIDEO_BUFFER_DISPLAY_H

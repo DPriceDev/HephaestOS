@@ -69,7 +69,7 @@ void kernel::Terminal::clear(Display::Colour backgroundColour) {
 }
 
 void kernel::Terminal::updateDisplayBuffer() {
-    auto index{ 0 };
+    uint32_t index{ 0 };
 
     for (auto & line : lines) {
         for (auto & character : line.characters) {

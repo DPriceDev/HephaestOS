@@ -30,12 +30,12 @@ namespace kernel::gdt {
         uint8_t directionConform: 1;
         uint8_t ReadWritable: 1;
         uint8_t accessed: 1;
-    } __attribute__((aligned(8))) __attribute__ ((packed));
+    } __attribute__((packed, aligned(8)));
 
     struct GlobalDescriptorFlags {
         uint8_t granularity: 1;
         uint8_t size: 1;
-    } __attribute__((aligned(2))) __attribute__ ((packed));
+    } __attribute__((packed, aligned(2)));
 
     struct GlobalDescriptor {
         uint16_t lowerLimit;
@@ -45,7 +45,7 @@ namespace kernel::gdt {
         uint8_t upperLimit: 4;
         GlobalDescriptorFlags flags;
         uint8_t upperBase;
-    } __attribute__((aligned(32)))__attribute__ ((packed));
+    } __attribute__((aligned(32)));
 
 
     static constexpr auto zeroAccess = GlobalDescriptorAccess{0, 0, 0, 0, 0, 0, 0};
@@ -57,18 +57,18 @@ namespace kernel::gdt {
 
     extern "C" void setGlobalDescriptorTable(const GlobalDescriptor tablePointer[], uint16_t tableSize);
 
-    static constexpr GlobalDescriptor constructGlobalDescriptor(int32_t baseAddress,
-                                                                int32_t memoryLimit,
+    static constexpr GlobalDescriptor constructGlobalDescriptor(uint32_t baseAddress,
+                                                                uint32_t memoryLimit,
                                                                 const GlobalDescriptorAccess &access,
                                                                 const GlobalDescriptorFlags &flags) {
         GlobalDescriptor globalDescriptor{
                 static_cast<uint16_t>((memoryLimit & 0xFFFF)),
                 static_cast<uint16_t>((baseAddress & 0xFFFF)),
-                static_cast<uint8_t>((baseAddress & 0xFF0000) >> 16),
+                static_cast<uint8_t>((baseAddress & 0xFF0000) >> 16U),
                 access,
-                static_cast<uint8_t>((memoryLimit & 0xF0000) >> 16),
+                static_cast<uint8_t>((memoryLimit & 0xF0000) >> 16U),
                 flags,
-                static_cast<uint8_t>((baseAddress & 0xFF000000) >> 24)
+                static_cast<uint8_t>((baseAddress & 0xFF000000) >> 24U)
         };
 
         return globalDescriptor;

@@ -22,6 +22,9 @@
 
 namespace kernel {
 
+// todo: implement memory to provide delete for destructor?
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wnon-virtual-dtor"
     class Display {
     public:
         enum Colour {
@@ -44,8 +47,8 @@ namespace kernel {
         };
 
         struct Character {
-            uint8_t character;
-            uint8_t textColour = Display::white;
+            int8_t character;
+            int8_t textColour = Display::white;
         } __attribute__((aligned(2)));
 
         struct Cursor {
@@ -69,6 +72,7 @@ namespace kernel {
 
         virtual void setCursorPosition(uint32_t x, uint32_t y) const = 0;
     };
+#pragma GCC diagnostic pop
 
 }
 #endif //HEPHAISTOS_DISPLAY_H

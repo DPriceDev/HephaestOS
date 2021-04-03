@@ -15,24 +15,4 @@
  * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "kernel/boot/global_descriptor_table.h"
-#include "kernel/types.h"
-#include "multiboot_info.h"
-#include <kernel/drivers/video_buffer_display.h>
-#include "kernel/terminal/Terminal.h"
-
-namespace kernel {
-
-    static const VideoBufferDisplay display { };
-
-    extern "C" void init(MultiBootInfo * /* multiBootInfo */, uint32_t /* magic */) {
-        auto terminal = kernel::Terminal{display};
-
-        terminal.clear();
-        terminal.println("System init");
-
-        uint16_t tableSize = sizeof(gdt::globalDescriptorTable) / sizeof(gdt::GlobalDescriptor);
-        setGlobalDescriptorTable(gdt::globalDescriptorTable, tableSize);
-        terminal.println("Global Descriptor table set");
-    }
-}
+extern "C" void __cxa_pure_virtual() { }

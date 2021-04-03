@@ -1,10 +1,9 @@
 set(CMAKE_ASM_NASM_OBJECT_FORMAT elf32-i386)
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -m elf_i386")
 
 set(LINK ${CMAKE_CURRENT_SOURCE_DIR}/linker.ld)
-set(CMAKE_CXX_LINK_EXECUTABLE "ld -g -T${LINK} <CMAKE_CXX_LINK_FLAGS> <LINK_FLAGS> <OBJECTS>  -o <TARGET> <LINK_LIBRARIES>")
+set(CMAKE_CXX_LINK_EXECUTABLE "ld -g -T${LINK} <CMAKE_CXX_LINK_FLAGS> -m elf_i386 <OBJECTS>  -o <TARGET> <LINK_LIBRARIES>")
 
-set(CMAKE_ASM_NASM_FLAGS "${CMAKE_ASM_NASM_FLAGS} -g")
+set(CMAKE_ASM_NASM_COMPILE_OBJECT "<CMAKE_ASM_NASM_COMPILER> <INCLUDES> -felf32 -g -o <OBJECT> <SOURCE>")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -m32 -fno-use-cxa-atexit -ffreestanding -nostdlib -fno-builtin -fno-rtti -fno-exceptions")
 
 add_executable(kernel.elf
@@ -12,11 +11,9 @@ add_executable(kernel.elf
         kernel/boot/loader.asm
         kernel/terminal/Terminal.cpp
         kernel/drivers/video_buffer_display.cpp
-        kernel/klibc/array.h
-        kernel/boot/global_descriptor_table.h
         kernel/boot/init.cpp
-        kernel/boot/multiboot_info.h)
-target_link_libraries(kernel.elf PRIVATE project_options) #project_warnings)
+        kernel/klibc/pure_function.cpp)
+target_link_libraries(kernel.elf PRIVATE project_options project_warnings)
 target_include_directories(kernel.elf PUBLIC .)
 
 add_custom_command(
