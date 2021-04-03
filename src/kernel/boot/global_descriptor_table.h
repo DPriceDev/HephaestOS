@@ -15,38 +15,70 @@
  * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef HEPHAISTOS_GLOBAL_DESCRIPTOR_TABLE_H
-#define HEPHAISTOS_GLOBAL_DESCRIPTOR_TABLE_H
+#ifndef HEPHAIST_OS_KERNEL_GLOBAL_DESCRIPTOR_TABLE_H
+#define HEPHAIST_OS_KERNEL_GLOBAL_DESCRIPTOR_TABLE_H
 
 #include "kernel/types.h"
 
-namespace kernel {
+namespace kernel::gdt {
 
-    extern "C" void setGlobalDescriptorTable(const uint64_t tablePointer[], uint16_t tableSize);
+    struct GlobalDescriptorAccess {
+        uint8_t present: 1;
+        uint8_t privilege: 2;
+        uint8_t descriptorType: 1;
+        uint8_t isExecutable: 1;
+        uint8_t directionConform: 1;
+        uint8_t ReadWritable: 1;
+        uint8_t accessed: 1;
+    } __attribute__((aligned(8))) __attribute__ ((packed));
 
-    //constexpr
+    struct GlobalDescriptorFlags {
+        uint8_t granularity: 1;
+        uint8_t size: 1;
+    } __attribute__((aligned(2))) __attribute__ ((packed));
 
-    static constexpr uint64_t constructGlobalDescriptor(int32_t baseAddress, int32_t memoryLimit, int16_t flags) {
-        uint64_t descriptor = memoryLimit & 0x000F0000;         // set bits 19:16 of the limit to 19:16 in descriptor.
-        descriptor |= (flags << 8) & 0x00F0FF00;                // set type, p, dpl, s, g, d/b, l and avl fields
-        descriptor |= (baseAddress >> 16) & 0x000000FF;         // set base bits 23:16
-        descriptor |= baseAddress & 0xFF000000;                 // set base bits 31:24
+    struct GlobalDescriptor {
+        uint16_t lowerLimit;
+        uint16_t lowerBase;
+        uint8_t middleBase;
+        GlobalDescriptorAccess access;
+        uint8_t upperLimit: 4;
+        GlobalDescriptorFlags flags;
+        uint8_t upperBase;
+    } __attribute__((aligned(32)))__attribute__ ((packed));
 
-        // Shift by 32 to allow for low part of segment
-        descriptor <<= 32;
 
-        // Create the low 32 bit segment
-        descriptor |= baseAddress << 16;                        // set base bits 15:0
-        descriptor |= memoryLimit & 0x0000FFFF;                 // set limit bits 15:0
+    static constexpr auto zeroAccess = GlobalDescriptorAccess{0, 0, 0, 0, 0, 0, 0};
+    static constexpr auto codeKernelAccess = GlobalDescriptorAccess{1, 0, 1, 1, 1, 1, 1};
+    static constexpr auto dataKernelAccess = GlobalDescriptorAccess{1, 0, 1, 1, 1, 1, 1};
 
-        return descriptor;
+    static constexpr auto zeroFlags = GlobalDescriptorFlags{0, 0};
+    static constexpr auto gran32Flags = GlobalDescriptorFlags{1, 1};
+
+    extern "C" void setGlobalDescriptorTable(const GlobalDescriptor tablePointer[], uint16_t tableSize);
+
+    static constexpr GlobalDescriptor constructGlobalDescriptor(int32_t baseAddress,
+                                                                int32_t memoryLimit,
+                                                                const GlobalDescriptorAccess &access,
+                                                                const GlobalDescriptorFlags &flags) {
+        GlobalDescriptor globalDescriptor{
+                static_cast<uint16_t>((memoryLimit & 0xFFFF)),
+                static_cast<uint16_t>((baseAddress & 0xFFFF)),
+                static_cast<uint8_t>((baseAddress & 0xFF0000) >> 16),
+                access,
+                static_cast<uint8_t>((memoryLimit & 0xF0000) >> 16),
+                flags,
+                static_cast<uint8_t>((baseAddress & 0xFF000000) >> 24)
+        };
+
+        return globalDescriptor;
     }
 
-    static constexpr uint64_t globalDescriptorTable[] = {
-            constructGlobalDescriptor(0, 0, 0),
-            constructGlobalDescriptor(0, 0x000FFFFF, 0),
-            constructGlobalDescriptor(0, 0x000FFFFF, 0)
+    static constexpr GlobalDescriptor globalDescriptorTable[] = {
+            constructGlobalDescriptor(0, 0, zeroAccess, zeroFlags),
+            constructGlobalDescriptor(0, 0x000FFFFF, codeKernelAccess, gran32Flags),
+            constructGlobalDescriptor(0, 0x000FFFFF, dataKernelAccess, gran32Flags)
     };
 }
 
-#endif //HEPHAISTOS_GLOBAL_DESCRIPTOR_TABLE_H
+#endif // HEPHAIST_OS_KERNEL_GLOBAL_DESCRIPTOR_TABLE_H

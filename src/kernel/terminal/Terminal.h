@@ -44,8 +44,7 @@ namespace kernel {
     private:
         static const uint32_t maxLines{50};
         const Display &mDisplay;
-        uint32_t cursorX{0};
-        uint32_t cursorY{0};
+        Display::Cursor cursor;
 
         Line lines[maxLines];
         Line *currentLine = lines;

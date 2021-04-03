@@ -12,11 +12,11 @@ add_executable(kernel.elf
         kernel/boot/loader.asm
         kernel/terminal/Terminal.cpp
         kernel/drivers/video_buffer_display.cpp
-        kernel/library/array.h
+        kernel/klibc/array.h
         kernel/boot/global_descriptor_table.h
         kernel/boot/init.cpp
         kernel/boot/multiboot_info.h)
-#target_link_libraries(kernel.elf PRIVATE project_options project_warnings)
+target_link_libraries(kernel.elf PRIVATE project_options) #project_warnings)
 target_include_directories(kernel.elf PUBLIC .)
 
 add_custom_command(

@@ -18,11 +18,21 @@
 #include "kernel/boot/global_descriptor_table.h"
 #include "kernel/types.h"
 #include "multiboot_info.h"
+#include <kernel/drivers/video_buffer_display.h>
+#include "kernel/terminal/Terminal.h"
 
 namespace kernel {
 
     extern "C" void init(MultiBootInfo *multiBootInfo, uint32_t magic) {
-        auto tableSize = sizeof(globalDescriptorTable);
-        setGlobalDescriptorTable(globalDescriptorTable, tableSize);
+
+        auto display = kernel::VideoBufferDisplay();
+        auto terminal = kernel::Terminal{display};
+
+        terminal.clear();
+        terminal.println("System init");
+
+        auto tableSize = sizeof(gdt::globalDescriptorTable);
+        setGlobalDescriptorTable(gdt::globalDescriptorTable, tableSize);
+        terminal.println("Global Descriptor table set");
     }
 }

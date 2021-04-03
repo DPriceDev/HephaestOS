@@ -48,14 +48,24 @@ namespace kernel {
             uint8_t textColour = Display::white;
         } __attribute__((aligned(2)));
 
+        struct Cursor {
+            uint32_t x;
+            uint32_t y;
+        } __attribute__((aligned(8)));
+
         [[nodiscard]] virtual const uint32_t &getWidth() const = 0;
         [[nodiscard]] virtual const uint32_t &getHeight() const = 0;
 
         virtual void clearDisplayBuffer(Display::Colour textColour, Display::Colour backgroundColour) const = 0;
 
-        virtual uint32_t setDisplayBuffer(const Character* character, int length) const = 0;
+        virtual uint32_t setDisplayBuffer(const Character* character, uint32_t length) const = 0;
 
-        virtual void showCursor(bool shouldShow) const = 0;
+        virtual uint32_t setDisplayBuffer(const Character *character, uint32_t length, uint32_t x, uint32_t y) const = 0;
+
+        virtual void showCursor() const = 0;
+        virtual void hideCursor() const = 0;
+
+        [[nodiscard]] virtual Cursor getCursorPosition() const = 0;
 
         virtual void setCursorPosition(uint32_t x, uint32_t y) const = 0;
     };

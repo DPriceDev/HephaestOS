@@ -17,8 +17,8 @@
 
 #include "Terminal.h"
 
-kernel::Terminal::Terminal(const kernel::Display &display): mDisplay(display) {
-    mDisplay.showCursor(true);
+kernel::Terminal::Terminal(const kernel::Display &display): mDisplay(display), cursor(mDisplay.getCursorPosition()) {
+    mDisplay.showCursor();
 }
 
 void kernel::Terminal::print(const char* string, Display::Colour colour) {
@@ -31,19 +31,19 @@ void kernel::Terminal::print(const char* string, Display::Colour colour) {
             continue;
         }
 
-        if(cursorX == mDisplay.getWidth()) {
+        if(cursor.x == mDisplay.getWidth()) {
             addNewLine();
         }
 
-        auto *position = currentLine->characters + cursorX;
+        auto *position = currentLine->characters + cursor.x;
         position->character = *string;
         position->textColour = textColour;
-        cursorX++;
+        cursor.x++;
         string++;
     }
 
     updateDisplayBuffer();
-    mDisplay.setCursorPosition(cursorX, cursorY);
+    mDisplay.setCursorPosition(cursor.x, cursor.y);
 }
 
 // Function: setTextColour
@@ -55,14 +55,17 @@ void kernel::Terminal::print(const char* string, Display::Colour colour) {
 // Function: SetCursorPosition
 void kernel::Terminal::SetCursorPosition(const uint32_t &x, const uint32_t &y) {
     if(x <= mDisplay.getWidth()) {
-        cursorX = x;
-        cursorY = y;
-        mDisplay.setCursorPosition(cursorX, cursorY);
+        cursor.x = x;
+        cursor.y = y;
+        mDisplay.setCursorPosition(cursor.x, cursor.y);
     }
 }
 
 void kernel::Terminal::clear(Display::Colour backgroundColour) {
     mDisplay.clearDisplayBuffer(textColour, backgroundColour);
+    cursor.x = 0;
+    cursor.y = 0;
+    mDisplay.setCursorPosition(0, 0);
 }
 
 void kernel::Terminal::updateDisplayBuffer() {
@@ -81,11 +84,11 @@ void kernel::Terminal::println(const char *string, kernel::Display::Colour colou
     print(string, colour);
     addNewLine();
     updateDisplayBuffer();
-    mDisplay.setCursorPosition(cursorX, cursorY);
+    mDisplay.setCursorPosition(cursor.x, cursor.y);
 }
 
 void kernel::Terminal::addNewLine() {
-    cursorX = 0;
-    cursorY++;
-    currentLine = lines + cursorY;
+    cursor.x = 0;
+    cursor.y++;
+    currentLine = lines + cursor.y;
 }

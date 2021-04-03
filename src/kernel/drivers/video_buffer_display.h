@@ -25,10 +25,13 @@
 namespace kernel {
 
 class VideoBufferDisplay : public Display {
-        const uint32_t width{ 80 };
-        const uint32_t characterWidth{ width * 2 };
-        const uint32_t height{ 25 };
-        const uint32_t screenBufferLength{ characterWidth * height };
+    const uint8_t cursorStart = 13;
+    const uint8_t cursorEnd = 15;
+
+    const uint32_t width{ 80 };
+    const uint32_t characterWidth{ width * 2 };
+    const uint32_t height{ 25 };
+    const uint32_t screenBufferLength{ characterWidth * height };
 
     public:
         [[nodiscard]] const uint32_t &getWidth() const override;
@@ -36,11 +39,16 @@ class VideoBufferDisplay : public Display {
 
         void clearDisplayBuffer(Display::Colour textColour, Display::Colour backgroundColour) const override;
 
-        uint32_t setDisplayBuffer(const Character *character, int length) const override;
+        uint32_t setDisplayBuffer(const Character *character, uint32_t length, uint32_t x, uint32_t y) const override;
 
-        void showCursor(bool shouldShow) const override;
+        uint32_t setDisplayBuffer(const Character *character, uint32_t length) const override;
+
+        void showCursor() const override;
+        void hideCursor() const override;
 
         void setCursorPosition(uint32_t x, uint32_t y) const override;
+
+        [[nodiscard]] Cursor getCursorPosition() const override;
     };
 
 }
