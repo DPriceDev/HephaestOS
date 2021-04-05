@@ -15,26 +15,24 @@
  * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <kernel/drivers/video_buffer_display.h>
-#include "kernel/terminal/Terminal.h"
-#include "kernel/memory/memory.h"
-#include "hardware/io.h"
+#ifndef HEPHAIST_OS_DRIVERS_IO_IO_H
+#define HEPHAIST_OS_DRIVERS_IO_IO_H
 
-#define VERSION 1.0
+#include "kernel/types.h"
+#include "hardware/register_address.h"
 
 namespace kernel {
 
-    extern "C" [[noreturn]] void kernelMain() {
-        static const VideoBufferDisplay display { };
-        //auto terminal = kernel::Terminal{display};
+    inline uint8_t inputPortByte(uint32_t port) {
+        uint8_t byte{ 0 };
+        asm volatile ("inb %%dx,%%al":"=a" (byte):"d" (port));
+        return byte;
+    }
 
-//        terminal.println("HephaestOS");
-//        terminal.println("Version 1.0", kernel::Display::cyan);
-
-
-
-        while (true) {
-
-        }
+    inline void outputPortByte(uint32_t port, uint8_t value) {
+        asm volatile ("outb %%al,%%dx": :"d" (port), "a" (value));
     }
 }
+
+#endif
+////////////////////////////////////////////////////////////////////////////////

@@ -16,9 +16,13 @@
 
 global loader
 global setGlobalDescriptorTable
+global setInterruptDescriptorTable
 global stack_ptr
 
+global irq0
+
 extern kernelMain, init
+extern irq0_handler
 
 stackSize:      equ             0x4000                          ; setup the stack size to be 16KB
 
@@ -40,10 +44,16 @@ MultiBootHeader:
                 dd              CHECKSUM
 
 ; ------------------------------------------------------------- ;
+; Interrupt Descriptor Table
+idtAddress:
+                dw              2048                            ; Size of IDT (256 entries of 8 bytes)
+                dd              0                               ; Linear address of IDT
+
+; ------------------------------------------------------------- ;
 ; Global Descriptor Table
 gdtAddress:
-                DW              0                               ; table Pointer
-                DD              0                               ; table Size
+                dw              0                               ; table Pointer
+                dd              0                               ; table Size
 
 ; ------------------------------------------------------------- ;
 ; BSS Memory Section
@@ -81,6 +91,26 @@ setGlobalDescriptorTable:
                lgdt             [gdtAddress]                    ; Load the Table from the table address
                ret
 
+; ------------------------------------------------------------- ;
+; Setup Interrupt Descriptor Table
+setInterruptDescriptorTable:
+;               mov             eax, [esp + 4]                  ;
+;               mov             [idtAddress + 2], eax           ;
+;               mov             ax, [esp + 8]                   ;
+;               mov             [idtAddress], ax                ;
+;               lidt            [idtAddress]
+;               ret
+
+                mov             edx, [esp + 4]
+                lidt            [edx]
+;                sti
+                ret
+
+irq0:
+                pusha
+                call            irq0_handler
+                popa
+                iret
 
 ;global loader
 ;

@@ -22,7 +22,7 @@
 
 namespace kernel::gdt {
 
-    struct GlobalDescriptorAccess {
+    struct Access {
         uint8_t present: 1;
         uint8_t privilege: 2;
         uint8_t descriptorType: 1;
@@ -32,7 +32,7 @@ namespace kernel::gdt {
         uint8_t accessed: 1;
     } __attribute__((packed, aligned(8)));
 
-    struct GlobalDescriptorFlags {
+    struct Flags {
         uint8_t granularity: 1;
         uint8_t size: 1;
     } __attribute__((packed, aligned(2)));
@@ -41,26 +41,26 @@ namespace kernel::gdt {
         uint16_t lowerLimit;
         uint16_t lowerBase;
         uint8_t middleBase;
-        GlobalDescriptorAccess access;
+        Access access;
         uint8_t upperLimit: 4;
-        GlobalDescriptorFlags flags;
+        Flags flags;
         uint8_t upperBase;
     } __attribute__((aligned(32)));
 
 
-    static constexpr auto zeroAccess = GlobalDescriptorAccess{0, 0, 0, 0, 0, 0, 0};
-    static constexpr auto codeKernelAccess = GlobalDescriptorAccess{1, 0, 1, 1, 1, 1, 1};
-    static constexpr auto dataKernelAccess = GlobalDescriptorAccess{1, 0, 1, 1, 1, 1, 1};
+    static constexpr auto zeroAccess = Access{0, 0, 0, 0, 0, 0, 0};
+    static constexpr auto codeKernelAccess = Access{1, 0, 1, 1, 1, 1, 1};
+    static constexpr auto dataKernelAccess = Access{1, 0, 1, 1, 1, 1, 1};
 
-    static constexpr auto zeroFlags = GlobalDescriptorFlags{0, 0};
-    static constexpr auto gran32Flags = GlobalDescriptorFlags{1, 1};
+    static constexpr auto zeroFlags = Flags{0, 0};
+    static constexpr auto gran32Flags = Flags{1, 1};
 
     extern "C" void setGlobalDescriptorTable(const GlobalDescriptor tablePointer[], uint16_t tableSize);
 
     static constexpr GlobalDescriptor constructGlobalDescriptor(uint32_t baseAddress,
                                                                 uint32_t memoryLimit,
-                                                                const GlobalDescriptorAccess &access,
-                                                                const GlobalDescriptorFlags &flags) {
+                                                                const Access &access,
+                                                                const Flags &flags) {
         GlobalDescriptor globalDescriptor{
                 static_cast<uint16_t>((memoryLimit & 0xFFFF)),
                 static_cast<uint16_t>((baseAddress & 0xFFFF)),
@@ -79,6 +79,11 @@ namespace kernel::gdt {
             constructGlobalDescriptor(0, 0x000FFFFF, codeKernelAccess, gran32Flags),
             constructGlobalDescriptor(0, 0x000FFFFF, dataKernelAccess, gran32Flags)
     };
+
+    static void initializeGlobalDescriptorTable() {
+        uint16_t tableSize = sizeof(globalDescriptorTable) / sizeof(GlobalDescriptor);
+        setGlobalDescriptorTable(globalDescriptorTable, tableSize);
+    }
 }
 
 #endif // HEPHAIST_OS_KERNEL_GLOBAL_DESCRIPTOR_TABLE_H

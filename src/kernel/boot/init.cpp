@@ -16,6 +16,7 @@
  */
 
 #include "kernel/boot/global_descriptor_table.h"
+#include "kernel/boot/interrupt_descriptor_table.h"
 #include "kernel/types.h"
 #include "multiboot_info.h"
 #include <kernel/drivers/video_buffer_display.h>
@@ -31,8 +32,16 @@ namespace kernel {
         terminal.clear();
         terminal.println("System init");
 
-        uint16_t tableSize = sizeof(gdt::globalDescriptorTable) / sizeof(gdt::GlobalDescriptor);
-        setGlobalDescriptorTable(gdt::globalDescriptorTable, tableSize);
+        // enable only keyboard interrupt
+        outputPortByte(0x21,0xfd);
+        outputPortByte(0xa1,0xff);
+
+        gdt::initializeGlobalDescriptorTable();
         terminal.println("Global Descriptor table set");
+
+        idt::initializeInterruptDescriptorTable();
+        terminal.println("Interrupt Descriptor table set");
+
+//        kernel::idt::irq0_handler();
     }
 }
