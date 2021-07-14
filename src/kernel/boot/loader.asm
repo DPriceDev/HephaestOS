@@ -14,29 +14,35 @@
 ; You should have received a copy of the GNU General Public License
 ; along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 
-global loader
-global setGlobalDescriptorTable
-global setInterruptDescriptorTable
+bits            32
+
+global loader:function (end - loader)
 global stack_ptr
 
-global irq0
-
 extern kernelMain, init
-extern irq0_handler
+extern gdtAddress, idtAddress
 
-stackSize:      equ             0x4000                          ; setup the stack size to be 16KB
+stackSize:      equ             16384                           ; setup the stack size to be 16KB
+
+; ------------------------------------------------------------- ;
+; BSS Memory Section
+section .bss
+align           16
+stack_end:
+resb            stackSize
+stack_start:
 
 ; ------------------------------------------------------------- ;
 ; Multi-boot Header
 ; Variables
-MODULEALIGN:    equ             1 << 0
-MEMINFO:        equ             1 << 1
-FLAGS:          equ             MODULEALIGN | MEMINFO
-MAGIC:          equ             0x1BADB002
-CHECKSUM:       equ             -(MAGIC + FLAGS)
+MODULEALIGN     equ             1 << 0
+MEMINFO         equ             1 << 1
+FLAGS           equ             MODULEALIGN | MEMINFO
+MAGIC           equ             0x1BADB002
+CHECKSUM        equ             -(MAGIC + FLAGS)
 
 ; header
-section .mbheader
+section .multiboot
 align 4
 MultiBootHeader:
                 dd              MAGIC                           ; dd defines Magic as a double word
@@ -44,34 +50,48 @@ MultiBootHeader:
                 dd              CHECKSUM
 
 ; ------------------------------------------------------------- ;
-; Interrupt Descriptor Table
-idtAddress:
-                dw              2048                            ; Size of IDT (256 entries of 8 bytes)
-                dd              0                               ; Linear address of IDT
-
-; ------------------------------------------------------------- ;
-; Global Descriptor Table
-gdtAddress:
-                dw              0                               ; table Pointer
-                dd              0                               ; table Size
-
-; ------------------------------------------------------------- ;
-; BSS Memory Section
-section .bss
-align           16
-stack:
-resb            stackSize
-stack_ptr:
-
-; ------------------------------------------------------------- ;
 section .text
 
 loader:
-                mov             esp, stack_ptr                  ; set esp (register for stack pointer) as the stack pointer.
+                mov             esp, stack_start                ; set esp (register for stack pointer) as the stack pointer.
+
+;               initialize idt and gdt
                 push            eax                             ; push the magic number to the stack (2nd arg)
                 push            ebx                             ; push the multiboot info pointer to the stack (1st arg)
                 call            init
 
+;               code that possibly enables a20 line
+;               in              al, 0x92
+;               or              al, 2
+;               out             0x92, al
+
+;               Set bit 1 in the control register to set protected mode
+;               mov             eax, cr0                        ; Move Control register 0 to eax
+;               or              al, 1                           ; set Protection Enable bit in CR0/eax to true
+;               mov             cr0, eax                        ; Move updated eax back to Control Register 0
+
+;               jmp             clear_prefetch_queue
+;               nop
+;               nop
+;clear_prefetch_queue:
+
+;               Perform a far jump to main, needs to point to code segment?
+;                jmp             0x08:protectedModeMain           ; far jump
+
+;protectedModeMain:
+;                 mov             ax, 0x10                        ; 0x10 is the offset in the GDT to our data segment
+;                 mov             ds, ax                          ; Load all data segment selectors
+;                 mov             es, ax
+;                 mov             fs, ax
+;                 mov             gs, ax
+;                 mov             ss, ax
+
+;                push            eax                             ; push the magic number to the stack (2nd arg)
+;                push            ebx                             ; push the multiboot info pointer to the stack (1st arg)
+;                call            init
+
+                int             0
+                sti
                 call            kernelMain                      ; call the main kernal method.
                 cli
 
@@ -80,163 +100,4 @@ loader:
 halt:
                 hlt
                 jmp             halt
-
-; ------------------------------------------------------------- ;
-; Setup Global Descriptor Table
-setGlobalDescriptorTable:
-               mov              eax, [esp + 4]                  ;
-               mov              [gdtAddress + 2], eax           ;
-               mov              ax, [esp + 8]                   ;
-               mov              [gdtAddress], ax                ;
-               lgdt             [gdtAddress]                    ; Load the Table from the table address
-               ret
-
-; ------------------------------------------------------------- ;
-; Setup Interrupt Descriptor Table
-setInterruptDescriptorTable:
-;               mov             eax, [esp + 4]                  ;
-;               mov             [idtAddress + 2], eax           ;
-;               mov             ax, [esp + 8]                   ;
-;               mov             [idtAddress], ax                ;
-;               lidt            [idtAddress]
-;               ret
-
-                mov             edx, [esp + 4]
-                lidt            [edx]
-;                sti
-                ret
-
-irq0:
-                pusha
-                call            irq0_handler
-                popa
-                iret
-
-;global loader
-;
-;extern kernalMain
-;
-;MODULEALIGN equ 1<<0
-;MEMINFO equ 1<<1
-;FLAGS equ MODULEALIGN | MEMINFO
-;MAGIC equ 0x1BADB002
-;CHECKSUM equ -(MAGIC + FLAGS)
-;
-;section .mbheader
-;align 4
-;MultiBootHeader:
-;  dd MAGIC
-;  dd FLAGS
-;  dd CHECKSUM
-;
-;; Start the bootloader Program.
-;start: jmp loader
-;
-;; Variables.
-;msgTitle	db	"HephaestOS Alpha v1.0.", 0
-;msgAuthor	db	"Written by David Price.", 0
-;CR equ 0DH
-;LF equ 0AH
-;
-
-;; Load the 32 bit bootloader.
-;loader:
-;	xor	ax, ax
-;	mov	ds, ax
-;	mov	es, ax
-;
-;    mov	si, msgTitle
-;    call printString
-;    call newLine
-;    mov	si, msgAuthor
-;    call printString
-;
-;    xor	ax, ax						                    ; clear ax
-;	int	0x12						                    ; get the amount of KB from the BIOS
-;    call intToString
-;    call printString
-;
-;
-;
-;    jmp loader32
-;
-;loader32:
-;    bits 32
-;
-;    mov esi,msgAuthor
-;	mov ebx,0xb8000
-;.loop:
-;	lodsb
-;	or al,al
-;	jz halt
-;	or eax,0x0100
-;	mov word [ebx], ax
-;	add ebx,2
-;	jmp .loop
-;
-;    jmp halt
-;
-;; Stop the program.
-;halt:
-;    cli                                                 ; clear interrupt flag
-;    hlt                                                 ; halt execution
-;
-;times 510 - ($-$$) db 0                                 ; pad remaining 510 bytes with zeroes
-;dw 0xaa55                                               ; Boot Signiture
-
-
-;; ------------------------------------------------------------- ;
-;; clears the screen. FIX?
-;clrScreen:
-;                xor	            bx, bx		                    ; A faster method of clearing BX to 0
-;                ret
-;
-;
-;; ------------------------------------------------------------- ;
-;; Converts an integer to a characters value.
-;intToString:
-;                xor             si, si                          ; Clear the di register to hold the resultant characters.
-;intToString.loop:
-;;               add             si, 9
-;                mov             byte [si], 0
-;                mov             bx, 10
-;
-;intToString.next_digit:
-;                xor             dx, dx                          ; Clear previous remainder flag dx
-;                div             bx                              ; eax /= 10
-;                add             dl, '0'                         ; Convert the remainder to ASCII
-;                dec             si                              ; store characters in reverse order
-;                mov             [si], dl
-;                test            ax, ax
-;                jnz             intToString.next_digit          ; Repeat until eax==0
-;                mov             ax,si
-;                ret
-;
-;; ------------------------------------------------------------- ;
-;; Prints a char to the screen. (precede: mov al, 'A')
-;printChar:
-;	            mov	            ah, 0x0e
-;	            int	            0x10
-;                ret
-;
-;; ------------------------------------------------------------- ;
-;; prints a characters to the screen. (precede: mov si, "characters")
-;printString:
-;                mov             ah, 0x0e                        ; 0x0e means 'Write Character in TTY mode'
-;printString.loop:
-;                lodsb
-;                or			al, al				                ; al=current characters
-;                jz			printString.finished			    ; null terminator found
-;                int			10h
-;                jmp			printString.loop
-;printString.finished:
-;                ret
-;
-;newLine:
-;                mov         DL, 10                              ;printing new line
-;                mov         AH, 02h
-;                int	        21h
-;                mov         DL, 13
-;                mov         AH, 02h
-;                int	        21h
-;                ret
+end:

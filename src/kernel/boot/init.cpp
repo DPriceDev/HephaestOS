@@ -26,22 +26,16 @@ namespace kernel {
 
     static const VideoBufferDisplay display { };
 
-    extern "C" void init(MultiBootInfo * /* multiBootInfo */, uint32_t /* magic */) {
+    extern "C" void init(MultiBootInfo * info, uint32_t /* magic */) {
         auto terminal = kernel::Terminal{display};
 
         terminal.clear();
         terminal.println("System init");
-
-        // enable only keyboard interrupt
-        outputPortByte(0x21,0xfd);
-        outputPortByte(0xa1,0xff);
 
         gdt::initializeGlobalDescriptorTable();
         terminal.println("Global Descriptor table set");
 
         idt::initializeInterruptDescriptorTable();
         terminal.println("Interrupt Descriptor table set");
-
-//        kernel::idt::irq0_handler();
     }
 }

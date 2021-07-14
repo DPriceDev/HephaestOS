@@ -26,14 +26,19 @@ namespace kernel {
 
     extern "C" [[noreturn]] void kernelMain() {
         static const VideoBufferDisplay display { };
-        //auto terminal = kernel::Terminal{display};
+        auto terminal = kernel::Terminal{display};
 
-//        terminal.println("HephaestOS");
-//        terminal.println("Version 1.0", kernel::Display::cyan);
+        /* mask interrupts */
+        //outputPortByte(0x21 , 0xff);
+        //outputPortByte(0xA1 , 0xff);
+//
+        //outputPortByte(0x21,0xfd);
+        //outputPortByte(0xa1,0xff);
 
+        terminal.println("HephaestOS");
+        terminal.println("Version 1.0", kernel::Display::cyan);
 
-
-        while (true) {
+        while(true) {
 
         }
     }
