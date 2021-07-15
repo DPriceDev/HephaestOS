@@ -15,19 +15,19 @@
  * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "kernel/boot/global_descriptor_table.h"
-#include "kernel/boot/interrupt_descriptor_table.h"
+#include "kernel/boot/gdt/global_descriptor_table.h"
+#include "kernel/boot/idt/interrupt_descriptor_table.h"
 #include "kernel/types.h"
-#include "multiboot_info.h"
+#include "kernel/boot/grub/multiboot_info.h"
 #include <kernel/drivers/video_buffer_display.h>
 #include "kernel/terminal/Terminal.h"
 
-namespace kernel {
+namespace kernel::boot {
 
     static const VideoBufferDisplay display { };
 
-    extern "C" void init(MultiBootInfo * info, uint32_t /* magic */) {
-        auto terminal = kernel::Terminal{display};
+    extern "C" void init(MultiBootInfo * /* info */, uint32_t /* magic */) {
+        auto terminal = Terminal{display};
 
         terminal.clear();
         terminal.println("System init");

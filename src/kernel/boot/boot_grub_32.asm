@@ -14,6 +14,8 @@
 ; You should have received a copy of the GNU General Public License
 ; along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 
+;%include         "boot_config.asm"     need to include into nasm -p
+
 bits            32
 
 global loader:function (end - loader)
@@ -55,43 +57,13 @@ section .text
 loader:
                 mov             esp, stack_start                ; set esp (register for stack pointer) as the stack pointer.
 
-;               initialize idt and gdt
+;               initialize idt and gdt (when entering straight in from grub)
                 push            eax                             ; push the magic number to the stack (2nd arg)
                 push            ebx                             ; push the multiboot info pointer to the stack (1st arg)
                 call            init
 
-;               code that possibly enables a20 line
-;               in              al, 0x92
-;               or              al, 2
-;               out             0x92, al
-
-;               Set bit 1 in the control register to set protected mode
-;               mov             eax, cr0                        ; Move Control register 0 to eax
-;               or              al, 1                           ; set Protection Enable bit in CR0/eax to true
-;               mov             cr0, eax                        ; Move updated eax back to Control Register 0
-
-;               jmp             clear_prefetch_queue
-;               nop
-;               nop
-;clear_prefetch_queue:
-
-;               Perform a far jump to main, needs to point to code segment?
-;                jmp             0x08:protectedModeMain           ; far jump
-
-;protectedModeMain:
-;                 mov             ax, 0x10                        ; 0x10 is the offset in the GDT to our data segment
-;                 mov             ds, ax                          ; Load all data segment selectors
-;                 mov             es, ax
-;                 mov             fs, ax
-;                 mov             gs, ax
-;                 mov             ss, ax
-
-;                push            eax                             ; push the magic number to the stack (2nd arg)
-;                push            ebx                             ; push the multiboot info pointer to the stack (1st arg)
-;                call            init
-
+;                sti
                 int             0
-                sti
                 call            kernelMain                      ; call the main kernal method.
                 cli
 

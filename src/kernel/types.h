@@ -15,8 +15,8 @@
  * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef __TYPES_H
-#define __TYPES_H
+#ifndef HEPHAIST_OS_KERNEL_TYPES_H
+#define HEPHAIST_OS_KERNEL_TYPES_H
 
     namespace kernel {
         using int8_t = char;
@@ -32,4 +32,4 @@
         using uint64_t = unsigned long long int;
     }
 
-#endif
+#endif // HEPHAIST_OS_KERNEL_TYPES_H

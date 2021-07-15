@@ -15,8 +15,8 @@
  * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef HEPHAIST_OS_KERNEL_DISPLAY_H
-#define HEPHAIST_OS_KERNEL_DISPLAY_H
+#ifndef HEPHAIST_OS_KERNEL_TERMINAL_TERMINAL_H
+#define HEPHAIST_OS_KERNEL_TERMINAL_TERMINAL_H
 
 #include "kernel/drivers/display.h"
 
@@ -57,4 +57,4 @@ namespace kernel {
         void updateDisplayBuffer();
     };
 }
-#endif
+#endif // HEPHAIST_OS_KERNEL_TERMINAL_TERMINAL_H

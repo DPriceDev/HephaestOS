@@ -8,14 +8,19 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g3 -m32 -fno-use-cxa-atexit -ffreestand
 
 add_executable(kernel.elf
         kernel/kernel.cpp
-        kernel/boot/loader.asm
-        kernel/boot/interrupt_descriptor_table.asm
-        kernel/boot/global_descriptor_table.asm
+        kernel/boot/boot_grub_32.asm
+        kernel/boot/boot_config.asm
+        kernel/boot/idt/interrupt_descriptor_table.asm
+        kernel/boot/idt/interrupt_handler.asm
+        kernel/boot/gdt/global_descriptor_table.asm
         kernel/terminal/Terminal.cpp
         kernel/drivers/video_buffer_display.cpp
         kernel/boot/init.cpp
-        kernel/klibc/pure_function.cpp)
-#target_link_libraries(kernel.elf PRIVATE project_options project_warnings)
+        kernel/klibc/pure_function.cpp
+        kernel/boot/gdt/global_descriptor_table.cpp
+        kernel/boot/idt/interrupt_descriptor_table.cpp
+        kernel/boot/idt/interrupt_handler.cpp)
+target_link_libraries(kernel.elf PRIVATE project_options) # project_warnings)
 target_include_directories(kernel.elf PUBLIC .)
 
 #add_custom_command(

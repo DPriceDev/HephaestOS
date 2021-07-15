@@ -14,18 +14,9 @@
 ; You should have received a copy of the GNU General Public License
 ; along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 
-bits            32
-
 global irq0
 
-global idtFlush
-
 extern irq0_handler
-
-idtFlush:
-                mov             eax, [esp+4]
-                lidt            [eax]
-                ret
 
 irq0:
                 pusha

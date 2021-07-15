@@ -15,8 +15,8 @@
  * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef HEPHAISTOS_VIDEO_BUFFER_DISPLAY_H
-#define HEPHAISTOS_VIDEO_BUFFER_DISPLAY_H
+#ifndef HEPHAIST_OS_DRIVERS_VIDEO_BUFFER_DISPLAY_H
+#define HEPHAIST_OS_DRIVERS_VIDEO_BUFFER_DISPLAY_H
 
 #include "display.h"
 #include "kernel/types.h"
@@ -60,4 +60,4 @@ namespace kernel {
 #pragma GCC diagnostic pop
 }
 
-#endif //HEPHAISTOS_VIDEO_BUFFER_DISPLAY_H
+#endif // HEPHAIST_OS_DRIVERS_VIDEO_BUFFER_DISPLAY_H
