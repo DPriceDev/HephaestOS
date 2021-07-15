@@ -14,12 +14,29 @@
 ; You should have received a copy of the GNU General Public License
 ; along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 
-global irq0
+extern handleInterrupt
 
-extern irq0_handler
+%macro interruptRequest 1
+                global fireInterruptRequest%1
+                push            %1
+                jmp             commonInterruptHandler
+%endmacro
 
-irq0:
-                pusha
-                call            irq0_handler
-                popa
-                iret
+commonInterruptHandler:
+                pusha                                           ; push all registers AX, ECX, EDX, EBX, EBP, ESP, EBP, ESI, and EDI
+                call            handleInterrupt                 ; Call the "handle interrupt" method
+                popa                                            ; pop all registers AX, ECX, EDX, EBX, EBP, ESP, EBP, ESI, and EDI (reversed)
+                add             esp, 4                          ; clear
+                iretd
+
+
+fireInterruptRequest0:          interruptRequest 0              ;
+fireInterruptRequest1:          interruptRequest 1              ;
+fireInterruptRequest2:          interruptRequest 2              ;
+fireInterruptRequest3:          interruptRequest 3              ;
+fireInterruptRequest4:          interruptRequest 4              ;
+fireInterruptRequest5:          interruptRequest 5              ;
+fireInterruptRequest6:          interruptRequest 6              ;
+fireInterruptRequest7:          interruptRequest 7              ;
+fireInterruptRequest8:          interruptRequest 8              ;
+

@@ -35,7 +35,7 @@ namespace kernel {
         //outputPortByte(0x21,0xfd);
         //outputPortByte(0xa1,0xff);
 
-        terminal.println("HephaestOS");
+        terminal.println("HephaistOS");
         terminal.println("Version 1.0", kernel::Display::cyan);
 
         while(true) {

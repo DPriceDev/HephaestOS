@@ -19,4 +19,16 @@ global loadGdtTable
 loadGdtTable:
                 mov             eax, [esp+4]                    ; Get the pointer to the GDT, passed as a parameter.
                 lgdt            [eax]                           ; Load the new GDT pointer
+                call            flushGdtTable
+                ret
+
+flushGdtTable:
+                mov             ax, 0x10
+                mov             ds, ax
+                mov             es, ax
+                mov             fs, ax
+                mov             gs, ax
+                mov             ss, ax
+                jmp             0x08:.flush
+.flush:
                 ret

@@ -6,11 +6,16 @@
 #include <kernel/terminal/Terminal.h>
 #include "interrupt_handler.h"
 
-namespace kernel::idt {
+namespace kernel::boot::idt {
 
-    extern "C" void irq0_handler(void) {
-        VideoBufferDisplay display{};
+    extern "C" void handleInterrupt(InterruptInfo interruptNumber) {
+        VideoBufferDisplay display{ };
         auto terminal = Terminal{ display };
+        char interruptCode = interruptNumber.interruptCode + 48;
+        char pointer[2];
+        pointer[0] = interruptCode;
+        pointer[1] = '\0';
+        terminal.print(pointer);
         terminal.clear(Display::green);
     }
 }

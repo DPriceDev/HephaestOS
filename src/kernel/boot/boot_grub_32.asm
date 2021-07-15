@@ -62,8 +62,9 @@ loader:
                 push            ebx                             ; push the multiboot info pointer to the stack (1st arg)
                 call            init
 
-;                sti
-                int             0
+                sti
+;               int             0
+;               int             1
                 call            kernelMain                      ; call the main kernal method.
                 cli
 

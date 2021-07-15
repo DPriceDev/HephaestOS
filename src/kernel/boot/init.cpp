@@ -26,7 +26,7 @@ namespace kernel::boot {
 
     static const VideoBufferDisplay display { };
 
-    extern "C" void init(MultiBootInfo * /* info */, uint32_t /* magic */) {
+    extern "C" void init(MultiBootInfo * info, uint32_t /* magic */) {
         auto terminal = Terminal{display};
 
         terminal.clear();

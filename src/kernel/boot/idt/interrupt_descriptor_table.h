@@ -28,7 +28,15 @@ namespace kernel::boot::idt {
 
     extern "C" void loadIdtTable(uint32_t pointer);
 
-    extern "C" int irq0();
+    extern "C" int fireInterruptRequest0();
+    extern "C" int fireInterruptRequest1();
+    extern "C" int fireInterruptRequest2();
+    extern "C" int fireInterruptRequest3();
+    extern "C" int fireInterruptRequest4();
+    extern "C" int fireInterruptRequest5();
+    extern "C" int fireInterruptRequest6();
+    extern "C" int fireInterruptRequest7();
+    extern "C" int fireInterruptRequest8();
 
     constexpr InterruptDescriptor constructInterruptDescriptor(uint32_t handler) {
         InterruptDescriptor descriptor {
@@ -57,8 +65,15 @@ namespace kernel::boot::idt {
     };
 
     void initializeInterruptDescriptorTable() {
-        interruptDescriptorTable[0] = constructInterruptDescriptor((uint32_t) irq0);
-        interruptDescriptorTable[1] = constructInterruptDescriptor((uint32_t) irq0);
+        interruptDescriptorTable[0] = constructInterruptDescriptor((uint32_t) fireInterruptRequest0);
+        interruptDescriptorTable[1] = constructInterruptDescriptor((uint32_t) fireInterruptRequest1);
+        interruptDescriptorTable[2] = constructInterruptDescriptor((uint32_t) fireInterruptRequest2);
+        interruptDescriptorTable[3] = constructInterruptDescriptor((uint32_t) fireInterruptRequest3);
+        interruptDescriptorTable[4] = constructInterruptDescriptor((uint32_t) fireInterruptRequest4);
+        interruptDescriptorTable[5] = constructInterruptDescriptor((uint32_t) fireInterruptRequest5);
+        interruptDescriptorTable[6] = constructInterruptDescriptor((uint32_t) fireInterruptRequest6);
+        interruptDescriptorTable[7] = constructInterruptDescriptor((uint32_t) fireInterruptRequest7);
+        interruptDescriptorTable[8] = constructInterruptDescriptor((uint32_t) fireInterruptRequest8);
         loadIdtTable((uint32_t) &idtPointer);
     }
 }
