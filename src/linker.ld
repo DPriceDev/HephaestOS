@@ -2,21 +2,22 @@ ENTRY (loader)
 SECTIONS
 {
   . = 1M;
-
-  .text BLOCK(4K): ALIGN (4K) {
+  .multiboot BLOCK(4k): ALIGN (4k) {
     *(.multiboot)
+  }
+  .text BLOCK(8k): ALIGN (8k) {
     *(.text)
   }
 
-  .rodata BLOCK(4K): ALIGN (4K) {
+  .rodata BLOCK(4k): ALIGN (4k) {
     *(.rodata)
   }
 
-  .data BLOCK(4K): ALIGN (4K)  {
+  .data BLOCK(4k): ALIGN (4k)  {
     *(.data)
   }
 
-  .bss BLOCK(4K) : ALIGN(4K) {
+  .bss BLOCK(4k) : ALIGN(4k) {
     *(COMMON)
     *(.bss)
   }

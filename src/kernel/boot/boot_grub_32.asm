@@ -63,8 +63,6 @@ loader:
                 call            init
 
                 sti
-;               int             0
-;               int             1
                 call            kernelMain                      ; call the main kernal method.
                 cli
 

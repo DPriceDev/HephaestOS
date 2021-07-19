@@ -21,10 +21,13 @@
 #include "kernel/boot/grub/multiboot_info.h"
 #include <kernel/drivers/video_buffer_display.h>
 #include "kernel/terminal/Terminal.h"
+#include "kernel/boot/idt/programmable_interrupt_controller.h"
 
 namespace kernel::boot {
 
     static const VideoBufferDisplay display { };
+
+    constexpr uint8_t interruptRequestOffset = 32;
 
     extern "C" void init(MultiBootInfo * info, uint32_t /* magic */) {
         auto terminal = Terminal{display};
@@ -37,5 +40,11 @@ namespace kernel::boot {
 
         idt::initializeInterruptDescriptorTable();
         terminal.println("Interrupt Descriptor table set");
+
+        // todo: may need to be moved to init protected method?
+        idt::remapProgrammableInterruptController(
+                interruptRequestOffset,
+                interruptRequestOffset + 8
+        );
     }
 }

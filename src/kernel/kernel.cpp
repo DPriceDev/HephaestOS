@@ -24,7 +24,7 @@
 
 namespace kernel {
 
-    extern "C" [[noreturn]] void kernelMain() {
+    extern "C" void kernelMain() {
         static const VideoBufferDisplay display { };
         auto terminal = kernel::Terminal{display};
 
