@@ -5,19 +5,19 @@ SECTIONS
   .multiboot BLOCK(4k): ALIGN (4k) {
     *(.multiboot)
   }
-  .text BLOCK(8k): ALIGN (8k) {
+  .text BLOCK(16k): ALIGN (16k) {
     *(.text)
   }
 
-  .rodata BLOCK(4k): ALIGN (4k) {
+  .rodata BLOCK(8k): ALIGN (8k) {
     *(.rodata)
   }
 
-  .data BLOCK(4k): ALIGN (4k)  {
+  .data BLOCK(8k): ALIGN (8k)  {
     *(.data)
   }
 
-  .bss BLOCK(4k) : ALIGN(4k) {
+  .bss BLOCK(8k) : ALIGN(8k) {
     *(COMMON)
     *(.bss)
   }

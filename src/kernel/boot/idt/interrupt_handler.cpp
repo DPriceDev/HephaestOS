@@ -23,15 +23,17 @@
 namespace kernel::boot::idt {
 
     extern "C" void handleInterrupt(InterruptInfo interruptInfo) {
-        VideoBufferDisplay display{ };
-        auto terminal = Terminal{ display };
 
-        terminal.println("Interrupt!");
-        terminal.print("interruptCode: ");
-        char code[2] = { static_cast<char>(48 + interruptInfo.interruptCode), '\0' };
-        terminal.println(code);
+        if(interruptInfo.interruptCode != 0) {
+            VideoBufferDisplay display{};
+            auto terminal = Terminal{display};
 
-        asm volatile ("xchg %bx, %bx");
+            terminal.clear(Display::green); // todo: not working?
+            terminal.println("Interrupt!");
+            terminal.print("interruptCode: ");
+            char code[2] = {static_cast<char>(48 + interruptInfo.interruptCode), '\0'};
+            terminal.println(code);
+        }
 
         sendEoiFlag(interruptInfo.interruptCode);
     }
@@ -47,7 +49,8 @@ namespace kernel::boot::idt {
         terminal.println(code);
         terminal.println(exceptionDescription[exceptionInfo.interruptCode]);
 
-        while (true) { }
+        while (true) {
+            int a = 4;
+        }
     }
 }
-

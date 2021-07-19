@@ -28,14 +28,7 @@ namespace kernel {
         static const VideoBufferDisplay display { };
         auto terminal = kernel::Terminal{display};
 
-        /* mask interrupts */
-        //outputPortByte(0x21 , 0xff);
-        //outputPortByte(0xA1 , 0xff);
-//
-        //outputPortByte(0x21,0xfd);
-        //outputPortByte(0xa1,0xff);
-
-        terminal.println("HephaistOS");
+        terminal.print("HephaistOS");
         terminal.println("Version 1.0", kernel::Display::cyan);
 
         while(true) {

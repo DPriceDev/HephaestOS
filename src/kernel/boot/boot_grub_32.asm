@@ -24,7 +24,7 @@ global stack_ptr
 extern kernelMain, init
 extern gdtAddress, idtAddress
 
-stackSize:      equ             16384                           ; setup the stack size to be 16KB
+stackSize:      equ             32798                           ; setup the stack size to be 16KB
 
 ; ------------------------------------------------------------- ;
 ; BSS Memory Section
@@ -62,6 +62,14 @@ loader:
                 push            ebx                             ; push the multiboot info pointer to the stack (1st arg)
                 call            init
 
+                mov             ax, 0x10
+                mov             ds, ax
+                mov             es, ax
+                mov             fs, ax
+                mov             gs, ax
+                mov             ss, ax
+
+                int             32
                 sti
                 call            kernelMain                      ; call the main kernal method.
                 cli
