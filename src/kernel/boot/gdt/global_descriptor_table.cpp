@@ -19,6 +19,39 @@
 
 namespace kernel::boot::gdt {
 
+    // todo c++ bit shifting?
+    constexpr GlobalDescriptor constructGlobalDescriptor(
+            const uint32_t baseAddress,
+            const uint32_t memoryLimit,
+            const Access &access,
+            const Flags &flags
+    ) {
+        return GlobalDescriptor {
+                static_cast<uint16_t>((memoryLimit & 0xFFFF)),
+                static_cast<uint16_t>((baseAddress & 0xFFFFFF)),
+                access,
+                static_cast<uint8_t>((memoryLimit & 0xF0000) >> 16U),
+                true,
+                false,
+                flags.size,
+                flags.granularity,
+                static_cast<uint8_t>((baseAddress & 0xF000000) >> 24U)
+        };
+    }
+
+    constexpr GlobalDescriptor globalDescriptorTable[5] = {
+            constructGlobalDescriptor(0, 0, zeroAccess, zeroFlags),
+            constructGlobalDescriptor(0, 0xFFFFF, codeKernelAccess, gran32Flags),
+            constructGlobalDescriptor(0, 0xFFFFF, dataKernelAccess, gran32Flags),
+            constructGlobalDescriptor(0, 0xFFFFF, codeUserAccess, gran32Flags),
+            constructGlobalDescriptor(0, 0xFFFFF, dataUserAccess, gran32Flags)
+    };
+
+    constexpr GdtPointer gdtPointer {
+            sizeof(globalDescriptorTable) - 1,
+            globalDescriptorTable
+    };
+
     void initializeGlobalDescriptorTable() {
         loadGdtTable(&gdtPointer);
     }
