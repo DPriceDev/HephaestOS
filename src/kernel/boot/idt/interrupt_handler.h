@@ -23,42 +23,42 @@
 namespace kernel::boot::idt {
 
     struct Registers {
-        uint32_t edi;
-        uint32_t esi;
-        uint32_t ebp;
-        uint32_t esp;
-        uint32_t ebx;
-        uint32_t edx;
-        uint32_t ecx;
-        uint32_t eax;
+        const uint32_t edi;
+        const uint32_t esi;
+        const uint32_t ebp;
+        const uint32_t esp;
+        const uint32_t ebx;
+        const uint32_t edx;
+        const uint32_t ecx;
+        const uint32_t eax;
     } __attribute__((packed));
 
     struct SegmentRegisters {
-        uint32_t gs;
-        uint32_t fs;
-        uint32_t es;
-        uint32_t ds;
+        const uint32_t gs;
+        const uint32_t fs;
+        const uint32_t es;
+        const uint32_t ds;
     };
 
     struct CpuRegisters {
-        uint32_t eip;
-        uint32_t cs;
-        uint16_t eflags;
+        const uint32_t eip;
+        const uint32_t cs;
+        const uint16_t eflags;
     };
 
     struct InterruptInfo {
-        SegmentRegisters segmentRegisters;
-        Registers registers;
-        uint32_t interruptCode;
-        CpuRegisters cpuRegisters;
+        const SegmentRegisters segmentRegisters;
+        const Registers registers;
+        const uint32_t interruptCode;
+        const CpuRegisters cpuRegisters;
     } __attribute__((packed));
 
     struct ExceptionInfo {
-        SegmentRegisters segmentRegisters;
-        Registers registers;
-        uint32_t interruptCode;
-        uint32_t errorCode;
-        CpuRegisters cpuRegisters;
+        const SegmentRegisters segmentRegisters;
+        const Registers registers;
+        const uint32_t interruptCode;
+        const uint32_t errorCode;
+        const CpuRegisters cpuRegisters;
     } __attribute__((packed));
 
     constexpr char * exceptionDescription[] {

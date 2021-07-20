@@ -33,8 +33,12 @@ namespace kernel {
             return length;
         }
 
+        Type* data() {
+            return array;
+        }
+
     private:
-        Type* array[];
+        Type array[length];
     };
 }
 #endif //HEPHAIST_OS_KERNEL_LIBRARY_ARRAY_H
