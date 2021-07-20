@@ -33,17 +33,17 @@ namespace kernel::boot::idt {
         uint32_t eax;
     } __attribute__((packed));
 
+    struct SegmentRegisters {
+        uint32_t gs;
+        uint32_t fs;
+        uint32_t es;
+        uint32_t ds;
+    };
+
     struct CpuRegisters {
         uint32_t eip;
         uint32_t cs;
-        uint32_t eflags;
-    };
-
-    struct SegmentRegisters {
-        uint16_t gs;
-        uint16_t fs;
-        uint16_t es;
-        uint16_t ds;
+        uint16_t eflags;
     };
 
     struct InterruptInfo {

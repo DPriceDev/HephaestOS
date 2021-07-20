@@ -23,11 +23,10 @@
 namespace kernel::boot::idt {
 
     extern "C" void handleInterrupt(InterruptInfo interruptInfo) {
+        VideoBufferDisplay display{};
+        auto terminal = Terminal{display};
 
         if(interruptInfo.interruptCode != 0) {
-            VideoBufferDisplay display{};
-            auto terminal = Terminal{display};
-
             terminal.clear(Display::green); // todo: not working?
             terminal.println("Interrupt!");
             terminal.print("interruptCode: ");

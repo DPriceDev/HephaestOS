@@ -26,11 +26,17 @@ extern handleInterrupt
 ; This common handler pushes all registers to the stack to pass to the c++ handler.
 ; It also switches to ring 0.
 commonInterruptHandler:
-                pusha                                           ; Push all registers AX, ECX, EDX, EBX, EBP, ESP, EBP, ESI, and EDI
-                push            ds
-                push            es
-                push            fs
-                push            gs
+
+                pushad                                          ; Push all registers EAX, ECX, EDX, EBX, ESP, EBP, ESI, and EDI
+                xor             eax, eax
+                mov             ax, ds
+                push            eax
+                mov             ax, es
+                push            eax
+                mov             ax, fs
+                push            eax
+                mov             ax, gs
+                push            eax
 
                 mov             ax, 0x10                        ; If the exception is from a different ring, switch to data segment ring 0
                 mov             ds, ax
@@ -45,10 +51,10 @@ commonInterruptHandler:
                 pop             fs
                 pop             es
                 pop             ds
-                popa                                            ; If the exception is from a different ring, switch to data segment ring 0
+                popad                                           ; If the exception is from a different ring, switch to data segment ring 0
                 add             esp, 4                          ; clear the interrupt code.
 
-                iret
+                iretd
 
 fireInterruptRequest0:          interruptRequest 0              ;
 fireInterruptRequest1:          interruptRequest 1              ;
