@@ -18,12 +18,14 @@
 #ifndef SYS_STRING_H
 #define SYS_STRING_H
 
-namespace kernel {
+#include "kernel/types.h"
+
+namespace kernel::lib {
 
     template<typename T>
     int Size(T str) {
 
-        int i(0);
+        uint8_t i(0);
 
         // count each characters in the characters.
         for (; str[i]; i++);

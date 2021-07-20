@@ -21,7 +21,7 @@ add_executable(kernel.elf
         kernel/boot/gdt/global_descriptor_table.cpp
         kernel/boot/idt/interrupt_descriptor_table.cpp
         kernel/boot/idt/interrupt_handler.cpp
-        kernel/boot/idt/programmable_interrupt_controller.cpp)
+        kernel/boot/idt/programmable_interrupt_controller.cpp kernel/klibc/stdio/stdio.h)
 target_link_libraries(kernel.elf PRIVATE project_options) # project_warnings)
 target_include_directories(kernel.elf PUBLIC .)
 

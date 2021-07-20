@@ -15,30 +15,16 @@
  * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef HEPHAIST_OS_KERNEL_LIBRARY_ARRAY_H
-#define HEPHAIST_OS_KERNEL_LIBRARY_ARRAY_H
+#include "catch2/catch.hpp"
+#include "kernel/klibc/stdio/stdio.h"
 
-#include "kernel/types.h"
+TEST_CASE("Test sprintf parses characters correctly") {
+    using namespace kernel::lib;
 
-namespace kernel {
+    const auto * format = "example %cexample exam%cple %c%c test";
+    char buffer[34];
+    const int32_t count = sprintf(buffer, format, 'a', 'b', 'c', 'd');
+    CHECK(count == 33);
 
-    template<typename Type, uint32_t length>
-    struct Array {
-        Type array[length];
-
-        Type& at(uint32_t index) {
-            return array[index];
-        }
-
-        uint32_t size() {
-            return length;
-        }
-
-        Type& operator[](uint32_t index) { return array[index]; }
-        const Type& operator[](uint32_t index) const { return array[index]; }
-
-        Type* data() { return array; }
-        const Type* data() const { return array; }
-    };
+    CHECK_THAT(buffer, Catch::Matchers::Equals("example aexample exambple cd test"));
 }
-#endif //HEPHAIST_OS_KERNEL_LIBRARY_ARRAY_H

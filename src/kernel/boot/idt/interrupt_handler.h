@@ -19,6 +19,7 @@
 #define HEPHAIST_OS_KERNEL_BOOT_IDT_INTERRUPT_HANDLER_H
 
 #include <kernel/types.h>
+#include <kernel/klibc/array.h>
 
 namespace kernel::boot::idt {
 
@@ -61,7 +62,9 @@ namespace kernel::boot::idt {
         const CpuRegisters cpuRegisters;
     } __attribute__((packed));
 
-    constexpr char * exceptionDescription[] {
+    constexpr uint32_t exceptionTableSize = 32;
+
+    constexpr Array<const char *, exceptionTableSize> exceptionDescription {
             "Division By Zero",
             "Debug",
             "Non Maskable Interrupt",

@@ -15,30 +15,9 @@
  * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef HEPHAIST_OS_KERNEL_LIBRARY_ARRAY_H
-#define HEPHAIST_OS_KERNEL_LIBRARY_ARRAY_H
+#ifndef HEPHAISTOS_STDIO_H
+#define HEPHAISTOS_STDIO_H
 
-#include "kernel/types.h"
+#include "sprintf.h"
 
-namespace kernel {
-
-    template<typename Type, uint32_t length>
-    struct Array {
-        Type array[length];
-
-        Type& at(uint32_t index) {
-            return array[index];
-        }
-
-        uint32_t size() {
-            return length;
-        }
-
-        Type& operator[](uint32_t index) { return array[index]; }
-        const Type& operator[](uint32_t index) const { return array[index]; }
-
-        Type* data() { return array; }
-        const Type* data() const { return array; }
-    };
-}
-#endif //HEPHAIST_OS_KERNEL_LIBRARY_ARRAY_H
+#endif //HEPHAISTOS_STDIO_H
