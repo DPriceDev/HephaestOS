@@ -28,7 +28,7 @@
 namespace kernel::boot::idt {
 
     struct IdtPointer {
-        const uint16_t size;
+        uint16_t size;
         const InterruptDescriptor* pointer;
     } __attribute__((packed));
 

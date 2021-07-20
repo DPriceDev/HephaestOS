@@ -16,6 +16,7 @@
  */
 
 #include "global_descriptor_table.h"
+#include "kernel/klibc/array.h"
 
 namespace kernel::boot::gdt {
 
@@ -39,7 +40,7 @@ namespace kernel::boot::gdt {
         };
     }
 
-    constexpr GlobalDescriptor globalDescriptorTable[5] = {
+    constexpr Array<GlobalDescriptor, 5> globalDescriptorTable = {
             constructGlobalDescriptor(0, 0, zeroAccess, zeroFlags),
             constructGlobalDescriptor(0, 0xFFFFF, codeKernelAccess, gran32Flags),
             constructGlobalDescriptor(0, 0xFFFFF, dataKernelAccess, gran32Flags),
@@ -47,12 +48,13 @@ namespace kernel::boot::gdt {
             constructGlobalDescriptor(0, 0xFFFFF, dataUserAccess, gran32Flags)
     };
 
-    constexpr GdtPointer gdtPointer {
-            sizeof(globalDescriptorTable) - 1,
-            globalDescriptorTable
-    };
+    GdtPointer gdtPointer;
 
     void initializeGlobalDescriptorTable() {
+        gdtPointer = {
+                sizeof(globalDescriptorTable) - 1,
+                globalDescriptorTable.data()
+        };
         loadGdtTable(&gdtPointer);
     }
 }

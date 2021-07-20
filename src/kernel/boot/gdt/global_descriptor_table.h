@@ -24,7 +24,7 @@
 namespace kernel::boot::gdt {
 
     struct GdtPointer {
-        const uint16_t size;
+        uint16_t size;
         const GlobalDescriptor* address;
     } __attribute__((packed));
 

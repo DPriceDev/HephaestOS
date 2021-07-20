@@ -22,6 +22,8 @@ namespace kernel::boot::idt {
 
     Array<InterruptDescriptor, tableLength> interruptDescriptorTable;
 
+    IdtPointer idtPointer;
+
     InterruptDescriptor constructInterruptDescriptor(int (*handler)()) {
         return InterruptDescriptor {
                 static_cast<uint16_t>((uint32_t) handler & 0xFFFF),
@@ -84,7 +86,7 @@ namespace kernel::boot::idt {
         interruptDescriptorTable.at(46) = constructInterruptDescriptor(fireInterruptRequest14);
         interruptDescriptorTable.at(47) = constructInterruptDescriptor(fireInterruptRequest15);
 
-        IdtPointer idtPointer {
+        idtPointer = {
                 (sizeof(InterruptDescriptor) * tableLength) - 1,
                 interruptDescriptorTable.data()
         };

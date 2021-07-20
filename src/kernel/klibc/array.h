@@ -23,8 +23,9 @@
 namespace kernel {
 
     template<typename Type, uint32_t length>
-    class Array {
-    public:
+    struct Array {
+        Type array[length];
+
         Type& at(uint32_t index) {
             return array[index];
         }
@@ -33,12 +34,10 @@ namespace kernel {
             return length;
         }
 
-        Type* data() {
-            return array;
-        }
+        Type* data() { return array; }
+        const Type* data() const { return array; }
+        //constexpr Type* data() const { return array; }
 
-    private:
-        Type array[length];
     };
 }
 #endif //HEPHAIST_OS_KERNEL_LIBRARY_ARRAY_H
