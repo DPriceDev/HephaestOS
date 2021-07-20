@@ -20,6 +20,6 @@
 namespace kernel::boot::gdt {
 
     void initializeGlobalDescriptorTable() {
-        loadGdtTable((uint32_t) &gdtPointer);
+        loadGdtTable(&gdtPointer);
     }
 }

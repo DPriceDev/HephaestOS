@@ -24,13 +24,13 @@
 namespace kernel::boot::gdt {
 
     struct GdtPointer {
-        uint16_t size;
-        uint32_t address;
+        const uint16_t size;
+        const GlobalDescriptor* address;
     } __attribute__((packed));
 
     extern "C" void setGlobalDescriptorTable(const GlobalDescriptor tablePointer[], uint16_t tableSize);
 
-    extern "C" void loadGdtTable(uint32_t pointer);
+    extern "C" void loadGdtTable(const GdtPointer* pointer);
 
     void initializeGlobalDescriptorTable();
 
@@ -42,7 +42,7 @@ namespace kernel::boot::gdt {
             const Access &access,
             const Flags &flags
     ) {
-        GlobalDescriptor globalDescriptor{
+        return GlobalDescriptor {
                 static_cast<uint16_t>((memoryLimit & 0xFFFF)),
                 static_cast<uint16_t>((baseAddress & 0xFFFFFF)),
                 access,
@@ -53,8 +53,6 @@ namespace kernel::boot::gdt {
                 flags.granularity,
                 static_cast<uint8_t>((baseAddress & 0xF000000) >> 24U)
         };
-
-        return globalDescriptor;
     }
 
     constexpr GlobalDescriptor globalDescriptorTable[5] = {
@@ -65,9 +63,9 @@ namespace kernel::boot::gdt {
             constructGlobalDescriptor(0, 0xFFFFF, dataUserAccess, gran32Flags)
     };
 
-    const GdtPointer gdtPointer {
+    constexpr GdtPointer gdtPointer {
             sizeof(globalDescriptorTable) - 1,
-            (uint32_t) &globalDescriptorTable
+            globalDescriptorTable
     };
 }
 

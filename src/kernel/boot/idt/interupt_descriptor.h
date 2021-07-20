@@ -20,6 +20,7 @@
 
 namespace kernel::boot::idt {
 
+    // todo: replace gate type uint with this?
     enum class GateType {
         task = 5,
         interrupt = 6,

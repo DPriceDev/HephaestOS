@@ -26,7 +26,12 @@
 
 namespace kernel::boot::idt {
 
-    extern "C" void loadIdtTable(uint32_t pointer);
+    struct IdtPointer {
+        const uint16_t size;
+        const InterruptDescriptor* pointer;
+    } __attribute__((packed));
+
+    extern "C" void loadIdtTable(const IdtPointer* pointer);
 
     extern "C" int fireException0();
     extern "C" int fireException1();
@@ -78,83 +83,76 @@ namespace kernel::boot::idt {
     extern "C" int fireInterruptRequest14();
     extern "C" int fireInterruptRequest15();
 
-    constexpr InterruptDescriptor constructInterruptDescriptor(uint32_t handler) {
-        InterruptDescriptor descriptor {
-                static_cast<uint16_t>(handler & 0xFFFF),
+    InterruptDescriptor constructInterruptDescriptor(int (*handler)()) {
+        return InterruptDescriptor {
+                static_cast<uint16_t>((uint32_t) handler & 0xFFFF),
                 0x08,
                 0,
                 TypeAttributes {
                     14, 0, 1, 1
                 },
-                static_cast<uint16_t>((handler >> 16) & 0xFFFF)
+                static_cast<uint16_t>(((uint32_t) handler >> 16) & 0xFFFF)
         };
-
-        return descriptor;
     }
-
-    struct IdtPointer {
-        uint16_t size;
-        uint32_t pointer;
-    } __attribute__((packed));
 
     InterruptDescriptor interruptDescriptorTable[256];
 
-    const IdtPointer idtPointer {
+    constexpr IdtPointer idtPointer {
             (sizeof(InterruptDescriptor) * 256) - 1,
-            (uint32_t) interruptDescriptorTable
+            interruptDescriptorTable
     };
 
     void initializeInterruptDescriptorTable() {
-        interruptDescriptorTable[0]     = constructInterruptDescriptor((uint32_t) fireException0);
-        interruptDescriptorTable[1]     = constructInterruptDescriptor((uint32_t) fireException1);
-        interruptDescriptorTable[2]     = constructInterruptDescriptor((uint32_t) fireException2);
-        interruptDescriptorTable[3]     = constructInterruptDescriptor((uint32_t) fireException3);
-        interruptDescriptorTable[4]     = constructInterruptDescriptor((uint32_t) fireException4);
-        interruptDescriptorTable[5]     = constructInterruptDescriptor((uint32_t) fireException5);
-        interruptDescriptorTable[6]     = constructInterruptDescriptor((uint32_t) fireException6);
-        interruptDescriptorTable[7]     = constructInterruptDescriptor((uint32_t) fireException7);
-        interruptDescriptorTable[8]     = constructInterruptDescriptor((uint32_t) fireException8);
-        interruptDescriptorTable[9]     = constructInterruptDescriptor((uint32_t) fireException9);
-        interruptDescriptorTable[10]    = constructInterruptDescriptor((uint32_t) fireException10);
-        interruptDescriptorTable[11]    = constructInterruptDescriptor((uint32_t) fireException11);
-        interruptDescriptorTable[12]    = constructInterruptDescriptor((uint32_t) fireException12);
-        interruptDescriptorTable[13]    = constructInterruptDescriptor((uint32_t) fireException13);
-        interruptDescriptorTable[14]    = constructInterruptDescriptor((uint32_t) fireException14);
-        interruptDescriptorTable[15]    = constructInterruptDescriptor((uint32_t) fireException15);
-        interruptDescriptorTable[16]    = constructInterruptDescriptor((uint32_t) fireException16);
-        interruptDescriptorTable[17]    = constructInterruptDescriptor((uint32_t) fireException17);
-        interruptDescriptorTable[18]    = constructInterruptDescriptor((uint32_t) fireException18);
-        interruptDescriptorTable[19]    = constructInterruptDescriptor((uint32_t) fireException19);
-        interruptDescriptorTable[20]    = constructInterruptDescriptor((uint32_t) fireException20);
-        interruptDescriptorTable[21]    = constructInterruptDescriptor((uint32_t) fireException21);
-        interruptDescriptorTable[22]    = constructInterruptDescriptor((uint32_t) fireException22);
-        interruptDescriptorTable[23]    = constructInterruptDescriptor((uint32_t) fireException23);
-        interruptDescriptorTable[24]    = constructInterruptDescriptor((uint32_t) fireException24);
-        interruptDescriptorTable[25]    = constructInterruptDescriptor((uint32_t) fireException25);
-        interruptDescriptorTable[26]    = constructInterruptDescriptor((uint32_t) fireException26);
-        interruptDescriptorTable[27]    = constructInterruptDescriptor((uint32_t) fireException27);
-        interruptDescriptorTable[28]    = constructInterruptDescriptor((uint32_t) fireException28);
-        interruptDescriptorTable[29]    = constructInterruptDescriptor((uint32_t) fireException29);
-        interruptDescriptorTable[30]    = constructInterruptDescriptor((uint32_t) fireException30);
-        interruptDescriptorTable[31]    = constructInterruptDescriptor((uint32_t) fireException31);
-        interruptDescriptorTable[32]    = constructInterruptDescriptor((uint32_t) fireInterruptRequest0);
-        interruptDescriptorTable[33]    = constructInterruptDescriptor((uint32_t) fireInterruptRequest1);
-        interruptDescriptorTable[34]    = constructInterruptDescriptor((uint32_t) fireInterruptRequest2);
-        interruptDescriptorTable[35]    = constructInterruptDescriptor((uint32_t) fireInterruptRequest3);
-        interruptDescriptorTable[36]    = constructInterruptDescriptor((uint32_t) fireInterruptRequest4);
-        interruptDescriptorTable[37]    = constructInterruptDescriptor((uint32_t) fireInterruptRequest5);
-        interruptDescriptorTable[38]    = constructInterruptDescriptor((uint32_t) fireInterruptRequest6);
-        interruptDescriptorTable[39]    = constructInterruptDescriptor((uint32_t) fireInterruptRequest7);
-        interruptDescriptorTable[40]    = constructInterruptDescriptor((uint32_t) fireInterruptRequest8);
-        interruptDescriptorTable[41]    = constructInterruptDescriptor((uint32_t) fireInterruptRequest9);
-        interruptDescriptorTable[42]    = constructInterruptDescriptor((uint32_t) fireInterruptRequest10);
-        interruptDescriptorTable[43]    = constructInterruptDescriptor((uint32_t) fireInterruptRequest11);
-        interruptDescriptorTable[44]    = constructInterruptDescriptor((uint32_t) fireInterruptRequest12);
-        interruptDescriptorTable[45]    = constructInterruptDescriptor((uint32_t) fireInterruptRequest13);
-        interruptDescriptorTable[46]    = constructInterruptDescriptor((uint32_t) fireInterruptRequest14);
-        interruptDescriptorTable[47]    = constructInterruptDescriptor((uint32_t) fireInterruptRequest15);
+        interruptDescriptorTable[0]     = constructInterruptDescriptor(fireException0);
+        interruptDescriptorTable[1]     = constructInterruptDescriptor(fireException1);
+        interruptDescriptorTable[2]     = constructInterruptDescriptor(fireException2);
+        interruptDescriptorTable[3]     = constructInterruptDescriptor(fireException3);
+        interruptDescriptorTable[4]     = constructInterruptDescriptor(fireException4);
+        interruptDescriptorTable[5]     = constructInterruptDescriptor(fireException5);
+        interruptDescriptorTable[6]     = constructInterruptDescriptor(fireException6);
+        interruptDescriptorTable[7]     = constructInterruptDescriptor(fireException7);
+        interruptDescriptorTable[8]     = constructInterruptDescriptor(fireException8);
+        interruptDescriptorTable[9]     = constructInterruptDescriptor(fireException9);
+        interruptDescriptorTable[10]    = constructInterruptDescriptor(fireException10);
+        interruptDescriptorTable[11]    = constructInterruptDescriptor(fireException11);
+        interruptDescriptorTable[12]    = constructInterruptDescriptor(fireException12);
+        interruptDescriptorTable[13]    = constructInterruptDescriptor(fireException13);
+        interruptDescriptorTable[14]    = constructInterruptDescriptor(fireException14);
+        interruptDescriptorTable[15]    = constructInterruptDescriptor(fireException15);
+        interruptDescriptorTable[16]    = constructInterruptDescriptor(fireException16);
+        interruptDescriptorTable[17]    = constructInterruptDescriptor(fireException17);
+        interruptDescriptorTable[18]    = constructInterruptDescriptor(fireException18);
+        interruptDescriptorTable[19]    = constructInterruptDescriptor(fireException19);
+        interruptDescriptorTable[20]    = constructInterruptDescriptor(fireException20);
+        interruptDescriptorTable[21]    = constructInterruptDescriptor(fireException21);
+        interruptDescriptorTable[22]    = constructInterruptDescriptor(fireException22);
+        interruptDescriptorTable[23]    = constructInterruptDescriptor(fireException23);
+        interruptDescriptorTable[24]    = constructInterruptDescriptor(fireException24);
+        interruptDescriptorTable[25]    = constructInterruptDescriptor(fireException25);
+        interruptDescriptorTable[26]    = constructInterruptDescriptor(fireException26);
+        interruptDescriptorTable[27]    = constructInterruptDescriptor(fireException27);
+        interruptDescriptorTable[28]    = constructInterruptDescriptor(fireException28);
+        interruptDescriptorTable[29]    = constructInterruptDescriptor(fireException29);
+        interruptDescriptorTable[30]    = constructInterruptDescriptor(fireException30);
+        interruptDescriptorTable[31]    = constructInterruptDescriptor(fireException31);
+        interruptDescriptorTable[32]    = constructInterruptDescriptor(fireInterruptRequest0);
+        interruptDescriptorTable[33]    = constructInterruptDescriptor(fireInterruptRequest1);
+        interruptDescriptorTable[34]    = constructInterruptDescriptor(fireInterruptRequest2);
+        interruptDescriptorTable[35]    = constructInterruptDescriptor(fireInterruptRequest3);
+        interruptDescriptorTable[36]    = constructInterruptDescriptor(fireInterruptRequest4);
+        interruptDescriptorTable[37]    = constructInterruptDescriptor(fireInterruptRequest5);
+        interruptDescriptorTable[38]    = constructInterruptDescriptor(fireInterruptRequest6);
+        interruptDescriptorTable[39]    = constructInterruptDescriptor(fireInterruptRequest7);
+        interruptDescriptorTable[40]    = constructInterruptDescriptor(fireInterruptRequest8);
+        interruptDescriptorTable[41]    = constructInterruptDescriptor(fireInterruptRequest9);
+        interruptDescriptorTable[42]    = constructInterruptDescriptor(fireInterruptRequest10);
+        interruptDescriptorTable[43]    = constructInterruptDescriptor(fireInterruptRequest11);
+        interruptDescriptorTable[44]    = constructInterruptDescriptor(fireInterruptRequest12);
+        interruptDescriptorTable[45]    = constructInterruptDescriptor(fireInterruptRequest13);
+        interruptDescriptorTable[46]    = constructInterruptDescriptor(fireInterruptRequest14);
+        interruptDescriptorTable[47]    = constructInterruptDescriptor(fireInterruptRequest15);
 
-        loadIdtTable((uint32_t) &idtPointer);
+        loadIdtTable(&idtPointer);
     }
 }
 

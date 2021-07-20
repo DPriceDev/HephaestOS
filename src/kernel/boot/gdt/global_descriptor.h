@@ -20,31 +20,31 @@
 namespace kernel::boot::gdt {
 
     struct Access {
-        bool accessed: 1;
-        bool ReadWritable: 1;
-        bool isConforming: 1;
-        bool isExecutable: 1;
-        bool descriptorType: 1;
-        uint8_t privilege: 2;
-        bool present: 1;
+        const bool accessed: 1;
+        const bool ReadWritable: 1;
+        const bool isConforming: 1;
+        const bool isExecutable: 1;
+        const bool descriptorType: 1;
+        const uint8_t privilege: 2;
+        const bool present: 1;
     } __attribute__((packed));
 
     struct Flags {
-        uint8_t unused: 2;
-        bool size: 1;
-        bool granularity: 1;
+        const uint8_t unused: 2;
+        const bool size: 1;
+        const bool granularity: 1;
     } __attribute__((packed));
 
     struct GlobalDescriptor {
-        uint16_t lowerLimit;
-        uint32_t lowerBase: 24;
-        Access access;
-        uint8_t upperLimit: 4;
-        bool available: 1;
-        bool longMode: 1;
-        bool size: 1;
-        bool granularity: 1;
-        uint8_t upperBase;
+        const uint16_t lowerLimit;
+        const uint32_t lowerBase: 24;
+        const Access access;
+        const uint8_t upperLimit: 4;
+        const bool available: 1;
+        const bool longMode: 1;
+        const bool size: 1;
+        const bool granularity: 1;
+        const uint8_t upperBase;
     } __attribute__((packed));
 
     constexpr Access zeroAccess         {false, false, false, false, false, 0, false};

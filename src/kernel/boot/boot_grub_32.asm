@@ -69,7 +69,6 @@ loader:
                 mov             gs, ax
                 mov             ss, ax
 
-                int             32
                 sti
                 call            kernelMain                      ; call the main kernal method.
                 cli
