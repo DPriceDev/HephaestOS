@@ -19,6 +19,7 @@
 #include <kernel/terminal/Terminal.h>
 #include "interrupt_handler.h"
 #include "programmable_interrupt_controller.h"
+#include "kernel/klibc/stdio.h"
 
 namespace kernel::boot::idt {
 
@@ -29,9 +30,10 @@ namespace kernel::boot::idt {
         if(interruptInfo.interruptCode != 0) {
             terminal.clear(Display::green); // todo: not working?
             terminal.println("Interrupt!");
-            terminal.print("interruptCode: ");
-            char code[2] = {static_cast<char>(48 + interruptInfo.interruptCode), '\0'};
-            terminal.println(code);
+            char text[24];
+            lib::sprintf(text, "Interrupt code: %u", interruptInfo.interruptCode);
+            terminal.println(text);
+
         }
 
         sendEoiFlag(interruptInfo.interruptCode);
@@ -43,13 +45,12 @@ namespace kernel::boot::idt {
         terminal.clear(Display::green); // todo: not working?
 
         terminal.println("Exception!");
-        terminal.print("interruptCode: ");
-        char code[2] = { static_cast<char>(48 + exceptionInfo.interruptCode), '\0' };
-        terminal.println(code);
+        char text[24];
+        lib::sprintf(text, "Exception code: %u", exceptionInfo.interruptCode);
+        terminal.println(text);
+
         terminal.println(exceptionDescription[exceptionInfo.interruptCode]);
 
-        while (true) {
-            int a = 4;
-        }
+        while (true) { }
     }
 }

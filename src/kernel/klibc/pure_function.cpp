@@ -15,4 +15,6 @@
  * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+// TODO: Comment
+// TODO: Move to Kernel somewhere
 extern "C" void __cxa_pure_virtual() { }

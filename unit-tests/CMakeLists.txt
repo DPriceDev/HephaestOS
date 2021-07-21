@@ -9,7 +9,7 @@ add_library(hephaist_os_catch_main STATIC catch_test_runner.cpp)
 target_link_libraries(hephaist_os_catch_main
         PRIVATE
         project_options
-        project_warnings
+#        project_warnings
         CONAN_PKG::catch2)
 
 add_executable(hephaist_os_unit_tests kernel/klibc/stdio/sprintf_test.cpp)
@@ -18,7 +18,7 @@ target_link_libraries(hephaist_os_unit_tests
         PRIVATE
         hephaist_os_catch_main
         project_options
-        project_warnings
+#        project_warnings
         CONAN_PKG::catch2)
 
 target_include_directories(hephaist_os_unit_tests
