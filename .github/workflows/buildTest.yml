@@ -37,17 +37,7 @@ jobs:
        key: ${{ runner.os }}-${{ env.BUILD_TYPE }}-${{ hashFiles('CMakeLists.txt') }}-${{ hashFiles('cmake/Conan.cmake') }}-2
      
     - name: install Ubuntu packages
-      run: sudo apt-get update -m && sudo apt-get install gcc-10 g++-10
-
-    # install conan
-    - name: Install conan
-      shell: bash
-      run: |
-        python3 -m pip install --upgrade pip setuptools
-        python3 -m pip install conan
-    - name: Ubuntu - Source
-      if: startsWith(matrix.os,'ubuntu')
-      run: source ~/.profile
+      run: sudo apt-get update -m && sudo apt-get install gcc-10 g++-10 nasm
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
