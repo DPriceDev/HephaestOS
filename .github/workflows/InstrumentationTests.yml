@@ -26,13 +26,13 @@ jobs:
      
     # install nasm
     - name: install Ubuntu packages
-      run: sudo apt-get update -m && sudo apt-get install nasm
+      run: sudo apt-get update -m && sudo apt-get install nasm qemu-kvm qemu virt-manager virt-viewer libvirt-bin
       
     # Install qemu
-    - name: Docker Setup QEMU
-      uses: docker/setup-qemu-action@v1.2.0
-      with:
-        platforms: i386
+#     - name: Docker Setup QEMU
+#       uses: docker/setup-qemu-action@v1.2.0
+#       with:
+#         platforms: i386
       
     # install conan
     - name: Install conan
