@@ -28,7 +28,7 @@ namespace kernel {
         static const VideoBufferDisplay display { };
         auto terminal = kernel::Terminal{display};
 
-        terminal.print("HephaistOS");
+        terminal.println("HephaistOS");
         terminal.println("Version 1.0", kernel::Display::cyan);
 
         while(true) {

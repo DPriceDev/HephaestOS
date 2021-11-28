@@ -30,13 +30,13 @@ target_include_directories(kernel.elf PUBLIC .)
 #        COMMAND objcopy --only-keep-debug ${CMAKE_CURRENT_BINARY_DIR}/kernel.elf ${CMAKE_BINARY_DIR}/kernel.sym)
 
 add_custom_target(HephaistOS.iso
-        DEPENDS kernel.elf
+        DEPENDS ${CMAKE_BINARY_DIR}/bin/kernel.elf
         COMMAND rm -r -f ${CMAKE_BINARY_DIR}/iso
         COMMAND mkdir ${CMAKE_BINARY_DIR}/iso
         COMMAND mkdir ${CMAKE_BINARY_DIR}/iso/boot
         COMMAND mkdir ${CMAKE_BINARY_DIR}/iso/boot/grub
         COMMAND echo ${CMAKE_BINARY_DIR}
-        COMMAND cp ${CMAKE_BINARY_DIR}/src/kernel.elf ${CMAKE_BINARY_DIR}/iso/boot/
+        COMMAND cp ${CMAKE_BINARY_DIR}/bin/kernel.elf ${CMAKE_BINARY_DIR}/iso/boot/
         COMMAND echo 'set timeout-1' >> ${CMAKE_BINARY_DIR}/iso/boot/grub/grub.cfg
         COMMAND echo 'set default-0' >> ${CMAKE_BINARY_DIR}/iso/boot/grub/grub.cfg
         COMMAND echo 'menuentry \"HephaistOS\"{' >> ${CMAKE_BINARY_DIR}/iso/boot/grub/grub.cfg

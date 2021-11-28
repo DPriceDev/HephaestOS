@@ -34,13 +34,18 @@ extern handleException
 ; This common handler pushes all registers to the stack to pass to the c++ handler.
 ; It also switches to ring 0.
 commonExceptionHandler:
-                pusha                                           ; Push all registers AX, ECX, EDX, EBX, EBP, ESP, EBP, ESI, and EDI
-                push            ds                              ; Push the segment registers DS, ES, FS, GS to the stack
-                push            es
-                push            fs
-                push            gs
+                pushad                                          ; Push all registers AX, ECX, EDX, EBX, EBP, ESP, EBP, ESI, and EDI
+                xor             eax, eax                        ; Push the segment registers DS, ES, FS, GS to the stack
+                mov             ax, ds
+                push            eax
+                mov             ax, es
+                push            eax
+                mov             ax, fs
+                push            eax
+                mov             ax, gs
+                push            eax
 
-                mov             ax, 0x10                        ; If the exception is from a different ring, switch to data segment ring 0
+                mov             ax, 0x10                        ; If the exception is from a different priv level, switch to data segment ring 0
                 mov             ds, ax
                 mov             es, ax
                 mov             fs, ax
@@ -49,11 +54,11 @@ commonExceptionHandler:
 
                 call            handleException                 ; Call the "handle exception" method
 
-                pop             gs                              ; Pop the save segment registers to restore the data segment and ring level
+                pop             gs                              ; Pop the save segment registers to restore the data segment and priv level
                 pop             fs
                 pop             es
                 pop             ds
-                popa                                            ; If the exception is from a different ring, switch to data segment ring 0
+                popad                                           ; Return previous register AX, ECX, EDX, EBX, EBP, ESP, EBP, ESI, and EDI
                 add             esp, 4                          ; clear the exception code.
 
                 iret

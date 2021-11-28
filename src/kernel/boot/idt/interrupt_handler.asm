@@ -26,9 +26,8 @@ extern handleInterrupt
 ; This common handler pushes all registers to the stack to pass to the c++ handler.
 ; It also switches to ring 0.
 commonInterruptHandler:
-
                 pushad                                          ; Push all registers EAX, ECX, EDX, EBX, ESP, EBP, ESI, and EDI
-                xor             eax, eax
+                xor             eax, eax                        ; Push the segment registers DS, ES, FS, GS to the stack
                 mov             ax, ds
                 push            eax
                 mov             ax, es
@@ -38,7 +37,7 @@ commonInterruptHandler:
                 mov             ax, gs
                 push            eax
 
-                mov             ax, 0x10                        ; If the exception is from a different ring, switch to data segment ring 0
+                mov             ax, 0x10                        ; If the exception is from a different priv level, switch to data segment ring 0
                 mov             ds, ax
                 mov             es, ax
                 mov             fs, ax
@@ -47,15 +46,16 @@ commonInterruptHandler:
 
                 call            handleInterrupt                 ; Call the "handle interrupt" method
 
-                pop             gs                              ; Pop the save segment registers to restore the data segment and ring level
+                pop             gs                              ; Pop the save segment registers to restore the data segment and priv level level
                 pop             fs
                 pop             es
                 pop             ds
-                popad                                           ; If the exception is from a different ring, switch to data segment ring 0
+                popad                                           ; Return previous register AX, ECX, EDX, EBX, EBP, ESP, EBP, ESI, and EDI
                 add             esp, 4                          ; clear the interrupt code.
 
                 iretd
 
+;
 fireInterruptRequest0:          interruptRequest 0              ;
 fireInterruptRequest1:          interruptRequest 1              ;
 fireInterruptRequest2:          interruptRequest 2              ;

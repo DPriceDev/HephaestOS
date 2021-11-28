@@ -21,14 +21,11 @@
 
 namespace kernel::boot::idt {
 
+    // Maps the overlapping interrupts to after the exceptions.
     void remapProgrammableInterruptController(
             uint8_t masterOffset,
             uint8_t slaveOffset
     ) {
-        //
-        //auto masterData = inputPortByte(masterPicDataAddress);
-        //auto slaveData = inputPortByte(slavePicDataAddress);
-
         // initialize pic todo: Comment second command
         outputPortByte(masterPicAddress, initializeCommand | ICW1_ICW4);
         ioWait();

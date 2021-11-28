@@ -23,6 +23,7 @@
 
 namespace kernel::boot::idt {
 
+    // handles an interrupt for the provided exception info
     extern "C" void handleInterrupt(InterruptInfo interruptInfo) {
         VideoBufferDisplay display{};
         auto terminal = Terminal{display};
@@ -39,6 +40,7 @@ namespace kernel::boot::idt {
         sendEoiFlag(interruptInfo.interruptCode);
     }
 
+    // handles an exception for the provided exception info
     extern "C" void handleException(ExceptionInfo exceptionInfo) {
         VideoBufferDisplay display{ };
         auto terminal = Terminal{ display };
