@@ -22,18 +22,17 @@ jobs:
     - uses: actions/checkout@v2
     
     # Cache build 
-    - name: Cache
-      uses: actions/cache@v2
-      env:
-       cache-name: cache-conan-modules
-      with:
-       path: |
-         ${{ env.CONAN_USER_HOME }}
-         ~/.cache/pip
-       key: ${{ runner.os }}-${{ env.BUILD_TYPE }}-${{ hashFiles('CMakeLists.txt') }}-${{ hashFiles('cmake/Conan.cmake') }}-2
+    # todo
      
+    # install nasm
     - name: install Ubuntu packages
-      run: sudo apt-get update -m && sudo apt-get install nasm doxygen
+      run: sudo apt-get update -m && sudo apt-get install nasm
+      
+    # Install qemu
+    - name: Docker Setup QEMU
+      uses: docker/setup-qemu-action@v1.2.0
+      with:
+        platforms: i386
       
     # install conan
     - name: Install conan
@@ -49,10 +48,3 @@ jobs:
     - name: Build
       # Build your program with the given configuration
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target kernel.elf
-
-    - name: Test
-      working-directory: ${{github.workspace}}/build
-      # Execute tests defined by the CMake configuration.  
-      # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-      run: ctest -C ${{env.BUILD_TYPE}}
-      
