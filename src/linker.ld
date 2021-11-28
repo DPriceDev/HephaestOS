@@ -1,23 +1,24 @@
 ENTRY (loader)
 SECTIONS
 {
-  . = 0x00100000;
-  .mbheader : {
-    *(.mbheader)
+  . = 1M;
+  .multiboot BLOCK(4k): ALIGN (4k) {
+    *(.multiboot)
   }
-  .text : {
+  .text BLOCK(16k): ALIGN (16k) {
     *(.text)
   }
-  .rodata ALIGN (0x1000) : {
+
+  .rodata BLOCK(8k): ALIGN (8k) {
     *(.rodata)
   }
-  .data ALIGN (0x1000) : {
+
+  .data BLOCK(8k): ALIGN (8k)  {
     *(.data)
   }
-  .bss : {
-    sbss = .;
+
+  .bss BLOCK(8k) : ALIGN(8k) {
     *(COMMON)
     *(.bss)
-    ebss = .;
   }
 }

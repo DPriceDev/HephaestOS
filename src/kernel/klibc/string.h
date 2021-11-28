@@ -15,21 +15,23 @@
  * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef HEPHAIST_OS_KERNEL_TYPES_H
-#define HEPHAIST_OS_KERNEL_TYPES_H
+#ifndef SYS_STRING_H
+#define SYS_STRING_H
 
-    namespace kernel {
-        using int8_t = char;
-        using uint8_t = unsigned char;
+#include "kernel/types.h"
 
-        using int16_t = short;
-        using uint16_t = unsigned short;
+namespace kernel::lib {
 
-        using int32_t = int;
-        using uint32_t = unsigned int;
+    template<typename T>
+    int Size(T str) {
 
-        using int64_t = long long int;
-        using uint64_t = unsigned long long int;
+        uint8_t i(0);
+
+        // count each characters in the characters.
+        for (; str[i]; i++);
+
+        return i;       // return count
     }
+}
 
-#endif // HEPHAIST_OS_KERNEL_TYPES_H
+#endif

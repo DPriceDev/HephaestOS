@@ -16,7 +16,9 @@
  */
 
 #include "video_buffer_display.h"
-#include "drivers/io/io.h"
+#include "hardware/io.h"
+
+constexpr kernel::uint16_t eightBitOffset = 8;
 
 const kernel::uint32_t &kernel::VideoBufferDisplay::getWidth() const {
     return width;
@@ -26,12 +28,13 @@ const kernel::uint32_t &kernel::VideoBufferDisplay::getHeight() const {
     return height;
 }
 
-kernel::uint32_t kernel::VideoBufferDisplay::setDisplayBuffer(const Display::Character *character, int length) const {
-    uint8_t* videoPointer = reinterpret_cast<unsigned char *>(address::videoMemoryAddress);
+kernel::uint32_t
+kernel::VideoBufferDisplay::setDisplayBuffer(const Display::Character *character, uint32_t length) const {
+    auto *videoPointer = reinterpret_cast<char *>(address::videoMemoryAddress);
     unsigned int index = 0;
     for (; index < screenBufferLength; index += 2) {
         videoPointer[index] = character->character;
-        videoPointer[index+1] = character->textColour;
+        videoPointer[index + 1] = character->textColour;
         character++;
 
         if (index == length) {
@@ -41,36 +44,64 @@ kernel::uint32_t kernel::VideoBufferDisplay::setDisplayBuffer(const Display::Cha
     return index / 2;
 }
 
-void kernel::VideoBufferDisplay::clearDisplayBuffer(Display::Colour textColour, Display::Colour backgroundColour) const {
-    uint8_t* videoPointer = reinterpret_cast<unsigned char *>(address::videoMemoryAddress);
+kernel::uint32_t kernel::VideoBufferDisplay::setDisplayBuffer(const Display::Character *character,
+                                                              uint32_t length,
+                                                              uint32_t x,
+                                                              uint32_t y) const {
+    auto *videoPointer = reinterpret_cast<char *>(address::videoMemoryAddress);
+    uint32_t index = 0;
+    uint32_t offset = (y * characterWidth) + (x * 2);
+    for (; index < screenBufferLength ; index += 2) {
+        videoPointer[index + offset] = character->character;
+        videoPointer[index + offset + 1] = character->textColour;
+        character++;
+
+        if (index >= length) {
+            break;
+        }
+    }
+    return index / 2;
+}
+
+void
+kernel::VideoBufferDisplay::clearDisplayBuffer(Display::Colour textColour, Display::Colour backgroundColour) const {
+    auto *videoPointer = reinterpret_cast<char *>(address::videoMemoryAddress);
     for (unsigned int index = 0; index < screenBufferLength; index += 2) {
         videoPointer[index] = ' ';
-        videoPointer[index+1] = textColour | backgroundColour << 4;
+        videoPointer[index + 1] = static_cast<char>(textColour | backgroundColour << 4);
     }
 }
 
 void kernel::VideoBufferDisplay::setCursorPosition(uint32_t x, uint32_t y) const {
     uint32_t cursorPosition = (y * width) + x;
 
-    outportb(address::videoCursorLowAddress, 0x0F);
-    outportb(address::videoCursorHighAddress, cursorPosition);
-    outportb(address::videoCursorLowAddress, 0x0E);
-    outportb(address::videoCursorHighAddress, cursorPosition >> 8);
+    outputPortByte(address::videoCursorLowAddress, 0x0F);
+    outputPortByte(address::videoCursorHighAddress, static_cast<unsigned char>(cursorPosition));
+    outputPortByte(address::videoCursorLowAddress, 0x0E);
+    outputPortByte(address::videoCursorHighAddress, static_cast<unsigned char>(cursorPosition >> eightBitOffset));
 }
 
-void kernel::VideoBufferDisplay::showCursor(bool shouldShow) const {
-    uint8_t cursorStart = 13;
-    uint8_t cursorEnd = 15;
-
-    if(shouldShow) {
-        outportb(address::videoCursorLowAddress, 0x0A);
-        outportb(address::videoCursorHighAddress, (inportb(0x3D5) & 0xC0) | cursorStart);
-        outportb(address::videoCursorLowAddress, 0x0B);
-        outportb(address::videoCursorHighAddress, (inportb(0x3D5) & 0xE0) | cursorEnd);
-    } else {
-        outportb(address::videoCursorLowAddress, 0x0A);
-        outportb(address::videoCursorHighAddress, 0x20);
-    }
+void kernel::VideoBufferDisplay::showCursor() const {
+    outputPortByte(address::videoCursorLowAddress, 0x0A);
+    outputPortByte(address::videoCursorHighAddress, (inputPortByte(address::videoCursorHighAddress) & 0xC0) | cursorStart);
+    outputPortByte(address::videoCursorLowAddress, 0x0B);
+    outputPortByte(address::videoCursorHighAddress, (inputPortByte(address::videoCursorHighAddress) & 0xE0) | cursorEnd);
 }
 
+void kernel::VideoBufferDisplay::hideCursor() const {
+    outputPortByte(address::videoCursorLowAddress, 0x0A);
+    outputPortByte(address::videoCursorHighAddress, 0x20);
+}
 
+kernel::Display::Cursor kernel::VideoBufferDisplay::getCursorPosition() const {
+    outputPortByte(address::videoCursorLowAddress, 0x0F);
+    uint16_t position = inputPortByte(address::videoCursorHighAddress);
+
+    outputPortByte(address::videoCursorLowAddress, 0x0E);
+    position += static_cast<uint16_t>(inputPortByte(address::videoCursorHighAddress) << eightBitOffset);
+
+    return Display::Cursor{
+            position % width,
+            position / width,
+    };
+}

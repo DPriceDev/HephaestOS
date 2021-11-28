@@ -15,12 +15,12 @@
  * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef HEPHAISTOS_MULTIBOOT_INFO_H
-#define HEPHAISTOS_MULTIBOOT_INFO_H
+#ifndef HEPHAIST_OS_KERNEL_BOOT_MULTIBOOT_INFO_H
+#define HEPHAIST_OS_KERNEL_BOOT_MULTIBOOT_INFO_H
 
 #include "kernel/types.h"
 
-namespace kernel {
+namespace kernel::boot {
 
     struct MultiBootInfo {
         uint32_t flags;
@@ -46,4 +46,4 @@ namespace kernel {
     } __attribute__((aligned(128)));
 
 }
-#endif //HEPHAISTOS_MULTIBOOT_INFO_H
+#endif // HEPHAIST_OS_KERNEL_BOOT_MULTIBOOT_INFO_H

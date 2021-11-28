@@ -15,8 +15,8 @@
  * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef HEPHAISTOS_VIDEO_BUFFER_DISPLAY_H
-#define HEPHAISTOS_VIDEO_BUFFER_DISPLAY_H
+#ifndef HEPHAIST_OS_DRIVERS_VIDEO_BUFFER_DISPLAY_H
+#define HEPHAIST_OS_DRIVERS_VIDEO_BUFFER_DISPLAY_H
 
 #include "display.h"
 #include "kernel/types.h"
@@ -24,25 +24,40 @@
 
 namespace kernel {
 
-class VideoBufferDisplay : public Display {
-        const uint32_t width{ 80 };
-        const uint32_t characterWidth{ width * 2 };
-        const uint32_t height{ 25 };
-        const uint32_t screenBufferLength{ characterWidth * height };
+// todo: implement memory to provide delete for destructor?
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wnon-virtual-dtor"
+    class VideoBufferDisplay : public Display {
+        const uint8_t cursorStart = 13;
+        const uint8_t cursorEnd = 15;
+
+        const uint32_t width{80};
+        const uint32_t characterWidth{width * 2};
+        const uint32_t height{25};
+        const uint32_t screenBufferLength{characterWidth * height};
 
     public:
+
         [[nodiscard]] const uint32_t &getWidth() const override;
-        [[nodiscard]] const uint32_t & getHeight() const override;
+
+        [[nodiscard]] const uint32_t &getHeight() const override;
 
         void clearDisplayBuffer(Display::Colour textColour, Display::Colour backgroundColour) const override;
 
-        uint32_t setDisplayBuffer(const Character *character, int length) const override;
+        uint32_t setDisplayBuffer(const Character *character, uint32_t length, uint32_t x, uint32_t y) const override;
 
-        void showCursor(bool shouldShow) const override;
+        uint32_t setDisplayBuffer(const Character *character, uint32_t length) const override;
+
+        void showCursor() const override;
+
+        void hideCursor() const override;
 
         void setCursorPosition(uint32_t x, uint32_t y) const override;
+
+        [[nodiscard]] Cursor getCursorPosition() const override;
     };
 
+#pragma GCC diagnostic pop
 }
 
-#endif //HEPHAISTOS_VIDEO_BUFFER_DISPLAY_H
+#endif // HEPHAIST_OS_DRIVERS_VIDEO_BUFFER_DISPLAY_H

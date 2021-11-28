@@ -15,14 +15,36 @@
  * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "kernel/boot/global_descriptor_table.h"
+#include "kernel/boot/gdt/global_descriptor_table.h"
+#include "kernel/boot/idt/interrupt_descriptor_table.h"
 #include "kernel/types.h"
-#include "multiboot_info.h"
+#include "kernel/boot/grub/multiboot_info.h"
+#include <kernel/drivers/video_buffer_display.h>
+#include "kernel/terminal/Terminal.h"
+#include "kernel/boot/idt/programmable_interrupt_controller.h"
 
-namespace kernel {
+namespace kernel::boot {
 
-    extern "C" void init(MultiBootInfo *multiBootInfo, uint32_t magic) {
-        auto tableSize = sizeof(globalDescriptorTable);
-        setGlobalDescriptorTable(globalDescriptorTable, tableSize);
+    static const VideoBufferDisplay display { };
+
+    constexpr uint8_t interruptRequestOffset = 32;
+
+    extern "C" void init(MultiBootInfo * info, uint32_t /* magic */) {
+        auto terminal = Terminal{display};
+
+        terminal.clear();
+        terminal.println("System init");
+
+        gdt::initializeGlobalDescriptorTable();
+        terminal.println("Global Descriptor table set");
+
+        idt::initializeInterruptDescriptorTable();
+        terminal.println("Interrupt Descriptor table set");
+
+        // todo: may need to be moved to init protected method?
+        idt::remapProgrammableInterruptController(
+                interruptRequestOffset,
+                interruptRequestOffset + 8
+        );
     }
 }
