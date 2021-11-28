@@ -18,8 +18,7 @@ include(cmake/Sanitizers.cmake)
 enable_sanitizers(project_options)
 
 include(cmake/Doxygen.cmake)
-enable_doxygen()
-SET(ENABLE_DOXYGEN FALSE)
+#enable_doxygen()
 
 include(cmake/StaticAnalyzers.cmake)
 
