@@ -14,6 +14,7 @@ add_executable(kernel.elf
         kernel/boot/idt/interrupt_handler.asm
         kernel/boot/idt/exception_handler.asm
         kernel/boot/gdt/global_descriptor_table.asm
+        kernel/boot/tss/tss.asm
         kernel/terminal/Terminal.cpp
         kernel/drivers/video_buffer_display.cpp
         kernel/boot/init.cpp

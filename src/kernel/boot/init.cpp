@@ -22,6 +22,7 @@
 #include <kernel/drivers/video_buffer_display.h>
 #include "kernel/terminal/Terminal.h"
 #include "kernel/boot/idt/programmable_interrupt_controller.h"
+#include "kernel/boot/tss/tss.h"
 
 namespace kernel::boot {
 
@@ -29,14 +30,16 @@ namespace kernel::boot {
 
     constexpr uint8_t interruptRequestOffset = 32;
 
-    extern "C" void init(MultiBootInfo * info, uint32_t /* magic */) {
+    extern "C" void init(MultiBootInfo * info, uint32_t /* magic */, uint32_t stackPointer) {
         auto terminal = Terminal{display};
 
         terminal.clear();
         terminal.println("System init");
 
-        gdt::initializeGlobalDescriptorTable();
+        gdt::initializeGlobalDescriptorTable(stackPointer);
         terminal.println("Global Descriptor table set");
+
+        tss::flushTss();
 
         idt::initializeInterruptDescriptorTable();
         terminal.println("Interrupt Descriptor table set");

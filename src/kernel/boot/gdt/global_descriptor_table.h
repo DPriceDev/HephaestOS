@@ -28,7 +28,7 @@ namespace kernel::boot::gdt {
         const GlobalDescriptor* address;
     } __attribute__((packed));
 
-    void initializeGlobalDescriptorTable();
+    void initializeGlobalDescriptorTable(uint32_t stackPointer);
 
     extern "C" void loadGdtTable(const GdtPointer* pointer);
 }
