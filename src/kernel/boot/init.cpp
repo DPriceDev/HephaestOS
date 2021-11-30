@@ -19,6 +19,7 @@
 #include "kernel/boot/idt/interrupt_descriptor_table.h"
 #include "kernel/types.h"
 #include "kernel/boot/grub/multiboot_info.h"
+#include "kernel/boot/paging/paging.h"
 #include <kernel/drivers/video_buffer_display.h>
 #include "kernel/terminal/Terminal.h"
 #include "kernel/boot/idt/programmable_interrupt_controller.h"
@@ -46,5 +47,7 @@ namespace kernel::boot {
                 interruptRequestOffset,
                 interruptRequestOffset + 8
         );
+
+        paging::setupPaging();
     }
 }
