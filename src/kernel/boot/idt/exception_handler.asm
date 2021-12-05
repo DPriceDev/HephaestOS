@@ -18,6 +18,7 @@ extern handleException
 
 ; Macro to define an exception that passes an error code.
 %macro exceptionCodeRequest 1
+                cli
                 global          fireException%1                 ; Make the exception accessible to the C++ table
                 push            %1                              ; Push the desired exception code to the stack (parameter)
                 jmp             commonExceptionHandler
@@ -25,6 +26,7 @@ extern handleException
 
 ; Macro to define an exception that does not recieve an error code.
 %macro exceptionRequest 1
+                cli
                 global          fireException%1                 ; Make the exception accessible to the C++ table
                 push            0                               ; Push a default error code.
                 push            %1                              ; Push the desired exception code to the stack (parameter)

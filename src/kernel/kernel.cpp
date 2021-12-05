@@ -23,21 +23,9 @@
 
 namespace kernel {
 
-    extern "C" void testUserFunction() {
-        static const VideoBufferDisplay display { };
-        auto terminal = kernel::Terminal{display};
-
-        terminal.println("HephaistOS");
-        terminal.println("Version 1.0", kernel::Display::cyan);
-
-        auto test = 0 / 0;
-        auto sdfsdf = test * 2;
-
-        while(true) {
-
-        }
+    extern "C" [[noreturn]] void testUserFunction() {
+        while(true) { /* Endless Loop */ }
     };
-
 
     // todo: Should this live in a config file somewhere?
     constexpr uint32_t majorVersion = 1;
@@ -47,10 +35,11 @@ namespace kernel {
     extern "C" void kernelMain() {
 
         // todo: Extract out all terminal code to user space
+        static const VideoBufferDisplay display { };
+        auto terminal = kernel::Terminal{display};
 
-//        while(true) {
-//
-//        }
+        terminal.println("HephaistOS");
+        terminal.println("Version 1.0", kernel::Display::cyan);
 
         // todo: Init Timer Task? (or in init.cpp)
 

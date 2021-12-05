@@ -21,7 +21,9 @@ jumpUserMode:
                 mov             eax, esp
                 push            (4 * 8) | 3                     ; data selector
                 push            eax                             ; current esp
-                pushf                                           ; eflags
+                pushfd                                          ; eflags
+                or              dword [esp], 0x200              ; Set IF true in eflags, this enables interrupts on an IRET
+
                 push            (3 * 8) | 3                     ; code selector (ring 3 code with bottom 2 bits set for ring 3)
                 push            testUserFunction                ; instruction address to return to
                 iret

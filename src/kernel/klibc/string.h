@@ -32,6 +32,15 @@ namespace kernel::lib {
 
         return i;       // return count
     }
+
+    void* memset(void* pointer, int value, uint32_t length) {
+        unsigned char* ptr = static_cast<unsigned char *>(pointer);
+        while(length--)
+        {
+            *ptr++ = (unsigned char) value;
+        }
+        return pointer;
+    }
 }
 
 #endif
