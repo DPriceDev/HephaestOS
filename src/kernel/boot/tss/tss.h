@@ -1,24 +1,39 @@
-//
-// Created by david on 30/11/2021.
-//
+/* Copyright (C) 2021 David Price - All Rights Reserved
+ * This file is part of HephaistOS.
+ *
+ * HephaistOS is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HephaistOS is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
+ */
+#ifndef HEPHAIST_OS_KERNEL_BOOT_TSS_H
+#define HEPHAIST_OS_KERNEL_BOOT_TSS_H
 
-#ifndef HEPHAISTOS_TSS_H
-#define HEPHAISTOS_TSS_H
-
-#include "kernel/types.h"
+#include "kernel/lib/libc/stdint.h"
 
 namespace kernel::boot::tss {
 
-    extern "C" void flushTss();
+    extern "C" void initializeTaskStateSegment();
 
     extern "C" void jumpUserMode();
 
-    struct TssEntry {
-        uint32_t previousTss; // The previous TSS - with hardware task switching these form a kind of backward linked list.
-        uint32_t esp0;     // The stack pointer to load when changing to kernel mode.
-        uint32_t ss0;      // The stack segment to load when changing to kernel mode.
-        // Everything below here is unused.
-        uint32_t esp1; // esp and ss 1 and 2 would be used when switching to rings 1 or 2.
+    struct [[gnu::packed]] TssEntry {
+        uint32_t previousTss;
+
+        //
+        uint32_t esp0;
+        uint32_t ss0;
+
+        //
+        uint32_t esp1;
         uint32_t ss1;
         uint32_t esp2;
         uint32_t ss2;
@@ -33,6 +48,8 @@ namespace kernel::boot::tss {
         uint32_t ebp;
         uint32_t esi;
         uint32_t edi;
+
+        //
         uint32_t es;
         uint32_t cs;
         uint32_t ss;
@@ -41,8 +58,10 @@ namespace kernel::boot::tss {
         uint32_t gs;
         uint32_t ldt;
         uint16_t trap;
+
+        //
         uint16_t ioMapBase;
-    } __attribute__((packed));
+    };
 }
 
-#endif //HEPHAISTOS_TSS_H
+#endif // HEPHAIST_OS_KERNEL_BOOT_TSS_H

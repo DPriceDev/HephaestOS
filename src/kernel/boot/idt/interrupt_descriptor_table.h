@@ -20,17 +20,19 @@
 
 #include <kernel/drivers/video_buffer_display.h>
 #include <kernel/terminal/Terminal.h>
-#include "kernel/types.h"
+#include "kernel/lib/libc/stdint.h"
+#include "kernel/lib/libc/array.h"
+
 #include "interupt_descriptor.h"
-#include "hardware/io.h"
-#include "kernel/klibc/array.h"
+#include "kernel/boot/io.h"
+
 
 namespace kernel::boot::idt {
 
-    struct IdtPointer {
+    struct [[gnu::packed]] IdtPointer {
         uint16_t size;
         const InterruptDescriptor* pointer;
-    } __attribute__((packed));
+    };
 
     void initializeInterruptDescriptorTable();
 

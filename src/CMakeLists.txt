@@ -4,7 +4,7 @@ set(LINK ${CMAKE_CURRENT_SOURCE_DIR}/linker.ld)
 set(CMAKE_CXX_LINK_EXECUTABLE "ld -T${LINK} <CMAKE_CXX_LINK_FLAGS> -m elf_i386 <OBJECTS> -o <TARGET> <LINK_LIBRARIES>")
 
 set(CMAKE_ASM_NASM_COMPILE_OBJECT "<CMAKE_ASM_NASM_COMPILER> <INCLUDES> -felf32 -g -F dwarf -o <OBJECT> <SOURCE>")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g3 -m32 -fno-use-cxa-atexit -ffreestanding -nostdlib -fno-builtin -fno-rtti -fno-exceptions -fno-stack-protector")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g3 -m32 -fno-use-cxa-atexit -ffreestanding -nostdlib -fno-builtin -fno-rtti -fno-exceptions -fno-stack-protector -fmodules-ts")
 
 add_executable(kernel.elf
         kernel/kernel.cpp
@@ -18,11 +18,13 @@ add_executable(kernel.elf
         kernel/terminal/Terminal.cpp
         kernel/drivers/video_buffer_display.cpp
         kernel/boot/init.cpp
-        kernel/klibc/pure_function.cpp
+        kernel/lib/libcpp/pure_function.cpp
         kernel/boot/gdt/global_descriptor_table.cpp
         kernel/boot/idt/interrupt_descriptor_table.cpp
         kernel/boot/idt/interrupt_handler.cpp
-        kernel/boot/idt/programmable_interrupt_controller.cpp kernel/klibc/stdio.h)
+        kernel/boot/idt/programmable_interrupt_controller.cpp
+)
+
 target_link_libraries(kernel.elf PRIVATE project_options) # project_warnings)
 target_include_directories(kernel.elf PUBLIC .)
 

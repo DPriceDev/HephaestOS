@@ -17,9 +17,11 @@
 
 #include <kernel/drivers/video_buffer_display.h>
 #include <kernel/terminal/Terminal.h>
+#include <kernel/lib/libc/stdio.h>
+
 #include "interrupt_handler.h"
 #include "programmable_interrupt_controller.h"
-#include "kernel/klibc/stdio.h"
+
 
 namespace kernel::boot::idt {
 

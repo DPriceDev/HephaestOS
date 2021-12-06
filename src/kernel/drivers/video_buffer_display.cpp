@@ -16,7 +16,7 @@
  */
 
 #include "video_buffer_display.h"
-#include "hardware/io.h"
+#include "kernel/boot/io.h"
 
 constexpr kernel::uint16_t eightBitOffset = 8;
 

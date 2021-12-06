@@ -15,21 +15,15 @@
  * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef HEPHAIST_OS_KERNEL_TYPES_H
-#define HEPHAIST_OS_KERNEL_TYPES_H
+#ifndef SYS_REG_ADDR_H
+#define SYS_REG_ADDR_H
 
-    namespace kernel {
-        using int8_t = char;
-        using uint8_t = unsigned char;
+#include "kernel/lib/libc/stdint.h"
 
-        using int16_t = short;
-        using uint16_t = unsigned short;
+namespace address {
+    constexpr kernel::uint32_t videoMemoryAddress = 0xb8000;
+    constexpr kernel::uint32_t videoCursorHighAddress = 0x3D5;
+    constexpr kernel::uint32_t videoCursorLowAddress = 0x3D4;
+}
 
-        using int32_t = int;
-        using uint32_t = unsigned int;
-
-        using int64_t = long long int;
-        using uint64_t = unsigned long long int;
-    }
-
-#endif // HEPHAIST_OS_KERNEL_TYPES_H
+#endif

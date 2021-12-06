@@ -15,29 +15,32 @@
  * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef HEPHAIST_OS_DRIVERS_IO_IO_H
-#define HEPHAIST_OS_DRIVERS_IO_IO_H
+#ifndef SYS_STRING_H
+#define SYS_STRING_H
 
-#include "kernel/types.h"
-#include "hardware/register_address.h"
+#include "stdint.h"
 
-namespace kernel {
+namespace kernel::lib {
 
-    inline uint8_t inputPortByte(uint32_t port) {
-        uint8_t byte{ 0 };
-        asm volatile ("inb %%dx,%%al":"=a" (byte):"d" (port));
-        return byte;
+    template<typename T>
+    int Size(T str) {
+
+        uint8_t i(0);
+
+        // count each characters in the characters.
+        for (; str[i]; i++);
+
+        return i;       // return count
     }
 
-    inline void outputPortByte(uint32_t port, uint8_t value) {
-        asm volatile ("outb %%al,%%dx": :"d" (port), "a" (value));
-    }
-
-
-    inline void ioWait() {
-        asm volatile( "outb %%al, $0x80" : : "a"(0) );
+    void* memset(void* pointer, int value, uint32_t length) {
+        unsigned char* ptr = static_cast<unsigned char *>(pointer);
+        while(length--)
+        {
+            *ptr++ = (unsigned char) value;
+        }
+        return pointer;
     }
 }
 
 #endif
-////////////////////////////////////////////////////////////////////////////////

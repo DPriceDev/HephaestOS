@@ -1,4 +1,4 @@
-[Back to Boot](../boot.md)
+[Back to Boot](boot.md)
 
 # Global Descriptors
 - todo

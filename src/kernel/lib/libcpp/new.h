@@ -15,7 +15,7 @@
  * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "kernel/types.h"
+#include "kernel/lib/libc/stdint.h"
 
 //extern "C++" void * operator new(kernel::uint32_t n) {
 //    void * const p = std::malloc(n);

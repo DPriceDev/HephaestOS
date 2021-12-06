@@ -16,10 +16,9 @@
  */
 
 #include <kernel/drivers/video_buffer_display.h>
-#include "kernel/terminal/Terminal.h"
-#include "kernel/memory/memory.h"
-#include "kernel/types.h"
-#include "kernel/boot/tss/tss.h"
+#include "terminal/Terminal.h"
+#include "lib/libc/stdint.h"
+#include "boot/tss/tss.h"
 
 namespace kernel {
 
@@ -41,7 +40,7 @@ namespace kernel {
         terminal.println("HephaistOS");
         terminal.println("Version 1.0", kernel::Display::cyan);
 
-        // todo: Init Timer Task? (or in init.cpp)
+        // todo: Init Timer Task? (or in init.libcpp)
 
         // todo: Init IPC Task
 

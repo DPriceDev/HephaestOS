@@ -18,7 +18,7 @@
 #ifndef HEPHAIST_OS_KERNEL_BOOT_IDT_PROGRAMMABLE_INTERRUPT_CONTROLLER_H
 #define HEPHAIST_OS_KERNEL_BOOT_IDT_PROGRAMMABLE_INTERRUPT_CONTROLLER_H
 
-#include "kernel/types.h"
+#include "kernel/lib/libc/stdint.h"
 
 namespace kernel::boot::idt {
     constexpr uint8_t masterPicAddress = 0x20;      // IO Address of Master PIC
@@ -41,10 +41,7 @@ namespace kernel::boot::idt {
 
     constexpr uint8_t picEoiFlag = 0x20;
 
-    void remapProgrammableInterruptController(
-            uint8_t masterOffset,
-            uint8_t slaveOffset
-    );
+    void remapProgrammableInterruptController(uint8_t masterOffset, uint8_t slaveOffset);
 
     void sendEoiFlag(uint32_t interruptCode);
 }

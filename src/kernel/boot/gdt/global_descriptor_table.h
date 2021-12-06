@@ -18,15 +18,26 @@
 #ifndef HEPHAIST_OS_KERNEL_BOOT_GDT_GLOBAL_DESCRIPTOR_TABLE_H
 #define HEPHAIST_OS_KERNEL_BOOT_GDT_GLOBAL_DESCRIPTOR_TABLE_H
 
-#include "../../types.h"
+#include <kernel/lib/libc/stdint.h>
 #include "global_descriptor.h"
 
 namespace kernel::boot::gdt {
 
-    struct GdtPointer {
+    constexpr uint32_t MaximumMemoryLimit = 0xFFFFF;
+
+    enum class Segment {
+        Null = 0x0,
+        KernelCode = 0x8,
+        KernelData = 0x10,
+        UserSpaceCode = 0x18,
+        UserSpaceData = 0x20,
+        tss = 0x28
+    };
+
+    struct [[gnu::packed]] GdtPointer {
         uint16_t size;
         const GlobalDescriptor* address;
-    } __attribute__((packed));
+    };
 
     void initializeGlobalDescriptorTable(uint32_t stackPointer);
 

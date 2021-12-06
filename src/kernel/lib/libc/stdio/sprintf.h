@@ -15,8 +15,8 @@
  * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef HEPHAIST_OS_KERNEL_KLIBC_STDIO_SPRINTF_H
-#define HEPHAIST_OS_KERNEL_KLIBC_STDIO_SPRINTF_H
+#ifndef HEPHAIST_OS_KERNEL_LIB_STDIO_SPRINTF_H
+#define HEPHAIST_OS_KERNEL_LIB_STDIO_SPRINTF_H
 
 namespace kernel::lib {
 
@@ -204,4 +204,4 @@ namespace kernel::lib {
     }
 }
 
-#endif // HEPHAIST_OS_KERNEL_KLIBC_STDIO_SPRINTF_H
+#endif // HEPHAIST_OS_KERNEL_LIB_STDIO_SPRINTF_H

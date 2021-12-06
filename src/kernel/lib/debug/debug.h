@@ -15,30 +15,16 @@
  * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef HEPHAIST_OS_KERNEL_LIBRARY_ARRAY_H
-#define HEPHAIST_OS_KERNEL_LIBRARY_ARRAY_H
+#ifndef HEPHAIST_OS_KERNEL_LIB_DEBUG_H
+#define HEPHAIST_OS_KERNEL_LIB_DEBUG_H
 
-#include "kernel/types.h"
+namespace kernel::lib::debug {
 
-namespace kernel {
-
-    template<typename Type, uint32_t length>
-    struct Array {
-        Type array[length];
-
-        Type& at(uint32_t index) {
-            return array[index];
-        }
-
-        uint32_t size() {
-            return length;
-        }
-
-        Type& operator[](uint32_t index) { return array[index]; }
-        const Type& operator[](uint32_t index) const { return array[index]; }
-
-        Type* data() { return array; }
-        const Type* data() const { return array; }
-    };
+    /**
+     * Magic Break Point will stop execution within bochs and switch to the
+     * internal debugger.
+     */
+    extern "C" void magicBreakPoint();
 }
-#endif //HEPHAIST_OS_KERNEL_LIBRARY_ARRAY_H
+
+#endif // HEPHAIST_OS_KERNEL_LIB_DEBUG_H

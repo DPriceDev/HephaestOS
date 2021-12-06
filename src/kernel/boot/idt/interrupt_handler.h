@@ -18,12 +18,12 @@
 #ifndef HEPHAIST_OS_KERNEL_BOOT_IDT_INTERRUPT_HANDLER_H
 #define HEPHAIST_OS_KERNEL_BOOT_IDT_INTERRUPT_HANDLER_H
 
-#include <kernel/types.h>
-#include <kernel/klibc/array.h>
+#include <kernel/lib/libc/stdint.h>
+#include <kernel/lib/libc/array.h>
 
 namespace kernel::boot::idt {
 
-    struct Registers {
+    struct [[gnu::packed]] Registers {
         const uint32_t edi;
         const uint32_t esi;
         const uint32_t ebp;
@@ -32,35 +32,35 @@ namespace kernel::boot::idt {
         const uint32_t edx;
         const uint32_t ecx;
         const uint32_t eax;
-    } __attribute__((packed));
+    };
 
-    struct SegmentRegisters {
+    struct [[gnu::packed]] SegmentRegisters {
         const uint32_t gs;
         const uint32_t fs;
         const uint32_t es;
         const uint32_t ds;
     };
 
-    struct CpuRegisters {
+    struct [[gnu::packed]] CpuRegisters {
         const uint32_t eip;
         const uint32_t cs;
         const uint16_t eflags;
     };
 
-    struct InterruptInfo {
+    struct [[gnu::packed]] InterruptInfo {
         const SegmentRegisters segmentRegisters;
         const Registers registers;
         const uint32_t interruptCode;
         const CpuRegisters cpuRegisters;
-    } __attribute__((packed));
+    };
 
-    struct ExceptionInfo {
+    struct [[gnu::packed]] ExceptionInfo {
         const SegmentRegisters segmentRegisters;
         const Registers registers;
         const uint32_t interruptCode;
         const uint32_t errorCode;
         const CpuRegisters cpuRegisters;
-    } __attribute__((packed));
+    };
 
     constexpr uint32_t exceptionTableSize = 32;
 

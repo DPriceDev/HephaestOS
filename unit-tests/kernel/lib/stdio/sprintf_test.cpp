@@ -16,7 +16,7 @@
  */
 
 #include "catch2/catch.hpp"
-#include "kernel/klibc/stdio.h"
+#include "kernel/lib/libc/stdio.h"
 
 TEST_CASE("Test sprintf parses all format types correctly") {
     using namespace kernel::lib;

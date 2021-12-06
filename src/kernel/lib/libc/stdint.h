@@ -15,9 +15,21 @@
  * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef HEPHAISTOS_STDIO_H
-#define HEPHAISTOS_STDIO_H
+#ifndef HEPHAIST_OS_KERNEL_LIB_STD_INT_H
+#define HEPHAIST_OS_KERNEL_LIB_STD_INT_H
 
-#include "kernel/klibc/stdio/sprintf.h"
+namespace kernel {
+    using int8_t = char;
+    using uint8_t = unsigned char;
 
-#endif //HEPHAISTOS_STDIO_H
+    using int16_t = short;
+    using uint16_t = unsigned short;
+
+    using int32_t = int;
+    using uint32_t = unsigned int;
+
+    using int64_t = long long int;
+    using uint64_t = unsigned long long int;
+}
+
+#endif // HEPHAIST_OS_KERNEL_LIB_STD_INT_H

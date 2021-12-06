@@ -20,28 +20,32 @@
 
 namespace kernel::boot::idt {
 
-    // todo: replace gate type uint with this?
+    constexpr uint16_t InterruptSegment = 0x08;
+
     enum class GateType {
-        task = 5,
-        interrupt = 6,
-        trap = 7
+        Interrupt = 0xE,
+        Trap = 0xF
     };
 
-    struct TypeAttributes {
-        uint8_t gateType: 4;
+    enum class DescriptorPrivilege {
+        Kernel = 0,
+        UserSpace = 3
+    };
+
+    struct [[gnu::packed]] TypeAttributes {
+        GateType gateType: 4;
         uint8_t storageSegment: 1;
-        uint8_t descriptorLevel: 2;
-        uint8_t isPresent: 1;
+        DescriptorPrivilege descriptorPrivilege: 2;
+        bool isPresent: 1;
     };
 
-    struct InterruptDescriptor {
+    struct [[gnu::packed]] InterruptDescriptor {
         uint16_t lowerOffset;
         uint16_t selector;
         uint8_t zero;
         TypeAttributes gateType;
         uint16_t higherOffset;
-    } __attribute__((packed));
-
+    };
 }
 
 #endif // HEPHAIST_OS_KERNEL_BOOT_IDT_INTERRUPT_DESCRIPTOR_H

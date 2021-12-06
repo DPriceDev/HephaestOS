@@ -14,58 +14,155 @@
  * You should have received a copy of the GNU General Public License
  * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 #ifndef HEPHAIST_OS_KERNEL_BOOT_GDT_GLOBAL_DESCRIPTOR_H
 #define HEPHAIST_OS_KERNEL_BOOT_GDT_GLOBAL_DESCRIPTOR_H
 
 namespace kernel::boot::gdt {
 
-    struct Access {
+    // Global Descriptor Models
+
+    enum class DescriptorPrivilege {
+        Kernel = 0,
+        UserSpace = 3
+    };
+
+    enum class Size {
+        Bit16 = 0,
+        Bit32 = 1
+    };
+
+    enum class Granularity {
+        Bit = 0,
+        Page = 1
+    };
+
+    enum class DescriptorType {
+        System = 0,
+        CodeOrData = 1
+    };
+
+    /**
+     *
+     */
+    struct [[gnu::packed]] Access {
         bool accessed: 1;
         bool readWritable: 1;
         bool isConforming: 1;
         bool isExecutable: 1;
-        bool descriptorType: 1;
-        uint8_t privilege: 2;
+        DescriptorType descriptorType: 1;
+        DescriptorPrivilege privilege: 2;
         bool present: 1;
-    } __attribute__((packed));
+    };
 
-    struct Flags {
+    /**
+     *
+     */
+    struct [[gnu::packed]] Flags {
         bool available: 1;
         bool longMode: 1;
-        bool size: 1;
-        bool granularity: 1;
-    } __attribute__((packed));
+        Size size: 1;
+        Granularity granularity: 1;
+    };
 
-    struct GlobalDescriptor {
+    /**
+     *
+     */
+    struct [[gnu::packed]] GlobalDescriptor {
         uint16_t lowerLimit;
         uint32_t lowerBase: 16;
         uint32_t midBase: 8;
-        bool accessed: 1;
-        bool readWritable: 1;
-        bool isConforming: 1;
-        bool isExecutable: 1;
-        bool descriptorType: 1;
-        uint8_t privilege: 2;
-        bool present: 1;
+        Access access;
         uint8_t upperLimit: 4;
         bool available: 1;
         bool longMode: 1;
-        bool size: 1;
-        bool granularity: 1;
+        Size size: 1;
+        Granularity granularity: 1;
         uint8_t upperBase;
-    } __attribute__((packed));
+    };
 
-    constexpr Access zeroAccess         {false, false, false, false, false, 0, false};
-    constexpr Access codeKernelAccess   {false, true, false, true, true, 0, true};
-    constexpr Access dataKernelAccess   {false, true, false, false, true, 0, true};
-    constexpr Access codeUserAccess     {false, true, false, true, true, 3, true};
-    constexpr Access dataUserAccess     {false, true, false, false, true, 3, true};
+    /**
+     * Segment descriptor Definitions
+     */
 
-    constexpr Access tssEntryAccess     {true, false, false, true, false, 0, true};
+    constexpr Access zeroAccess {
+        .accessed = false,
+        .readWritable = false,
+        .isConforming = false,
+        .isExecutable = false,
+        .descriptorType = DescriptorType::System,
+        .privilege = DescriptorPrivilege::Kernel,
+        .present = false
+    };
 
-    constexpr Flags zeroFlags   {false, false, false, false};
-    constexpr Flags gran32Flags {true, false, true, true};
-    constexpr Flags tssFlags   {false, false, false, false};
+    constexpr Access codeKernelAccess {
+        .accessed = false,
+        .readWritable = true,
+        .isConforming = false,
+        .isExecutable = true,
+        .descriptorType = DescriptorType::CodeOrData,
+        .privilege = DescriptorPrivilege::Kernel,
+        .present = true
+    };
+    constexpr Access dataKernelAccess {
+        .accessed = false,
+        .readWritable = true,
+        .isConforming = false,
+        .isExecutable = false,
+        .descriptorType = DescriptorType::CodeOrData,
+        .privilege = DescriptorPrivilege::Kernel,
+        .present = true
+    };
+
+    constexpr Access codeUserAccess {
+        .accessed = false,
+        .readWritable = true,
+        .isConforming = false,
+        .isExecutable = true,
+        .descriptorType = DescriptorType::CodeOrData,
+        .privilege = DescriptorPrivilege::UserSpace,
+        .present = true
+    };
+    constexpr Access dataUserAccess {
+        .accessed = false,
+        .readWritable = true,
+        .isConforming = false,
+        .isExecutable = false,
+        .descriptorType = DescriptorType::CodeOrData,
+        .privilege = DescriptorPrivilege::UserSpace,
+        .present = true
+    };
+
+    constexpr Access tssEntryAccess {
+        .accessed = true,
+        .readWritable = false,
+        .isConforming = false,
+        .isExecutable = true,
+        .descriptorType = DescriptorType::System,
+        .privilege = DescriptorPrivilege::Kernel,
+        .present = true
+    };
+
+    constexpr Flags zeroFlags {
+        .available = false,
+        .longMode = false,
+        .size = Size::Bit16,
+        .granularity = Granularity::Bit
+    };
+
+    constexpr Flags gran32Flags {
+        .available = true,
+        .longMode = false,
+        .size = Size::Bit32,
+        .granularity = Granularity::Page
+    };
+
+    constexpr Flags tssFlags {
+        .available = false,
+        .longMode = false,
+        .size = Size::Bit16,
+        .granularity = Granularity::Bit
+    };
 }
 
 #endif // HEPHAIST_OS_KERNEL_BOOT_GDT_GLOBAL_DESCRIPTOR_H

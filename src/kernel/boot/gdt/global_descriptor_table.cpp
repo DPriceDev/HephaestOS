@@ -16,11 +16,18 @@
  */
 
 #include "global_descriptor_table.h"
-#include "kernel/klibc/array.h"
-#include "kernel/klibc/string.h"
+#include "kernel/lib/libc/array.h"
+#include "kernel/lib/libc/string.h"
 #include "kernel/boot/tss/tss.h"
 
 namespace kernel::boot::gdt {
+
+    constexpr uint16_t Mask16Bit = 0xFFFF;
+    constexpr uint8_t Mask8Bit = 0xFF;
+    constexpr uint8_t Mask4Bit = 0xF;
+
+    constexpr uint8_t Offset16Bit = 16U;
+    constexpr uint8_t Offset24Bit = 24U;
 
     // todo c++ bit shifting?
     GlobalDescriptor constructGlobalDescriptor(
@@ -29,23 +36,17 @@ namespace kernel::boot::gdt {
             const Access &access,
             const Flags &flags
     ) {
-        return GlobalDescriptor {
-                static_cast<uint16_t>((memoryLimit & 0xFFFF)),
-                static_cast<uint16_t>((baseAddress & 0xFFFF)),
-                static_cast<uint8_t>((baseAddress >> 16U) & 0xFF),
-                access.accessed,
-                access.readWritable,
-                access.isConforming,
-                access.isExecutable,
-                access.descriptorType,
-                access.privilege,
-                access.present,
-                static_cast<uint8_t>((memoryLimit  >> 16U) & 0xF),
-                flags.available,
-                flags.longMode,
-                flags.size,
-                flags.granularity,
-                static_cast<uint8_t>((baseAddress >> 24U) & 0xFF)
+        return GlobalDescriptor{
+                .lowerLimit     = static_cast<uint16_t>((memoryLimit & Mask16Bit)),
+                .lowerBase      = static_cast<uint16_t>((baseAddress & Mask16Bit)),
+                .midBase        = static_cast<uint8_t>((baseAddress >> Offset16Bit) & Mask8Bit),
+                .access         = access,
+                .upperLimit     = static_cast<uint8_t>((memoryLimit >> Offset16Bit) & Mask4Bit),
+                .available      = flags.available,
+                .longMode       = flags.longMode,
+                .size           = flags.size,
+                .granularity    = flags.granularity,
+                .upperBase      = static_cast<uint8_t>((baseAddress >> Offset24Bit) & Mask8Bit)
         };
     }
 
@@ -58,34 +59,36 @@ namespace kernel::boot::gdt {
     void initializeGlobalDescriptorTable(uint32_t stackPointer) {
         auto tssEntryPtr = (uint32_t) &tssEntry;
 
+        // Clear TSS memory to all zeroes.
         lib::memset(&tssEntry, 0, sizeof(tssEntry));
 
         tssEntry = {
-                .esp0 = stackPointer, // Set the kernel stack pointer.
-                .ss0  = 0x10,  // Set the kernel stack segment.
-                .es =  0x13,
+                .esp0 = stackPointer,           // Set the kernel stack pointer.
+                .ss0  = 0x10,                   // Set the kernel stack segment.
+                .es =  0x13,                    //
                 .cs =  0x0b,
                 .ss =  0x13,
                 .ds =  0x13,
                 .fs =  0x13,
-                .gs =  0x13, //,
+                .gs =  0x13,
                 .ioMapBase = sizeof(tssEntry)
         };
 
         globalDescriptorTable = {
                 constructGlobalDescriptor(0, 0, zeroAccess, zeroFlags),
-                constructGlobalDescriptor(0, 0xFFFFF, codeKernelAccess, gran32Flags),
-                constructGlobalDescriptor(0, 0xFFFFF, dataKernelAccess, gran32Flags),
-                constructGlobalDescriptor(0, 0xFFFFF, codeUserAccess, gran32Flags),
-                constructGlobalDescriptor(0, 0xFFFFF, dataUserAccess, gran32Flags),
+                constructGlobalDescriptor(0, MaximumMemoryLimit, codeKernelAccess, gran32Flags),
+                constructGlobalDescriptor(0, MaximumMemoryLimit, dataKernelAccess, gran32Flags),
+                constructGlobalDescriptor(0, MaximumMemoryLimit, codeUserAccess, gran32Flags),
+                constructGlobalDescriptor(0, MaximumMemoryLimit, dataUserAccess, gran32Flags),
                 // todo: move? extract this to tss
                 constructGlobalDescriptor(tssEntryPtr, sizeof(tssEntry), tssEntryAccess, tssFlags)
         };
 
         gdtPointer = {
-                sizeof(globalDescriptorTable) - 1,
-                globalDescriptorTable.data()
+            .size = sizeof(globalDescriptorTable) - 1,
+            .address = globalDescriptorTable.data()
         };
+
         loadGdtTable(&gdtPointer);
     }
 }

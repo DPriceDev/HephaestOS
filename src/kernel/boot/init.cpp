@@ -15,9 +15,9 @@
  * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "kernel/boot/gdt/global_descriptor_table.h"
-#include "kernel/boot/idt/interrupt_descriptor_table.h"
-#include "kernel/types.h"
+#include "gdt/global_descriptor_table.h"
+#include "idt/interrupt_descriptor_table.h"
+#include "kernel/lib/libc/stdint.h"
 #include "kernel/boot/grub/multiboot_info.h"
 #include <kernel/drivers/video_buffer_display.h>
 #include "kernel/terminal/Terminal.h"
@@ -36,13 +36,15 @@ namespace kernel::boot {
         terminal.clear();
         terminal.println("System init");
 
+        // Set up the
         gdt::initializeGlobalDescriptorTable(stackPointer);
-        terminal.println("Global Descriptor table set");
+        terminal.println("Global Descriptor table initialized");
 
-        tss::flushTss();
+        tss::initializeTaskStateSegment();
+        terminal.println("Task State Segment initialized");
 
         idt::initializeInterruptDescriptorTable();
-        terminal.println("Interrupt Descriptor table set");
+        terminal.println("Interrupt Descriptor table initialized");
 
         // todo: may need to be moved to init protected method?
         idt::remapProgrammableInterruptController(
