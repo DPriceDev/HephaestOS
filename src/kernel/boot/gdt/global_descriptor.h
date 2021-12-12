@@ -42,6 +42,17 @@ namespace kernel::boot::gdt {
         CodeOrData = 1
     };
 
+    constexpr uint32_t MaximumMemoryLimit = 0xFFFFF;
+
+    enum class Segment {
+        Null = 0x0,
+        KernelCode = 0x8,
+        KernelData = 0x10,
+        UserSpaceCode = 0x18,
+        UserSpaceData = 0x20,
+        tss = 0x28
+    };
+
     /**
      *
      */
@@ -133,16 +144,6 @@ namespace kernel::boot::gdt {
         .present = true
     };
 
-    constexpr Access tssEntryAccess {
-        .accessed = true,
-        .readWritable = false,
-        .isConforming = false,
-        .isExecutable = true,
-        .descriptorType = DescriptorType::System,
-        .privilege = DescriptorPrivilege::Kernel,
-        .present = true
-    };
-
     constexpr Flags zeroFlags {
         .available = false,
         .longMode = false,
@@ -157,12 +158,13 @@ namespace kernel::boot::gdt {
         .granularity = Granularity::Page
     };
 
-    constexpr Flags tssFlags {
-        .available = false,
-        .longMode = false,
-        .size = Size::Bit16,
-        .granularity = Granularity::Bit
-    };
+    // Methods
+    GlobalDescriptor constructGlobalDescriptor(
+            uint32_t baseAddress,
+            uint32_t memoryLimit,
+            const Access &access,
+            const Flags &flags
+    );
 }
 
 #endif // HEPHAIST_OS_KERNEL_BOOT_GDT_GLOBAL_DESCRIPTOR_H

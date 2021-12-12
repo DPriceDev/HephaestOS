@@ -26,19 +26,16 @@ namespace kernel {
     struct Array {
         Type array[length];
 
-        Type& at(uint32_t index) {
-            return array[index];
-        }
+        Type& at(uint32_t index) { return array[index]; }
+        const Type& at(uint32_t index) const { return array[index]; }
 
-        uint32_t size() {
-            return length;
-        }
+        [[nodiscard]] uint32_t size() const noexcept { return length; }
 
         Type& operator[](uint32_t index) { return array[index]; }
         const Type& operator[](uint32_t index) const { return array[index]; }
 
-        Type* data() { return array; }
-        const Type* data() const { return array; }
+        Type* data() noexcept { return array; }
+        const Type* data() const noexcept { return array; }
     };
 }
 #endif //HEPHAIST_OS_KERNEL_LIBRARY_ARRAY_H

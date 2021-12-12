@@ -6,7 +6,7 @@
 #        idt/interrupt_handler.asm
 #        idt/exception_handler.asm
 #        gdt/global_descriptor_table.asm
-#        tss/tss.asm
+#        tss/task_state_segment.asm
 #        init.cpp
 #        gdt/global_descriptor_table.cpp
 #        idt/interrupt_descriptor_table.cpp

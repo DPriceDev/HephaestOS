@@ -18,6 +18,7 @@
 #include <kernel/drivers/video_buffer_display.h>
 #include <kernel/terminal/Terminal.h>
 #include <kernel/lib/libc/stdio.h>
+#include <array>
 
 #include "interrupt_handler.h"
 #include "programmable_interrupt_controller.h"
@@ -53,7 +54,8 @@ namespace kernel::boot::idt {
         lib::sprintf(text, "Exception code: %u", exceptionInfo.interruptCode);
         terminal.println(text);
 
-        terminal.println(exceptionDescription[exceptionInfo.interruptCode]);
+        const auto* description = exceptionDescription[exceptionInfo.interruptCode];
+        terminal.println(description);
 
         while (true) { }
     }

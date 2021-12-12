@@ -23,23 +23,12 @@
 
 namespace kernel::boot::gdt {
 
-    constexpr uint32_t MaximumMemoryLimit = 0xFFFFF;
-
-    enum class Segment {
-        Null = 0x0,
-        KernelCode = 0x8,
-        KernelData = 0x10,
-        UserSpaceCode = 0x18,
-        UserSpaceData = 0x20,
-        tss = 0x28
-    };
-
     struct [[gnu::packed]] GdtPointer {
         uint16_t size;
-        const GlobalDescriptor* address;
+        GlobalDescriptor* address;
     };
 
-    void initializeGlobalDescriptorTable(uint32_t stackPointer);
+    void initializeGlobalDescriptorTable(const GlobalDescriptor& tssDescriptor);
 
     extern "C" void loadGdtTable(const GdtPointer* pointer);
 }

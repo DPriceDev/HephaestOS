@@ -18,13 +18,21 @@
 #define HEPHAIST_OS_KERNEL_BOOT_TSS_H
 
 #include "kernel/lib/libc/stdint.h"
+#include "kernel/boot/gdt/global_descriptor.h"
 
 namespace kernel::boot::tss {
 
-    extern "C" void initializeTaskStateSegment();
+    extern "C" void loadTaskRegister();
 
+    // todo: Move this out to a user space class?
     extern "C" void jumpUserMode();
 
+    auto initializeTaskStateSegment(uint32_t stackPointer) -> void;
+    auto getTaskStateSegmentDescriptor() -> gdt::GlobalDescriptor;
+
+    /**
+     *
+     */
     struct [[gnu::packed]] TssEntry {
         uint32_t previousTss;
 
@@ -61,6 +69,25 @@ namespace kernel::boot::tss {
 
         //
         uint16_t ioMapBase;
+    };
+
+    //
+    constexpr gdt::Flags tssFlags {
+            .available = false,
+            .longMode = false,
+            .size = gdt::Size::Bit16,
+            .granularity = gdt::Granularity::Bit
+    };
+
+    //
+    constexpr gdt::Access tssEntryAccess {
+            .accessed = true,
+            .readWritable = false,
+            .isConforming = false,
+            .isExecutable = true,
+            .descriptorType = gdt::DescriptorType::System,
+            .privilege = gdt::DescriptorPrivilege::Kernel,
+            .present = true
     };
 }
 

@@ -22,7 +22,7 @@
 #include <kernel/drivers/video_buffer_display.h>
 #include "kernel/terminal/Terminal.h"
 #include "kernel/boot/idt/programmable_interrupt_controller.h"
-#include "kernel/boot/tss/tss.h"
+#include "kernel/boot/tss/task_state_segment.h"
 
 namespace kernel::boot {
 
@@ -37,10 +37,11 @@ namespace kernel::boot {
         terminal.println("System init");
 
         // Set up the
-        gdt::initializeGlobalDescriptorTable(stackPointer);
+        auto tssDescriptor = tss::getTaskStateSegmentDescriptor();
+        gdt::initializeGlobalDescriptorTable(tssDescriptor);
         terminal.println("Global Descriptor table initialized");
 
-        tss::initializeTaskStateSegment();
+        tss::initializeTaskStateSegment(stackPointer);
         terminal.println("Task State Segment initialized");
 
         idt::initializeInterruptDescriptorTable();

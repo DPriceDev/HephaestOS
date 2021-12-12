@@ -30,6 +30,8 @@ namespace kernel {
 
     using int64_t = long long int;
     using uint64_t = unsigned long long int;
+
+    using uintptr_t =  unsigned int;
 }
 
 #endif // HEPHAIST_OS_KERNEL_LIB_STD_INT_H
