@@ -14,6 +14,7 @@
 ; You should have received a copy of the GNU General Public License
 ; along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 
+;
 extern handleInterrupt
 
 ; Macro to define an interrupt request for the given integer.

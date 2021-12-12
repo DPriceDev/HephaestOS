@@ -22,7 +22,7 @@
 
 namespace kernel::boot::tss {
 
-    extern "C" void loadTaskRegister();
+    extern "C" void loadTaskRegister(gdt::Segment segment, gdt::Privilege privilege);
 
     // todo: Move this out to a user space class?
     extern "C" void jumpUserMode();
@@ -86,7 +86,7 @@ namespace kernel::boot::tss {
             .isConforming = false,
             .isExecutable = true,
             .descriptorType = gdt::DescriptorType::System,
-            .privilege = gdt::DescriptorPrivilege::Kernel,
+            .privilege = gdt::Privilege::Kernel,
             .present = true
     };
 }

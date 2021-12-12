@@ -14,8 +14,10 @@
 ; You should have received a copy of the GNU General Public License
 ; along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 
+;
 global loadIdtTable
 
+;
 loadIdtTable:
                 mov             eax, [esp+4]                    ; Get the pointer to the IDT, passed as a parameter on the stack
                 lidt            [eax]                           ; Load the new GDT pointer

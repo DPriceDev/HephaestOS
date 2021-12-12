@@ -36,21 +36,28 @@ namespace kernel::boot {
         terminal.clear();
         terminal.println("System init");
 
-        // Set up the
+        // todo: Setup paging
+
+        //
         auto tssDescriptor = tss::getTaskStateSegmentDescriptor();
         gdt::initializeGlobalDescriptorTable(tssDescriptor);
         terminal.println("Global Descriptor table initialized");
 
+        //
         tss::initializeTaskStateSegment(stackPointer);
         terminal.println("Task State Segment initialized");
 
+        //
         idt::initializeInterruptDescriptorTable();
         terminal.println("Interrupt Descriptor table initialized");
 
         // todo: may need to be moved to init protected method?
+        //
         idt::remapProgrammableInterruptController(
                 interruptRequestOffset,
                 interruptRequestOffset + 8
         );
+
+        // todo: call global descriptors
     }
 }

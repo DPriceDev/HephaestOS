@@ -23,6 +23,7 @@
 namespace kernel::boot::tss {
 
     //
+    // todo: should be in boot class / struct?
     TssEntry tssEntry;
 
     //
@@ -50,7 +51,7 @@ namespace kernel::boot::tss {
         };
 
         //
-        loadTaskRegister();
+        loadTaskRegister(gdt::Segment::Tss, gdt::Privilege::Kernel);
     }
 
     /**

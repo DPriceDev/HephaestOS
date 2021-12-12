@@ -22,7 +22,7 @@ namespace kernel::boot::gdt {
 
     // Global Descriptor Models
 
-    enum class DescriptorPrivilege {
+    enum class Privilege {
         Kernel = 0,
         UserSpace = 3
     };
@@ -42,15 +42,13 @@ namespace kernel::boot::gdt {
         CodeOrData = 1
     };
 
-    constexpr uint32_t MaximumMemoryLimit = 0xFFFFF;
-
     enum class Segment {
         Null = 0x0,
         KernelCode = 0x8,
         KernelData = 0x10,
         UserSpaceCode = 0x18,
         UserSpaceData = 0x20,
-        tss = 0x28
+        Tss = 0x28
     };
 
     /**
@@ -62,7 +60,7 @@ namespace kernel::boot::gdt {
         bool isConforming: 1;
         bool isExecutable: 1;
         DescriptorType descriptorType: 1;
-        DescriptorPrivilege privilege: 2;
+        Privilege privilege: 2;
         bool present: 1;
     };
 
@@ -90,72 +88,6 @@ namespace kernel::boot::gdt {
         Size size: 1;
         Granularity granularity: 1;
         uint8_t upperBase;
-    };
-
-    /**
-     * Segment descriptor Definitions
-     */
-
-    constexpr Access zeroAccess {
-        .accessed = false,
-        .readWritable = false,
-        .isConforming = false,
-        .isExecutable = false,
-        .descriptorType = DescriptorType::System,
-        .privilege = DescriptorPrivilege::Kernel,
-        .present = false
-    };
-
-    constexpr Access codeKernelAccess {
-        .accessed = false,
-        .readWritable = true,
-        .isConforming = false,
-        .isExecutable = true,
-        .descriptorType = DescriptorType::CodeOrData,
-        .privilege = DescriptorPrivilege::Kernel,
-        .present = true
-    };
-    constexpr Access dataKernelAccess {
-        .accessed = false,
-        .readWritable = true,
-        .isConforming = false,
-        .isExecutable = false,
-        .descriptorType = DescriptorType::CodeOrData,
-        .privilege = DescriptorPrivilege::Kernel,
-        .present = true
-    };
-
-    constexpr Access codeUserAccess {
-        .accessed = false,
-        .readWritable = true,
-        .isConforming = false,
-        .isExecutable = true,
-        .descriptorType = DescriptorType::CodeOrData,
-        .privilege = DescriptorPrivilege::UserSpace,
-        .present = true
-    };
-    constexpr Access dataUserAccess {
-        .accessed = false,
-        .readWritable = true,
-        .isConforming = false,
-        .isExecutable = false,
-        .descriptorType = DescriptorType::CodeOrData,
-        .privilege = DescriptorPrivilege::UserSpace,
-        .present = true
-    };
-
-    constexpr Flags zeroFlags {
-        .available = false,
-        .longMode = false,
-        .size = Size::Bit16,
-        .granularity = Granularity::Bit
-    };
-
-    constexpr Flags gran32Flags {
-        .available = true,
-        .longMode = false,
-        .size = Size::Bit32,
-        .granularity = Granularity::Page
     };
 
     // Methods

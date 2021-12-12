@@ -14,14 +14,17 @@
 ; You should have received a copy of the GNU General Public License
 ; along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 
+;
 global loadGdtTable
 
+;
 loadGdtTable:
                 mov             eax, [esp+4]                    ; Get the pointer to the GDT, passed as a parameter.
                 lgdt            [eax]                           ; Load the new GDT pointer
                 call            flushGdtTable
                 ret
 
+;
 flushGdtTable:
                 mov             ax, 0x10
                 mov             ds, ax
@@ -30,5 +33,7 @@ flushGdtTable:
                 mov             gs, ax
                 mov             ss, ax
                 jmp             0x08:.flush
+
+;
 .flush:
                 ret

@@ -14,7 +14,7 @@
 ## 3 Index
 - [Global Descriptor Table](gdt.md)
 - [Interrupt Descriptor Table](idt.md)
-- [Task State Segment](tss.md)
+- [Task State Segment](Tss.md)
 
 ## 4 How it currently works
 The entry point is in the loader.

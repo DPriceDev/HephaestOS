@@ -14,6 +14,7 @@
 ; You should have received a copy of the GNU General Public License
 ; along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 
+;
 extern handleException
 
 ; Macro to define an exception that passes an error code.

@@ -28,6 +28,74 @@ namespace kernel::boot::gdt {
         GlobalDescriptor* address;
     };
 
+    /**
+     * Segment descriptor Definitions
+     */
+
+    constexpr Access zeroAccess {
+            .accessed = false,
+            .readWritable = false,
+            .isConforming = false,
+            .isExecutable = false,
+            .descriptorType = DescriptorType::System,
+            .privilege = Privilege::Kernel,
+            .present = false
+    };
+
+    constexpr Access codeKernelAccess {
+            .accessed = false,
+            .readWritable = true,
+            .isConforming = false,
+            .isExecutable = true,
+            .descriptorType = DescriptorType::CodeOrData,
+            .privilege = Privilege::Kernel,
+            .present = true
+    };
+    constexpr Access dataKernelAccess {
+            .accessed = false,
+            .readWritable = true,
+            .isConforming = false,
+            .isExecutable = false,
+            .descriptorType = DescriptorType::CodeOrData,
+            .privilege = Privilege::Kernel,
+            .present = true
+    };
+
+    constexpr Access codeUserAccess {
+            .accessed = false,
+            .readWritable = true,
+            .isConforming = false,
+            .isExecutable = true,
+            .descriptorType = DescriptorType::CodeOrData,
+            .privilege = Privilege::UserSpace,
+            .present = true
+    };
+    constexpr Access dataUserAccess {
+            .accessed = false,
+            .readWritable = true,
+            .isConforming = false,
+            .isExecutable = false,
+            .descriptorType = DescriptorType::CodeOrData,
+            .privilege = Privilege::UserSpace,
+            .present = true
+    };
+
+    constexpr Flags zeroFlags {
+            .available = false,
+            .longMode = false,
+            .size = Size::Bit16,
+            .granularity = Granularity::Bit
+    };
+
+    constexpr Flags gran32Flags {
+            .available = true,
+            .longMode = false,
+            .size = Size::Bit32,
+            .granularity = Granularity::Page
+    };
+
+    constexpr uint32_t MaximumMemoryLimit = 0xFFFFF;
+
     void initializeGlobalDescriptorTable(const GlobalDescriptor& tssDescriptor);
 
     extern "C" void loadGdtTable(const GdtPointer* pointer);
