@@ -15,7 +15,7 @@
  * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "programmable_interrupt_controller.h"
+#include "kernel/boot/idt/pic/programmable_interrupt_controller.h"
 
 #include "kernel/boot/io.h"
 
@@ -58,6 +58,10 @@ namespace kernel::boot::idt {
         ioWait();
     }
 
+    /**
+     *
+     * @param interruptCode
+     */
     void sendEoiFlag(uint32_t interruptCode) {
         if(interruptCode >= 8) {
             outputPortByte(slavePicAddress, picEoiFlag);

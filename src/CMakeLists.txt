@@ -11,8 +11,8 @@ add_executable(kernel.elf
         kernel/boot/boot_grub_32.asm
         kernel/boot/boot_config.asm
         kernel/boot/idt/interrupt_descriptor_table.asm
-        kernel/boot/idt/interrupt_handler.asm
-        kernel/boot/idt/exception_handler.asm
+        kernel/boot/idt/interrupts/interrupt_handler.asm
+        kernel/boot/idt/exceptions/exception_handler.asm
         kernel/boot/gdt/global_descriptor_table.asm
         kernel/boot/tss/task_state_segment.asm
         kernel/terminal/Terminal.cpp
@@ -21,9 +21,9 @@ add_executable(kernel.elf
         kernel/lib/libcpp/pure_function.cpp
         kernel/boot/gdt/global_descriptor_table.cpp
         kernel/boot/idt/interrupt_descriptor_table.cpp
-        kernel/boot/idt/interrupt_handler.cpp
-        kernel/boot/idt/programmable_interrupt_controller.cpp
-        kernel/boot/tss/task_state_segment.cpp kernel/boot/gdt/global_descriptor.cpp)
+        kernel/boot/idt/interrupts/interrupt_handler.cpp
+        kernel/boot/idt/pic/programmable_interrupt_controller.cpp
+        kernel/boot/tss/task_state_segment.cpp kernel/boot/gdt/global_descriptor.cpp kernel/boot/idt/interrupt_descriptor.cpp kernel/boot/idt/exceptions/exception_handler.cpp kernel/boot/idt/exceptions/exception_handler.h kernel/boot/idt/model/handler_registers.h)
 
 target_link_libraries(kernel.elf PRIVATE project_options) # project_warnings)
 target_include_directories(kernel.elf PUBLIC .)

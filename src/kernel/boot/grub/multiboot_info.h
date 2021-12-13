@@ -22,6 +22,9 @@
 
 namespace kernel::boot {
 
+    /**
+     * todo: Comment
+     */
     struct MultiBootInfo {
         uint32_t flags;
         uint32_t lowerMemorySize;

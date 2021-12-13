@@ -20,34 +20,45 @@
 
 namespace kernel::boot::gdt {
 
-    //
+    // Array of Global Descriptors that defines the Global Descriptor Table.
     Array<GlobalDescriptor, 6> globalDescriptorTable;
 
-    //
+    // Structure holding the Global descriptor Table array pointer and size of the array.
     GdtPointer gdtPointer;
 
     /**
+     * Initializes the CPU's Global Descriptor Table with the minimum required segments for the
+     * kernel and userspace to be initialized.
+     * The first descriptor is a null descriptor to meet the x86 requirements.
+     * Then a Code and Data descriptor is added for the Kernel segments, covering the full memory
+     * space and a privilege level of 0.
+     * Then a Code and Data descriptor is added for the Userspace segments, covering the full memory
+     * space and a privilege level of 3.
+     * And lastly a Task State Segment descriptor to define the one TSS required for software task
+     * switching.
      *
+     * @param tssDescriptor provides the task state segments descriptor to be added to the array.
      */
     void initializeGlobalDescriptorTable(const GlobalDescriptor& tssDescriptor) {
 
-        //
+        // Initialize the GDT with the null, kernel code, kernel data, userspace code, userspace
+        // data, and tss segment descriptors.
         globalDescriptorTable = {
             constructGlobalDescriptor(0, 0, zeroAccess, zeroFlags),
-            constructGlobalDescriptor(0, MaximumMemoryLimit, codeKernelAccess, gran32Flags),
-            constructGlobalDescriptor(0, MaximumMemoryLimit, dataKernelAccess, gran32Flags),
-            constructGlobalDescriptor(0, MaximumMemoryLimit, codeUserAccess, gran32Flags),
-            constructGlobalDescriptor(0, MaximumMemoryLimit, dataUserAccess, gran32Flags),
+            constructGlobalDescriptor(0, MaximumMemoryLimit, codeKernelAccess, Page32BitFlags),
+            constructGlobalDescriptor(0, MaximumMemoryLimit, dataKernelAccess, Page32BitFlags),
+            constructGlobalDescriptor(0, MaximumMemoryLimit, codeUserAccess, Page32BitFlags),
+            constructGlobalDescriptor(0, MaximumMemoryLimit, dataUserAccess, Page32BitFlags),
             tssDescriptor
         };
 
-        //
+        // Initialize the pointer structure with the GDT size and array pointer.
         gdtPointer = {
                 .size = sizeof(globalDescriptorTable) - 1,
                 .address = globalDescriptorTable.data()
         };
 
-        //
+        // Load the GDT from the pointer into the CPU Registers.
         loadGdtTable(&gdtPointer);
     }
 }

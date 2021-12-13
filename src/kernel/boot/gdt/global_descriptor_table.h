@@ -23,8 +23,16 @@
 
 namespace kernel::boot::gdt {
 
+    /**
+     * Defines a pointer to the first Global Descriptor in an array of Global Descriptors that make
+     * up the Global Descriptor table (in order). Wrapped with the size of the GDT.
+     */
     struct [[gnu::packed]] GdtPointer {
+
+        // Size of the Global descriptor table in bytes.
         uint16_t size;
+
+        // Pointer to the first Global descriptor in the Global descriptor table array.
         GlobalDescriptor* address;
     };
 
@@ -32,6 +40,7 @@ namespace kernel::boot::gdt {
      * Segment descriptor Definitions
      */
 
+    // Describes access for a null segment, all values are zero.
     constexpr Access zeroAccess {
             .accessed = false,
             .readWritable = false,
@@ -42,6 +51,8 @@ namespace kernel::boot::gdt {
             .present = false
     };
 
+    // Describes access for a Kernel Code segment, set as readable, executable, and non-conforming,
+    // in ring 0.
     constexpr Access codeKernelAccess {
             .accessed = false,
             .readWritable = true,
@@ -51,6 +62,8 @@ namespace kernel::boot::gdt {
             .privilege = Privilege::Kernel,
             .present = true
     };
+
+    // Describes access for a Kernel Data segment, set as writable and non-conforming, in ring 0.
     constexpr Access dataKernelAccess {
             .accessed = false,
             .readWritable = true,
@@ -61,6 +74,8 @@ namespace kernel::boot::gdt {
             .present = true
     };
 
+    // Describes access for a Kernel Code segment, set as readable, executable, and non-conforming,
+    // in ring 3.
     constexpr Access codeUserAccess {
             .accessed = false,
             .readWritable = true,
@@ -70,6 +85,8 @@ namespace kernel::boot::gdt {
             .privilege = Privilege::UserSpace,
             .present = true
     };
+
+    // Describes access for a Kernel Data segment, set as writable and non-conforming, in ring 3.
     constexpr Access dataUserAccess {
             .accessed = false,
             .readWritable = true,
@@ -80,25 +97,51 @@ namespace kernel::boot::gdt {
             .present = true
     };
 
+    // Describes attributes for a null segment, all values are zero.
     constexpr Flags zeroFlags {
             .available = false,
             .longMode = false,
             .size = Size::Bit16,
-            .granularity = Granularity::Bit
+            .granularity = Granularity::Byte
     };
 
-    constexpr Flags gran32Flags {
+    // Describes attributes for a Code/Data segment. Segment is available, 32 bits, and uses page
+    // sizing of 4Kib.
+    constexpr Flags Page32BitFlags {
             .available = true,
             .longMode = false,
             .size = Size::Bit32,
             .granularity = Granularity::Page
     };
 
+    // Maximum memory limit for a 32 bit system - 4GB from a 4KiB page size.
     constexpr uint32_t MaximumMemoryLimit = 0xFFFFF;
 
-    void initializeGlobalDescriptorTable(const GlobalDescriptor& tssDescriptor);
+    /**
+     * Methods
+     */
 
+    /**
+     * Call to load a Global Descriptor Table, passed as a GDTPointer, into the CPU registers.
+     *
+     * @param pointer points to the Global descriptor tables pointer and size.
+     */
     extern "C" void loadGdtTable(const GdtPointer* pointer);
+
+    /**
+     * Initializes the CPU's Global Descriptor Table with the minimum required segments for the
+     * kernel and userspace to be initialized.
+     * The first descriptor is a null descriptor to meet the x86 requirements.
+     * Then a Code and Data descriptor is added for the Kernel segments, covering the full memory
+     * space and a privilege level of 0.
+     * Then a Code and Data descriptor is added for the Userspace segments, covering the full memory
+     * space and a privilege level of 3.
+     * And lastly a Task State Segment descriptor to define the one TSS required for software task
+     * switching.
+     *
+     * @param tssDescriptor provides the task state segments descriptor to be added to the array.
+     */
+    void initializeGlobalDescriptorTable(const GlobalDescriptor& tssDescriptor);
 }
 
 #endif // HEPHAIST_OS_KERNEL_BOOT_GDT_GLOBAL_DESCRIPTOR_TABLE_H

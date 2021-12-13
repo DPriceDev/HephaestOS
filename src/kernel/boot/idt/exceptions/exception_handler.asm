@@ -14,7 +14,7 @@
 ; You should have received a copy of the GNU General Public License
 ; along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 
-;
+; Decleration of methods that are defined elsewhere and called in this code.
 extern handleException
 
 ; Macro to define an exception that passes an error code.
@@ -37,8 +37,10 @@ extern handleException
 ; This common handler pushes all registers to the stack to pass to the c++ handler.
 ; It also switches to ring 0.
 commonExceptionHandler:
-                pushad                                          ; Push all registers AX, ECX, EDX, EBX, EBP, ESP, EBP, ESI, and EDI
-                xor             eax, eax                        ; Push the segment registers DS, ES, FS, GS to the stack
+                ; Push all registers AX, ECX, EDX, EBX, EBP, ESP, EBP, ESI, and EDI
+                pushad
+                ; Push the segment registers DS, ES, FS, GS to the stack
+                xor             eax, eax
                 mov             ax, ds
                 push            eax
                 mov             ax, es
@@ -48,7 +50,8 @@ commonExceptionHandler:
                 mov             ax, gs
                 push            eax
 
-                mov             ax, 0x10                        ; If the exception is from a different priv level, switch to data segment ring 0
+                ; If the exception is from a different priv level, switch to data segment ring 0
+                mov             ax, 0x10
                 mov             ds, ax
                 mov             es, ax
                 mov             fs, ax
@@ -57,7 +60,8 @@ commonExceptionHandler:
 
                 call            handleException                 ; Call the "handle exception" method
 
-                pop             gs                              ; Pop the save segment registers to restore the data segment and priv level
+                ; Pop the save segment registers to restore the data segment and priv level
+                pop             gs
                 pop             fs
                 pop             es
                 pop             ds

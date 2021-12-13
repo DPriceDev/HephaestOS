@@ -15,18 +15,18 @@
  * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include "interrupt_handler.h"
+#include "kernel/boot/idt/pic/programmable_interrupt_controller.h"
+
 #include <kernel/drivers/video_buffer_display.h>
 #include <kernel/terminal/Terminal.h>
 #include <kernel/lib/libc/stdio.h>
-#include <array>
-
-#include "interrupt_handler.h"
-#include "programmable_interrupt_controller.h"
-
 
 namespace kernel::boot::idt {
 
-    // handles an interrupt for the provided exception info
+    /**
+     *
+     */
     extern "C" void handleInterrupt(InterruptInfo interruptInfo) {
         VideoBufferDisplay display{};
         auto terminal = Terminal{display};
@@ -41,22 +41,5 @@ namespace kernel::boot::idt {
         }
 
         sendEoiFlag(interruptInfo.interruptCode);
-    }
-
-    // handles an exception for the provided exception info
-    extern "C" void handleException(ExceptionInfo exceptionInfo) {
-        VideoBufferDisplay display{ };
-        auto terminal = Terminal{ display };
-        terminal.clear(Display::green); // todo: not working?
-
-        terminal.println("Exception!");
-        char text[24];
-        lib::sprintf(text, "Exception code: %u", exceptionInfo.interruptCode);
-        terminal.println(text);
-
-        const auto* description = exceptionDescription[exceptionInfo.interruptCode];
-        terminal.println(description);
-
-        while (true) { }
     }
 }

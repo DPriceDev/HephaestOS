@@ -21,7 +21,7 @@
 #include "kernel/boot/grub/multiboot_info.h"
 #include <kernel/drivers/video_buffer_display.h>
 #include "kernel/terminal/Terminal.h"
-#include "kernel/boot/idt/programmable_interrupt_controller.h"
+#include "kernel/boot/idt/pic/programmable_interrupt_controller.h"
 #include "kernel/boot/tss/task_state_segment.h"
 
 namespace kernel::boot {

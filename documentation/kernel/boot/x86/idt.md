@@ -37,7 +37,7 @@ The PIC has to be reprogrammed as the interrupts 7 to 15 are overlapping the exc
 
 The process of re-mapping entails sending a number of commands to the command and data ports
 on the PIC, as well as the offset for the main and secondary chips, as seen 
-[here](../../../../src/kernel/boot/idt/programmable_interrupt_controller.cpp).
+[here](../../../../src/kernel/boot/idt/pic/programmable_interrupt_controller.cpp).
 
 Also, once an interrupt is fired, and then handled, an **end of interrupt** command is to
 be sent to the main chip. If the interrupt code is higher than 8, then the interrupt
@@ -48,11 +48,11 @@ also.
 
 ## 5 Interrupt Handler
 The interrupt handlers are mapped from 0 to 15 (interrupts start at zero but are remapped in the pic).
-A specific method is called for a given exception, which is defined in [assembly](../../../../src/kernel/boot/idt/interrupt_handler.asm).
+A specific method is called for a given exception, which is defined in [assembly](../../../../src/kernel/boot/idt/interrupts/interrupt_handler.asm).
 The assembly file is set up to define the exceptions with a macro. The macro calls a common assembler 
 method which pushes all the relevant registers to the stack to be passed as parameters to a C/C++ method.
 
-The C/C++ method accepts the  register parameters in an [InterruptInfo](../../../../src/kernel/boot/idt/interrupt_handler.h) struct.
+The C/C++ method accepts the  register parameters in an [InterruptInfo](../../../../src/kernel/boot/idt/interrupts/interrupt_handler.h) struct.
 Currently, the exception handler will print the interrupt code and associated description to the screen
 and then return to the previous executing code.
 
@@ -79,12 +79,12 @@ and then return to the previous executing code.
 
 ## 6 Exception Handler
 The exception handlers are mapped from 0 to 31 of interrupt descriptor table. A specific
-method is called for a given exception, which is defined in [assembler](../../../../src/kernel/boot/idt/exception_handler.asm).
+method is called for a given exception, which is defined in [assembler](../../../../src/kernel/boot/idt/exceptions/exception_handler.asm).
 The assembler file is set up to define the exceptions with a macro, either including or excluding an
 error code. The macro calls a common assembler method which pushes all of the relevant registers to the 
 stack to be passed as parameters to a C/C++ method.
 
-The C/C++ method accepts the  register parameters in an [ExceptionInfo](../../../../src/kernel/boot/idt/interrupt_handler.h) struct.
+The C/C++ method accepts the  register parameters in an [ExceptionInfo](../../../../src/kernel/boot/idt/interrupts/interrupt_handler.h) struct.
 Currently, the exception handler will print the exception code and associated description to the screen
 and loop indefinitely, blocking execution.
 

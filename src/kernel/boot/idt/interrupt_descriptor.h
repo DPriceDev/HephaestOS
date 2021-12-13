@@ -46,6 +46,20 @@ namespace kernel::boot::idt {
         TypeAttributes gateType;
         uint16_t higherOffset;
     };
+
+    /**
+     * Constructs an Interrupt Descriptor that can be inserted in a Interrupt descriptor table.
+     * This takes a handler that is called when the interrupt associated with this descriptor is
+     * fired.
+     * The x86 implementation of the Interrupt Descriptor splits the offset structure; therefore
+     * the lower and upper sections of the offset are bit-masked and bit-shifted into place.
+     *
+     * @param handler is a pointer to a method that will be called if the interrupt fires.
+     * @param type defines the interrupt gate to used, Interrupt for interrupts, Trap and Interrupt
+     * for exceptions.
+     * @return an interrupt descriptor setup to call the provided method on the interrupt firing.
+     */
+    auto constructInterruptDescriptor(int (*handler)(), GateType type) -> InterruptDescriptor;
 }
 
 #endif // HEPHAIST_OS_KERNEL_BOOT_IDT_INTERRUPT_DESCRIPTOR_H

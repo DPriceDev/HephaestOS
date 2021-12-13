@@ -73,21 +73,21 @@ namespace kernel::boot::tss {
 
     //
     constexpr gdt::Flags tssFlags {
-            .available = false,
-            .longMode = false,
-            .size = gdt::Size::Bit16,
-            .granularity = gdt::Granularity::Bit
+        .available = false,
+        .longMode = false,
+        .size = gdt::Size::Bit16,
+        .granularity = gdt::Granularity::Byte
     };
 
     //
     constexpr gdt::Access tssEntryAccess {
-            .accessed = true,
-            .readWritable = false,
-            .isConforming = false,
-            .isExecutable = true,
-            .descriptorType = gdt::DescriptorType::System,
-            .privilege = gdt::Privilege::Kernel,
-            .present = true
+        .accessed = true,
+        .readWritable = false,
+        .isConforming = false,
+        .isExecutable = true,
+        .descriptorType = gdt::DescriptorType::System,
+        .privilege = gdt::Privilege::Kernel,
+        .present = true
     };
 }
 

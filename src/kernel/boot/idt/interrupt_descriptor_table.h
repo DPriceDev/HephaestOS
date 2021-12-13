@@ -23,21 +23,37 @@
 #include "kernel/lib/libc/stdint.h"
 #include "kernel/lib/libc/array.h"
 
-#include "interupt_descriptor.h"
+#include "interrupt_descriptor.h"
 #include "kernel/boot/io.h"
 
 
 namespace kernel::boot::idt {
 
+    /**
+     *
+     */
     struct [[gnu::packed]] IdtPointer {
         uint16_t size;
         const InterruptDescriptor* pointer;
     };
 
+    //
+    constexpr uint32_t tableLength = 256;
+
+    /**
+     *
+     */
     void initializeInterruptDescriptorTable();
 
+    /**
+     *
+     * @param pointer
+     */
     extern "C" void loadIdtTable(const IdtPointer* pointer);
 
+    /**
+     *
+     */
     extern "C" int fireException0();
     extern "C" int fireException1();
     extern "C" int fireException2();
@@ -71,6 +87,9 @@ namespace kernel::boot::idt {
     extern "C" int fireException30();
     extern "C" int fireException31();
 
+    /**
+     *
+     */
     extern "C" int fireInterruptRequest0();
     extern "C" int fireInterruptRequest1();
     extern "C" int fireInterruptRequest2();

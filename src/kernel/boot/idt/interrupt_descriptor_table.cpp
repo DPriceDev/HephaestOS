@@ -15,28 +15,24 @@
  * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <kernel/lib/libc/stdint.h>
+
 #include "interrupt_descriptor_table.h"
 
 namespace kernel::boot::idt {
-    constexpr uint32_t tableLength = 256;
 
+    // Array of Interrupt Descriptors that defines the Interrupt Descriptor Table.
     Array<InterruptDescriptor, tableLength> interruptDescriptorTable;
 
+    // Structure holding the Interrupt descriptor Table array pointer and size of the array.
     IdtPointer idtPointer;
 
-    InterruptDescriptor constructInterruptDescriptor(int (*handler)(), GateType type) {
-        return InterruptDescriptor {
-                static_cast<uint16_t>((uint32_t) handler & 0xFFFF),
-                InterruptSegment,
-                0,
-                TypeAttributes {
-                        type, 0, DescriptorPrivilege::Kernel, true
-                },
-                static_cast<uint16_t>(((uint32_t) handler >> 16) & 0xFFFF)
-        };
-    }
-
+    /**
+     *
+     */
     void initializeInterruptDescriptorTable() {
+
+        //
         interruptDescriptorTable.at(0)  = constructInterruptDescriptor(fireException0,GateType::Trap);
         interruptDescriptorTable.at(1)  = constructInterruptDescriptor(fireException1, GateType::Trap);
         interruptDescriptorTable.at(2)  = constructInterruptDescriptor(fireException2, GateType::Trap);
@@ -69,6 +65,8 @@ namespace kernel::boot::idt {
         interruptDescriptorTable.at(29) = constructInterruptDescriptor(fireException29, GateType::Trap);
         interruptDescriptorTable.at(30) = constructInterruptDescriptor(fireException30, GateType::Trap);
         interruptDescriptorTable.at(31) = constructInterruptDescriptor(fireException31, GateType::Trap);
+
+        //
         interruptDescriptorTable.at(32) = constructInterruptDescriptor(fireInterruptRequest0, GateType::Interrupt);
         interruptDescriptorTable.at(33) = constructInterruptDescriptor(fireInterruptRequest1, GateType::Interrupt);
         interruptDescriptorTable.at(34) = constructInterruptDescriptor(fireInterruptRequest2, GateType::Interrupt);
@@ -86,11 +84,13 @@ namespace kernel::boot::idt {
         interruptDescriptorTable.at(46) = constructInterruptDescriptor(fireInterruptRequest14, GateType::Interrupt);
         interruptDescriptorTable.at(47) = constructInterruptDescriptor(fireInterruptRequest15, GateType::Interrupt);
 
+        //
         idtPointer = {
                 (sizeof(InterruptDescriptor) * tableLength) - 1,
                 interruptDescriptorTable.data()
         };
 
+        //
         loadIdtTable(&idtPointer);
     }
 }

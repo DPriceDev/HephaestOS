@@ -41,8 +41,17 @@ namespace kernel::boot::idt {
 
     constexpr uint8_t picEoiFlag = 0x20;
 
+    /**
+     *
+     * @param masterOffset
+     * @param slaveOffset
+     */
     void remapProgrammableInterruptController(uint8_t masterOffset, uint8_t slaveOffset);
 
+    /**
+     *
+     * @param interruptCode
+     */
     void sendEoiFlag(uint32_t interruptCode);
 }
 

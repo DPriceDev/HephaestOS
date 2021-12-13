@@ -32,6 +32,17 @@ namespace kernel {
     using uint64_t = unsigned long long int;
 
     using uintptr_t =  unsigned int;
+
+    // todo: move to common file
+    // Set of bit-masks that can be used to mask parts of an Integer.
+    constexpr uint16_t Mask16Bit = 0xFFFF;
+    constexpr uint8_t Mask8Bit = 0xFF;
+    constexpr uint8_t Mask4Bit = 0xF;
+
+    // todo: move to common file
+    // Set of bit-offsets that can be used to move an integer by a power of 2.
+    constexpr uint8_t Offset16Bit = 16U;
+    constexpr uint8_t Offset24Bit = 24U;
 }
 
 #endif // HEPHAIST_OS_KERNEL_LIB_STD_INT_H
