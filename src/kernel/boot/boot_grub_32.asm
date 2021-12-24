@@ -58,6 +58,7 @@ loader:
                 mov             esp, stack_start                ; set esp (register for stack pointer) as the stack pointer.
 
 ;               initialize idt and gdt (when entering straight in from grub)
+                push            stack_start
                 push            eax                             ; push the magic number to the stack (2nd arg)
                 push            ebx                             ; push the multiboot info pointer to the stack (1st arg)
                 call            init

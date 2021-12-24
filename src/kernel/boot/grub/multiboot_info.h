@@ -18,10 +18,13 @@
 #ifndef HEPHAIST_OS_KERNEL_BOOT_MULTIBOOT_INFO_H
 #define HEPHAIST_OS_KERNEL_BOOT_MULTIBOOT_INFO_H
 
-#include "kernel/types.h"
+#include "kernel/lib/libc/stdint.h"
 
 namespace kernel::boot {
 
+    /**
+     * todo: Comment
+     */
     struct MultiBootInfo {
         uint32_t flags;
         uint32_t lowerMemorySize;

@@ -14,11 +14,10 @@
 ; You should have received a copy of the GNU General Public License
 ; along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 
-; Definitions of methods that can be called by external code.
-global loadIdtTable
 
-; Takes a pointer to a IDT size and address (in that order) and loads it into the idt register.
-loadIdtTable:
-                mov             eax, [esp+4]                    ; Get the pointer to the IDT, passed as a parameter on the stack
-                lidt            [eax]                           ; Load the new IDT pointer
+; Break point can be placed in code where the Bochs debugger needs to stop execution.
+; This does not change any state.
+global magicBreakPoint
+magicBreakPoint:
+                xchg            bx, bx                          ; Picked up by Bochs
                 ret

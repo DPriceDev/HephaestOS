@@ -16,23 +16,45 @@
  */
 
 #include <kernel/drivers/video_buffer_display.h>
-#include "kernel/terminal/Terminal.h"
-#include "kernel/memory/memory.h"
-#include "hardware/io.h"
-
-#define VERSION 1.0
+#include "terminal/Terminal.h"
+#include "lib/libc/stdint.h"
+#include "kernel/boot/tss/task_state_segment.h"
 
 namespace kernel {
 
+    extern "C" [[noreturn]] void testUserFunction() {
+        while(true) { /* Endless Loop */ }
+    };
+
+    // todo: Should this live in a config file somewhere?
+    constexpr uint32_t majorVersion = 1;
+    constexpr uint32_t minorVersion = 0;
+    constexpr uint32_t fixVersion = 0;
+
     extern "C" void kernelMain() {
+
+        // todo: Extract out all terminal code to user space
         static const VideoBufferDisplay display { };
         auto terminal = kernel::Terminal{display};
 
         terminal.println("HephaistOS");
         terminal.println("Version 1.0", kernel::Display::cyan);
 
-        while(true) {
+        // todo: Init Timer Task? (or in init.libcpp)
 
-        }
+        // todo: Init IPC Task
+
+        // todo: Init memory manager Task
+
+        // todo: Init process table task
+
+        // todo: Init basic scheduler Task?
+
+        // todo: Load Ram Disk
+
+        // todo: Start Root Process
+
+        // todo: Switch to Ring 3
+        boot::tss::jumpUserMode();
     }
 }

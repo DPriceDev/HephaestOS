@@ -14,21 +14,27 @@
 ; You should have received a copy of the GNU General Public License
 ; along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 
+; Definitions of methods that can be called by external code.
 global loadGdtTable
 
+; Takes a pointer to a GDT size and address (in that order) and loads it into the gdt register,
+; then calls the flush method to reload the GDT to update the CPU.
 loadGdtTable:
                 mov             eax, [esp+4]                    ; Get the pointer to the GDT, passed as a parameter.
                 lgdt            [eax]                           ; Load the new GDT pointer
-                call            flushGdtTable
+                call            flushGdtTable                   ;
                 ret
 
+; Called to enable the Global descriptor table loaded in the gdt register.
 flushGdtTable:
-                mov             ax, 0x10
-                mov             ds, ax
+                mov             ax, 0x10                        ; Move the kernel data segment into the ex register.
+                mov             ds, ax                          ; Move the kernel data segment into the cpu segment registers.
                 mov             es, ax
                 mov             fs, ax
                 mov             gs, ax
                 mov             ss, ax
-                jmp             0x08:.flush
+                jmp             0x08:.flush                     ; Far jump to the kernel code segment. This reloads the gdt.
+
+; Far jump destination. Returns to the calling code.
 .flush:
                 ret
