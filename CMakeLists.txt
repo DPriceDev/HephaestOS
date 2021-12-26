@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.17)
 
+SET (CMAKE_C_COMPILER_WORKS 1)
+SET (CMAKE_CXX_COMPILER_WORKS 1)
+
 enable_language(ASM_NASM)
 project(HephaistOS LANGUAGES ASM_NASM CXX VERSION 1.0.0)
 include(cmake/StandardProjectSettings.cmake)
@@ -30,13 +33,13 @@ set(CONAN_EXTRA_OPTIONS "")
 
 set(CONAN_EXTRA_REQUIRES ${CONAN_EXTRA_REQUIRES})
 
-include(cmake/Conan.cmake)
-run_conan()
+#include(cmake/Conan.cmake)
+#run_conan()
 
 add_subdirectory(src)
 
-if(ENABLE_TESTING)
-    enable_testing()
-    message("Building HephaistOS Tests.")
-    add_subdirectory(unit-tests PRIVATE)
-endif()
+#if(ENABLE_TESTING)
+#    enable_testing()
+#    message("Building HephaistOS Tests.")
+#    add_subdirectory(unit-tests PRIVATE)
+#endif()
