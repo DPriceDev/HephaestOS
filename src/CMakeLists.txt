@@ -6,6 +6,8 @@ set(CMAKE_CXX_LINK_EXECUTABLE "ld -T${LINK} <CMAKE_CXX_LINK_FLAGS> -m elf_i386 <
 set(CMAKE_ASM_NASM_COMPILE_OBJECT "<CMAKE_ASM_NASM_COMPILER> <INCLUDES> -felf32 -g -F dwarf -o <OBJECT> <SOURCE>")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g3 -m32 -fno-use-cxa-atexit -ffreestanding -nostdlib -fno-builtin -fno-rtti -fno-exceptions -fno-stack-protector -fmodules-ts")
 
+add_subdirectory(toolchain)
+
 add_executable(kernel.elf
         kernel/kernel.cpp
         kernel/boot/boot_grub_32.asm
