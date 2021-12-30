@@ -6,8 +6,6 @@ set(CMAKE_CXX_LINK_FLAGS ${CMAKE_CXX_LINK_FLAGS} -T${LINK})
 set(CMAKE_ASM_NASM_COMPILE_OBJECT "<CMAKE_ASM_NASM_COMPILER> <INCLUDES> -felf32 -g -F dwarf -o <OBJECT> <SOURCE>")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g3 -ffreestanding -nostdlib -lgcc -fno-rtti -fno-exceptions -fmodules-ts")
 
-add_subdirectory(toolchain)
-
 add_executable(kernel.elf
         kernel/kernel.cpp
         kernel/boot/boot_grub_32.asm

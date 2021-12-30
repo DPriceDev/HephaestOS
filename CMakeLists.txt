@@ -37,6 +37,7 @@ set(CONAN_EXTRA_REQUIRES ${CONAN_EXTRA_REQUIRES})
 #run_conan()
 
 add_subdirectory(src)
+add_subdirectory(toolchain)
 
 #if(ENABLE_TESTING)
 #    enable_testing()
