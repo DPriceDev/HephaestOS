@@ -15,9 +15,10 @@
  * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "video_buffer_display.h"
-#include "kernel/boot/io.h"
 #include <stdint.h>
+
+#include "video_buffer_display.h"
+#include "boot/io.h"
 
 constexpr uint16_t eightBitOffset = 8;
 

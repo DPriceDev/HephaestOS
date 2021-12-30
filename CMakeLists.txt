@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.21.1)
 
-SET (CMAKE_C_COMPILER_WORKS 1)
 SET (CMAKE_CXX_COMPILER_WORKS 1)
 
 enable_language(ASM_NASM)

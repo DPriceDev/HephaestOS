@@ -18,7 +18,7 @@
 #ifndef HEPHAIST_OS_KERNEL_BOOT_MULTIBOOT_INFO_H
 #define HEPHAIST_OS_KERNEL_BOOT_MULTIBOOT_INFO_H
 
-#include "kernel/lib/libc/stdoffset.h"
+#include <stdoffset.h>
 
 namespace kernel::boot {
 

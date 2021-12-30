@@ -31,7 +31,7 @@ add_executable(kernel.elf
         kernel/boot/idt/model/handler_registers.h)
 
 target_link_libraries(kernel.elf PRIVATE project_options) # project_warnings)
-target_include_directories(kernel.elf PUBLIC .)
+target_include_directories(kernel.elf PUBLIC . ./kernel ./kernel/lib/libc ./kernel/lib/libcpp)
 
 #add_custom_command(
 #        TARGET kernel.elf POST_BUILD

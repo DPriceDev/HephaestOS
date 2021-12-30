@@ -18,10 +18,10 @@
 #ifndef HEPHAISTOS_EXCEPTION_HANDLER_H
 #define HEPHAISTOS_EXCEPTION_HANDLER_H
 
-#include <kernel/lib/libc/stdoffset.h>
-#include <kernel/lib/libc/array.h>
+#include <stdoffset.h>
+#include <array.h>
 
-#include "kernel/boot/idt/model/handler_registers.h"
+#include "boot/idt/model/handler_registers.h"
 
 namespace kernel::boot::idt {
 

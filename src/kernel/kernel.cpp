@@ -15,10 +15,11 @@
  * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <kernel/drivers/video_buffer_display.h>
+#include <stdoffset.h>
+
+#include "drivers/video_buffer_display.h"
 #include "terminal/Terminal.h"
-#include "lib/libc/stdoffset.h"
-#include "kernel/boot/tss/task_state_segment.h"
+#include "boot/tss/task_state_segment.h"
 
 namespace kernel {
 

@@ -18,6 +18,6 @@
 #ifndef HEPHAISTOS_STDIO_H
 #define HEPHAISTOS_STDIO_H
 
-#include "kernel/lib/libc/stdio/sprintf.h"
+#include "stdio/sprintf.h"
 
 #endif //HEPHAISTOS_STDIO_H

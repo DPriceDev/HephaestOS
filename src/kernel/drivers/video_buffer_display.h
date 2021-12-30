@@ -18,8 +18,9 @@
 #ifndef HEPHAIST_OS_DRIVERS_VIDEO_BUFFER_DISPLAY_H
 #define HEPHAIST_OS_DRIVERS_VIDEO_BUFFER_DISPLAY_H
 
-#include "display.h"
 #include <stdint.h>
+
+#include "display.h"
 #include "register_address.h"
 
 namespace kernel {
