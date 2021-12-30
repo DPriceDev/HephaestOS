@@ -17,7 +17,7 @@
 
 #include "gdt/global_descriptor_table.h"
 #include "idt/interrupt_descriptor_table.h"
-#include "kernel/lib/libc/stdint.h"
+#include "kernel/lib/libc/stdoffset.h"
 #include "kernel/boot/grub/multiboot_info.h"
 #include <kernel/drivers/video_buffer_display.h>
 #include "kernel/terminal/Terminal.h"

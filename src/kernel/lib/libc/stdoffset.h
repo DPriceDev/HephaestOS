@@ -18,20 +18,9 @@
 #ifndef HEPHAIST_OS_KERNEL_LIB_STD_INT_H
 #define HEPHAIST_OS_KERNEL_LIB_STD_INT_H
 
+#include <stdint.h>
+
 namespace kernel {
-    using int8_t = char;
-    using uint8_t = unsigned char;
-
-    using int16_t = short;
-    using uint16_t = unsigned short;
-
-    using int32_t = int;
-    using uint32_t = unsigned int;
-
-    using int64_t = long long int;
-    using uint64_t = unsigned long long int;
-
-    using uintptr_t =  unsigned int;
 
     // todo: move to common file
     // Set of bit-masks that can be used to mask parts of an Integer.

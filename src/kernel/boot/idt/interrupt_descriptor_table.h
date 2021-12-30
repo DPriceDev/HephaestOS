@@ -20,7 +20,7 @@
 
 #include <kernel/drivers/video_buffer_display.h>
 #include <kernel/terminal/Terminal.h>
-#include "kernel/lib/libc/stdint.h"
+#include "kernel/lib/libc/stdoffset.h"
 #include "kernel/lib/libc/array.h"
 
 #include "interrupt_descriptor.h"

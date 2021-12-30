@@ -17,7 +17,7 @@
 
 #include <kernel/drivers/video_buffer_display.h>
 #include "terminal/Terminal.h"
-#include "lib/libc/stdint.h"
+#include "lib/libc/stdoffset.h"
 #include "kernel/boot/tss/task_state_segment.h"
 
 namespace kernel {

@@ -15,7 +15,7 @@
  * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <kernel/lib/libc/stdint.h>
+#include <kernel/lib/libc/stdoffset.h>
 
 #include "interrupt_descriptor_table.h"
 

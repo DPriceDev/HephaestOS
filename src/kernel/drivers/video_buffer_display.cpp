@@ -17,19 +17,19 @@
 
 #include "video_buffer_display.h"
 #include "kernel/boot/io.h"
+#include <stdint.h>
 
-constexpr kernel::uint16_t eightBitOffset = 8;
+constexpr uint16_t eightBitOffset = 8;
 
-const kernel::uint32_t &kernel::VideoBufferDisplay::getWidth() const {
+const uint32_t& kernel::VideoBufferDisplay::getWidth() const {
     return width;
 }
 
-const kernel::uint32_t &kernel::VideoBufferDisplay::getHeight() const {
+const uint32_t &kernel::VideoBufferDisplay::getHeight() const {
     return height;
 }
 
-kernel::uint32_t
-kernel::VideoBufferDisplay::setDisplayBuffer(const Display::Character *character, uint32_t length) const {
+uint32_t kernel::VideoBufferDisplay::setDisplayBuffer(const Display::Character *character, uint32_t length) const {
     auto *videoPointer = reinterpret_cast<char *>(address::videoMemoryAddress);
     unsigned int index = 0;
     for (; index < screenBufferLength; index += 2) {
@@ -44,7 +44,7 @@ kernel::VideoBufferDisplay::setDisplayBuffer(const Display::Character *character
     return index / 2;
 }
 
-kernel::uint32_t kernel::VideoBufferDisplay::setDisplayBuffer(const Display::Character *character,
+uint32_t kernel::VideoBufferDisplay::setDisplayBuffer(const Display::Character *character,
                                                               uint32_t length,
                                                               uint32_t x,
                                                               uint32_t y) const {
