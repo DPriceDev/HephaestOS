@@ -18,7 +18,7 @@
 #ifndef HEPHAIST_OS_DRIVERS_IO_IO_H
 #define HEPHAIST_OS_DRIVERS_IO_IO_H
 
-#include "kernel/lib/libc/stdint.h"
+#include <stdoffset.h>
 
 namespace kernel {
 

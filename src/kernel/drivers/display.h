@@ -18,7 +18,7 @@
 #ifndef HEPHAIST_OS_KERNEL_DRIVERS_DISPLAY_H
 #define HEPHAIST_OS_KERNEL_DRIVERS_DISPLAY_H
 
-#include "kernel/lib/libc/stdint.h"
+#include <stdint.h>
 
 namespace kernel {
 

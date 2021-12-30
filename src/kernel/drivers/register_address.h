@@ -18,12 +18,12 @@
 #ifndef SYS_REG_ADDR_H
 #define SYS_REG_ADDR_H
 
-#include "kernel/lib/libc/stdint.h"
+#include <stdint.h>
 
 namespace address {
-    constexpr kernel::uint32_t videoMemoryAddress = 0xb8000;
-    constexpr kernel::uint32_t videoCursorHighAddress = 0x3D5;
-    constexpr kernel::uint32_t videoCursorLowAddress = 0x3D4;
+    constexpr uint32_t videoMemoryAddress = 0xb8000;
+    constexpr uint32_t videoCursorHighAddress = 0x3D5;
+    constexpr uint32_t videoCursorLowAddress = 0x3D4;
 }
 
 #endif

@@ -16,11 +16,11 @@
  */
 
 #include "interrupt_handler.h"
-#include "kernel/boot/idt/pic/programmable_interrupt_controller.h"
+#include "boot/idt/pic/programmable_interrupt_controller.h"
 
-#include <kernel/drivers/video_buffer_display.h>
-#include <kernel/terminal/Terminal.h>
-#include <kernel/lib/libc/stdio.h>
+#include "drivers/video_buffer_display.h"
+#include "terminal/Terminal.h"
+#include <stdio.h>
 
 namespace kernel::boot::idt {
 

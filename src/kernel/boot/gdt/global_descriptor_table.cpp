@@ -15,8 +15,9 @@
  * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <array.h>
+
 #include "global_descriptor_table.h"
-#include "kernel/lib/libc/array.h"
 
 namespace kernel::boot::gdt {
 

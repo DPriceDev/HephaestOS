@@ -15,14 +15,16 @@
  * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <stdoffset.h>
+
 #include "gdt/global_descriptor_table.h"
 #include "idt/interrupt_descriptor_table.h"
-#include "kernel/lib/libc/stdint.h"
-#include "kernel/boot/grub/multiboot_info.h"
-#include <kernel/drivers/video_buffer_display.h>
-#include "kernel/terminal/Terminal.h"
-#include "kernel/boot/idt/pic/programmable_interrupt_controller.h"
-#include "kernel/boot/tss/task_state_segment.h"
+
+#include "boot/grub/multiboot_info.h"
+#include "drivers/video_buffer_display.h"
+#include "terminal/Terminal.h"
+#include "boot/idt/pic/programmable_interrupt_controller.h"
+#include "boot/tss/task_state_segment.h"
 
 namespace kernel::boot {
 

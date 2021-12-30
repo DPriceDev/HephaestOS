@@ -15,7 +15,7 @@
  * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <kernel/lib/libc/stdint.h>
+#include <stdint.h>
 #include <kernel/lib/libc/string.h>
 
 #include "task_state_segment.h"

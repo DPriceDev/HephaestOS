@@ -15,7 +15,7 @@
  * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <kernel/lib/libc/stdint.h>
+#include <stdoffset.h>
 #include "global_descriptor.h"
 
 namespace kernel::boot::gdt {

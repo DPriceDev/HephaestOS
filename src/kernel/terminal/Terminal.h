@@ -18,7 +18,7 @@
 #ifndef HEPHAIST_OS_KERNEL_TERMINAL_TERMINAL_H
 #define HEPHAIST_OS_KERNEL_TERMINAL_TERMINAL_H
 
-#include "kernel/drivers/display.h"
+#include "drivers/display.h"
 
 namespace kernel {
 
