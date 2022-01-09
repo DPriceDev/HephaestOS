@@ -15,7 +15,7 @@
  * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <stdint.h>
+#include <cstdint>
 
 #include "video_buffer_display.h"
 #include "boot/io.h"

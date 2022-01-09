@@ -35,6 +35,8 @@ FILE stderr;
 #define SEEK_CUR 1
 #define SEEK_END 2
 
+#define EOF -1
+
 int fclose(FILE *stream);
 
 FILE *fopen(const char *filename, const char *mode);

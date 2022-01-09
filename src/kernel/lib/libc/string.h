@@ -18,7 +18,7 @@
 #ifndef SYS_STRING_H
 #define SYS_STRING_H
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace kernel::lib {
 

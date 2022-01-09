@@ -18,7 +18,7 @@
 #ifndef HEPHAIST_OS_KERNEL_BOOT_IDT_INTERRUPT_DESCRIPTOR_H
 #define HEPHAIST_OS_KERNEL_BOOT_IDT_INTERRUPT_DESCRIPTOR_H
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace kernel::boot::idt {
 

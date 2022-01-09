@@ -13,4 +13,5 @@ sh $CONFIG_DIR/configure \
   --with-sysroot=$SYSROOT \
   --with-newlib \
   --disable-nls \
+  --disable-hosted-libstdcxx \
   --enable-languages=c,c++
