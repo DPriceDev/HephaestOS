@@ -9,3 +9,5 @@
 #
 #target_link_libraries(kernel PUBLIC kernel_boot kernel_libraries)
 #target_include_directories(kernel PUBLIC .)
+
+add_subdirectory(library)

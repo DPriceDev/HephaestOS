@@ -6,6 +6,10 @@ set(CMAKE_CXX_LINK_FLAGS ${CMAKE_CXX_LINK_FLAGS} -T${LINK})
 set(CMAKE_ASM_NASM_COMPILE_OBJECT "<CMAKE_ASM_NASM_COMPILER> <INCLUDES> -felf32 -g -F dwarf -o <OBJECT> <SOURCE>")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g3 -ffreestanding -nostdlib -lgcc -fno-rtti -fno-exceptions -fmodules-ts")
 
+add_subdirectory(sysroot)
+add_subdirectory(shared)
+add_subdirectory(kernel)
+
 add_executable(kernel.elf
         kernel/kernel.cpp
         kernel/boot/boot_grub_32.asm
@@ -18,7 +22,7 @@ add_executable(kernel.elf
         kernel/terminal/Terminal.cpp
         kernel/drivers/video_buffer_display.cpp
         kernel/boot/init.cpp
-        kernel/lib/libcpp/pure_function.cpp
+        kernel/library/LibCpp/lib/pure_function.cpp
         kernel/boot/gdt/global_descriptor_table.cpp
         kernel/boot/idt/interrupt_descriptor_table.cpp
         kernel/boot/idt/interrupts/interrupt_handler.cpp
@@ -28,14 +32,12 @@ add_executable(kernel.elf
         kernel/boot/idt/interrupt_descriptor.cpp
         kernel/boot/idt/exceptions/exception_handler.cpp
         kernel/boot/idt/exceptions/exception_handler.h
-        kernel/boot/idt/model/handler_registers.h)
-
+        kernel/boot/idt/model/handler_registers.h
+)
 target_link_libraries(kernel.elf PRIVATE project_options) # project_warnings)
-target_include_directories(kernel.elf PUBLIC . ./kernel ./kernel/lib/libc ./kernel/lib/libcpp ./shared/lib/libc ./shared/lib/libcpp)
-
-#add_custom_command(
-#        TARGET kernel.elf POST_BUILD
-#        COMMAND objcopy --only-keep-debug ${CMAKE_CURRENT_BINARY_DIR}/kernel.elf ${CMAKE_BINARY_DIR}/kernel.sym)
+target_link_libraries(kernel.elf PUBLIC KLibC KLibCpp KLibDebug)
+target_include_directories(kernel.elf PUBLIC . ./kernel ./kernel/library/LibC/include ./kernel/library/LibCpp/include ./shared/library/LibCpp/include)
+add_dependencies(kernel.elf CopySysRoot)
 
 add_custom_target(HephaistOS.iso
         DEPENDS ${CMAKE_BINARY_DIR}/src/kernel.elf

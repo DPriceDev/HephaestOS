@@ -33,7 +33,7 @@ size_t strlen(const char *str);
  * Stubbed memset.
  * Stubbed to allow GCC to compile, just needs to exist at this point without an implementation.
  */
-void *memset(void *str, int c, size_t n);
+void *memset(void* pointer, int value, uint32_t length);
 
 /**
  * Stubbed memcpy.

@@ -2,7 +2,7 @@
 set(BINUTILS_VERSION 2.37)
 set(GCC_VERSION 11.2.0)
 set(TARGET i386-pc-hephaistos)
-set(SYSROOT ${CMAKE_SOURCE_DIR}/src/sysroot)
+set(SYSROOT ${CMAKE_BINARY_DIR}/src/sysroot)
 set(PATCH_DIR ${CMAKE_SOURCE_DIR}/toolchain/patches)
 
 set(PREFIX ${CMAKE_CURRENT_BINARY_DIR}/output)

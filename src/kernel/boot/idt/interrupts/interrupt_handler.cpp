@@ -35,7 +35,7 @@ namespace kernel::boot::idt {
             terminal.clear(Display::green); // todo: not working?
             terminal.println("Interrupt!");
             char text[24];
-            lib::sprintf(text, "Interrupt code: %u", interruptInfo.interruptCode);
+            sprintf(text, "Interrupt code: %u", interruptInfo.interruptCode);
             terminal.println(text);
 
         }

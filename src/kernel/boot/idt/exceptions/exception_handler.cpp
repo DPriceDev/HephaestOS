@@ -19,7 +19,7 @@
 
 #include "drivers/video_buffer_display.h"
 #include "terminal/Terminal.h"
-// #include <kernel/lib/libc/stdio.h> // todo: Fix import?
+//#include "stdio.h" // todo: Fix import?
 
 namespace kernel::boot::idt {
 
@@ -31,7 +31,7 @@ namespace kernel::boot::idt {
 
         terminal.println("Exception!");
         char text[24];
-        // lib::sprintf(text, "Exception code: %u", exceptionInfo.interruptCode); // todo: fix import usage
+       // sprintf(text, "Exception code: %u", exceptionInfo.interruptCode); // todo: fix import usage
         terminal.println(text);
 
         const auto* description = exceptionDescription[exceptionInfo.interruptCode];

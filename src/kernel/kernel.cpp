@@ -41,7 +41,7 @@ namespace kernel {
         terminal.println("HephaistOS");
         terminal.println("Version 1.0", kernel::Display::cyan);
 
-        // todo: Init Timer Task? (or in init.libcpp)
+        // todo: Init Timer Task? (or in init.LibCpp)
 
         // todo: Init IPC Task
 
