@@ -27,14 +27,7 @@
  * @param length
  * @return
  */
-char * reverseBuffer(char * buffer, uint32_t length) {
-    for (uint32_t index = 0; index < length / 2; ++index) {
-        char character = buffer[index];
-        buffer[index] = buffer[length - index - 1];
-        buffer[length - index - 1] = character;
-    }
-    return buffer;
-}
+char * reverseBuffer(char * buffer, uint32_t length);
 
 /**
  * TODO: Comment
@@ -44,164 +37,16 @@ char * reverseBuffer(char * buffer, uint32_t length) {
  * @param base
  * @return
  */
-char * convertNumberToString(
-        int32_t value,
-        char * buffer,
-        int32_t base
-) {
-    char * bufferStart = buffer;
-    auto shouldAddMinus = value < 0 && base == 10;
-    if(shouldAddMinus) {
-        value *= -1;
-    }
-
-    do {
-        const auto number = value % base;
-        *buffer = static_cast<char>(number + 48);
-        ++buffer;
-        value /= base;
-    } while (value);
-
-    if(shouldAddMinus) {
-        *buffer = '-';
-        ++buffer;
-    }
-
-    reverseBuffer(bufferStart, static_cast<uint32_t>(buffer - bufferStart));
-    return buffer;
-}
+char * convertNumberToString(int32_t value,char * buffer, int32_t base);
 
 /**
- * TODO: Comment
- * TODO: Should be in common or lowest printf header?
- * @tparam Type
- * @param buffer
+ *
+ * @param str
  * @param format
- * @param arg
+ * @param ...
  * @return
  */
-template<typename Type>
-int32_t formatBuffer(char* buffer, const char format, Type arg) {
-    switch (format) {
-        case 'c':
-            *buffer = static_cast<char>(arg);
-            return 1;
-
-        case '%':
-            *buffer = '%';
-            return 1;
-
-        case 'i':
-        case 'd':
-            return static_cast<int32_t>(
-                    convertNumberToString(
-                        static_cast<int32_t>(arg),
-                        buffer,
-                        10
-                    ) - buffer
-            );
-
-        case 'u':
-            return static_cast<int32_t>(
-                    convertNumberToString(
-                            static_cast<uint32_t>(arg),
-                            buffer,
-                            10
-                    ) - buffer
-            );
-
-
-        case 'n':
-            return 0;
-
-        default:
-            return -1;
-    }
-}
-
-/**
- * TODO: Comment
- * @tparam Arg
- * @param buffer
- * @param format
- * @param arg
- * @return
- */
-template<typename Arg>
-int32_t sprintf(char * buffer, const char * format, Arg arg) {
-    int32_t count { 0 };
-    while(*format != '\0') {
-
-        //
-        if(*format != '%') {
-            *buffer = *format;
-            ++format;
-            ++buffer;
-            ++count;
-            continue;
-        }
-
-        //
-        auto added = formatBuffer(buffer, format[1], arg);
-        if(added < 0) {
-            return added;
-        }
-
-        count += added;
-        buffer += added;
-        format += 2;
-    }
-
-    //
-    *buffer = '\0';
-    return count;
-}
-
-/**
- * TODO: Comment
- * @tparam Arg
- * @tparam Args
- * @param buffer
- * @param format
- * @param arg
- * @param args
- * @return
- */
-template<typename Arg, typename ...Args>
-int32_t sprintf(char * buffer, const char * format, Arg arg, Args ...args) {
-    int32_t count { 0 };
-
-    while(*format != '\0') {
-
-        //
-        if(*format != '%') {
-            *buffer = *format;
-            ++format;
-            ++buffer;
-            ++count;
-            continue;
-        }
-
-        //
-        auto added = formatBuffer(buffer, format[1], arg);
-        if(added < 0) {
-            return added;
-        }
-
-        count += added;
-        buffer += added;
-        format += 2;
-
-        //
-        if(*(format-1) != '%' && *(format-1) != 'n') {
-            return count + sprintf(buffer, format, args...);
-        }
-    }
-
-    //
-    *buffer = '\0';
-    return count;
-}
+int sprintf(char *str, const char *format, ...);
 
 
 #endif // HEPHAIST_OS_KERNEL_LIB_STDIO_SPRINTF_H
