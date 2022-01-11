@@ -1,0 +1,2 @@
+add_library(sharedLibCpp INTERFACE)
+target_include_directories(sharedLibCpp INTERFACE include)

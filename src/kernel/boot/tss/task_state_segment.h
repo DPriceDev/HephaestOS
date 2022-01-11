@@ -18,7 +18,7 @@
 #define HEPHAIST_OS_KERNEL_BOOT_TSS_H
 
 #include <cstdint>
-#include "kernel/boot/gdt/global_descriptor.h"
+#include "boot/gdt/global_descriptor.h"
 
 namespace kernel::boot::tss {
 
