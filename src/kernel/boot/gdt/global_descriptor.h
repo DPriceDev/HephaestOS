@@ -18,7 +18,7 @@
 #ifndef HEPHAIST_OS_KERNEL_BOOT_GDT_GLOBAL_DESCRIPTOR_H
 #define HEPHAIST_OS_KERNEL_BOOT_GDT_GLOBAL_DESCRIPTOR_H
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace kernel::boot::gdt {
 

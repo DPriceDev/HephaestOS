@@ -15,8 +15,8 @@
  * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <stdint.h>
-#include <kernel/lib/libc/string.h>
+#include <cstdint>
+#include <string.h>
 
 #include "task_state_segment.h"
 
@@ -35,7 +35,7 @@ namespace kernel::boot::tss {
      */
     void initializeTaskStateSegment(uint32_t stackPointer) {
         // Clear TSS memory to all zeroes.
-        lib::memset(&tssEntry, 0, sizeof(tssEntry));
+        memset(&tssEntry, 0, sizeof(tssEntry));
 
         //
         tssEntry = {

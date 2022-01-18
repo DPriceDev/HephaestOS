@@ -18,7 +18,7 @@
 #ifndef HEPHAIST_OS_KERNEL_LIBRARY_ARRAY_H
 #define HEPHAIST_OS_KERNEL_LIBRARY_ARRAY_H
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace kernel {
 

@@ -18,7 +18,7 @@
 #ifndef SYS_REG_ADDR_H
 #define SYS_REG_ADDR_H
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace address {
     constexpr uint32_t videoMemoryAddress = 0xb8000;

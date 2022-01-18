@@ -18,7 +18,7 @@
 #ifndef HEPHAIST_OS_KERNEL_LIB_STD_INT_H
 #define HEPHAIST_OS_KERNEL_LIB_STD_INT_H
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace kernel {
 
