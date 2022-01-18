@@ -38,7 +38,7 @@ ExternalProject_Add(binutils-${BINUTILS_VERSION}
 ExternalProject_Add(gcc-${GCC_VERSION}
         URL             https://ftp.gnu.org/gnu/gcc/gcc-${GCC_VERSION}/gcc-${GCC_VERSION}.tar.gz
         URL_HASH        MD5=dc6886bd44bb49e2d3d662aed9729278
-        DEPENDS         binutils-${BINUTILS_VERSION}
+        DEPENDS         binutils-${BINUTILS_VERSION} CopySysRoot
         BINARY_DIR      ${CMAKE_CURRENT_BINARY_DIR}/gcc-${GCC_VERSION}-prefix/src/gcc-${GCC_VERSION}-build
         CONFIGURE_COMMAND
             export PATCH_DIR=${PATCH_DIR}
@@ -57,8 +57,8 @@ ExternalProject_Add(gcc-${GCC_VERSION}
         USES_TERMINAL_INSTALL   On
 )
 
-add_custom_target(libstdc++-${GCC_VERSION}
-        DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/output/bin/i386-pc-hephaistos-g++ ${CMAKE_CURRENT_BINARY_DIR}/output/bin/i386-pc-hephaistos-ld
+add_custom_command(TARGET gcc-${GCC_VERSION}
+        POST_BUILD
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/gcc-${GCC_VERSION}-prefix/src/gcc-${GCC_VERSION}-build
         COMMAND ${MAKE_EXE} CFLAGS=-g0 CXXFLAGS=-g0 -j ${PARALLEL_MAKE_JOBS} all-target-libstdc++-v3
         COMMAND ${MAKE_EXE} install-target-libstdc++-v3
