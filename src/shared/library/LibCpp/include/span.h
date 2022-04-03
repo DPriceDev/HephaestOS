@@ -18,27 +18,180 @@
 #ifndef HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_SPAN_H
 #define HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_SPAN_H
 
-#include <concepts>
+#include <concepts>g
+#include <limits>
 #include "iterator.h"
 
 namespace std {
 
     /**
-     *
-     * @tparam Type
-     * @tparam Extent
+     * Dynamic Extent defines both the maximum size of a span, as well as signalling that
+     * the span has a size defined dynamically instead of statically, such as with an array.
      */
-    template<class Type> requires contiguousIterator<Type*>
+    inline constexpr std::size_t dynamicExtent = std::numeric_limits<std::size_t>::max();
+
+    namespace detail {
+
+        /**
+         * Span Storage defines a statically defined struct containing a pointer to the
+         * start of a contiguous length of data of type @tparam Type with a size of
+         * @tparam Size.
+         */
+        template<class Type, std::size_t Size>
+        struct SpanStorage {
+            Type* dataPointer = nullptr;
+            static constexpr std::size_t size = Size;
+
+            constexpr SpanStorage() noexcept = default;
+
+            constexpr SpanStorage(Type* dataPointer) noexcept
+                    : dataPointer(dataPointer) {}
+        };
+
+        /**
+         * Span Storage specializes SpanStorage and alters it to store a pointer to the
+         * start of a contiguous length of data of type @tparam Type with a dynamically
+         * defined size.
+         */
+        template<class Type>
+        struct SpanStorage<Type, dynamicExtent> {
+            Type* dataPointer = nullptr;
+            std::size_t size = 0;
+
+            constexpr SpanStorage() noexcept = default;
+
+            constexpr SpanStorage(Type* dataPointer, std::size_t size) noexcept
+                    : dataPointer(dataPointer), size(size) { }
+        };
+    }
+
+    /**
+     * Span defines a container that does not own the data it contains. It usually takes
+     * a pointer to data of type @tparam Type with either a statically or dynamically set
+     * size defined in the @tparam Extent parameter; if the @tparam Extent is dynamicExtent,
+     * then it has dynamic storage, if it is defined as some size_t, then it is static.
+     */
+    template<class Type, std::size_t Extent = std::dynamicExtent>
     class Span {
+        detail::SpanStorage<Type, Extent> storage;
+
     public:
+        // Container Definitions
         using elementType = Type;
         using valueType = typename std::remove_cv<elementType>::type;
-        using pointer = Type *;
+        using pointer = elementType*;
+        using constPointer = const elementType*;
+        using reference = elementType&;
+        using constReference = const elementType&;
+        using iterator = valueType*;
+        using constIterator = const valueType*;
+        using reverseIterator = valueType*;
         using differenceType = std::ptrdiff_t;
-        using constPointer = const Type *;
-        using reference = Type &;
-        using constReference = const Type &;
-        using iterator = valueType *;
+        using sizeType = std::size_t;
+
+        // Span Definitions
+        static constexpr std::size_t extent = Extent;
+
+        // Constructors
+
+        /**
+         * Constructs an empty span with null data and a size of 0.
+         */
+        explicit(extent == 0 || extent == std::dynamicExtent)
+        constexpr Span() noexcept : storage(nullptr, 0) { }
+
+        /**
+         * Constructs a dynamic span starting at @param first with a size of @param size.
+         */
+        explicit(extent != std::dynamicExtent)
+        constexpr Span(pointer first, sizeType size) : storage(first, size) { }
+
+        /**
+         * Constructs a dynamic span from two pointers, with the size of the span being the
+         * difference between the pointers.
+         */
+        explicit(extent != std::dynamicExtent)
+        constexpr Span(pointer first, pointer last) : storage(first, last - first) { }
+
+        /**
+         * Constructs a static span from an @param array parameter with a statically
+         * defined @tparam Size.
+         */
+        template<std::size_t Size>
+        constexpr Span(elementType (&array)[Size] ) noexcept : storage(array, Size) { }
+
+        // todo: Add after implementing std::array
+//        template<class U, std::size_t N>
+//        constexpr Span(std::array<U, N>& arr ) noexcept {
+//            /* todo */
+//        }
+
+        // todo: Add after implementing std::array
+//        template< class U, std::size_t N >
+//        constexpr span( const std::array<U, N>& arr ) noexcept {
+//            /* todo */
+//        }
+
+        // todo: Add after implementing ranges?
+//        template< class R >
+//        explicit(extent != std::dynamic_extent)
+//        constexpr span( R&& range );
+
+//      todo: const from other span?
+//        template<std::size_t Size>
+//        explicit(extent != std::dynamicExtent && Size == std::dynamicExtent)
+//        constexpr Span(const std::Span<Type, Size>& source) noexcept {
+//            /* todo */
+//        }
+
+        constexpr Span(const Span& other) noexcept = default;
+
+        // Member Functions
+
+        // Assignment
+        constexpr Span& operator=(const Span& other) noexcept = default;
+
+        // Iterators
+        auto begin() -> iterator {
+            return data();
+        }
+
+        auto end() -> iterator {
+            return data() + size();
+        }
+
+        auto rbegin() -> reverseIterator { /* todo */ }
+        auto rend() -> reverseIterator { /* todo */ }
+
+        // Element Access
+        auto front() -> reference {
+            return *data();
+        }
+
+        auto back() -> reference {
+            return *(data() + size());
+        }
+
+        constexpr auto operator[](sizeType index) const -> reference {
+            return *(data() + index);
+        }
+
+        constexpr auto data() const noexcept -> pointer {
+            return storage.dataPointer;
+        }
+
+        // Observers
+        [[nodiscard]] constexpr auto size() const noexcept -> sizeType {
+            return storage.size;
+        }
+        [[nodiscard]] constexpr auto sizeInBytes() const noexcept -> sizeType {
+            return size() * sizeof(elementType);
+        }
+        [[nodiscard]] constexpr auto empty() const noexcept -> bool {
+            return size() == 0;
+        }
+
+        // todo: Subviews
 
     };
 }

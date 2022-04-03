@@ -41,8 +41,6 @@ namespace kernel::boot {
         // Construct memory map from grub multiboot information passed from grub
         //grub::constructMemoryMap(info);
 
-        auto test = std::Span<int>();
-
         auto terminal = Terminal{display};
 
         terminal.clear();
