@@ -15,8 +15,8 @@
  * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef HEPHAIST_OS_KERNEL_LIBRARY_ARRAY_H
-#define HEPHAIST_OS_KERNEL_LIBRARY_ARRAY_H
+#ifndef HEPHAIST_OS_SHARED_LIBRARY_CPP_ARRAY_H
+#define HEPHAIST_OS_SHARED_LIBRARY_CPP_ARRAY_H
 
 #include <cstdint>
 
@@ -38,4 +38,4 @@ namespace kernel {
         const Type* data() const noexcept { return array; }
     };
 }
-#endif //HEPHAIST_OS_KERNEL_LIBRARY_ARRAY_H
+#endif // HEPHAIST_OS_SHARED_LIBRARY_CPP_ARRAY_H
