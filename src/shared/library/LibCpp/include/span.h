@@ -18,7 +18,7 @@
 #ifndef HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_SPAN_H
 #define HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_SPAN_H
 
-#include <concepts>g
+#include <concepts>
 #include <limits>
 #include "iterator.h"
 
@@ -78,16 +78,15 @@ namespace std {
     public:
         // Container Definitions
         using elementType = Type;
-        using valueType = typename std::remove_cv<elementType>::type;
+        using valueType = std::remove_cv_t<elementType>;
+        using sizeType = std::size_t;
+        using differenceType = std::ptrdiff_t;
         using pointer = elementType*;
         using constPointer = const elementType*;
         using reference = elementType&;
         using constReference = const elementType&;
         using iterator = valueType*;
-        using constIterator = const valueType*;
-        using reverseIterator = valueType*;
-        using differenceType = std::ptrdiff_t;
-        using sizeType = std::size_t;
+        using reverseIterator = std::reverseIterator<iterator>;
 
         // Span Definitions
         static constexpr std::size_t extent = Extent;
@@ -160,8 +159,12 @@ namespace std {
             return data() + size();
         }
 
-        auto rbegin() -> reverseIterator { /* todo */ }
-        auto rend() -> reverseIterator { /* todo */ }
+        auto rbegin() -> reverseIterator {
+            return reverseIterator(data() + size());
+        }
+        auto rend() -> reverseIterator {
+            reverseIterator(data());
+        }
 
         // Element Access
         auto front() -> reference {

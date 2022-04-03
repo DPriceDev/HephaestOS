@@ -15,12 +15,8 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-//
-// Created by david on 03/04/2022.
-//
-
-#ifndef HEPHAISTOS_ITERATORTRAITS_H
-#define HEPHAISTOS_ITERATORTRAITS_H
+#ifndef HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_ITERATORS_ITERATOR_TRAITS_H
+#define HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_ITERATORS_ITERATOR_TRAITS_H
 
 #include <cstddef>
 #include <type_traits>
@@ -82,4 +78,4 @@ namespace std {
             typename std::iteratorTraits<Iterator>::differenceType; // todo: need to be std::remove_cvref<...
 }
 
-#endif //HEPHAISTOS_ITERATORTRAITS_H
+#endif // HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_ITERATORS_ITERATOR_TRAITS_H
