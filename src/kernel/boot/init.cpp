@@ -15,8 +15,7 @@
  * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <stdoffset.h>
-#include <stdint.h>
+#include <cstdint>
 
 #include "gdt/global_descriptor_table.h"
 #include "idt/interrupt_descriptor_table.h"
@@ -26,9 +25,7 @@
 #include "terminal/Terminal.h"
 #include "boot/idt/pic/programmable_interrupt_controller.h"
 #include "boot/tss/task_state_segment.h"
-#include "span.h"
-
-//#include "kernel/boot/grub/memory_map.h"
+#include "boot/grub/memory_map.h"
 
 namespace kernel::boot {
 
@@ -36,10 +33,10 @@ namespace kernel::boot {
 
     constexpr uint8_t interruptRequestOffset = 32;
 
-    extern "C" void init(MultiBootInfo * info, uint32_t magic, uint32_t stackPointer) {
+    extern "C" void init(MultiBootInfo * info, uint32_t /* magic */, uint32_t stackPointer) {
 
         // Construct memory map from grub multiboot information passed from grub
-        //grub::constructMemoryMap(info);
+        grub::constructMemoryMap(info);
 
         auto terminal = Terminal{display};
 

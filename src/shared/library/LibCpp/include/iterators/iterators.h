@@ -24,6 +24,7 @@
 
 #include "iterator_traits.h"
 #include "memory.h"
+#include "utility.h"
 
 namespace std {
 
@@ -75,12 +76,41 @@ namespace std {
      * Also the l-value & and r-value && Types must be of the same reference type.
      */
     template<class Type>
-    concept indirectlyReadable = requires(const Type type) {
-        *type;
-        // { *type } -> std::same_as<Type &>; todo : Need to define referencable, i.e. not void?
-    } && std::common_reference_with<Type&&, Type&>
-                                 && std::common_reference_with<Type&&, Type&&>
-                                 && std::common_reference_with<Type&&, const Type&>;
+    concept indirectlyReadable =
+            requires(const Type type) {
+                *type;
+                // { *type } -> std::same_as<Type &>; todo : Need to define referencable, i.e. not void?
+            }
+            && std::common_reference_with<Type&&, Type&>
+            && std::common_reference_with<Type&&, Type&&>
+            && std::common_reference_with<Type&&, const Type&>;
+
+    /**
+     * todo comment
+     * @tparam Output
+     * @tparam Type
+     */
+    template<class Output, class Type>
+    concept indirectlyWritable =
+    requires(Output&& output, Type&& type) {
+        *output = std::forward<Type>(type);
+        *std::forward<Output>(output) = std::forward<Type>(type);
+        const_cast<const std::iteratorReferenceType<Output>&&>(*output) = std::forward<Type>(type);
+        const_cast<const std::iteratorReferenceType<Output>&&>(*std::forward<Output>(output)) = std::forward<Type>(type);
+    };
+
+    /**
+     * todo comment
+     * @tparam Iterator
+     */
+     template<class Iterator, class Type>
+     concept outputIterator =
+        std::inputOrOutputIterator<Iterator>
+        && std::indirectlyWritable<Iterator, Type>
+        && requires(Iterator iterator, Type&& type) {
+            *iterator++ = std::forward<Type>(type);
+        };
+
 
     /**
      * Input iterator defines an @tparam Iterator that extends an Input or Output Iterator

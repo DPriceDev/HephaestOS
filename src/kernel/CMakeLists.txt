@@ -34,6 +34,8 @@ add_executable(
         boot/idt/exceptions/exception_handler.cpp
         boot/idt/exceptions/exception_handler.h
         boot/idt/model/handler_registers.h
+        boot/grub/memory_map.h
+        boot/grub/memory_map.cpp
 )
 
 target_link_libraries(kernel.elf PRIVATE project_options) # project_warnings)
