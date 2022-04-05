@@ -18,10 +18,10 @@
 #ifndef HEPHAIST_OS_KERNEL_BOOT_IDT_INTERRUPT_HANDLER_H
 #define HEPHAIST_OS_KERNEL_BOOT_IDT_INTERRUPT_HANDLER_H
 
-#include <kernel/lib/libc/stdint.h>
-#include <kernel/lib/libc/array.h>
+#include <stdoffset.h>
+#include <array.h>
 
-#include "kernel/boot/idt/model/handler_registers.h"
+#include "boot/idt/model/handler_registers.h"
 
 namespace kernel::boot::idt {
 

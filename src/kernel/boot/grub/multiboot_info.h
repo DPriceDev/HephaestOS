@@ -18,24 +18,77 @@
 #ifndef HEPHAIST_OS_KERNEL_BOOT_MULTIBOOT_INFO_H
 #define HEPHAIST_OS_KERNEL_BOOT_MULTIBOOT_INFO_H
 
-#include "kernel/lib/libc/stdint.h"
+#include <stdoffset.h>
 
 namespace kernel::boot {
+
+    static constexpr uint8_t MULTIBOOT_MEMORY_AVAILABLE = 1;
+    static constexpr uint8_t MULTIBOOT_MEMORY_RESERVED = 2;
+    static constexpr uint8_t MULTIBOOT_MEMORY_ACPI_RECLAIMABLE = 3;
+    static constexpr uint8_t MULTIBOOT_MEMORY_NVS = 4;
+    static constexpr uint8_t MULTIBOOT_MEMORY_BAD_RAM = 5;
+
+    struct [[gun::packed]] MultiBootFlags {
+        bool isPageAligned : 1;
+        bool isMemoryAvailable : 1;
+        bool isVideoModeAvailable : 1;
+        bool unusedFlagA : 1;
+        bool unusedFlagB : 1;
+        bool unusedFlagC : 1;
+        bool isMemoryMapAvailable : 1;
+        uint32_t unusedLowerFlags : 9;
+        bool hasExecutableHeader : 1;
+        uint32_t unusedUpperFlags : 15;
+    };
+
+    struct [[gun::packed]] BootDevice {
+        uint8_t a;
+        uint8_t b;
+        uint8_t c;
+        uint8_t d;
+    };
+
+    struct [[gnu::packed]] ElfSectionTable {
+        uint32_t count;
+        uint32_t size;
+        uint32_t tableAddress;
+        uint32_t shndx;
+    };
+
+    struct [[gnu::packed]] ModuleEntry {
+        uint32_t moduleStart;
+        uint32_t moduleEnd;
+        uint32_t string;
+        uint32_t unused;
+    };
+
+    struct [[gnu::packed]] MemoryMapEntry {
+        uint32_t size;
+        uint32_t addr_low;
+        uint32_t addr_high;
+        uint32_t len_low;
+        uint32_t len_high;
+        uint32_t type;
+
+        //bool operator==(const MemoryMapEntry& rhs) const = default;
+
+        //auto operator<=>(const MemoryMapEntry&) const = default;
+    };
 
     /**
      * todo: Comment
      */
-    struct MultiBootInfo {
-        uint32_t flags;
+    struct [[gnu::packed]] MultiBootInfo {
+        MultiBootFlags flags;
         uint32_t lowerMemorySize;
         uint32_t upperMemorySize;
-        uint32_t bootDevice;
+        BootDevice bootDevice;
         uint32_t commandLine;
         uint32_t moduleCount;
-        uint32_t moduleAddress;                     // Can be a pointer to a struct
-        uint32_t symbolTableLocation[4];            // Can be a struct
+        ModuleEntry* modulePtr;
+        ElfSectionTable symbolTableLocation;
         uint32_t memoryMapLength;
-        uint32_t memoryMapAddress;
+        MemoryMapEntry* memoryMapPtr;
         uint32_t drivesLength;
         uint32_t drivesAddress;                     // Can be a pointer to a struct
         uint32_t configTable;
@@ -46,7 +99,6 @@ namespace kernel::boot {
         uint32_t vbeInterfaceSeg;
         uint32_t vbeInterfaceOff;
         uint32_t vbeInterfaceLength;
-    } __attribute__((aligned(128)));
-
+    };
 }
 #endif // HEPHAIST_OS_KERNEL_BOOT_MULTIBOOT_INFO_H

@@ -15,10 +15,11 @@
  * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <kernel/drivers/video_buffer_display.h>
+#include <stdoffset.h>
+
+#include "drivers/video_buffer_display.h"
 #include "terminal/Terminal.h"
-#include "lib/libc/stdint.h"
-#include "kernel/boot/tss/task_state_segment.h"
+#include "boot/tss/task_state_segment.h"
 
 namespace kernel {
 
@@ -40,7 +41,7 @@ namespace kernel {
         terminal.println("HephaistOS");
         terminal.println("Version 1.0", kernel::Display::cyan);
 
-        // todo: Init Timer Task? (or in init.libcpp)
+        // todo: Init Timer Task? (or in init.LibCpp)
 
         // todo: Init IPC Task
 

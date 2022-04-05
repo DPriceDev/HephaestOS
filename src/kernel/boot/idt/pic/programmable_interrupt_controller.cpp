@@ -15,9 +15,9 @@
  * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "kernel/boot/idt/pic/programmable_interrupt_controller.h"
+#include "boot/idt/pic/programmable_interrupt_controller.h"
 
-#include "kernel/boot/io.h"
+#include "boot/io.h"
 
 namespace kernel::boot::idt {
 

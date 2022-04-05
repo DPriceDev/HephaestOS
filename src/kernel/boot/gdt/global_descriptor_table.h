@@ -18,7 +18,7 @@
 #ifndef HEPHAIST_OS_KERNEL_BOOT_GDT_GLOBAL_DESCRIPTOR_TABLE_H
 #define HEPHAIST_OS_KERNEL_BOOT_GDT_GLOBAL_DESCRIPTOR_TABLE_H
 
-#include <kernel/lib/libc/stdint.h>
+#include <stdoffset.h>
 #include "global_descriptor.h"
 
 namespace kernel::boot::gdt {

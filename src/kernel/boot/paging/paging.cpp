@@ -3,7 +3,7 @@
 //
 
 #include "paging.h"
-#include "kernel/lib/libc/stdint.h"
+#include <cstdint>
 
 void kernel::boot::paging::setupPaging() {
 

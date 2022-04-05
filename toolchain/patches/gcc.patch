@@ -1,0 +1,134 @@
+diff --git a/config.sub b/config.sub
+index 63c1f1c8b..bf45a6203 100755
+--- a/config.sub
++++ b/config.sub
+@@ -1701,7 +1701,7 @@ case $os in
+ 	     | sym* |  plan9* | psp* | sim* | xray* | os68k* | v88r* \
+ 	     | hiux* | abug | nacl* | netware* | windows* \
+ 	     | os9* | macos* | osx* | ios* \
+-	     | mpw* | magic* | mmixware* | mon960* | lnews* \
++	     | mpw* | magic* | mmixware* | mon960* | lnews* | hephaistos* \
+ 	     | amigaos* | amigados* | msdos* | newsos* | unicos* | aof* \
+ 	     | aos* | aros* | cloudabi* | sortix* | twizzler* \
+ 	     | nindy* | vxsim* | vxworks* | ebmon* | hms* | mvs* \
+diff --git a/fixincludes/mkfixinc.sh b/fixincludes/mkfixinc.sh
+index df90720b7..e72656552 100755
+--- a/fixincludes/mkfixinc.sh
++++ b/fixincludes/mkfixinc.sh
+@@ -11,6 +11,7 @@ target=fixinc.sh
+
+ # Check for special fix rules for particular targets
+ case $machine in
++    *-hephaistos* | \
+     i?86-*-cygwin* | \
+     i?86-*-mingw32* | \
+     x86_64-*-mingw32* | \
+diff --git a/gcc/config.gcc b/gcc/config.gcc
+index 357b0bed0..32639f85d 100644
+--- a/gcc/config.gcc
++++ b/gcc/config.gcc
+@@ -686,6 +686,12 @@ x86_cpus="generic intel"
+
+ # Common parts for widely ported systems.
+ case ${target} in
++*-*-hephaistos*)
++  gas=yes
++  gnu_ld=yes
++  default_use_cxa_atexit=yes
++  use_gcc_stdint=provide
++  ;;
+ *-*-darwin*)
+   tmake_file="t-darwin "
+   tm_file="${tm_file} darwin.h"
+@@ -1084,6 +1090,12 @@ case ${target} in
+ esac
+
+ case ${target} in
++i[34567]86-*-hephaistos*)
++    tm_file="${tm_file} i386/unix.h i386/att.h dbxelf.h elfos.h glibc-stdint.h i386/i386elf.h hephaistos.h"
++    ;;
++x86_64-*-hephaistos*)
++    tm_file="${tm_file} i386/unix.h i386/att.h dbxelf.h elfos.h glibc-stdint.h i386/i386elf.h i386/x86-64.h hephaistos.h"
++    ;;
+ aarch64*-*-elf | aarch64*-*-fuchsia* | aarch64*-*-rtems*)
+ 	tm_file="${tm_file} dbxelf.h elfos.h newlib-stdint.h"
+ 	tm_file="${tm_file} aarch64/aarch64-elf.h aarch64/aarch64-errata.h aarch64/aarch64-elf-raw.h"
+diff --git a/gcc/config/hephaistos.h b/gcc/config/hephaistos.h
+new file mode 100644
+index 000000000..abf03875b
+--- /dev/null
++++ b/gcc/config/hephaistos.h
+@@ -0,0 +1,20 @@
++/* Useful if you wish to make target-specific GCC changes. */
++#undef TARGET_hephaistos
++#define TARGET_hephaistos 1
++
++/* Default arguments you want when running your
++   i386-hephaistos-gcc/x86_64-hephaistos-gcc toolchain */
++#undef LIB_SPEC
++#define LIB_SPEC "-lc" /* link against c library */
++
++/* Additional predefined macros. */
++#undef TARGET_OS_CPP_BUILTINS
++#define TARGET_OS_CPP_BUILTINS()        \
++    do                                  \
++    {                                   \
++        builtin_define("__hephaistos__");    \
++        builtin_define("__unix__");     \
++        builtin_assert("system=hephaistos"); \
++        builtin_assert("system=unix");  \
++        builtin_assert("system=posix"); \
++    } while (0);
+\ No newline at end of file
+diff --git a/libgcc/config.host b/libgcc/config.host
+index 50f000622..b3b423f0e 100644
+--- a/libgcc/config.host
++++ b/libgcc/config.host
+@@ -1504,6 +1504,14 @@ nvptx-*)
+ 	tmake_file="$tmake_file nvptx/t-nvptx"
+ 	extra_parts="crt0.o"
+ 	;;
++i[34567]86-*-hephaistos*)
++	extra_parts="$extra_parts crti.o crtbegin.o crtend.o crtn.o"
++	tmake_file="$tmake_file i386/t-crtstuff t-crtstuff-pic t-libgcc-pic"
++	;;
++x86_64-*-hephaistos*)
++	extra_parts="$extra_parts crti.o crtbegin.o crtend.o crtn.o"
++	tmake_file="$tmake_file i386/t-crtstuff t-crtstuff-pic t-libgcc-pic"
++	;;
+ *)
+ 	echo "*** Configuration ${host} not supported" 1>&2
+ 	exit 1
+diff --git a/libgcc/libgcov.h b/libgcc/libgcov.h
+index 7b0d367ec..329d85722 100644
+--- a/libgcc/libgcov.h
++++ b/libgcc/libgcov.h
+@@ -183,6 +183,7 @@ extern struct gcov_info *gcov_list;
+ #endif
+
+ #include "gcov-io.h"
++#include "stdint.h"
+
+ /* Structures embedded in coveraged program.  The structures generated
+    by write_profile must match these.  */
+diff --git a/libstdc++-v3/crossconfig.m4 b/libstdc++-v3/crossconfig.m4
+index ff44d5ae0..2559f62b8 100644
+--- a/libstdc++-v3/crossconfig.m4
++++ b/libstdc++-v3/crossconfig.m4
+@@ -5,6 +5,13 @@ dnl
+ AC_DEFUN([GLIBCXX_CROSSCONFIG],[
+ # Base decisions on target environment.
+ case "${host}" in
++  *-hephaistos*)
++    GLIBCXX_CHECK_COMPILER_FEATURES
++    GLIBCXX_CHECK_LINKER_FEATURES
++    GLIBCXX_CHECK_MATH_SUPPORT
++    GLIBCXX_CHECK_STDLIB_SUPPORT
++    ;;
++
+   arm*-*-symbianelf*)
+     # This is a freestanding configuration; there is nothing to do here.
+     ;;
+-- 
+2.34.1
+

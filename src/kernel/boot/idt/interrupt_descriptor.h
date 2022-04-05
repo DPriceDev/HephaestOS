@@ -18,6 +18,8 @@
 #ifndef HEPHAIST_OS_KERNEL_BOOT_IDT_INTERRUPT_DESCRIPTOR_H
 #define HEPHAIST_OS_KERNEL_BOOT_IDT_INTERRUPT_DESCRIPTOR_H
 
+#include <cstdint>
+
 namespace kernel::boot::idt {
 
     constexpr uint16_t InterruptSegment = 0x08;

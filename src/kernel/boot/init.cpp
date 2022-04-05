@@ -15,15 +15,17 @@
  * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <cstdint>
+
 #include "gdt/global_descriptor_table.h"
 #include "idt/interrupt_descriptor_table.h"
-#include "kernel/lib/libc/stdint.h"
-#include "kernel/boot/grub/multiboot_info.h"
-#include "kernel/boot/paging/paging.h"
-#include <kernel/drivers/video_buffer_display.h>
-#include "kernel/terminal/Terminal.h"
-#include "kernel/boot/idt/pic/programmable_interrupt_controller.h"
-#include "kernel/boot/tss/task_state_segment.h"
+#include "boot/paging/paging.h"
+#include "boot/grub/multiboot_info.h"
+#include "drivers/video_buffer_display.h"
+#include "terminal/Terminal.h"
+#include "boot/idt/pic/programmable_interrupt_controller.h"
+#include "boot/tss/task_state_segment.h"
+#include "boot/grub/memory_map.h"
 
 namespace kernel::boot {
 
@@ -32,14 +34,15 @@ namespace kernel::boot {
     constexpr uint8_t interruptRequestOffset = 32;
 
     extern "C" void init(MultiBootInfo * info, uint32_t /* magic */, uint32_t stackPointer) {
+
+        // Construct memory map from grub multiboot information passed from grub
+        grub::constructMemoryMap(info);
+
         auto terminal = Terminal{display};
 
         terminal.clear();
         terminal.println("System init");
 
-        // todo: Setup paging
-
-        //
         auto tssDescriptor = tss::getTaskStateSegmentDescriptor();
         gdt::initializeGlobalDescriptorTable(tssDescriptor);
         terminal.println("Global Descriptor table initialized");
@@ -60,6 +63,5 @@ namespace kernel::boot {
         );
 
         paging::setupPaging();
-        // todo: call global descriptors
     }
 }

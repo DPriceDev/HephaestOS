@@ -18,7 +18,7 @@
 #ifndef HEPHAIST_OS_KERNEL_BOOT_IDT_PROGRAMMABLE_INTERRUPT_CONTROLLER_H
 #define HEPHAIST_OS_KERNEL_BOOT_IDT_PROGRAMMABLE_INTERRUPT_CONTROLLER_H
 
-#include "kernel/lib/libc/stdint.h"
+#include <cstdint>
 
 namespace kernel::boot::idt {
     constexpr uint8_t masterPicAddress = 0x20;      // IO Address of Master PIC
