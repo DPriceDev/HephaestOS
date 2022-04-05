@@ -15,14 +15,13 @@
  * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <array.h>
-
 #include "global_descriptor_table.h"
+#include "array.h"
 
 namespace kernel::boot::gdt {
 
     // Array of Global Descriptors that defines the Global Descriptor Table.
-    Array<GlobalDescriptor, 6> globalDescriptorTable;
+    std::Array<GlobalDescriptor, 6> globalDescriptorTable;
 
     // Structure holding the Global descriptor Table array pointer and size of the array.
     GdtPointer gdtPointer;

@@ -40,7 +40,7 @@ namespace kernel::boot::idt {
     constexpr uint32_t exceptionTableSize = 32;
 
     //
-    constexpr Array<const char *, exceptionTableSize> exceptionDescription {
+    constexpr std::Array<const char *, exceptionTableSize> exceptionDescription {
             "Division By Zero",
             "Debug",
             "Non Maskable Interrupt",
