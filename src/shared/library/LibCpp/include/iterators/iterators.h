@@ -41,8 +41,9 @@ namespace std {
      * i.e. ++i and i++. Weakly defines that it does not preserve equality, therefore a == b does not mean a++ == b++.
      */
     template<class Type>
-    concept weaklyIncrementable = std::movable<Type>
-                                  && requires(Type iterator) {
+    concept weaklyIncrementable =
+    std::movable<Type>
+    && requires(Type iterator) {
         { ++iterator } -> std::same_as<Type &>;
         iterator++;
     };
