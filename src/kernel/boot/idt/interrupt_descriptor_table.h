@@ -19,7 +19,6 @@
 #define HEPHAIST_OS_KERNEL_BOOT_IDT_INTERRUPT_DESCRIPTOR_TABLE_H
 
 #include <stdoffset.h>
-#include <array.h>
 
 #include "drivers/video_buffer_display.h"
 #include "terminal/Terminal.h"

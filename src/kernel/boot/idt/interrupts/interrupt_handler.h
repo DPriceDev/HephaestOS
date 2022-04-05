@@ -19,7 +19,6 @@
 #define HEPHAIST_OS_KERNEL_BOOT_IDT_INTERRUPT_HANDLER_H
 
 #include <stdoffset.h>
-#include <array.h>
 
 #include "boot/idt/model/handler_registers.h"
 
