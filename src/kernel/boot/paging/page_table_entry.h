@@ -26,6 +26,7 @@
 
 namespace kernel::boot::paging {
 
+    // Defines the access flags of a given Page Table Entry.
     struct [[gnu::packed]] PageTableAccess {
         bool isPresent : 1;
         bool canWrite : 1;
@@ -37,10 +38,12 @@ namespace kernel::boot::paging {
         bool pageAttributeTable : 1;
     };
 
+    // Defines a Page Table Entry with a set of access flags and the top 20 bits of
+    // The address this entry points to.
     struct [[gnu::packed]] PageTableEntry {
         PageTableAccess access;
         bool global : 1;
-        uint8_t available : 3;
+        uint8_t unused : 3;
         uint32_t address : 20;
     };
 }

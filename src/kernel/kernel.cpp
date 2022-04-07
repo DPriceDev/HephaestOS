@@ -58,6 +58,10 @@ namespace kernel {
         // todo: Start Root Process
 
         // todo: Switch to Ring 3
-        boot::tss::jumpUserMode();
+        //boot::tss::jumpUserMode();
+
+        while(true) {
+            /* Endless Loop */
+        }
     }
 }

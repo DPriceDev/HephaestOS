@@ -28,6 +28,7 @@
 
 namespace kernel::boot::paging {
 
+    // Defines the access flags of a given Page Directory Entry.
     struct [[gnu::packed]] PageDirectoryAccess {
         bool isPresent : 1;
         bool canWrite : 1;
@@ -39,10 +40,12 @@ namespace kernel::boot::paging {
         bool isMibSize : 1;
     };
 
+    // Defines a Page Directory Entry with a set of access flags and the top 20 bits of
+    // The address this entry points to.
     struct [[gnu::packed]] PageDirectoryEntry {
         PageDirectoryAccess access;
         bool global : 1;
-        uint8_t available : 3;
+        uint8_t unused : 3;
         uint32_t address : 20;
     };
 
