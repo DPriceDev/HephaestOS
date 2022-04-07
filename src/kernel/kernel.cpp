@@ -24,7 +24,9 @@
 namespace kernel {
 
     extern "C" [[noreturn]] void testUserFunction() {
-        while(true) { /* Endless Loop */ }
+        while(true) {
+            /* Endless Loop */
+        }
     };
 
     // todo: Should this live in a config file somewhere?

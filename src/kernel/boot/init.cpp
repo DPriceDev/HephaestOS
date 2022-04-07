@@ -38,6 +38,7 @@ namespace kernel::boot {
         // Construct memory map from grub multiboot information passed from grub
         grub::constructMemoryMap(info);
 
+        // todo: replace with log stream? pass to root process?
         auto terminal = Terminal{display};
 
         terminal.clear();
@@ -62,6 +63,8 @@ namespace kernel::boot {
                 interruptRequestOffset + 8
         );
 
+        // todo: move kernel to higher half?
+        // todo: verify paging is on
         paging::setupPaging();
     }
 }
