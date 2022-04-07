@@ -1,24 +1,27 @@
 ENTRY (loader)
 SECTIONS
 {
-  . = 1M;
-  .multiboot BLOCK(4k): ALIGN (4k) {
-    *(.multiboot)
-  }
-  .text BLOCK(4k): ALIGN (4k) {
-    *(.text)
-  }
+    . = 1M;
+    kernelMemoryStart = .;
 
-  .rodata BLOCK(4k): ALIGN (4k) {
-    *(.rodata)
-  }
+    .multiboot BLOCK(4k): ALIGN (4k) {
+        *(.multiboot)
+    }
+    .text BLOCK(4k): ALIGN (4k) {
+        *(.text)
+    }
 
-  .data BLOCK(4k): ALIGN (4k)  {
-    *(.data)
-  }
+    .rodata BLOCK(4k): ALIGN (4k) {
+        *(.rodata)
+    }
 
-  .bss BLOCK(4k) : ALIGN(4k) {
-    *(COMMON)
-    *(.bss)
-  }
+    .data BLOCK(4k): ALIGN (4k)  {
+        *(.data)
+    }
+
+    .bss BLOCK(4k) : ALIGN(4k) {
+        *(COMMON)
+        *(.bss)
+    }
+    kernelMemoryEnd = .;
 }
