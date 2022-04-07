@@ -26,6 +26,7 @@
 #include "boot/idt/pic/programmable_interrupt_controller.h"
 #include "boot/tss/task_state_segment.h"
 #include "boot/grub/memory_map.h"
+#include "boot/elf/elf_loader.h"
 
 namespace kernel::boot {
 
@@ -37,6 +38,8 @@ namespace kernel::boot {
 
         // Construct memory map from grub multiboot information passed from grub
         grub::constructMemoryMap(info);
+
+        elf::loadModules(info->modulePtr, info->moduleCount);
 
         // todo: replace with log stream? pass to root process?
         auto terminal = Terminal{display};
