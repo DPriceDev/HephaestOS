@@ -26,14 +26,38 @@
 #include "boot/idt/pic/programmable_interrupt_controller.h"
 #include "boot/tss/task_state_segment.h"
 #include "boot/grub/memory_map.h"
+#include "boot_info.h"
+#include "library/LibDebug/include/debug.h"
 
 namespace kernel::boot {
 
     static const VideoBufferDisplay display { };
 
+    extern "C" uint32_t * kernelPageTable;
+
     constexpr uint8_t interruptRequestOffset = 32;
 
-    extern "C" void init(MultiBootInfo * info, uint32_t /* magic */, uint32_t stackPointer) {
+    extern "C" void init(
+            MultiBootInfo * info,
+            uint32_t /* magic */,
+            uint32_t stackPointer,
+            BootInfo bootInfo
+    ) {
+
+        // todo: move kernel to higher half?
+        // todo: verify paging is on
+
+        lib::debug::magicBreakPoint();
+
+        paging::setupPaging(
+                bootInfo.pageDirectory,
+                bootInfo.kernelPageTable,
+                0xC0000000,
+                bootInfo.kernelStartAddress,
+                bootInfo.kernelEndAddress
+        );
+
+        lib::debug::magicBreakPoint();
 
         // Construct memory map from grub multiboot information passed from grub
         grub::constructMemoryMap(info);
@@ -62,9 +86,5 @@ namespace kernel::boot {
                 interruptRequestOffset,
                 interruptRequestOffset + 8
         );
-
-        // todo: move kernel to higher half?
-        // todo: verify paging is on
-        paging::setupPaging();
     }
 }

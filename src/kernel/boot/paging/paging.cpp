@@ -22,35 +22,74 @@
 #include <stdoffset.h>
 
 #include "page_directory_entry.h"
+#include "span.h"
 
 namespace kernel::boot::paging {
 
-    // todo: Move to linker script
-    // Page directory and first page table arrays.
-    std::Array<PageDirectoryEntry, PAGE_DIRECTORY_SIZE> pageDirectory __attribute__((aligned(4096)));
-    std::Array<PageTableEntry, PAGE_TABLE_SIZE> firstPageTable __attribute__((aligned(4096)));
+    extern "C" PageTableEntry* kernelPageTable;
 
-    void setFirstTableInDirectory();
-    void identityMapFirstTable();
-    void zeroPageDirectory();
 
-    // Sets up paging by clearing the page directory and identity maps the first page table,
-    // before loading the page directory and enabling paging.
-    // todo pass through directory and table pointers
-    void setupPaging() {
-        zeroPageDirectory();
-        // todo higher half map, pass in kernel pointer
-        identityMapFirstTable();
-        // todo assign specific table
-        setFirstTableInDirectory();
+    void updateTableInDirectory(
+        std::Span<PageDirectoryEntry>& pageDirectory,
+        uint32_t index,
+        PageTableEntry* pageTablePointer
+    );
+    void mapAddressRangeInTable(
+        PageTableEntry* pageTablePointer,
+        uintptr_t virtualStartAddress,
+        uintptr_t startAddress,
+        uintptr_t endAddress
+    );
+    void zeroPageDirectory(std::Span<PageDirectoryEntry>& pageDirectory);
+
+    void unmapPageTable(std::Span<PageDirectoryEntry, std::dynamicExtent> pageDirectory, int index);
+
+// todo update comment
+    void setupPaging(
+        PageDirectoryEntry* pageDirectoryPointer,
+        PageTableEntry* kernelPageTablePointer,
+        uintptr_t virtualKernelBaseAddress,
+        uintptr_t kernelStartAddress,
+        uintptr_t kernelEndAddress
+    ) {
+        auto pageDirectory = std::Span(pageDirectoryPointer, PAGE_DIRECTORY_SIZE);
+        auto higherHalfKernelPageTable = std::Span(kernelPageTablePointer, PAGE_TABLE_SIZE);
+        PageTableEntry identityMappedPageTableArray[PAGE_TABLE_SIZE] __attribute__ ((aligned (4096)));
+        auto identityMappedPageTable = std::Span(identityMappedPageTableArray, PAGE_TABLE_SIZE);
+
+        zeroPageDirectory(pageDirectory);
+
+        mapAddressRangeInTable(
+                identityMappedPageTable.data(),
+                kernelStartAddress,
+                kernelStartAddress,
+                kernelEndAddress
+        );
+        mapAddressRangeInTable(
+                higherHalfKernelPageTable.data(),
+                virtualKernelBaseAddress,
+                kernelStartAddress,
+                kernelEndAddress
+        );
+
+        updateTableInDirectory(pageDirectory, 0, identityMappedPageTable.data());
+        updateTableInDirectory(pageDirectory, virtualKernelBaseAddress, higherHalfKernelPageTable.data());
 
         // enable paging
         loadPageDirectory(pageDirectory.data());
         enablePaging();
+
+        auto address = virtualKernelBaseAddress - kernelStartAddress;
+        jumpToHigherKernel(address);
+        unmapPageTable(pageDirectory, 0);
+    }
+
+    void unmapPageTable(std::Span<PageDirectoryEntry, std::dynamicExtent> pageDirectory, int index) {
+
     }
 
     // Initialize all page table entries to empty entries.
-    void zeroPageDirectory() {
+    void zeroPageDirectory(std::Span<PageDirectoryEntry>& pageDirectory) {
         std::forEach(pageDirectory.begin(), pageDirectory.end(), [] (auto & element) {
             element = PageDirectoryEntry {
                 .access = PageDirectoryAccess {
@@ -61,9 +100,19 @@ namespace kernel::boot::paging {
     }
 
     // Setup each entry of the first page table to map identically to the physical address.
-    void identityMapFirstTable() {
-        uint32_t address = 0;
-        std::forEach(firstPageTable.begin(), firstPageTable.end(), [&address] (auto & entry) {
+    void mapAddressRangeInTable(
+        PageTableEntry* pageTablePointer,
+        uintptr_t virtualStartAddress,
+        uintptr_t startAddress,
+        uintptr_t endAddress
+    ) {
+        auto pageTable = std::Span(pageTablePointer, PAGE_TABLE_SIZE);
+
+        uintptr_t address = startAddress;
+        uint32_t startIndex = (virtualStartAddress & 0xFFFFFFF) / PAGE_SIZE;
+        uint32_t endIndex = startIndex + ((endAddress / PAGE_SIZE) - (startAddress / PAGE_SIZE));
+
+        std::forEach(pageTable.begin() + startIndex, pageTable.begin() + endIndex + 1, [&address] (auto & entry) {
             entry = PageTableEntry {
                 .access = PageTableAccess {
                     .isPresent = true
@@ -75,14 +124,19 @@ namespace kernel::boot::paging {
     }
 
     // Assign the first page table to the first entry in the page directory.
-    void setFirstTableInDirectory() {
-        auto adr = reinterpret_cast<unsigned int>(firstPageTable.data());
-        pageDirectory.front() = {
+    void updateTableInDirectory(
+        std::Span<PageDirectoryEntry>& pageDirectory,
+        uintptr_t virtualAddress,
+        PageTableEntry* pageTablePointer
+    ) {
+        auto address = reinterpret_cast<unsigned int>(pageTablePointer);
+        auto index = (virtualAddress >> Offset22Bit) & Mask10Bit;
+        pageDirectory[index] = {
                 .access = PageDirectoryAccess {
                         .isPresent = true,
                         .canWrite = true
                 },
-                .address = (adr >> Offset12Bit) & Mask20Bit
+                .address = (address >> Offset12Bit) & Mask20Bit
         };
     }
 

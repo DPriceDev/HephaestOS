@@ -39,13 +39,21 @@ namespace kernel::boot::paging {
      */
     extern "C" void enablePaging();
 
+    extern "C" void jumpToHigherKernel(uintptr_t address);
+
     /**
      * todo pass kernel mapping
      * todo pass pointers to page directory and initial page table for kernel
      * Sets up the Paging directory and identity maps the first 4mb of memory, and then
      * loads the paging directory into cr3 and enables paging.
      */
-    void setupPaging();
+    void setupPaging(
+        PageDirectoryEntry* pageDirectory,
+        PageTableEntry* kernelPageTable,
+        uintptr_t virtualKernelBaseAddress,
+        uintptr_t kernelStartAddress,
+        uintptr_t kernelEndAddress
+    );
 }
 
 #endif // HEPHAIST_OS_KERNEL_BOOT_PAGING_PAGING_H

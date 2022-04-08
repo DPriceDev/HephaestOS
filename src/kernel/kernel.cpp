@@ -23,6 +23,8 @@
 
 namespace kernel {
 
+    static const VideoBufferDisplay display { };
+
     extern "C" [[noreturn]] void testUserFunction() {
         while(true) {
             /* Endless Loop */
@@ -37,8 +39,7 @@ namespace kernel {
     extern "C" void kernelMain() {
 
         // todo: Extract out all terminal code to user space
-        static const VideoBufferDisplay display { };
-        auto terminal = kernel::Terminal{display};
+        auto terminal = kernel::Terminal{ display };
 
         terminal.println("HephaistOS");
         terminal.println("Version 1.0", kernel::Display::cyan);

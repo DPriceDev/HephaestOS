@@ -25,8 +25,11 @@ namespace kernel {
 
     // todo: move to common file
     // Set of bit-masks that can be used to mask parts of an Integer.
-    constexpr uint16_t Mask20Bit = 0xFFFFF;
+    constexpr uint32_t Mask30Bit = 0x40000000;
+    constexpr uint32_t Mask20Bit = 0xFFFFF;
     constexpr uint16_t Mask16Bit = 0xFFFF;
+    constexpr uint16_t Mask12Bit = 0xFFF;
+    constexpr uint16_t Mask10Bit = 0x3FF;
     constexpr uint8_t Mask8Bit = 0xFF;
     constexpr uint8_t Mask4Bit = 0xF;
 
@@ -34,7 +37,9 @@ namespace kernel {
     // Set of bit-offsets that can be used to move an integer by a power of 2.
     constexpr uint8_t Offset12Bit = 12U;
     constexpr uint8_t Offset16Bit = 16U;
+    constexpr uint8_t Offset22Bit = 22U;
     constexpr uint8_t Offset24Bit = 24U;
+    constexpr uint8_t Offset32Bit = 32U;
 }
 
 #endif // HEPHAIST_OS_KERNEL_LIB_STD_INT_H

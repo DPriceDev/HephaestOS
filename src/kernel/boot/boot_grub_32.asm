@@ -23,16 +23,8 @@ global stack_ptr
 
 extern kernelMain, init
 extern gdtAddress, idtAddress
-
-stackSize:      equ             32798                           ; setup the stack size to be 16KB
-
-; ------------------------------------------------------------- ;
-; BSS Memory Section
-section .bss
-align           16
-stack_end:
-resb            stackSize
-stack_start:
+extern pageDirectory, kernelPageTable
+extern kernelStart, kernelEnd
 
 ; ------------------------------------------------------------- ;
 ; Multi-boot Header
@@ -52,16 +44,21 @@ MultiBootHeader:
                 dd              CHECKSUM
 
 ; ------------------------------------------------------------- ;
-section .text
+; Boot data section
+section .boot
 
 loader:
-                mov             esp, stack_start                ; set esp (register for stack pointer) as the stack pointer.
+                mov             esp, stack_start - 0                ; set esp (register for stack pointer) as the stack pointer.
 
 ;               initialize idt and gdt (when entering straight in from grub)
-                push            stack_start
+                push            kernelEnd
+                push            kernelStart
+                push            kernelPageTable
+                push            pageDirectory
+                push            stack_start - 0
                 push            eax                             ; push the magic number to the stack (2nd arg)
                 push            ebx                             ; push the multiboot info pointer to the stack (1st arg)
-                call            init
+                call            init - 0
 
                 mov             ax, 0x10
                 mov             ds, ax
@@ -80,3 +77,15 @@ halt:
                 hlt
                 jmp             halt
 end:
+
+section .text
+
+; ------------------------------------------------------------- ;
+; BSS Memory Section
+section .bss
+stackSize:      equ             32798                           ; setup the stack size to be 16KB
+
+align           16
+stack_end:
+resb            stackSize
+stack_start:
