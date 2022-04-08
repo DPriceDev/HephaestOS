@@ -36,6 +36,11 @@ add_executable(
         boot/idt/model/handler_registers.h
         boot/grub/memory_map.h
         boot/grub/memory_map.cpp
+        boot/paging/paging.asm
+        boot/paging/paging.cpp
+        boot/paging/paging.h
+        boot/paging/page_table_entry.h
+        boot/paging/page_directory_entry.h
 )
 
 target_link_libraries(kernel.elf PRIVATE project_options) # project_warnings)

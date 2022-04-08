@@ -15,12 +15,8 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-//
-// Created by david on 03/04/2022.
-//
-
-#ifndef HEPHAISTOS_MEMORY_H
-#define HEPHAISTOS_MEMORY_H
+#ifndef HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_MEMORY_H
+#define HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_MEMORY_H
 
 #include <type_traits>
 
@@ -33,4 +29,4 @@ namespace std {
     }
 }
 
-#endif //HEPHAISTOS_MEMORY_H
+#endif // HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_MEMORY_H

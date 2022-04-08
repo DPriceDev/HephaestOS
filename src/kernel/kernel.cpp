@@ -24,7 +24,9 @@
 namespace kernel {
 
     extern "C" [[noreturn]] void testUserFunction() {
-        while(true) { /* Endless Loop */ }
+        while(true) {
+            /* Endless Loop */
+        }
     };
 
     // todo: Should this live in a config file somewhere?
@@ -56,6 +58,10 @@ namespace kernel {
         // todo: Start Root Process
 
         // todo: Switch to Ring 3
-        boot::tss::jumpUserMode();
+        //boot::tss::jumpUserMode();
+
+        while(true) {
+            /* Endless Loop */
+        }
     }
 }

@@ -19,7 +19,7 @@
 
 #include "gdt/global_descriptor_table.h"
 #include "idt/interrupt_descriptor_table.h"
-
+#include "boot/paging/paging.h"
 #include "boot/grub/multiboot_info.h"
 #include "drivers/video_buffer_display.h"
 #include "terminal/Terminal.h"
@@ -38,14 +38,12 @@ namespace kernel::boot {
         // Construct memory map from grub multiboot information passed from grub
         grub::constructMemoryMap(info);
 
+        // todo: replace with log stream? pass to root process?
         auto terminal = Terminal{display};
 
         terminal.clear();
         terminal.println("System init");
 
-        // todo: Setup paging
-
-        //
         auto tssDescriptor = tss::getTaskStateSegmentDescriptor();
         gdt::initializeGlobalDescriptorTable(tssDescriptor);
         terminal.println("Global Descriptor table initialized");
@@ -65,6 +63,8 @@ namespace kernel::boot {
                 interruptRequestOffset + 8
         );
 
-        // todo: call global descriptors
+        // todo: move kernel to higher half?
+        // todo: verify paging is on
+        paging::setupPaging();
     }
 }

@@ -15,12 +15,8 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-//
-// Created by david on 05/04/2022.
-//
-
-#ifndef HEPHAISTOS_RESULT_H
-#define HEPHAISTOS_RESULT_H
+#ifndef HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_RESULT_H
+#define HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_RESULT_H
 
 #include "utility.h"
 #include <concepts>
@@ -95,4 +91,4 @@ namespace std {
     };
 }
 
-#endif //HEPHAISTOS_RESULT_H
+#endif // HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_RESULT_H
