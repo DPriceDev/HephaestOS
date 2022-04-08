@@ -15,12 +15,8 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-//
-// Created by david on 06/04/2022.
-//
-
-#ifndef HEPHAISTOS_PAGE_DIRECTORY_ENTRY_H
-#define HEPHAISTOS_PAGE_DIRECTORY_ENTRY_H
+#ifndef HEPHAIST_OS_KERNEL_BOOT_PAGING_PAGE_DIRECTORY_ENTRY_H
+#define HEPHAIST_OS_KERNEL_BOOT_PAGING_PAGE_DIRECTORY_ENTRY_H
 
 #include <cstdint>
 
@@ -51,4 +47,4 @@ namespace kernel::boot::paging {
 
 }
 
-#endif //HEPHAISTOS_PAGE_DIRECTORY_ENTRY_H
+#endif // HEPHAIST_OS_KERNEL_BOOT_PAGING_PAGE_DIRECTORY_ENTRY_H
