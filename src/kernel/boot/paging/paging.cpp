@@ -67,7 +67,7 @@ namespace kernel::boot::paging {
         );
         mapAddressRangeInTable(
                 higherHalfKernelPageTable.data(),
-                virtualKernelBaseAddress,
+                virtualKernelBaseAddress + kernelStartAddress,
                 kernelStartAddress,
                 kernelEndAddress
         );

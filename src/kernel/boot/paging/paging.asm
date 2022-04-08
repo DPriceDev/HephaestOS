@@ -37,11 +37,13 @@ enablePaging:
                 mov             cr0, eax
                 ret
 
+section .text
 jumpToHigherKernel:
-;                mov             eax, [esp + 8]
                 xchg            bx, bx
-                add             eax, higher
+                lea             eax, higher
                 jmp             eax
+
 higher:
+
                 nop
                 ret

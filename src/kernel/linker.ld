@@ -1,6 +1,6 @@
 ENTRY (loader)
 
-virtualBase = 0;
+virtualBase = 0xC0000000;
 
 SECTIONS
 {

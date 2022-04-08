@@ -28,8 +28,10 @@ namespace kernel::boot {
     struct BootInfo {
         paging::PageDirectoryEntry *pageDirectory;
         paging::PageTableEntry *kernelPageTable;
+        uintptr_t kernelVirtualAddress;
         uintptr_t kernelStartAddress;
         uintptr_t kernelEndAddress;
+
     };
 
 }

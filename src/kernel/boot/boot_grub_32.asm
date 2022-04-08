@@ -25,6 +25,7 @@ extern kernelMain, init
 extern gdtAddress, idtAddress
 extern pageDirectory, kernelPageTable
 extern kernelStart, kernelEnd
+extern virtualBase
 
 ; ------------------------------------------------------------- ;
 ; Multi-boot Header
@@ -46,19 +47,21 @@ MultiBootHeader:
 ; ------------------------------------------------------------- ;
 ; Boot data section
 section .boot
+virtualBase     equ             0xC0000000
 
 loader:
-                mov             esp, stack_start - 0                ; set esp (register for stack pointer) as the stack pointer.
+                mov             esp, stack_start - virtualBase                ; set esp (register for stack pointer) as the stack pointer.
 
 ;               initialize idt and gdt (when entering straight in from grub)
                 push            kernelEnd
                 push            kernelStart
+                push            virtualBase
                 push            kernelPageTable
                 push            pageDirectory
-                push            stack_start - 0
+                push            stack_start - virtualBase
                 push            eax                             ; push the magic number to the stack (2nd arg)
                 push            ebx                             ; push the multiboot info pointer to the stack (1st arg)
-                call            init - 0
+                call            init - virtualBase
 
                 mov             ax, 0x10
                 mov             ds, ax
