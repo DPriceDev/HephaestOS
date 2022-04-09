@@ -21,10 +21,11 @@ bits            32
 global loader:function (end - loader)
 global stack_ptr
 
-extern kernelMain, init
+extern kernelMain, init, setupPaging
 extern gdtAddress, idtAddress
 extern pageDirectory, kernelPageTable
 extern kernelStart, kernelEnd
+extern higherBoot
 extern virtualBase
 
 ; ------------------------------------------------------------- ;
@@ -52,17 +53,30 @@ virtualBase     equ             0xC0000000
 loader:
                 mov             esp, stack_start - virtualBase                ; set esp (register for stack pointer) as the stack pointer.
 
-;               initialize idt and gdt (when entering straight in from grub)
+; initialize paging
                 push            kernelEnd
                 push            kernelStart
                 push            virtualBase
                 push            kernelPageTable
                 push            pageDirectory
-                push            stack_start - virtualBase
+                call            setupPaging - virtualBase
+                lea             eax, higherBoot
+                jmp             eax
+
+;               initialize idt and gdt (when entering straight in from grub)
+                xchg            bx, bx
+;                push            kernelEnd
+;                push            kernelStart
+;                push            virtualBase
+;                push            kernelPageTable
+;                push            pageDirectory
+;                push            stack_start
                 push            eax                             ; push the magic number to the stack (2nd arg)
                 push            ebx                             ; push the multiboot info pointer to the stack (1st arg)
-                call            init - virtualBase
+                xchg            bx, bx
+                call            init
 
+                xchg            bx, bx
                 mov             ax, 0x10
                 mov             ds, ax
                 mov             es, ax
@@ -71,7 +85,7 @@ loader:
                 mov             ss, ax
 
                 sti
-                call            kernelMain                      ; call the main kernal method.
+;                call            kernelMain                      ; call the main kernal method.
                 cli
 
 ; ------------------------------------------------------------- ;
@@ -80,8 +94,6 @@ halt:
                 hlt
                 jmp             halt
 end:
-
-section .text
 
 ; ------------------------------------------------------------- ;
 ; BSS Memory Section

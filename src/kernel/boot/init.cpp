@@ -47,13 +47,13 @@ namespace kernel::boot {
         // todo: move kernel to higher half?
         // todo: verify paging is on
 
-        paging::setupPaging(
-                bootInfo.pageDirectory,
-                bootInfo.kernelPageTable,
-                bootInfo.kernelVirtualAddress,
-                bootInfo.kernelStartAddress,
-                bootInfo.kernelEndAddress
-        );
+//        paging::setupPaging(
+//                bootInfo.pageDirectory,
+//                bootInfo.kernelPageTable,
+//                bootInfo.kernelVirtualAddress,
+//                bootInfo.kernelStartAddress,
+//                bootInfo.kernelEndAddress
+//        );
 
         // Construct memory map from grub multiboot information passed from grub
         grub::constructMemoryMap(info);

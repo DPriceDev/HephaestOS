@@ -47,7 +47,7 @@ namespace kernel::boot::paging {
      * Sets up the Paging directory and identity maps the first 4mb of memory, and then
      * loads the paging directory into cr3 and enables paging.
      */
-    void setupPaging(
+    extern "C" void setupPaging(
         PageDirectoryEntry* pageDirectory,
         PageTableEntry* kernelPageTable,
         uintptr_t virtualKernelBaseAddress,

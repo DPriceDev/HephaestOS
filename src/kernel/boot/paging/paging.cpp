@@ -80,8 +80,8 @@ namespace kernel::boot::paging {
         enablePaging();
 
         auto address = virtualKernelBaseAddress - kernelStartAddress;
-        jumpToHigherKernel(address);
-        unmapPageTable(pageDirectory, 0);
+        //jumpToHigherKernel(address);
+        //unmapPageTable(pageDirectory, 0);
     }
 
     void unmapPageTable(std::Span<PageDirectoryEntry, std::dynamicExtent> pageDirectory, int index) {
