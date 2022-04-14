@@ -22,12 +22,8 @@ global loader:function (end - loader)
 global stack_ptr
 
 extern kernelMain, init, setupPaging
-extern gdtAddress, idtAddress
 extern pageDirectory, kernelPageTable
-extern kernelStart, kernelEnd
-extern higherBoot
-extern virtualBase
-extern stackStart
+extern kernelStart, kernelEnd, stackStart
 
 ; ------------------------------------------------------------- ;
 ; Multi-boot Header

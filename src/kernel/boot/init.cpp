@@ -29,13 +29,9 @@
 #include "boot_info.h"
 #include "library/LibDebug/include/debug.h"
 
-extern "C" void kernelMain();
-
 namespace kernel::boot {
 
-    static const VideoBufferDisplay display { };
-
-    extern "C" uint32_t * kernelPageTable;
+    extern "C" void kernelMain();
 
     constexpr uint8_t interruptRequestOffset = 32;
 
@@ -46,16 +42,18 @@ namespace kernel::boot {
             BootInfo bootInfo
     ) {
 
+        VideoBufferDisplay display { 0xC0000000 /* todo: change */ };
+
         // todo: unmap lower pages
 
         // Construct memory map from grub multiboot information passed from grub
 //        grub::constructMemoryMap(info);
 
         // todo: replace with log stream? pass to root process?
-//        auto terminal = Terminal{display};
+        auto terminal = Terminal{display};
 
-//        terminal.clear();
-//        terminal.println("System init");
+        terminal.clear();
+        terminal.println("System init");
 
         auto tssDescriptor = tss::getTaskStateSegmentDescriptor();
         gdt::initializeGlobalDescriptorTable(tssDescriptor);

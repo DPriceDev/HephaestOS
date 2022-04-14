@@ -25,13 +25,13 @@ namespace kernel::boot::idt {
 
     // handles an exception for the provided exception info
     extern "C" void handleException(ExceptionInfo exceptionInfo) {
-        VideoBufferDisplay display{ };
+        VideoBufferDisplay display{ 0xC0000000 /* todo: change */ };
         auto terminal = Terminal{ display };
         terminal.clear(Display::green); // todo: not working?
 
         terminal.println("Exception!");
         char text[24];
-       // sprintf(text, "Exception code: %u", exceptionInfo.interruptCode); // todo: fix import usage
+        //sprintf(text, "Exception code: %u", exceptionInfo.interruptCode); // todo: fix import usage
         terminal.println(text);
 
         const auto* description = exceptionDescription[exceptionInfo.interruptCode];

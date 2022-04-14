@@ -23,8 +23,6 @@
 
 namespace kernel {
 
-    static const VideoBufferDisplay display { };
-
     extern "C" [[noreturn]] void testUserFunction() {
         while(true) {
             /* Endless Loop */
@@ -37,6 +35,8 @@ namespace kernel {
     constexpr uint32_t fixVersion = 0;
 
     extern "C" void kernelMain() {
+
+        VideoBufferDisplay display { 0xC0000000 /* todo: change */ };
 
         // todo: Extract out all terminal code to user space
         auto terminal = kernel::Terminal{ display };

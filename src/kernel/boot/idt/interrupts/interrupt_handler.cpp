@@ -28,7 +28,7 @@ namespace kernel::boot::idt {
      *
      */
     extern "C" void handleInterrupt(InterruptInfo interruptInfo) {
-        VideoBufferDisplay display{};
+        VideoBufferDisplay display{ 0xC0000000 /* todo: change */ };
         auto terminal = Terminal{display};
 
         if(interruptInfo.interruptCode != 0) {
