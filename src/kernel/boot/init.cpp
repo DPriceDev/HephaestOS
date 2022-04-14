@@ -29,6 +29,8 @@
 #include "boot_info.h"
 #include "library/LibDebug/include/debug.h"
 
+extern "C" void kernelMain();
+
 namespace kernel::boot {
 
     static const VideoBufferDisplay display { };
@@ -39,48 +41,44 @@ namespace kernel::boot {
 
     extern "C" void init(
             MultiBootInfo * info,
-            uint32_t /* magic */,
+            uint32_t magic,
             uint32_t stackPointer,
             BootInfo bootInfo
     ) {
 
-        // todo: move kernel to higher half?
-        // todo: verify paging is on
-
-//        paging::setupPaging(
-//                bootInfo.pageDirectory,
-//                bootInfo.kernelPageTable,
-//                bootInfo.kernelVirtualAddress,
-//                bootInfo.kernelStartAddress,
-//                bootInfo.kernelEndAddress
-//        );
+        // todo: unmap lower pages
 
         // Construct memory map from grub multiboot information passed from grub
-        grub::constructMemoryMap(info);
+//        grub::constructMemoryMap(info);
 
         // todo: replace with log stream? pass to root process?
-        auto terminal = Terminal{display};
+//        auto terminal = Terminal{display};
 
-        terminal.clear();
-        terminal.println("System init");
+//        terminal.clear();
+//        terminal.println("System init");
 
         auto tssDescriptor = tss::getTaskStateSegmentDescriptor();
         gdt::initializeGlobalDescriptorTable(tssDescriptor);
-        terminal.println("Global Descriptor table initialized");
+//        terminal.println("Global Descriptor table initialized");
 
         //
-        tss::initializeTaskStateSegment(stackPointer);
-        terminal.println("Task State Segment initialized");
+        //tss::initializeTaskStateSegment(stackPointer);
+//        terminal.println("Task State Segment initialized");
 
         //
         idt::initializeInterruptDescriptorTable();
-        terminal.println("Interrupt Descriptor table initialized");
+//        terminal.println("Interrupt Descriptor table initialized");
 
         // todo: may need to be moved to init protected method?
-        //
+        // todo: move register addresses to header of idt
         idt::remapProgrammableInterruptController(
                 interruptRequestOffset,
                 interruptRequestOffset + 8
         );
+
+        // update code segments
+
+
+        kernelMain();
     }
 }

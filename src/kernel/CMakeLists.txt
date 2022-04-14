@@ -14,7 +14,6 @@ add_executable(
 
         kernel.cpp
         boot/boot_grub_32.asm
-        boot/boot_grub_stage_2.asm
         boot/boot_config.asm
         boot/idt/interrupt_descriptor_table.asm
         boot/idt/interrupts/interrupt_handler.asm

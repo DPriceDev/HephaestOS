@@ -44,6 +44,9 @@ SECTIONS
     .bss ALIGN (4k): AT(ADDR(.bss) - virtualBase) {
         *(COMMON)
         *(.bss)
+        stackEnd = .;
+        . += 0x8000;
+        stackStart = .;
     }
 
     /* Symbol for the end of the kernel at its physical address */

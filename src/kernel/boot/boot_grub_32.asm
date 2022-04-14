@@ -27,6 +27,7 @@ extern pageDirectory, kernelPageTable
 extern kernelStart, kernelEnd
 extern higherBoot
 extern virtualBase
+extern stackStart
 
 ; ------------------------------------------------------------- ;
 ; Multi-boot Header
@@ -45,48 +46,46 @@ MultiBootHeader:
                 dd              FLAGS
                 dd              CHECKSUM
 
+section .text
+
+section .bss
+
 ; ------------------------------------------------------------- ;
 ; Boot data section
+
 section .boot
 virtualBase     equ             0xC0000000
 
 loader:
-                mov             esp, stack_start - virtualBase                ; set esp (register for stack pointer) as the stack pointer.
+                mov             esi, eax
+                mov             edi, ebx
+                mov             esp, stackStart - virtualBase                ; set esp (register for stack pointer) as the stack pointer.
 
 ; initialize paging
+                push            kernelEnd
+                push            0
+                push            virtualBase
+                push            kernelPageTable
+                push            pageDirectory
+                call            setupPaging - virtualBase
+
+                xchg            bx, bx
+                mov             esp, stackStart
+
                 push            kernelEnd
                 push            kernelStart
                 push            virtualBase
                 push            kernelPageTable
                 push            pageDirectory
-                call            setupPaging - virtualBase
-                lea             eax, higherBoot
-                jmp             eax
-
-;               initialize idt and gdt (when entering straight in from grub)
-                xchg            bx, bx
-;                push            kernelEnd
-;                push            kernelStart
-;                push            virtualBase
-;                push            kernelPageTable
-;                push            pageDirectory
-;                push            stack_start
-                push            eax                             ; push the magic number to the stack (2nd arg)
-                push            ebx                             ; push the multiboot info pointer to the stack (1st arg)
-                xchg            bx, bx
-                call            init
-
-                xchg            bx, bx
-                mov             ax, 0x10
-                mov             ds, ax
-                mov             es, ax
-                mov             fs, ax
-                mov             gs, ax
-                mov             ss, ax
-
-                sti
-;                call            kernelMain                      ; call the main kernal method.
-                cli
+                push            stackStart
+                ; todo Also need to map the vga buffer? maybe do that later on?
+                push            esi                             ; push the magic number to the stack (2nd arg)
+                push            edi                             ; push the multiboot info pointer to the stack (1st arg)
+                lea             eax, init
+                ; todo need to figure out if we want to call and return to halt loop, or jmp and never return
+                ;push            eax
+                ;jmp             eax
+                call            eax
 
 ; ------------------------------------------------------------- ;
 ; Halts the CPU
@@ -94,13 +93,3 @@ halt:
                 hlt
                 jmp             halt
 end:
-
-; ------------------------------------------------------------- ;
-; BSS Memory Section
-section .bss
-stackSize:      equ             32798                           ; setup the stack size to be 16KB
-
-align           16
-stack_end:
-resb            stackSize
-stack_start:
