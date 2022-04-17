@@ -25,13 +25,17 @@
 #include "terminal/Terminal.h"
 #include "boot/idt/pic/programmable_interrupt_controller.h"
 #include "boot/tss/task_state_segment.h"
-#include "boot/grub/memory_map.h"
 #include "boot_info.h"
-#include "library/LibDebug/include/debug.h"
 
 namespace kernel::boot {
 
     extern "C" void kernelMain();
+
+    extern "C" void loadKernelSegment();
+
+    extern "C" void enableInterrupts();
+
+    extern "C" void disableInterrupts();
 
     constexpr uint8_t interruptRequestOffset = 32;
 
@@ -46,6 +50,8 @@ namespace kernel::boot {
 
         // todo: unmap lower pages
 
+        // todo: also interupts and exceptions are not working?
+
         // Construct memory map from grub multiboot information passed from grub
 //        grub::constructMemoryMap(info);
 
@@ -57,15 +63,15 @@ namespace kernel::boot {
 
         auto tssDescriptor = tss::getTaskStateSegmentDescriptor();
         gdt::initializeGlobalDescriptorTable(tssDescriptor);
-//        terminal.println("Global Descriptor table initialized");
+        terminal.println("Global Descriptor table initialized");
 
         //
-        //tss::initializeTaskStateSegment(stackPointer);
-//        terminal.println("Task State Segment initialized");
+        tss::initializeTaskStateSegment(stackPointer);
+        terminal.println("Task State Segment initialized");
 
         //
         idt::initializeInterruptDescriptorTable();
-//        terminal.println("Interrupt Descriptor table initialized");
+        terminal.println("Interrupt Descriptor table initialized");
 
         // todo: may need to be moved to init protected method?
         // todo: move register addresses to header of idt
@@ -74,9 +80,11 @@ namespace kernel::boot {
                 interruptRequestOffset + 8
         );
 
-        // update code segments
+        paging::unmapLowerKernel(bootInfo.pageDirectory);
 
-
+        loadKernelSegment();
+        enableInterrupts();
         kernelMain();
+        disableInterrupts();
     }
 }

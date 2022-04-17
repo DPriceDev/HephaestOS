@@ -54,6 +54,8 @@ namespace kernel::boot::paging {
         uintptr_t kernelStartAddress,
         uintptr_t kernelEndAddress
     );
+
+    void unmapLowerKernel(PageDirectoryEntry* pageDirectoryPointer);
 }
 
 #endif // HEPHAIST_OS_KERNEL_BOOT_PAGING_PAGING_H

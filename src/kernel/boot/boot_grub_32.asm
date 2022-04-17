@@ -65,23 +65,22 @@ loader:
                 push            pageDirectory
                 call            setupPaging - virtualBase
 
-                xchg            bx, bx
-                mov             esp, stackStart
+                mov             esp, stackStart                             ; Set the stack pointer to the start of the stack.
 
                 push            kernelEnd
                 push            kernelStart
                 push            virtualBase
-                push            kernelPageTable
-                push            pageDirectory
+                push            kernelPageTable + virtualBase
+                push            pageDirectory + virtualBase
                 push            stackStart
                 ; todo Also need to map the vga buffer? maybe do that later on?
                 push            esi                             ; push the magic number to the stack (2nd arg)
                 push            edi                             ; push the multiboot info pointer to the stack (1st arg)
                 lea             eax, init
                 ; todo need to figure out if we want to call and return to halt loop, or jmp and never return
-                ;push            eax
-                ;jmp             eax
-                call            eax
+                push            eax
+                jmp             eax
+                ;call            eax
 
 ; ------------------------------------------------------------- ;
 ; Halts the CPU

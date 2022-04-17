@@ -18,8 +18,6 @@
 #ifndef HEPHAIST_OS_DRIVERS_IO_IO_H
 #define HEPHAIST_OS_DRIVERS_IO_IO_H
 
-#include <stdoffset.h>
-
 namespace kernel {
 
     inline uint8_t inputPortByte(uint32_t port) {

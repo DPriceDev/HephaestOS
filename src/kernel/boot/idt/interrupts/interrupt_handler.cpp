@@ -28,15 +28,15 @@ namespace kernel::boot::idt {
      *
      */
     extern "C" void handleInterrupt(InterruptInfo interruptInfo) {
-        VideoBufferDisplay display{ 0xC0000000 /* todo: change */ };
-        auto terminal = Terminal{display};
-
         if(interruptInfo.interruptCode != 0) {
-            terminal.clear(Display::green); // todo: not working?
-            terminal.println("Interrupt!");
-            char text[24];
-            sprintf(text, "Interrupt code: %u", interruptInfo.interruptCode);
-            terminal.println(text);
+            //VideoBufferDisplay display{ 0xC0000000 /* todo: change */ };
+            //auto terminal = Terminal{display};
+
+            //terminal.clear(Display::green); // todo: not working?
+            //terminal.println("Interrupt!");
+            //char text[24];
+            //sprintf(text, "Interrupt code: %u", interruptInfo.interruptCode);
+            //terminal.println(text);
 
         }
 

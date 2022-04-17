@@ -37,9 +37,14 @@ namespace kernel {
         const uint32_t screenBufferLength{characterWidth * height};
 
         uintptr_t virtualVideoAddress;
+        uintptr_t virtualHighCursorAddress;
+        uintptr_t virtualLowCursorAddress;
 
     public:
-        explicit VideoBufferDisplay(uintptr_t virtualBase) : virtualVideoAddress(virtualBase + address::videoMemoryAddress) { }
+        explicit VideoBufferDisplay(uintptr_t virtualBase) :
+            virtualVideoAddress(virtualBase + address::videoMemoryAddress),
+            virtualHighCursorAddress(virtualBase + address::videoCursorHighAddress),
+            virtualLowCursorAddress(virtualBase + address::videoCursorLowAddress) { }
 
         [[nodiscard]] const uint32_t &getWidth() const override;
 

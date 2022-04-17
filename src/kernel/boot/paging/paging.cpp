@@ -88,6 +88,15 @@ namespace kernel::boot::paging {
 
     }
 
+    void unmapLowerKernel(PageDirectoryEntry* pageDirectoryPointer) {
+        auto pageDirectory = std::Span(pageDirectoryPointer, PAGE_DIRECTORY_SIZE);
+        pageDirectory.front() = PageDirectoryEntry {
+            .access = PageDirectoryAccess {
+                .canWrite = true
+            },
+        };
+    }
+
     // Initialize all page table entries to empty entries.
     void zeroPageDirectory(std::Span<PageDirectoryEntry>& pageDirectory) {
         std::forEach(pageDirectory.begin(), pageDirectory.end(), [] (auto & element) {
