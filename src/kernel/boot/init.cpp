@@ -16,6 +16,8 @@
  */
 
 #include <cstdint>
+#include <array.h>
+#include <format.h>
 
 #include "gdt/global_descriptor_table.h"
 #include "idt/interrupt_descriptor_table.h"
@@ -39,7 +41,11 @@ namespace kernel::boot {
         grub::constructMemoryMap(info);
 
         // todo: replace with log stream? pass to root process?
-        auto terminal = Terminal{display};
+        auto terminal = Terminal { display };
+
+        // testing
+        auto output = std::Array<char, 100> { };
+        std::formatTo(output.begin(), "hello {}", 'c');
 
         terminal.clear();
         terminal.println("System init");
