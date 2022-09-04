@@ -15,14 +15,12 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#ifndef HEPHAISTOS_FORMATTER_H
-#define HEPHAISTOS_FORMATTER_H
+#ifndef HEPHAISTOS_CHAR_FORMATTER_H
+#define HEPHAISTOS_CHAR_FORMATTER_H
+
+#include "formatter.h"
 
 namespace std {
-
-    // todo
-    template<class Type, class CharacterType = char>
-    struct Formatter;
 
     /**
      * Char specification
@@ -32,10 +30,10 @@ namespace std {
     struct Formatter<char> {
 
         // todo: step over iterator until } is hit and save parameters to formatter
-        constexpr auto parse(auto& state) {
-            auto iterator { state.begin() };
-            const auto end { state.end() };
-            if(iterator == end || *iterator == '}') {
+        constexpr auto parse (auto &state) {
+            auto iterator {state.begin()};
+            const auto end {state.end()};
+            if (iterator == end || *iterator == '}') {
 
             }
 
@@ -44,14 +42,12 @@ namespace std {
 
         // print character, increment iterator and return
         // todo: Pick up formatter rules and print out character with specific rules
-        auto format(const char& character, auto& state) {
+        auto format (const char &character, auto &state) {
             &state.out() = character;
             state.out() = state.out()++;
             return state.out();
         }
     };
-
 }
 
-
-#endif //HEPHAISTOS_FORMATTER_H
+#endif //HEPHAISTOS_CHAR_FORMATTER_H

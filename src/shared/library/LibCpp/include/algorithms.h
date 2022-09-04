@@ -19,6 +19,7 @@
 #define HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_ALGORITHMS_H
 
 #include "iterator.h"
+#include <initializer_list>
 
 namespace std {
 
@@ -76,6 +77,45 @@ namespace std {
         return outFirst;
     }
 
+    template<forwardIterator Iterator, class Comparator>
+    constexpr Iterator maxElement(Iterator first, Iterator last, Comparator comparator) {
+        if (first == last) {
+            return last;
+        }
+
+        Iterator largest = first;
+        ++first;
+        for (; first != last; ++first) {
+            if (comparator(*largest, *first)) {
+                largest = first;
+            }
+        }
+        return largest;
+    }
+
+    template<forwardIterator Iterator>
+    constexpr Iterator maxElement(Iterator first, Iterator last) {
+        if (first == last) return last;
+
+        Iterator largest = first;
+        ++first;
+        for (; first != last; ++first) {
+            if (*largest < *first) {
+                largest = first;
+            }
+        }
+        return largest;
+    }
+
+    template<class Type>
+    constexpr auto max(const Type& first,const Type& second) -> const Type& {
+        return first <= second ? first : second;
+    }
+
+    template<class Type>
+    constexpr Type max(std::initializer_list<Type> initializerList) {
+        return *std::maxElement(initializerList.begin(), initializerList.end());
+    }
 }
 
 #endif // HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_ALGORITHMS_H

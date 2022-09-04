@@ -19,6 +19,7 @@
 #define HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_ITERATORS_ITERATORS_H
 
 #include "iterator_traits.h"
+#include <bits/move.h>
 #include "memory.h"
 #include "utility.h"
 

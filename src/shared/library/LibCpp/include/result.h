@@ -32,9 +32,10 @@ namespace std {
         Error errorValue;
         bool isResult;
 
-        explicit Result(Type result) : resultValue(result), isResult(true) { }
-        explicit Result(Error error) : errorValue(error), isResult(false) { }
+        explicit Result(Type result) : resultValue { result }, isResult { true } { }
+        explicit Result(Error error) : errorValue { error }, isResult { false } { }
     public:
+        explicit Result() = default;
 
         // Initializers
         static constexpr auto success(Type result) -> Result<Type, Error> {

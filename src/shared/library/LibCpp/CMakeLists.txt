@@ -9,5 +9,8 @@ add_library(sharedLibCpp INTERFACE
         include/iterators/iterators.h include/algorithms.h
         include/utility.h
         include/result.h
-        include/format.h include/string_view.h include/string.h include/format/formatter.h include/format/format_state.h include/format/format_arguments.h include/format/format_argument.h include/variant.h)
+        include/format.h
+        include/string_view.h
+        include/string.h
+)
 target_include_directories(sharedLibCpp INTERFACE include)

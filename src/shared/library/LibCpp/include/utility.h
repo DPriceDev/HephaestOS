@@ -22,15 +22,15 @@
 
 namespace std {
 
-    template< class Type>
-    constexpr Type&& forward(std::remove_reference_t<Type>& type) noexcept {
-        return static_cast<Type&&>(type);
-    }
-
-    template< class Type>
-    constexpr Type&& forward(std::remove_reference_t<Type>&& type) noexcept {
-        return static_cast<Type&&>(type);
-    }
+//    template< class Type>
+//    constexpr Type&& forward(std::remove_reference_t<Type>& type) noexcept {
+//        return static_cast<Type&&>(type);
+//    }
+//
+//    template< class Type>
+//    constexpr Type&& forward(std::remove_reference_t<Type>&& type) noexcept {
+//        return static_cast<Type&&>(type);
+//    }
 }
 
 #endif // HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_UTILITY_H

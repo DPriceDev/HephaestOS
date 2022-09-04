@@ -27,6 +27,11 @@ namespace std {
         static_assert(!std::is_function_v<T>);
         return p;
     }
+
+    template<class Type, class... Args>
+    constexpr Type* construct_at(Type* pointer, Args&&... args) {
+
+    }
 }
 
 #endif // HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_MEMORY_H

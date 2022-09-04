@@ -15,13 +15,18 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#ifndef HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_H
-#define HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_H
+#ifndef HEPHAISTOS_FORMATTER_H
+#define HEPHAISTOS_FORMATTER_H
 
-#include "format/format_format.h"
-#include "format/formatter/formatter.h"
-#include "format/format_arguments.h"
-#include "format/format_state.h"
+namespace std {
+
+    // todo: can this be a concept that requires something?
+    // todo: Do we need to add functions to extend to this?
+    // todo: Probably need a concept as well as this and the concept is used at calling points?
+    template<class Type, class CharacterType = char>
+    struct Formatter;
+
+}
 
 
-#endif // HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_H
+#endif //HEPHAISTOS_FORMATTER_H

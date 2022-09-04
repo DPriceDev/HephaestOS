@@ -1,33 +1,8 @@
-// Copyright (C) 2022 David Price - All Rights Reserved
-// This file is part of HephaistOS.
-//
-// HephaistOS is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// HephaistOS is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
-//
+#ifndef D_PRICE_DEV_VARIANT_H
+#define D_PRICE_DEV_VARIANT_H
 
-#ifndef HEPHAISTOS_VARIANT_H
-#define HEPHAISTOS_VARIANT_H
+#include "variant/variant_variant.h"
+#include "variant/variant_visitor.h"
+#include "variant/variant_get.h"
 
-namespace std {
-
-    struct MonoState {
-
-    };
-
-    template <class... Types>
-    class Variant {
-
-    };
-}
-
-#endif //HEPHAISTOS_VARIANT_H
+#endif // D_PRICE_DEV_VARIANT_H
