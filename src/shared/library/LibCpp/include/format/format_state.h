@@ -33,7 +33,7 @@ namespace std {
     // todo
     template<class CharacterType, outputIterator<const CharacterType&> OutputIterator>
     class BasicFormatState {
-        BasicFormatArguments<BasicFormatState> args;
+        BasicFormatArguments<BasicFormatState> arguments;
         OutputIterator outputIterator;
 
     public:
@@ -43,23 +43,22 @@ namespace std {
         template<class T>
         using formatterType = Formatter<T, CharacterType>;
 
-        auto argument(std::size_t id) const -> BasicFormatArgument<BasicFormatState> {
-            // todo
+        explicit BasicFormatState(
+                BasicFormatArguments<BasicFormatState>& arguments,
+                OutputIterator& outputIterator
+        ) : arguments(arguments), outputIterator(outputIterator) { }
+
+        auto argument(std::size_t index) const -> BasicFormatArgument<BasicFormatState> {
+            return arguments.get(index);
         }
 
         auto out() -> iterator {
-            // todo
+            return outputIterator;
         }
 
         void advanceTo(iterator iterator) {
-            // todo
+            outputIterator = iterator;
         }
-    };
-
-    // todo
-    template<class CharacterType>
-    class BasicFormatParseState {
-
     };
 
     // todo

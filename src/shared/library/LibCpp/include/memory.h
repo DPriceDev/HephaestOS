@@ -30,7 +30,8 @@ namespace std {
 
     template<class Type, class... Args>
     constexpr Type* construct_at(Type* pointer, Args&&... args) {
-
+        *pointer = Type(std::forward<Args>(args)...);
+        return pointer;
     }
 }
 

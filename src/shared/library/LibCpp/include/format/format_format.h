@@ -25,8 +25,10 @@
 #include "format/formatter/formatter.h"
 #include "format/format_arguments.h"
 #include "format/format_state.h"
+#include "format/parse_state.h"
 
 namespace std {
+
     /**
      *
      * @tparam OutputIterator
@@ -36,12 +38,25 @@ namespace std {
      * @return
      */
     template<std::outputIterator<const char&> OutputIterator>
-    std::Result<OutputIterator> formatTo(
+    std::Result<OutputIterator> dynamicFormatTo(
             OutputIterator output,
-            std::StringView format, // todo: Should this be a concept of a stringview?
+            std::StringView format,
             std::FormatArguments args
     ) {
-        // todo:
+        // parse string?
+
+        auto parsingState = ParseState(format);
+        auto formatState = FormatState(args, output);
+
+        // loop until { is hit, then pass to the parsing state, then to the formatting state?
+
+        //
+
+        auto* begin = parsingState.begin();
+        const auto* end = parsingState.end();
+        while (begin != end) {
+            *output++ = *begin++;
+        }
     }
 
     template<std::convertableToStringView CharacterType, std::outputIterator<const char&> OutputIterator, class... Args>
@@ -50,7 +65,7 @@ namespace std {
             CharacterType* format,
             Args&&...args
     ) {
-        return formatTo(
+        return dynamicFormatTo(
                 output,
                 std::StringView { format }, // todo: Should this be a concept of a stringview?
                 std::makeFormatArguments(args...)

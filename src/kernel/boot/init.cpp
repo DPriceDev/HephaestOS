@@ -49,6 +49,7 @@ namespace kernel::boot {
 
         terminal.clear();
         terminal.println("System init");
+        terminal.println(output.cbegin());
 
         auto tssDescriptor = tss::getTaskStateSegmentDescriptor();
         gdt::initializeGlobalDescriptorTable(tssDescriptor);

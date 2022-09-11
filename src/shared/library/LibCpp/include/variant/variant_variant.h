@@ -4,7 +4,7 @@
 #include <concepts>
 #include <type_traits>
 
-#include "variant_parameter.h"
+#include "parameter_pack.h"
 
 namespace std {
 
@@ -164,8 +164,8 @@ namespace std {
         }
 
         ~Variant() {
-            //detail::destroyLinear<0, FirstType, Types...>(index(), data());
-            detail::destroyData<FirstType, Types...>(data(), index());
+            detail::destroyLinear<0, FirstType, Types...>(index(), data());
+            //detail::destroyData<FirstType, Types...>(data(), index());
         }
 
         /**
@@ -178,9 +178,9 @@ namespace std {
         template <class Type, class... Args>
         constexpr auto emplace(Args&&... args) -> Type& {
             // Search the Type pack and call the Type destructor.
-            //detail::destroyLinear<0, FirstType, Types...>(index(), data());
+            detail::destroyLinear<0, FirstType, Types...>(index(), data());
 
-            detail::destroyData<FirstType, Types...>(data(), index());
+            //detail::destroyData<FirstType, Types...>(data(), index());
 
             auto *pointer = static_cast<Type *>(data());
             std::construct_at(pointer, args...);

@@ -29,6 +29,45 @@ namespace std {
     public:
         class handle;
 
+        BasicFormatArgument() : value(
+                std::Variant<
+                    std::MonoState,
+                    bool,
+                    characterType,
+                    int,
+                    unsigned int,
+                    long long int,
+                    unsigned long long int,
+                    float,
+                    double,
+                    long double,
+                    const characterType*,
+                    BaseStringView<characterType>,
+                    const void*,
+                    handle
+            >(std::MonoState())
+        ) { }
+
+        template<class Type>
+        BasicFormatArgument(Type&& type) : value(
+                std::Variant<
+                    std::MonoState,
+                    bool,
+                    characterType,
+                    int,
+                    unsigned int,
+                    long long int,
+                    unsigned long long int,
+                    float,
+                    double,
+                    long double,
+                    const characterType*,
+                    BaseStringView<characterType>,
+                    const void*,
+                    handle
+                >(type)
+        ) { }
+
     private:
         using characterType = typename State::characterType;
 
@@ -50,12 +89,12 @@ namespace std {
             handle
         > value;
 
-
+        // todo: operator bool
     };
 
     // todo
-    template<class Context>
-    class BasicFormatArgument<Context>::handle {
+    template<class State>
+    class BasicFormatArgument<State>::handle {
 
     };
 }

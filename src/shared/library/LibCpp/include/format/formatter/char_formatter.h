@@ -30,7 +30,7 @@ namespace std {
     struct Formatter<char> {
 
         // todo: step over iterator until } is hit and save parameters to formatter
-        constexpr auto parse (auto &state) {
+        constexpr auto parse(auto &state) {
             auto iterator {state.begin()};
             const auto end {state.end()};
             if (iterator == end || *iterator == '}') {
@@ -42,7 +42,7 @@ namespace std {
 
         // print character, increment iterator and return
         // todo: Pick up formatter rules and print out character with specific rules
-        auto format (const char &character, auto &state) {
+        auto format(const char &character, auto &state) {
             &state.out() = character;
             state.out() = state.out()++;
             return state.out();

@@ -28,30 +28,34 @@ namespace std {
     template<class State, class... Args>
     struct FormatArgumentStore {
         // todo: Move array to std?
-        std::detail::Array<BasicFormatArgument<State>, sizeof...(Args)> args;
+        std::Array<BasicFormatArgument<State>, sizeof...(Args)> args;
+
+        explicit FormatArgumentStore (std::Array<BasicFormatArgument<State>, sizeof...(Args)> arguments) : args(arguments) { };
     };
 
     // todo
     template<class State>
     class BasicFormatArguments {
-        size_t size;
+        size_t size { };
         const BasicFormatArgument<State>* data;
 
     public:
-        BasicFormatArguments() noexcept {
-            // todo
-        }
+        BasicFormatArguments() noexcept = default;
 
         template<class... Args>
-        BasicFormatArguments(const FormatArgumentStore<State, Args...>& store) noexcept {
-            // todo
-        }
+        BasicFormatArguments(const std::FormatArgumentStore<State, Args...>& store) noexcept
+            : size(store.args.size()),
+            data(store.args.data()) { }
 
         // Accessors
         BasicFormatArgument<State> get(std::size_t index) const noexcept {
-            // todo
+            // todo: if out of size, return monostate?
+            return data[index]; // todo: Switch to array?
         }
 
+        auto count() -> std::size_t {
+            return size;
+        }
     };
 
     // Definition
@@ -59,8 +63,13 @@ namespace std {
 
     // todo
     template<class State = std::FormatState, class... Args>
-    FormatArgumentStore<State, Args...> makeFormatArguments(Args&&... args) {
-        // todo
+    std::FormatArgumentStore<State, Args...> makeFormatArguments(Args&&... args) {
+
+        return std::FormatArgumentStore<State, Args...>(
+                std::Array<BasicFormatArgument<State>, sizeof...(Args)> {
+                        BasicFormatArgument<State>(args)...
+                }
+        );
     }
 }
 

@@ -20,13 +20,8 @@
 
 namespace std {
 
-    // todo: can this be a concept that requires something?
-    // todo: Do we need to add functions to extend to this?
-    // todo: Probably need a concept as well as this and the concept is used at calling points?
     template<class Type, class CharacterType = char>
     struct Formatter;
-
 }
-
 
 #endif //HEPHAISTOS_FORMATTER_H
