@@ -35,6 +35,29 @@ namespace std {
         }
         return static_cast<Type*>(variant.data());
     }
+
+    template<size_t TypeIndex, class... Types, class ResultType>
+    constexpr auto get(std::Variant<Types...>& variant) -> std::Result<ResultType> {
+        if(variant.index() != TypeIndex) {
+            return std::Result<ResultType>::failure();
+        }
+
+        using Type = typename VariantType<TypeIndex, Types...>::type;
+        return std::Result<ResultType>::success(
+                *static_cast<Type*>(variant.data())
+        );
+    }
+
+    template<class Type, class... Types>
+    constexpr auto get(std::Variant<Types...>& variant) -> std::Result<Type> {
+        auto getIndex = VariantIndex<0, Type, Types...>().index;
+        if(getIndex != variant.index()) {
+            return std::Result<Type>::failure();
+        }
+        return std::Result<Type>::success(
+                *static_cast<Type*>(variant.data())
+        );
+    }
 }
 
 #endif // D_PRICE_DEV_VARIANT_GET_H

@@ -12,5 +12,6 @@ add_library(sharedLibCpp INTERFACE
         include/format.h
         include/string_view.h
         include/string.h
+        include/format/formatter/char_formatter.h
 )
 target_include_directories(sharedLibCpp INTERFACE include)

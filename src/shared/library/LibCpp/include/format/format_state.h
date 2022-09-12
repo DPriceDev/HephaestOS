@@ -19,6 +19,7 @@
 #define HEPHAISTOS_FORMAT_STATE_H
 
 #include "iterator.h"
+#include "formatter/formatter.h"
 
 namespace std {
 
@@ -41,7 +42,7 @@ namespace std {
         using characterType = CharacterType;
 
         template<class T>
-        using formatterType = Formatter<T, CharacterType>;
+        using formatterType = std::Formatter<T, CharacterType>;
 
         explicit BasicFormatState(
                 BasicFormatArguments<BasicFormatState>& arguments,

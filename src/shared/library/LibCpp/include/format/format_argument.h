@@ -31,62 +31,26 @@ namespace std {
 
         BasicFormatArgument() : value(
                 std::Variant<
-                    std::MonoState,
-                    bool,
-                    characterType,
-                    int,
-                    unsigned int,
-                    long long int,
-                    unsigned long long int,
-                    float,
-                    double,
-                    long double,
-                    const characterType*,
-                    BaseStringView<characterType>,
-                    const void*,
-                    handle
+                        std::MonoState,
+                        char
             >(std::MonoState())
         ) { }
 
         template<class Type>
-        BasicFormatArgument(Type&& type) : value(
+        explicit BasicFormatArgument(Type&& type) : value(
                 std::Variant<
-                    std::MonoState,
-                    bool,
-                    characterType,
-                    int,
-                    unsigned int,
-                    long long int,
-                    unsigned long long int,
-                    float,
-                    double,
-                    long double,
-                    const characterType*,
-                    BaseStringView<characterType>,
-                    const void*,
-                    handle
-                >(type)
+                        std::MonoState,
+                        char
+                >(std::forward<Type>(type))
         ) { }
 
-    private:
+//    private:
         using characterType = typename State::characterType;
 
         // todo
         std::Variant<
             std::MonoState,
-            bool,
-            characterType,
-            int,
-            unsigned int,
-            long long int,
-            unsigned long long int,
-            float,
-            double,
-            long double,
-            const characterType*,
-            BaseStringView<characterType>,
-            const void*,
-            handle
+                char
         > value;
 
         // todo: operator bool
@@ -97,6 +61,21 @@ namespace std {
     class BasicFormatArgument<State>::handle {
 
     };
+
+    // todo: This is broken somehow? fails compile, makes compile long and hangs
+    template<class Visitor, class State>
+    auto visitFormatArgument(Visitor&& visitor, std::BasicFormatArgument<State> argument) {
+        return std::visit(
+                [&visitor] (auto result) -> decltype(auto) {
+                    if (!result.isValid()) {
+                        return visitor(std::MonoState());
+                    }
+
+                    return visitor(result.get());
+                },
+                argument.value
+        );
+    }
 }
 
 #endif //HEPHAISTOS_FORMAT_ARGUMENT_H

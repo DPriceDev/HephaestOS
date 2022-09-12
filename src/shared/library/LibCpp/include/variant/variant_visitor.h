@@ -40,7 +40,7 @@ namespace std {
                 Variants &... variants
         ) -> decltype(auto) {
             return visitor(
-                    std::getIf<Types>(variants)...
+                    std::move(std::get<Types>(variants))...
             );
         }
 

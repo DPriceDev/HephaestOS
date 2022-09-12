@@ -19,6 +19,7 @@
 #define HEPHAISTOS_CHAR_FORMATTER_H
 
 #include "formatter.h"
+#include "variant.h"
 
 namespace std {
 
@@ -43,9 +44,9 @@ namespace std {
         // print character, increment iterator and return
         // todo: Pick up formatter rules and print out character with specific rules
         auto format(const char &character, auto &state) {
-            &state.out() = character;
-            state.out() = state.out()++;
-            return state.out();
+            auto output = state.out();
+            *output = character;
+            return output;
         }
     };
 }

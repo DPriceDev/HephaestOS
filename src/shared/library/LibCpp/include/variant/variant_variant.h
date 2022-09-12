@@ -74,40 +74,6 @@ namespace std {
             destroyLinear<Index + 1, Types...>(index, pointer);
         }
 
-        template<class... Functions>
-        consteval auto constructDestroyerArray(
-                ParameterPack<> pack,
-                Functions... functions
-        ) -> decltype(auto) {
-            return std::Array<std::common_type_t<Functions...>, sizeof...(Functions)> { functions... };
-        }
-
-        template<class Type, class... Types, class... Functions>
-        consteval auto constructDestroyerArray(
-                ParameterPack<Type, Types...> pack,
-                Functions... functions
-        ) -> decltype(auto) {
-
-            auto function = [] (void* pointer) -> void {
-                static_cast<Type*>(pointer)->~Type();
-            };
-
-            return constructDestroyerArray<Types...>(
-                ParameterPack<Types...> { },
-                functions...,
-                function
-            );
-        }
-
-        template<class... Types>
-        constexpr auto destroyData(void* pointer, size_t index) {
-            auto array = detail::constructDestroyerArray(
-                    ParameterPack<Types...> { }
-            );
-
-            //array[index](pointer);
-        }
-
         /**
          * Storage for a variant of any number of types. This stores an un-typed
          * array of bytes/chars where the @tparam Size is the size in bytes of
