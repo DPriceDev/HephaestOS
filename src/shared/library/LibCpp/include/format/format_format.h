@@ -30,6 +30,10 @@
 
 namespace std {
 
+    std::Result<std::size_t> getArgumentIndex() {
+        return std::Result<std::size_t>::success(0);
+    }
+
     /**
      *
      * @tparam OutputIterator
@@ -38,83 +42,125 @@ namespace std {
      * @param format
      * @return
      */
-     // todo: Should this return the output iterator of the failed point?
+    template<std::outputIterator<const char &> OutputIterator>
+    std::Result<OutputIterator> handleFormat(
+            const char* iterator, // todo: Extract to character type template param
+            ParseState& parseState, // todo: Switch to template param
+            FormatState& formatState // todo: Switch to template param
+    ) {
+        // Get the argument details, return if failed
+        auto result = getArgumentIndex();
+        if (!result.isValid()) {
+            return std::Result<OutputIterator>::failure();
+        }
+        auto argumentIndex = result.get();
+
+        switch (*iterator) {
+            case '}':
+                parseState.advanceTo(iterator);
+                break;
+                
+            default:
+                // fails if format string is invalid (does not have : or })
+                return std::Result<OutputIterator>::failure();
+        }
+
+        return visitFormatArgument(
+                [&formatState] (auto arg) {
+                    if constexpr (std::same_as<decltype(arg), MonoState>) {
+                        return std::Result<OutputIterator>::failure();
+                    } else {
+                        // Get the formatter for this type and format the argument
+                        Formatter<decltype(arg), char> formatter;
+                        auto result = formatter.format(arg, formatState);
+                        return Result<OutputIterator>::success(result);
+                    }
+                },
+                formatState.argument(argumentIndex)
+        );
+    }
+
+    // todo: Should this return the output iterator of the failed point?
+    // todo: could I reduce this loop to nested stringviews?
+    /**
+     *
+     * @tparam OutputIterator
+     * @param output
+     * @param format
+     * @param args
+     * @return
+     */
     template<std::outputIterator<const char&> OutputIterator>
     std::Result<OutputIterator> dynamicFormatTo(
             OutputIterator output,
             std::StringView format,
             std::FormatArguments args
     ) {
-        // parse string?
-
         auto parsingState = ParseState(format);
         auto formatState = FormatState(args, output);
 
-        // todo: could I reduce this loop to nested stringviews?
-
-        auto* begin = parsingState.begin();
+        const auto* iterator = parsingState.begin();
         const auto* end = parsingState.end();
-        while (begin != end) {
 
-            if (*begin == '{') {
-                ++begin;
+        while (iterator != end) {
 
-                // if { is escaped, just print {
-                if (*begin == '{') {
-                    *output++ = *begin++;
+            // Start formatting argument if { is found
+            if (*iterator == '{') {
+                ++iterator;
+
+                // Escape the { character and just print it
+                if (*iterator == '{') {
+                    *output++ = *iterator++;
                     continue;
                 }
 
-                // todo: Break into its own function
-
-                // advance parse context to }
-                // return parse context begin + 1
-
+                // Update state to current output position and handle formatArgument
                 formatState.advanceTo(output);
+                auto result = handleFormat<OutputIterator>(iterator, parsingState, formatState);
 
-                // get position and parse format string
+                // Return failure if failed to format argument
+                if (!result.isValid()) {
+                    return result;
+                }
 
-                // get argument for position
-                auto argument = BasicFormatArgument<FormatState>('c');
+                output = result.get();
+                iterator = parsingState.begin();
 
-                // todo: Return result if failure
-                auto result = std::visitFormatArgument(
-                        // todo: Break visitor
-                        [&formatState] (auto arg) {
-                            if constexpr (std::same_as<decltype(arg), std::MonoState>) {
-                                return std::Result<OutputIterator>::failure();
-                            } else {
-                                std::Formatter<decltype(arg), char> formatter;
-                                formatState.advanceTo(
-                                        formatter.format(arg, formatState)
-                                );
-                                // todo: Need to return parse state here?
-                                return std::Result<OutputIterator>::success(formatState.out());
-                            }
-                        },
-                        argument
-                );
+                // Return failed if the format string did not have a closing } for the last argument
+                if (*iterator != '}') {
+                    return std::Result<OutputIterator>::failure();
+                }
 
-                // todo: advance begin to where formatter left off - parse state?
-
+                ++iterator;
                 continue;
             }
 
-            if (*begin == '}') {
-                ++begin;
+            // Print escaped } or fail if not escaped
+            if (*iterator == '}') {
+                ++iterator;
 
-                if (*begin != '}') {
-                    // todo: This is an error as it should be escaped, how to handle this? return result error?
+                if (*iterator != '}' || iterator == end) {
                     return std::Result<OutputIterator>::failure();
                 }
             }
 
-            *output++ = *begin++;
+            // print the format string character to the output directly.
+            *output++ = *iterator++;
         }
 
         return std::Result<OutputIterator>::success(output);
     }
 
+    /**
+     *
+     * @tparam CharacterType
+     * @tparam OutputIterator
+     * @tparam Args
+     * @param output
+     * @param format
+     * @param args
+     * @return
+     */
     template<std::convertableToStringView CharacterType, std::outputIterator<const char&> OutputIterator, class... Args>
     std::Result<OutputIterator> formatTo(
             OutputIterator output,

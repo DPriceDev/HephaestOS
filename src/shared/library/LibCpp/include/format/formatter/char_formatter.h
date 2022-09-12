@@ -45,7 +45,7 @@ namespace std {
         // todo: Pick up formatter rules and print out character with specific rules
         auto format(const char &character, auto &state) {
             auto output = state.out();
-            *output = character;
+            *output++ = character;
             return output;
         }
     };

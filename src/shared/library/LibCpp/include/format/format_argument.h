@@ -47,11 +47,8 @@ namespace std {
 //    private:
         using characterType = typename State::characterType;
 
-        // todo
-        std::Variant<
-            std::MonoState,
-                char
-        > value;
+        // todo: need to add all types
+        std::Variant<std::MonoState, char> value;
 
         // todo: operator bool
     };
@@ -62,7 +59,14 @@ namespace std {
 
     };
 
-    // todo: This is broken somehow? fails compile, makes compile long and hangs
+    /**
+     *
+     * @tparam Visitor
+     * @tparam State
+     * @param visitor
+     * @param argument
+     * @return
+     */
     template<class Visitor, class State>
     auto visitFormatArgument(Visitor&& visitor, std::BasicFormatArgument<State> argument) {
         return std::visit(

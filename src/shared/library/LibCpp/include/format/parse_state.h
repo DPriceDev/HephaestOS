@@ -48,7 +48,7 @@ namespace std {
         }
 
         constexpr void advanceTo(constIterator location) {
-
+            format = std::BaseStringView<CharacterType> { location };
         }
 
     };
