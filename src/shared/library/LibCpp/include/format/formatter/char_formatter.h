@@ -34,11 +34,13 @@ namespace std {
         constexpr auto parse(auto &state) {
             auto iterator {state.begin()};
             const auto end {state.end()};
-            if (iterator == end || *iterator == '}') {
 
+            while (iterator != end && *iterator != '}') {
+
+                ++iterator;
             }
 
-            return ++iterator;
+            return iterator;
         }
 
         // print character, increment iterator and return

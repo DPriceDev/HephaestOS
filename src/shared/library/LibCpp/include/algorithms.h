@@ -116,6 +116,26 @@ namespace std {
     constexpr Type max(std::initializer_list<Type> initializerList) {
         return *std::maxElement(initializerList.begin(), initializerList.end());
     }
+
+    template<inputIterator InputIterator, class Type>
+    constexpr InputIterator find(InputIterator first, InputIterator last, const Type& value) {
+        for(; first != last; ++first) {
+            if (*first == value) {
+                return first;
+            }
+        }
+        return last;
+    }
+
+    template<inputIterator InputIterator, class UnaryPredicate>
+    constexpr InputIterator findIf(InputIterator first, InputIterator last, const UnaryPredicate predicate) {
+        for(; first != last; ++first) {
+            if (predicate(*first)) {
+                return first;
+            }
+        }
+        return last;
+    }
 }
 
 #endif // HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_ALGORITHMS_H

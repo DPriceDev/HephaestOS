@@ -41,7 +41,7 @@ namespace std {
      */
     template<class Iterator>
     struct iteratorTraits<Iterator*> {
-        using valueType = Iterator;
+        using valueType = std::remove_const_t<Iterator>;
         using differenceType = ptrdiff_t;
         using pointer = Iterator *;
         using reference = Iterator &;
@@ -61,7 +61,7 @@ namespace std {
      */
     template<class Iterator>
     using iteratorValueType =
-            typename std::iteratorTraits<Iterator>::valueType; // todo: need to be std::remove_cvref<...
+            typename std::iteratorTraits<std::remove_cvref_t<Iterator>>::valueType; // todo: need to be std::remove_cvref<...
 
     /**
      * iterator Reference Type computes the reference type for a given @tparam Iterator.
@@ -75,7 +75,7 @@ namespace std {
      */
     template<class Iterator>
     using iteratorDifferenceType =
-            typename std::iteratorTraits<Iterator>::differenceType; // todo: need to be std::remove_cvref<...
+            typename std::iteratorTraits<std::remove_cvref_t<Iterator>>::differenceType; // todo: need to be std::remove_cvref<...
 }
 
 #endif // HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_ITERATORS_ITERATOR_TRAITS_H

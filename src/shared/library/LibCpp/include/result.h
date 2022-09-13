@@ -55,6 +55,14 @@ namespace std {
             return resultValue;
         }
 
+        template<class Function>
+        auto getOr(Function onError) -> Type& {
+            if(!isValid()) {
+                onError(errorValue);
+            }
+            return resultValue;
+        }
+
         [[nodiscard]] constexpr auto error() const noexcept {
             return errorValue;
         }

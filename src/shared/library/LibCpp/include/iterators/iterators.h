@@ -41,6 +41,8 @@ namespace std {
     concept weaklyIncrementable =
     std::movable<Type>
     && requires(Type iterator) {
+        typename iteratorDifferenceType<Type>;
+        // todo: is signed integer like
         { ++iterator } -> std::same_as<Type &>;
         iterator++;
     };
@@ -76,8 +78,9 @@ namespace std {
     template<class Type>
     concept indirectlyReadable =
             requires(const Type type) {
-                *type;
-                // { *type } -> std::same_as<Type &>; todo : Need to define referencable, i.e. not void?
+                typename std::iteratorValueType<Type>;
+                typename std::iteratorReferenceType<Type>;
+                { *type } -> std::same_as<std::iteratorReferenceType<Type>>;
             }
             && std::common_reference_with<Type&&, Type&>
             && std::common_reference_with<Type&&, Type&&>

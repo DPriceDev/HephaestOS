@@ -39,11 +39,11 @@ namespace std {
                 std::size_t argumentCount = 0
         ) : format(format), argumentCount(argumentCount) { }
 
-        constexpr constIterator begin() const noexcept {
+        constexpr auto begin() const noexcept -> constIterator {
             return format.begin();
         }
 
-        constexpr constIterator end() const noexcept {
+        constexpr auto end() const noexcept -> constIterator {
             return format.end();
         }
 
@@ -51,6 +51,12 @@ namespace std {
             format = std::BaseStringView<CharacterType> { location };
         }
 
+        constexpr auto nextArgumentIndex() -> size_t {
+            return 0;
+        }
+        constexpr void checkArgumentIndex(size_t index) {
+
+        }
     };
 
     // todo
