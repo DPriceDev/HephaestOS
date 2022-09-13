@@ -60,12 +60,26 @@ namespace std {
             return std::Result<ArgumentIndex>::failure();
         }
 
-        auto result = std::fromChars<size_t>(iterator, position);
-        if (!result.isValid()) {
-            return std::Result<ArgumentIndex>::failure();
+        size_t index;
+        if (position == iterator) {
+            auto result = parseState.nextArgumentIndex();
+            if (result.isNotValid()) {
+                return std::Result<ArgumentIndex>::failure();
+            }
+            index = result.get();
+        } else {
+            auto result = std::fromChars<size_t>(iterator, position);
+            if (!result.isValid()) {
+                return std::Result<ArgumentIndex>::failure();
+            }
+            index = result.get();
+
+            if (!parseState.checkArgumentIndex(index).isValid()) {
+                return std::Result<ArgumentIndex>::failure();
+            }
         }
 
-        return std::Result<ArgumentIndex>::success(ArgumentIndex { result.get(), position });
+        return std::Result<ArgumentIndex>::success(ArgumentIndex { index, position });
     }
 
     /**
@@ -250,9 +264,6 @@ namespace std {
     // todo
     // template<class... Args>
     //size_t formatted_size(/*format-string*/<Args...> fmt, Args&&... args);
-
 }
-
-
 
 #endif //HEPHAISTOS_FORMAT_FORMAT_H

@@ -71,6 +71,10 @@ namespace std {
             return isResult;
         }
 
+        [[nodiscard]] constexpr bool isNotValid() const noexcept {
+            return !isResult;
+        }
+
         // Functional Interface
         template<class ResultFunction, class ErrorFunction>
         auto onResult(ResultFunction resultFunction, ErrorFunction errorFunction) -> Result<Type, Error>& {
@@ -96,6 +100,14 @@ namespace std {
                 function(errorValue);
             }
             return *this;
+        }
+
+        template<class Function>
+        constexpr auto map(Function function) -> decltype(auto) {
+            if(!isValid()) {
+                std::Result<Type, Error>::failure();
+            }
+            return function(resultValue);
         }
     };
 }

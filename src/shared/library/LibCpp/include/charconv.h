@@ -25,7 +25,7 @@
 
 namespace std {
 
-    template<class Type>
+    template<std::integral Type>
     constexpr std::Result<Type, Error> fromChars(
             const char* first,
             const char* last,
@@ -39,8 +39,8 @@ namespace std {
      * @param base
      * @return
      */
-    template<>
-    constexpr std::Result<std::size_t, Error> fromChars(
+    template<std::integral Type>
+    constexpr std::Result<Type, Error> fromChars(
             const char* first,
             const char* last,
             int base
@@ -50,7 +50,7 @@ namespace std {
         auto running = 0;
         auto power = 1;
         std::forEach(view.rbegin(), view.rend(), [&] (auto & character) {
-            running += (int(character) - 48) * power; // todo: Handle errors / overflow
+            running += (Type(character) - 48) * power; // todo: Handle errors / overflow
             power *= base; // todo: handle int is too big / overflow?
         });
 

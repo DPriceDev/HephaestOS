@@ -45,7 +45,7 @@ namespace kernel::boot {
 
         // testing
         auto output = std::Array<char, 100> { };
-        std::formatTo(output.begin(), "hello {1:+123} world!", 'c', 'd');
+        std::formatTo(output.begin(), "hello {1:} {0:} world!", 'c', 'd');
 
         terminal.clear();
         terminal.println("System init");

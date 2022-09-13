@@ -26,8 +26,12 @@ namespace std {
     // todo
     template<class CharacterType>
     class BasicParseState {
+        enum class CountingType { NOT_SET, MANUAL, AUTOMATIC };
+
         std::BaseStringView<CharacterType> format;
         std::size_t argumentCount;
+        std::size_t argumentIndex { 0 };
+        CountingType countingType { CountingType::NOT_SET };
 
     public:
         using characterType = CharacterType;
@@ -51,11 +55,19 @@ namespace std {
             format = std::BaseStringView<CharacterType> { location };
         }
 
-        constexpr auto nextArgumentIndex() -> size_t {
-            return 0;
+        constexpr auto nextArgumentIndex() -> std::Result<size_t> {
+            if (countingType == CountingType::MANUAL || argumentIndex >= argumentCount) {
+                return std::Result<size_t>::failure();
+            }
+            countingType = CountingType::AUTOMATIC;
+            return std::Result<size_t>::success(argumentIndex++);
         }
-        constexpr void checkArgumentIndex(size_t index) {
-
+        constexpr std::Result<size_t> checkArgumentIndex(size_t index) {
+            if (index >= argumentCount || countingType == CountingType::AUTOMATIC) {
+                return std::Result<size_t>::failure();
+            }
+            countingType = CountingType::MANUAL;
+            return std::Result<size_t>::success(index);
         }
     };
 
