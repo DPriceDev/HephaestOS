@@ -51,12 +51,27 @@ namespace std {
         return first;
     }
 
-    template<std::integral Type>
-    constexpr std::Result<Type, Error> fromChars(
-            const char* first,
-            const char* last,
-            int base = 10
-    );
+    constexpr char* toChars(
+        char* first,
+        char* last,
+        std::floating_point auto value
+    ) {
+        long wholeNumber = static_cast<long>(value);
+        auto* next = toChars(first, last, wholeNumber);
+        *next++ = '.';
+
+        auto decimalNumber = value - wholeNumber;
+
+        auto remainder = decimalNumber;
+        while(remainder != 0.0) {
+            decimalNumber *= 10;
+            remainder = decimalNumber - static_cast<unsigned long long>(decimalNumber);
+        }
+
+        // todo: Some sort of rounding here?
+
+        return toChars(next, last, static_cast<unsigned long long>(decimalNumber));
+    }
 
     /**
      * Int specialization
@@ -69,7 +84,7 @@ namespace std {
     constexpr std::Result<Type, Error> fromChars(
             const char* first,
             const char* last,
-            int base
+            int base = 10
     ) {
         auto view = std::StringView(first, last - first);
 

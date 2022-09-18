@@ -23,24 +23,6 @@
 
 namespace std {
 
-    /**
-     * std::MonoState,
-     * bool,
-     * characterType,
-     * int,
-     * unsigned int,
-     * long long int,
-     * unsigned long long int,
-     * float,
-     * double,
-     * long double,
-     * const characterType*,
-     * BaseStringView<characterType>,
-     * const void*,
-     * handle
-     * @tparam State
-     */
-
     // todo
     template<class State>
     class BasicFormatArgument {
@@ -49,45 +31,45 @@ namespace std {
 
         using characterType = typename State::characterType;
 
-        BasicFormatArgument() : value(
-                std::Variant<
-                        std::MonoState,
-                        bool,
-                        characterType,
-                        int,
-                        unsigned int,
-                        long int,
-                        unsigned long,
-                        unsigned long long int,
-                        //float,
-                        //double,
-                        //long double,
-                        const characterType*,
-                        BaseStringView<characterType>,
-                        const void*
-                        //handle
+        BasicFormatArgument () : value(
+            std::Variant<
+                std::MonoState,
+                bool,
+                characterType,
+                int,
+                unsigned int,
+                long int,
+                unsigned long,
+                unsigned long long int,
+                float,
+                double,
+                long double,
+                const characterType*,
+                BaseStringView<characterType>,
+                const void*
+                //handle
             >(std::MonoState())
         ) { }
 
         template<class Type>
-        explicit BasicFormatArgument(Type&& type) : value(
-                std::Variant<
-                        std::MonoState,
-                        bool,
-                        characterType,
-                        int,
-                        unsigned int,
-                        long int,
-                        unsigned long,
-                        unsigned long long int,
-                        //float,
-                        //double,
-                        //long double,
-                        const characterType*,
-                        BaseStringView<characterType>,
-                        const void*
-                        //handle
-                >(std::forward<Type>(type))
+        explicit BasicFormatArgument (Type&& type) : value(
+            std::Variant<
+                std::MonoState,
+                bool,
+                characterType,
+                int,
+                unsigned int,
+                long int,
+                unsigned long,
+                unsigned long long int,
+                float,
+                double,
+                long double,
+                const characterType*,
+                BaseStringView<characterType>,
+                const void*
+                //handle
+            >(std::forward<Type>(type))
         ) { }
 
 //    private:
@@ -101,9 +83,9 @@ namespace std {
             long int,
             unsigned long,
             unsigned long long int,
-//            float,
-//            double,
-//            long double,
+            float,
+            double,
+            long double,
             const characterType*,
             BaseStringView<characterType>,
             const void*
@@ -128,16 +110,16 @@ namespace std {
      * @return
      */
     template<class Visitor, class State>
-    auto visitFormatArgument(Visitor&& visitor, std::BasicFormatArgument<State> argument) {
+    auto visitFormatArgument (Visitor&& visitor, std::BasicFormatArgument<State> argument) {
         return std::visit(
-                [&visitor] (auto result) -> decltype(auto) {
-                    if (!result.isValid()) {
-                        return visitor(std::MonoState());
-                    }
+            [&visitor] (auto result) -> decltype(auto) {
+                if (!result.isValid()) {
+                    return visitor(std::MonoState());
+                }
 
-                    return visitor(result.get());
-                },
-                argument.value
+                return visitor(result.get());
+            },
+            argument.value
         );
     }
 }

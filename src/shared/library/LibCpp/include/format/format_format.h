@@ -31,6 +31,7 @@
 #include "format/formatter/char_formatter.h"
 #include "format/formatter/bool_formatter.h"
 #include "format/formatter/int_formatter.h"
+#include "format/formatter/floating_formatter.h"
 #include "format/formatter/pointer_formatter.h"
 
 namespace std {
@@ -48,15 +49,17 @@ namespace std {
      * @param end
      * @return
      */
-    template<std::outputIterator<const char &> OutputIterator>
-    std::Result<ArgumentIndex> getArgumentIndex(
-            ParseState& parseState, // todo: Switch to template param
-            const char* iterator, // todo: Extract to character type template param
-            const char* end // todo: Extract to character type template param
+    template<std::outputIterator<const char&> OutputIterator>
+    std::Result<ArgumentIndex> getArgumentIndex (
+        ParseState& parseState, // todo: Switch to template param
+        const char* iterator, // todo: Extract to character type template param
+        const char* end // todo: Extract to character type template param
     ) {
-        auto position = std::findIf(iterator, end, [] (auto character) {
-            return character == ':' || character == '}';
-        });
+        auto position = std::findIf(
+            iterator, end, [] (auto character) {
+                return character == ':' || character == '}';
+            }
+        );
 
         // Invalid if a formatting : or end of argument } is not found
         if (position == end) {
@@ -91,7 +94,7 @@ namespace std {
      * @param argumentIndex
      * @return
      */
-    std::Result<bool> shouldParse(ParseState& parseState, const ArgumentIndex& argumentIndex) {
+    std::Result<bool> shouldParse (ParseState& parseState, const ArgumentIndex& argumentIndex) {
         switch (*argumentIndex.nextCharacter) {
             case '}':
                 parseState.advanceTo(argumentIndex.nextCharacter);
@@ -109,31 +112,31 @@ namespace std {
         return std::Result<bool>::success(*argumentIndex.nextCharacter == ':');
     }
 
-    template<std::outputIterator<const char &> OutputIterator>
-    std::Result<OutputIterator> formatArgument(
-            ParseState& parseState, // todo: Switch to template param
-            FormatState& formatState, // todo: Switch to template param
-            const BasicFormatArgument<FormatState>&& argument,
-            const bool shouldParse
+    template<std::outputIterator<const char&> OutputIterator>
+    std::Result<OutputIterator> formatArgument (
+        ParseState& parseState, // todo: Switch to template param
+        FormatState& formatState, // todo: Switch to template param
+        const BasicFormatArgument<FormatState>&& argument,
+        const bool shouldParse
     ) {
         return visitFormatArgument(
-                [&parseState, &formatState, &shouldParse] (auto arg) {
-                    if constexpr (std::same_as<decltype(arg), MonoState>) {
-                        // Fail if argument is not present.
-                        return std::Result<OutputIterator>::failure();
-                    } else {
-                        // Get the formatter for this type and format the argument.
-                        Formatter<decltype(arg), char> formatter;
+            [&parseState, &formatState, &shouldParse] (auto arg) {
+                if constexpr (std::same_as<decltype(arg), MonoState>) {
+                    // Fail if argument is not present.
+                    return std::Result<OutputIterator>::failure();
+                } else {
+                    // Get the formatter for this type and format the argument.
+                    Formatter<decltype(arg), char> formatter;
 
-                        if (shouldParse) {
-                            parseState.advanceTo(formatter.parse(parseState));
-                        }
-
-                        auto result = formatter.format(arg, formatState);
-                        return Result<OutputIterator>::success(result);
+                    if (shouldParse) {
+                        parseState.advanceTo(formatter.parse(parseState));
                     }
-                },
-                argument
+
+                    auto result = formatter.format(arg, formatState);
+                    return Result<OutputIterator>::success(result);
+                }
+            },
+            argument
         );
     }
 
@@ -145,12 +148,12 @@ namespace std {
      * @param format
      * @return
      */
-    template<std::outputIterator<const char &> OutputIterator>
-    std::Result<OutputIterator> handleFormat(
-            const char* iterator, // todo: Extract to character type template param
-            const char* end, // todo: Extract to character type template param
-            ParseState& parseState, // todo: Switch to template param
-            FormatState& formatState // todo: Switch to template param
+    template<std::outputIterator<const char&> OutputIterator>
+    std::Result<OutputIterator> handleFormat (
+        const char* iterator, // todo: Extract to character type template param
+        const char* end, // todo: Extract to character type template param
+        ParseState& parseState, // todo: Switch to template param
+        FormatState& formatState // todo: Switch to template param
     ) {
         auto result = getArgumentIndex<OutputIterator>(parseState, iterator, end);
         if (!result.isValid()) {
@@ -164,10 +167,10 @@ namespace std {
         }
 
         return formatArgument<OutputIterator>(
-                parseState,
-                formatState,
-                formatState.argument(argumentIndex.index),
-                shouldParseResult.get()
+            parseState,
+            formatState,
+            formatState.argument(argumentIndex.index),
+            shouldParseResult.get()
         );
     }
 
@@ -182,10 +185,10 @@ namespace std {
      * @return
      */
     template<std::outputIterator<const char&> OutputIterator>
-    std::Result<OutputIterator> dynamicFormatTo(
-            OutputIterator output,
-            std::StringView format,
-            std::FormatArguments args
+    std::Result<OutputIterator> dynamicFormatTo (
+        OutputIterator output,
+        std::StringView format,
+        std::FormatArguments args
     ) {
         auto parsingState = ParseState(format, args.count());
         auto formatState = FormatState(args, output);
@@ -252,15 +255,15 @@ namespace std {
      * @return
      */
     template<std::convertableToStringView CharacterType, std::outputIterator<const char&> OutputIterator, class... Args>
-    std::Result<OutputIterator> formatTo(
-            OutputIterator output,
-            CharacterType* format,
-            Args&&...args
+    std::Result<OutputIterator> formatTo (
+        OutputIterator output,
+        CharacterType* format,
+        Args&& ...args
     ) {
         return dynamicFormatTo(
-                output,
-                std::StringView { format },
-                std::makeFormatArguments(args...)
+            output,
+            std::StringView { format },
+            std::makeFormatArguments(args...)
         );
     }
 
