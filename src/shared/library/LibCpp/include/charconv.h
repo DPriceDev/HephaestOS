@@ -25,6 +25,32 @@
 
 namespace std {
 
+    constexpr char* toChars(
+            char* first,
+            char* last,
+            std::integral auto value,
+            int base = 10
+    ) {
+        const char* characters = "0123456789abcdefghijklmnopqrstuvwxyz";
+
+        if (value < 0) {
+            *first++ = '-';
+            value *= -1;
+        }
+
+        auto initialFirst = first;
+        decltype(value) remainder;
+        do {
+            remainder = value % base;
+            value = value / base;
+            *first++ = characters[remainder];
+        } while(value != 0 && first != last);
+
+        std::reverse(initialFirst, first);
+
+        return first;
+    }
+
     template<std::integral Type>
     constexpr std::Result<Type, Error> fromChars(
             const char* first,

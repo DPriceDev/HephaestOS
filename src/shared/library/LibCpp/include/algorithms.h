@@ -136,6 +136,27 @@ namespace std {
         }
         return last;
     }
+
+    template<inputIterator InputIterator, class OutputIterator>
+    constexpr OutputIterator copy(InputIterator first, InputIterator last, OutputIterator output) {
+        for (; first != last; ++first, ++output) {
+            *output = *first;
+        }
+        return output;
+    }
+
+    template<forwardIterator IteratorA, forwardIterator IteratorB>
+    constexpr void iteratorSwap(IteratorA a, IteratorB b)
+    {
+        std::swap(*a, *b);
+    }
+
+    template<bidirectionalIterator Iterator>
+    constexpr void reverse(Iterator first, Iterator last) {
+        while ((first != last) && (first != --last)) {
+            std::iteratorSwap(first++, last);
+        }
+    }
 }
 
 #endif // HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_ALGORITHMS_H

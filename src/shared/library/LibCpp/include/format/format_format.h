@@ -29,6 +29,9 @@
 #include "format/format_state.h"
 #include "format/parse_state.h"
 #include "format/formatter/char_formatter.h"
+#include "format/formatter/bool_formatter.h"
+#include "format/formatter/int_formatter.h"
+#include "format/formatter/pointer_formatter.h"
 
 namespace std {
 

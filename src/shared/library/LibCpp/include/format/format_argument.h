@@ -23,16 +23,49 @@
 
 namespace std {
 
+    /**
+     * std::MonoState,
+     * bool,
+     * characterType,
+     * int,
+     * unsigned int,
+     * long long int,
+     * unsigned long long int,
+     * float,
+     * double,
+     * long double,
+     * const characterType*,
+     * BaseStringView<characterType>,
+     * const void*,
+     * handle
+     * @tparam State
+     */
+
     // todo
     template<class State>
     class BasicFormatArgument {
     public:
         class handle;
 
+        using characterType = typename State::characterType;
+
         BasicFormatArgument() : value(
                 std::Variant<
                         std::MonoState,
-                        char
+                        bool,
+                        characterType,
+                        int,
+                        unsigned int,
+//                        long int,
+                        unsigned long,
+                        unsigned long long int,
+                        //float,
+                        //double,
+                        //long double,
+                        const characterType*,
+                        BaseStringView<characterType>,
+                        const void*
+                        //handle
             >(std::MonoState())
         ) { }
 
@@ -40,15 +73,42 @@ namespace std {
         explicit BasicFormatArgument(Type&& type) : value(
                 std::Variant<
                         std::MonoState,
-                        char
+                        bool,
+                        characterType,
+                        int,
+                        unsigned int,
+//                        long int,
+                        unsigned long,
+                        unsigned long long int,
+                        //float,
+                        //double,
+                        //long double,
+                        const characterType*,
+                        BaseStringView<characterType>,
+                        const void*
+                        //handle
                 >(std::forward<Type>(type))
         ) { }
 
 //    private:
-        using characterType = typename State::characterType;
 
-        // todo: need to add all types
-        std::Variant<std::MonoState, char> value;
+        std::Variant<
+            std::MonoState,
+            bool,
+            characterType,
+            int,
+            unsigned int,
+//            long int,
+            unsigned long,
+            unsigned long long int,
+//            float,
+//            double,
+//            long double,
+            const characterType*,
+            BaseStringView<characterType>,
+            const void*
+//            handle
+        > value;
 
         // todo: operator bool
     };

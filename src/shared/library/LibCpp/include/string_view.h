@@ -21,7 +21,7 @@
 #include "compare"
 #include "limits"
 #include "iterator.h"
-#include "string.h"
+#include "string"
 #include "result.h"
 
 namespace std {

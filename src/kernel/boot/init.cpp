@@ -45,7 +45,8 @@ namespace kernel::boot {
 
         // testing
         auto output = std::Array<char, 100> { };
-        std::formatTo(output.begin(), "hello {1:} {0:} world!", 'c', 'd');
+        std::size_t asd = 4;
+        std::formatTo(output.begin(), "hello {} {} {} {} {} {} world!", false, 'd', "test", std::StringView { "test" }, asd, static_cast<const void*>(&output));
 
         terminal.clear();
         terminal.println("System init");

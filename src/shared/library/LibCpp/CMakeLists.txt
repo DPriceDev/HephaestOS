@@ -11,7 +11,7 @@ add_library(sharedLibCpp INTERFACE
         include/result.h
         include/format.h
         include/string_view.h
-        include/string.h
+        include/string
         include/format/formatter/char_formatter.h
         include/charconv.h
         include/iterators/incrementable_traits.h)

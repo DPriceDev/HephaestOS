@@ -15,11 +15,16 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#ifndef HEPHAIST_OS_USER_LIB_C_STDIO_H
-#define HEPHAIST_OS_USER_LIB_C_STDIO_H
+#ifndef _STDIO_H
+#define _STDIO_H 1
 
 #include <stdarg.h>
 #include "stdio/sprintf.h"
+#include "stdio/file.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * size_t is the maximum size an object could be.
@@ -27,10 +32,9 @@
 typedef long unsigned int size_t;
 
 /* */
-typedef int* FILE;
+extern FILE* stderr;
 
-/* */
-FILE stderr;
+#define stderr stderr
 
 #define SEEK_SET 0
 #define SEEK_CUR 1
@@ -66,5 +70,8 @@ int fflush(FILE *stream);
  */
 int fprintf(FILE *stream, const char *format, ...);
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif // HEPHAIST_OS_USER_LIB_C_STDIO_H

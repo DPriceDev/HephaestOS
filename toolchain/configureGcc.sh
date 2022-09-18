@@ -10,7 +10,8 @@ sh $CONFIG_DIR/configure \
   CXXFLAGS='-g0 -O2' \
   --target=$TARGET \
   --prefix=$PREFIX \
-  --with-sysroot=$SYSROOT \
+  --with-build-sysroot=$SYSROOT \
+  --with-sysroot=/ \
   --with-newlib \
   --disable-nls \
   --disable-hosted-libstdcxx \

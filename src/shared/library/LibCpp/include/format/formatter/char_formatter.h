@@ -30,24 +30,69 @@ namespace std {
     template<>
     struct Formatter<char> {
 
-        // todo: step over iterator until } is hit and save parameters to formatter
         constexpr auto parse(auto &state) {
-            auto iterator {state.begin()};
-            const auto end {state.end()};
+            auto iterator { state.begin() };
+            const auto end { state.end() };
 
             while (iterator != end && *iterator != '}') {
-
+                // todo: Parse Formatter Arguments
                 ++iterator;
             }
 
             return iterator;
         }
 
-        // print character, increment iterator and return
-        // todo: Pick up formatter rules and print out character with specific rules
         auto format(const char &character, auto &state) {
             auto output = state.out();
             *output++ = character;
+            return output;
+        }
+    };
+
+    template<>
+    struct Formatter<const char *> {
+
+        constexpr auto parse(auto &state) {
+            auto iterator { state.begin() };
+            const auto end { state.end() };
+
+            while (iterator != end && *iterator != '}') {
+                // todo: Parse Formatter Arguments
+                ++iterator;
+            }
+
+            return iterator;
+        }
+
+        auto format(const char* string, auto &state) {
+            auto output = state.out();
+            while(*string != '\0') {
+                *output++ = *string++;
+            }
+            return output;
+        }
+    };
+
+    template<>
+    struct Formatter<BaseStringView<char>> {
+
+        constexpr auto parse(auto &state) {
+            auto iterator { state.begin() };
+            const auto end { state.end() };
+
+            while (iterator != end && *iterator != '}') {
+                // todo: Parse Formatter Arguments
+                ++iterator;
+            }
+
+            return iterator;
+        }
+
+        auto format(BaseStringView<char> view, auto &state) {
+            auto output = state.out();
+            for (char character : view) {
+                *output++ = character;
+            }
             return output;
         }
     };
