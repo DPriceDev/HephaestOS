@@ -25,8 +25,7 @@
 namespace std {
 
     template<class Type, class CharacterType>
-    concept StandardFormatArgument =
-        std::is_same_v<Type, bool&> ||
+    concept StandardFormatArgument = std::is_same_v<Type, bool&> ||
         std::is_same_v<Type, CharacterType&> ||
         std::is_same_v<Type, int&> ||
         std::is_same_v<Type, unsigned int&> ||
@@ -37,6 +36,7 @@ namespace std {
         std::is_same_v<Type, double&> ||
         std::is_same_v<Type, long double&> ||
         std::is_same_v<Type, const CharacterType*&> ||
+        std::is_same_v<Type, const void*&> ||
         std::convertible_to<Type, const CharacterType*> ||
         std::is_same_v<Type, BaseStringView<CharacterType>&>;
 
@@ -73,10 +73,14 @@ namespace std {
         ) { }
 
         template<StandardFormatArgument<typename State::characterType> Type>
-        explicit BasicFormatArgument (Type&& type) : value(ArgumentVariant(std::forward<Type>(type))) { }
+        explicit BasicFormatArgument (Type&& type) : value(
+            ArgumentVariant(std::forward<Type>(type))
+        ) { }
 
         template<CustomFormatArgument<typename State::characterType> Type>
-        explicit BasicFormatArgument (Type&& type) : value(ArgumentVariant(handle(std::forward<Type>(type)))) { }
+        explicit BasicFormatArgument (Type&& type) : value(
+            ArgumentVariant(handle(std::forward<Type>(type)))
+        ) { }
 
         // todo: make this    private:
 

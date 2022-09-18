@@ -29,55 +29,31 @@
 #include "boot/tss/task_state_segment.h"
 #include "boot/grub/memory_map.h"
 
-struct TestType {
-
-};
-
-template <>
-struct std::Formatter<TestType> {
-    constexpr auto parse(std::ParseState& state) {
-        return state.begin();
-    }
-
-    auto format(const TestType& obj, std::FormatState & state) {
-        auto* output = state.out();
-        *output++ = ';';
-        return output;
-    }
-};
-
 namespace kernel::boot {
 
-    static const VideoBufferDisplay display {};
+    static const VideoBufferDisplay display { };
 
     constexpr uint8_t interruptRequestOffset = 32;
 
-    extern "C" void init (MultiBootInfo *info, uint32_t /* magic */, uint32_t stackPointer) {
+    extern "C" void init(MultiBootInfo* info, uint32_t /* magic */, uint32_t stackPointer) {
 
         // Construct memory map from grub multiboot information passed from grub
         grub::constructMemoryMap(info);
 
         // todo: replace with log stream? pass to root process?
-        auto terminal = Terminal {display};
+        auto terminal = Terminal { display };
 
-        // testing
-        int test = 4;
-
-        auto output = std::Array<char, 200> {};
-        std::size_t asd = 4;
+        auto output = std::Array<char, 200> { };
         std::formatTo(
             output.begin(),
-            "hello {} {} {} {} {} {} {} {} {} {} world!",
+            "hello {} {} {} {} {} {} {} world!",
             false,
             'd',
             "test",
-            std::StringView {"test"},
-            asd,
-            static_cast<const void *>(&output),
+            std::StringView { "test" },
+            static_cast<const void*>(&output),
             4321.1234f,
-            987654321.1234567,
-            TestType {}
-            //&test
+            987654321.1234567
         );
 
         terminal.clear();
