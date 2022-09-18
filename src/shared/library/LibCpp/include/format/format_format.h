@@ -94,7 +94,7 @@ namespace std {
      * @param argumentIndex
      * @return
      */
-    std::Result<bool> shouldParse (ParseState& parseState, const ArgumentIndex& argumentIndex) {
+    std::Result<bool> shouldParse(ParseState& parseState, const ArgumentIndex& argumentIndex) {
         switch (*argumentIndex.nextCharacter) {
             case '}':
                 parseState.advanceTo(argumentIndex.nextCharacter);
@@ -124,6 +124,12 @@ namespace std {
                 if constexpr (std::same_as<decltype(arg), MonoState>) {
                     // Fail if argument is not present.
                     return std::Result<OutputIterator>::failure();
+                } else if constexpr (std::same_as<decltype(arg), BasicFormatArgument<FormatState>::handle>) {
+                    // Call formatter from the handle for custom types
+                    arg.format(parseState, formatState);
+                    return Result<OutputIterator>::success(
+                       formatState.out()
+                    );
                 } else {
                     // Get the formatter for this type and format the argument.
                     Formatter<decltype(arg), char> formatter;

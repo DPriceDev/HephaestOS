@@ -20,61 +20,37 @@
 
 #include "variant.h"
 #include "string_view.h"
+#include "parse_state.h"
 
 namespace std {
+
+    template<class Type, class CharacterType>
+    concept StandardFormatArgument =
+        std::is_same_v<Type, bool&> ||
+        std::is_same_v<Type, CharacterType&> ||
+        std::is_same_v<Type, int&> ||
+        std::is_same_v<Type, unsigned int&> ||
+        std::is_same_v<Type, long int&> ||
+        std::is_same_v<Type, unsigned long&> ||
+        std::is_same_v<Type, unsigned long long int&> ||
+        std::is_same_v<Type, float&> ||
+        std::is_same_v<Type, double&> ||
+        std::is_same_v<Type, long double&> ||
+        std::is_same_v<Type, const CharacterType*&> ||
+        std::convertible_to<Type, const CharacterType*> ||
+        std::is_same_v<Type, BaseStringView<CharacterType>&>;
+
+    template<class CharacterType, class Type>
+    concept CustomFormatArgument = !StandardFormatArgument<CharacterType, Type>;
 
     // todo
     template<class State>
     class BasicFormatArgument {
     public:
         class handle;
-
         using characterType = typename State::characterType;
 
-        BasicFormatArgument () : value(
-            std::Variant<
-                std::MonoState,
-                bool,
-                characterType,
-                int,
-                unsigned int,
-                long int,
-                unsigned long,
-                unsigned long long int,
-                float,
-                double,
-                long double,
-                const characterType*,
-                BaseStringView<characterType>,
-                const void*
-                //handle
-            >(std::MonoState())
-        ) { }
-
-        template<class Type>
-        explicit BasicFormatArgument (Type&& type) : value(
-            std::Variant<
-                std::MonoState,
-                bool,
-                characterType,
-                int,
-                unsigned int,
-                long int,
-                unsigned long,
-                unsigned long long int,
-                float,
-                double,
-                long double,
-                const characterType*,
-                BaseStringView<characterType>,
-                const void*
-                //handle
-            >(std::forward<Type>(type))
-        ) { }
-
-//    private:
-
-        std::Variant<
+        using ArgumentVariant = std::Variant<
             std::MonoState,
             bool,
             characterType,
@@ -88,9 +64,27 @@ namespace std {
             long double,
             const characterType*,
             BaseStringView<characterType>,
-            const void*
-//            handle
-        > value;
+            const void*,
+            handle
+        >;
+
+        BasicFormatArgument () : value(
+            ArgumentVariant(std::MonoState())
+        ) { }
+
+        template<StandardFormatArgument<typename State::characterType> Type>
+        explicit BasicFormatArgument (Type&& type) : value(ArgumentVariant(std::forward<Type>(type))) { }
+
+        template<CustomFormatArgument<typename State::characterType> Type>
+        explicit BasicFormatArgument (Type&& type) : value(ArgumentVariant(handle(std::forward<Type>(type)))) { }
+
+        // todo: make this    private:
+
+        // todo: friend make function
+
+        // todo: friend visit?
+
+        ArgumentVariant value;
 
         // todo: operator bool
     };
@@ -98,7 +92,35 @@ namespace std {
     // todo
     template<class State>
     class BasicFormatArgument<State>::handle {
+        using characterType = typename State::characterType;
 
+        const void * data{ nullptr };
+        void (*formatFunction)(BasicParseState<characterType>&, State&, const void*) { nullptr };
+
+        template<class Type>
+        static void formatType(
+            BasicParseState<characterType>& parseState,
+            State& formatState,
+            const void* pointer
+        ) {
+            typename State::template formatterType<Type> formatter;
+            parseState.advanceTo(formatter.parse(parseState));
+            auto newType = *static_cast<const Type*>(pointer);
+            formatState.advanceTo(formatter.format(newType, formatState));
+        }
+
+    public:
+        handle() = default;
+
+        template<class Type>
+        explicit handle(Type type) : data(std::addressof(type)), formatFunction(this->formatType<Type>) { }
+
+        void format(
+            BasicParseState<typename State::characterType> &parseState,
+            State &formatState
+        ) const {
+            formatFunction(parseState, formatState, data);
+        }
     };
 
     /**
