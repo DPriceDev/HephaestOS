@@ -15,6 +15,7 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
+// TODO: Format Header
 #ifndef HEPHAISTOS_INT_FORMATTER_H
 #define HEPHAISTOS_INT_FORMATTER_H
 
@@ -25,17 +26,38 @@
 
 namespace std {
 
+    /**
+     * TODO: Comment
+     * @tparam Type
+     */
     template<class Type>
     concept dividable = std::integral<Type>
             && requires(const Type a, const Type b) { a / b; };
 
+    /**
+     * TODO: Commment
+     * @tparam Type
+     */
     template<class Type>
     concept modulusable = std::integral<Type>
                         && requires(const Type a, const Type b) { a % b; };
 
+    /**
+     * TODO: Comment
+     * @tparam Type
+     */
     template<class Type>
     concept formatableIntegral = dividable<Type> && modulusable<Type>;
 
+    /**
+     * TODO: Comment
+     * @tparam OutputIterator
+     * @tparam Type
+     * @param iterator
+     * @param value
+     * @param base
+     * @return
+     */
     template<class OutputIterator, formatableIntegral Type>
     auto formatDigit(OutputIterator iterator, Type value, Type base = 10) -> OutputIterator {
         auto reduction = value / base;
@@ -57,7 +79,7 @@ namespace std {
 
     /**
      * Int specification
-     * todo
+     * TODO: Comment
      */
     template<std::integral Type>
     struct Formatter<Type> {

@@ -15,6 +15,7 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
+// TODO: Format Header
 #ifndef HEPHAISTOS_CHAR_FORMATTER_H
 #define HEPHAISTOS_CHAR_FORMATTER_H
 
@@ -25,7 +26,7 @@ namespace std {
 
     /**
      * Char specification
-     * todo
+     * TODO: Comment
      */
     template<>
     struct Formatter<char> {
@@ -49,6 +50,9 @@ namespace std {
         }
     };
 
+    /**
+     * TODO: Comment
+     */
     template<>
     struct Formatter<const char *> {
 
@@ -73,6 +77,9 @@ namespace std {
         }
     };
 
+    /**
+     * TODO: Comment
+     */
     template<>
     struct Formatter<BaseStringView<char>> {
 

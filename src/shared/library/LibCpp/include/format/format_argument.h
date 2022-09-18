@@ -15,6 +15,7 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
+// TODO: Format Header
 #ifndef HEPHAISTOS_FORMAT_ARGUMENT_H
 #define HEPHAISTOS_FORMAT_ARGUMENT_H
 
@@ -24,6 +25,11 @@
 
 namespace std {
 
+    /**
+     * TODO: Comment
+     * @tparam Type
+     * @tparam CharacterType
+     */
     template<class Type, class CharacterType>
     concept StandardFormatArgument = std::is_same_v<Type, bool&> ||
         std::is_same_v<Type, CharacterType&> ||
@@ -40,14 +46,23 @@ namespace std {
         std::convertible_to<Type, const CharacterType*> ||
         std::is_same_v<Type, BaseStringView<CharacterType>&>;
 
+    /**
+     * TODO: Comment
+     * @tparam CharacterType
+     * @tparam Type
+     */
     template<class CharacterType, class Type>
     concept CustomFormatArgument = !StandardFormatArgument<CharacterType, Type>;
 
-    // todo
+    /**
+     * TODO: Comment
+     * @tparam State
+     */
     template<class State>
     class BasicFormatArgument {
     public:
         class handle;
+
         using characterType = typename State::characterType;
 
         using ArgumentVariant = std::Variant<
@@ -68,6 +83,7 @@ namespace std {
             handle
         >;
 
+        // Constructors
         BasicFormatArgument () : value(
             ArgumentVariant(std::MonoState())
         ) { }
@@ -93,14 +109,26 @@ namespace std {
         // todo: operator bool
     };
 
-    // todo
+    /**
+     * TODO: Comment
+     * @tparam State
+     */
     template<class State>
     class BasicFormatArgument<State>::handle {
         using characterType = typename State::characterType;
 
         const void * data{ nullptr };
+
+        // TODO: Comment
         void (*formatFunction)(BasicParseState<characterType>&, State&, const void*) { nullptr };
 
+        /**
+         * TODO: Comment
+         * @tparam Type
+         * @param parseState
+         * @param formatState
+         * @param pointer
+         */
         template<class Type>
         static void formatType(
             BasicParseState<characterType>& parseState,
@@ -114,11 +142,17 @@ namespace std {
         }
 
     public:
+        // Constructors
         handle() = default;
 
         template<class Type>
         explicit handle(Type type) : data(std::addressof(type)), formatFunction(this->formatType<Type>) { }
 
+        /**
+         * TODO: Comment
+         * @param parseState
+         * @param formatState
+         */
         void format(
             BasicParseState<typename State::characterType> &parseState,
             State &formatState

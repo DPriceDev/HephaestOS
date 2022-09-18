@@ -15,6 +15,7 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
+// TODO: Format Header
 #ifndef HEPHAISTOS_FORMAT_FORMAT_H
 #define HEPHAISTOS_FORMAT_FORMAT_H
 
@@ -36,13 +37,16 @@
 
 namespace std {
 
+    /**
+     * TODO: Comment
+     */
     struct ArgumentIndex {
         size_t index;
         const char* nextCharacter;
     };
 
     /**
-     * todo
+     * TODO: Comment
      * @tparam OutputIterator
      * @param parseState
      * @param iterator
@@ -89,7 +93,7 @@ namespace std {
     }
 
     /**
-     *
+     * TODO: Comment
      * @param parseState
      * @param argumentIndex
      * @return
@@ -112,6 +116,15 @@ namespace std {
         return std::Result<bool>::success(*argumentIndex.nextCharacter == ':');
     }
 
+    /**
+     * TODO: Comment
+     * @tparam OutputIterator
+     * @param parseState
+     * @param formatState
+     * @param argument
+     * @param shouldParse
+     * @return
+     */
     template<std::outputIterator<const char&> OutputIterator>
     std::Result<OutputIterator> formatArgument (
         ParseState& parseState, // todo: Switch to template param
@@ -147,7 +160,7 @@ namespace std {
     }
 
     /**
-     *
+     * TODO: Comment
      * @tparam OutputIterator
      * @param output
      * @param toFormat
@@ -183,7 +196,7 @@ namespace std {
     // todo: Should this return the output iterator of the failed point?
     // todo: could I reduce this loop to nested stringviews?
     /**
-     *
+     * TODO: Comment
      * @tparam OutputIterator
      * @param output
      * @param format
@@ -251,7 +264,7 @@ namespace std {
     }
 
     /**
-     *
+     * TODO: Comment
      * @tparam CharacterType
      * @tparam OutputIterator
      * @tparam Args
@@ -272,10 +285,6 @@ namespace std {
             std::makeFormatArguments(args...)
         );
     }
-
-    // todo
-    // template<class... Args>
-    //size_t formatted_size(/*format-string*/<Args...> fmt, Args&&... args);
 }
 
 #endif //HEPHAISTOS_FORMAT_FORMAT_H

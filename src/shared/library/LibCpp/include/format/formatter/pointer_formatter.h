@@ -15,6 +15,7 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
+// TODO: Format Header
 #ifndef HEPHAISTOS_POINTER_FORMATTER_H
 #define HEPHAISTOS_POINTER_FORMATTER_H
 
@@ -25,7 +26,7 @@
 namespace std {
 
     /**
-     * Bool specification
+     * TODO: Comment
      */
     template<>
     struct Formatter<const void*> {
@@ -51,9 +52,6 @@ namespace std {
             auto address = reinterpret_cast<std::uintptr_t>(pointer);
             return Formatter<int>().format(address, state);
         }
-
-    private:
-
     };
 }
 

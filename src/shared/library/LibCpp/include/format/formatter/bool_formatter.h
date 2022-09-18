@@ -15,6 +15,7 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
+// TODO: Format Header
 #ifndef HEPHAISTOS_BOOL_FORMATTER_H
 #define HEPHAISTOS_BOOL_FORMATTER_H
 
@@ -25,7 +26,7 @@
 namespace std {
 
     /**
-     * Bool specification
+     * TODO: Comment
      */
     template<>
     struct Formatter<bool> {

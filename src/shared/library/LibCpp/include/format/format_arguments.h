@@ -19,27 +19,36 @@
 #include "format_argument.h"
 #include "array_base.h"
 
+// TODO: Format Header
 #ifndef HEPHAISTOS_FORMAT_ARGUMENTS_H
 #define HEPHAISTOS_FORMAT_ARGUMENTS_H
 
 namespace std {
 
-    // todo move or change
+    /**
+     * TODO: Comment
+     * @tparam State
+     * @tparam Args
+     */
     template<class State, class... Args>
     struct FormatArgumentStore {
-        // todo: Move array to std?
         std::Array<BasicFormatArgument<State>, sizeof...(Args)> args;
 
+        // Constructor
         explicit FormatArgumentStore (std::Array<BasicFormatArgument<State>, sizeof...(Args)> arguments) : args(arguments) { };
     };
 
-    // todo
+    /**
+     * TODO: Comment
+     * @tparam State
+     */
     template<class State>
     class BasicFormatArguments {
         size_t size { };
         const BasicFormatArgument<State>* data;
 
     public:
+        // Constructors
         BasicFormatArguments() noexcept = default;
 
         template<class... Args>
@@ -61,7 +70,13 @@ namespace std {
     // Definition
     using FormatArguments = BasicFormatArguments<std::FormatState>;
 
-    // todo
+    /**
+     * TODO: Comment
+     * @tparam State
+     * @tparam Args
+     * @param args
+     * @return
+     */
     template<class State = std::FormatState, class... Args>
     std::FormatArgumentStore<State, Args...> makeFormatArguments(Args&&... args) {
 

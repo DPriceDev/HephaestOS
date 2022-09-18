@@ -15,11 +15,17 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
+// TODO: Format Header
 #ifndef HEPHAISTOS_FORMATTER_H
 #define HEPHAISTOS_FORMATTER_H
 
 namespace std {
 
+    /**
+     * TODO: Comment
+     * @tparam Type
+     * @tparam CharacterType
+     */
     template<class Type, class CharacterType = char>
     struct Formatter;
 }

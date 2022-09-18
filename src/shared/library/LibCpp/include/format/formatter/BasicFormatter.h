@@ -15,6 +15,7 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
+// TODO: Format Header
 #ifndef HEPHAISTOS_BASIC_FORMATTER_H
 #define HEPHAISTOS_BASIC_FORMATTER_H
 
@@ -23,6 +24,11 @@
 
 namespace std {
 
+    /**
+     * TODO: Comment
+     * @tparam Formatter
+     * @tparam Arg
+     */
     template<class Formatter, class Arg>
     concept BasicFormatter =
     std::is_default_constructible_v<Formatter>
@@ -34,9 +40,9 @@ namespace std {
         { formatter.parse(state) } -> std::same_as<ParseState::iterator>;
     };
     // todo: Need to constrain format
-    //    && requires (Formatter formatter, Arg arg, std::FormatState state) {
-    //        { formatter.format(arg, state) } -> std::same_as<FormatState::iterator>;
-    //    };
+//        && requires (Formatter formatter, Arg arg, std::FormatState state) {
+//            { formatter.format(arg, state) } -> std::same_as<std::FormatState::iterator>;
+//        };
 }
 
 #endif // HEPHAISTOS_BASIC_FORMATTER_H

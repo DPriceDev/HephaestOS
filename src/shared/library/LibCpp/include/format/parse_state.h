@@ -15,6 +15,7 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
+// TODO: Format Header
 #ifndef HEPHAISTOS_PARSE_STATE_H
 #define HEPHAISTOS_PARSE_STATE_H
 
@@ -23,7 +24,10 @@
 
 namespace std {
 
-    // todo
+    /**
+     * TODO: Comment
+     * @tparam CharacterType
+     */
     template<class CharacterType>
     class BasicParseState {
         enum class CountingType { NOT_SET, MANUAL, AUTOMATIC };
@@ -38,11 +42,13 @@ namespace std {
         using iterator = typename std::BaseStringView<CharacterType>::iterator;
         using constIterator = typename std::BaseStringView<CharacterType>::constIterator;
 
+        // Constructor
         explicit BasicParseState(
                 std::BaseStringView<CharacterType> format,
                 std::size_t argumentCount = 0
         ) : format(format), argumentCount(argumentCount) { }
 
+        // Accessors
         constexpr auto begin() const noexcept -> constIterator {
             return format.begin();
         }
@@ -55,6 +61,7 @@ namespace std {
             format = std::BaseStringView<CharacterType> { location };
         }
 
+        // Operations
         constexpr auto nextArgumentIndex() -> std::Result<size_t> {
             if (countingType == CountingType::MANUAL || argumentIndex >= argumentCount) {
                 return std::Result<size_t>::failure();
@@ -71,8 +78,7 @@ namespace std {
         }
     };
 
-    // todo
-    // todo back insert?
+    // TODO: Comment
     using ParseState = BasicParseState<char>;
 }
 #endif // HEPHAISTOS_PARSE_STATE_H

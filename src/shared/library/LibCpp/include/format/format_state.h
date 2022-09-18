@@ -15,6 +15,7 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
+// TODO: Format Header
 #ifndef HEPHAISTOS_FORMAT_STATE_H
 #define HEPHAISTOS_FORMAT_STATE_H
 
@@ -31,7 +32,11 @@ namespace std {
     template<class State>
     class BasicFormatArguments;
 
-    // todo
+    /**
+     * TODO: Comment
+     * @tparam CharacterType
+     * @tparam OutputIterator
+     */
     template<class CharacterType, outputIterator<const CharacterType&> OutputIterator>
     class BasicFormatState {
         BasicFormatArguments<BasicFormatState> arguments;
@@ -44,11 +49,13 @@ namespace std {
         template<class T>
         using formatterType = std::Formatter<T, CharacterType>;
 
+        // Constructors
         explicit BasicFormatState(
                 BasicFormatArguments<BasicFormatState>& arguments,
                 OutputIterator& outputIterator
         ) : arguments(arguments), outputIterator(outputIterator) { }
 
+        // Accessors
         auto argument(std::size_t index) const -> BasicFormatArgument<BasicFormatState> {
             return arguments.get(index);
         }
@@ -62,8 +69,7 @@ namespace std {
         }
     };
 
-    // todo
-    // todo back insert?
+    // TODO: Comment
     using FormatState = BasicFormatState<char, char*>;
 }
 

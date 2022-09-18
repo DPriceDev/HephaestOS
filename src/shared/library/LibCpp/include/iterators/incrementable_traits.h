@@ -15,12 +15,14 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
+// TODO: Rename Header Guard
 #ifndef HEPHAISTOS_INCREMENTABLE_TRAITS_H
 #define HEPHAISTOS_INCREMENTABLE_TRAITS_H
 
 #include <type_traits>
 #include <concepts>
 
+// TODO: Comment or remove
 namespace std {
 
     template<class Iterator>
@@ -40,7 +42,7 @@ namespace std {
     template<class Iterator >
     requires requires { typename Iterator::difference_type; }
     struct incrementableTraits<Iterator> {
-        using differenceType = Iterator::difference_type;
+        using differenceType = typename Iterator::difference_type;
     };
 
     template<class Iterator>

@@ -15,6 +15,7 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
+// TODO: Format Header
 #ifndef HEPHAISTOS_FLOATING_FORMATTER_H
 #define HEPHAISTOS_FLOATING_FORMATTER_H
 
@@ -28,7 +29,7 @@ namespace std {
 
     /**
      * Int specification
-     * todo
+     * TODO: Comment
      */
     template<std::floating_point Type>
     struct Formatter<Type> {
