@@ -29,7 +29,14 @@ namespace std {
     concept dividable = std::integral<Type>
             && requires(const Type a, const Type b) { a / b; };
 
-    template<class OutputIterator, std::dividable Type>
+    template<class Type>
+    concept modulusable = std::integral<Type>
+                        && requires(const Type a, const Type b) { a % b; };
+
+    template<class Type>
+    concept formatableIntegral = dividable<Type> && modulusable<Type>;
+
+    template<class OutputIterator, formatableIntegral Type>
     auto formatDigit(OutputIterator iterator, Type value, Type base = 10) -> OutputIterator {
         auto reduction = value / base;
 
@@ -52,8 +59,8 @@ namespace std {
      * Int specification
      * todo
      */
-
-    struct IntFormatter {
+    template<std::integral Type>
+    struct Formatter<Type> {
 
         constexpr auto parse(auto &state) {
             auto iterator { state.begin() };
@@ -72,21 +79,6 @@ namespace std {
             return formatDigit(output, integer);
         }
     };
-
-    template<>
-    struct Formatter<int> : public IntFormatter { };
-
-    template<>
-    struct Formatter<unsigned int> : public IntFormatter { };
-
-    template<>
-    struct Formatter<unsigned long> : public IntFormatter { };
-
-    template<>
-    struct Formatter<long long> : public IntFormatter { };
-
-    template<>
-    struct Formatter<unsigned long long> : public IntFormatter { };
 }
 
 #endif // HEPHAISTOS_INT_FORMATTER_H
