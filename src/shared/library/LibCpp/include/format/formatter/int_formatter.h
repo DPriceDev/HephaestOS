@@ -64,7 +64,7 @@ namespace std {
         auto formatInteger(OutputIterator iterator, Type value, Type base = 10) -> OutputIterator {
             auto reduction = value / base;
 
-            OutputIterator outputIterator;
+            OutputIterator outputIterator = iterator;
             if (reduction == 0) {
                 outputIterator = iterator;
             } else {
@@ -81,7 +81,7 @@ namespace std {
                 *outputIterator++ = character;
             });
 
-            return ++outputIterator;
+            return outputIterator;
         }
     }
 

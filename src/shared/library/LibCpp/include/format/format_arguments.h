@@ -84,7 +84,7 @@ namespace std {
 
         return std::FormatArgumentStore<State, Args...>(
             std::Array<BasicFormatArgument<State>, sizeof...(Args)> {
-                BasicFormatArgument<State>(std::move(args))...
+                BasicFormatArgument<State>(args)...
             }
         );
     }
