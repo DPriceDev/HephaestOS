@@ -117,9 +117,9 @@ namespace std {
     }
 
     /**
-     * Visit takes a given variant and applies it to a visitor
+     * Visit takes a given variant.h and applies it to a visitor
      * function. The visitor function will call the corresponding method
-     * associated to the active indexes and types in each variant.
+     * associated to the active indexes and types in each variant.h.
      */
     template<class Visitor, class Variant>
     constexpr auto visit(Visitor&& visitor, Variant& variant) -> decltype(auto) {
@@ -128,9 +128,9 @@ namespace std {
     }
 
     /**
-     * Visit takes a given variant and applies it to a visitor
+     * Visit takes a given variant.h and applies it to a visitor
      * function. The visitor function will call the corresponding method
-     * associated to the active indexes and types in each variant.
+     * associated to the active indexes and types in each variant.h.
      */
     template<class Visitor, class Variant>
     constexpr auto visit(Visitor& visitor, Variant& variant) -> decltype(auto) {

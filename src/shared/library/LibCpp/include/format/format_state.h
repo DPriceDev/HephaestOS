@@ -41,7 +41,7 @@ namespace std {
      * It also contains the indexed arguments that are used by the format methods to
      * get the required argument for the Formatter.
      */
-    template<class CharacterType, outputIterator<const CharacterType&> OutputIterator>
+    template<class CharacterType, class OutputIterator>
     class BasicFormatState {
         BasicFormatArguments<BasicFormatState> arguments;
         OutputIterator outputIterator;

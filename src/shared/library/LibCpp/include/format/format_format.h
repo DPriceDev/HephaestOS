@@ -234,7 +234,7 @@ namespace std {
         std::FormatArguments args
     ) {
         auto parsingState = ParseState(format, args.count());
-        auto formatState = FormatState(args, output);
+        auto formatState = BasicFormatState<char, OutputIterator>(args, output);
 
         const auto* iterator = parsingState.begin();
         const auto* end = parsingState.end();

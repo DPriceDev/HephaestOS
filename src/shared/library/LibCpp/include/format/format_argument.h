@@ -18,7 +18,7 @@
 #ifndef HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_FORMAT_ARGUMENT_H
 #define HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_FORMAT_ARGUMENT_H
 
-#include "variant.h"
+#include "variant_base.h"
 #include "string_view.h"
 #include "parse_state.h"
 
@@ -65,7 +65,7 @@ namespace std {
 
         using characterType = typename State::characterType;
 
-        // Defines a variant type that accepts all standard format types, and the handle type.
+        // Defines a variant.h type that accepts all standard format types, and the handle type.
         using ArgumentVariant = std::Variant<
             std::MonoState,
             bool,
@@ -91,7 +91,7 @@ namespace std {
 
         /**
          * Constructs any standard argument (not a handle type) by directly
-         * passing the @param type into the variant.
+         * passing the @param type into the variant.h.
          */
         template<StandardFormatArgument<typename State::characterType> Type>
         explicit BasicFormatArgument(Type&& type) : value(
@@ -100,7 +100,7 @@ namespace std {
 
         /**
          * Constructs any custom type, by wrapping the @param type in the handle
-         * class and then passing it into the variant.
+         * class and then passing it into the variant.h.
          */
         template<CustomFormatArgument<typename State::characterType> Type>
         explicit BasicFormatArgument(Type&& type) : value(

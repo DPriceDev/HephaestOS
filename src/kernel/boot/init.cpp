@@ -28,14 +28,33 @@
 #include "boot/idt/pic/programmable_interrupt_controller.h"
 #include "boot/tss/task_state_segment.h"
 #include "boot/grub/memory_map.h"
+#include "boot/serial/serial_port.h"
 
 namespace kernel::boot {
-
     static const VideoBufferDisplay display { };
 
     constexpr uint8_t interruptRequestOffset = 32;
 
     extern "C" void init(MultiBootInfo* info, uint32_t /* magic */, uint32_t stackPointer) {
+        auto serialPort = SerialPortConnection { SerialPort::COM1 };
+        auto* serialPortIterator = serialPort.out();
+
+        if (serialPort.open()) {
+            std::KernelFormatOutput::getInstance().setStandardOutputIterator(
+                std::StandardOutputIterator {
+                    &serialPortIterator,
+                    [] (void* pointer) {
+                        static_cast<SerialIterator*>(pointer)->operator*();
+                    },
+                    [] (void* pointer, char character) {
+                        static_cast<SerialIterator*>(pointer)->operator=(character);
+                    },
+                    [] (void* pointer) {
+                        static_cast<SerialIterator*>(pointer)->operator++();
+                    },
+                }
+            );
+        }
 
         // Construct memory map from grub multiboot information passed from grub
         grub::constructMemoryMap(info);
@@ -44,8 +63,7 @@ namespace kernel::boot {
         auto terminal = Terminal { display };
 
         auto output = std::Array<char, 200> { };
-        std::formatTo(
-            output.begin(),
+        std::print(
             "hello {} {} {} {} {} {} {} world!",
             false,
             'd',

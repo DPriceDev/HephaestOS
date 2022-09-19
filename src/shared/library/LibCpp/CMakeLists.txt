@@ -8,7 +8,7 @@ add_library(sharedLibCpp INTERFACE
         include/iterators/iterator_operations.h
         include/iterators/iterators.h include/algorithm.h
         include/result.h
-        include/format.h
+        include/format_base.h
         include/string_view.h
         include/string
         include/format/formatter/char_formatter.h
