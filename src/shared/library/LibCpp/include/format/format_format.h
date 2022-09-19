@@ -228,11 +228,11 @@ namespace std {
      * - Invalid parse arguments.
      * - Output iterator overflows the output memory.
      */
-    template<class OutputIterator, class State>
+    template<class OutputIterator>
     std::Result<OutputIterator> dynamicFormatTo(
         OutputIterator output,
         std::StringView format,
-        State args
+        BasicFormatArguments<BasicFormatState<char, OutputIterator>> args
     ) {
         auto parsingState = BasicParseState<char>{ format, args.count() };
         auto formatState = BasicFormatState<char, OutputIterator> { args, output };
@@ -314,12 +314,8 @@ namespace std {
         return dynamicFormatTo(
             output,
             std::StringView { format },
-            std::BasicFormatArguments<State> {
-                std::FormatArgumentStore<State, Args...>(
-                    std::Array<BasicFormatArgument<State>, sizeof...(Args)> {
-                        BasicFormatArgument<State>(args)...
-                    }
-                )
+            BasicFormatArguments<State> {
+                makeFormatArguments<State>(args...)
             }
         );
     }
