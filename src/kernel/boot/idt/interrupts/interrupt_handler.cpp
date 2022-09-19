@@ -18,8 +18,7 @@
 #include "interrupt_handler.h"
 #include "boot/idt/pic/programmable_interrupt_controller.h"
 
-#include "drivers/video_buffer_display.h"
-#include "terminal/Terminal.h"
+#include <format.h>
 #include <stdio.h>
 
 namespace kernel::boot::idt {
@@ -28,16 +27,9 @@ namespace kernel::boot::idt {
      *
      */
     extern "C" void handleInterrupt(InterruptInfo interruptInfo) {
-        VideoBufferDisplay display{};
-        auto terminal = Terminal{display};
-
         if(interruptInfo.interruptCode != 0) {
-            terminal.clear(Display::green); // todo: not working?
-            terminal.println("Interrupt!");
-            char text[24];
-            sprintf(text, "Interrupt code: %u", interruptInfo.interruptCode);
-            terminal.println(text);
-
+            std::print("Interrupt!\n");
+            std::print("Interrupt code: {}\n", interruptInfo.interruptCode);
         }
 
         sendEoiFlag(interruptInfo.interruptCode);

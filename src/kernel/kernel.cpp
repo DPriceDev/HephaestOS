@@ -16,9 +16,8 @@
  */
 
 #include <stdoffset.h>
+#include <format.h>
 
-#include "drivers/video_buffer_display.h"
-#include "terminal/Terminal.h"
 #include "boot/tss/task_state_segment.h"
 
 namespace kernel {
@@ -37,11 +36,9 @@ namespace kernel {
     extern "C" void kernelMain() {
 
         // todo: Extract out all terminal code to user space
-        static const VideoBufferDisplay display { };
-        auto terminal = kernel::Terminal{display};
 
-        terminal.println("HephaistOS");
-        terminal.println("Version 1.0", kernel::Display::cyan);
+        std::print("HephaistOS\n");
+        std::print("Version 1.0\n");
 
         // todo: Init Timer Task? (or in init.LibCpp)
 
