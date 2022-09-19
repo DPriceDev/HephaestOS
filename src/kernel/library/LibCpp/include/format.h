@@ -72,9 +72,7 @@ namespace std {
         StandardOutputIterator iterator;
 
     public:
-        static auto getInstance() -> KernelFormatOutput {
-            return KernelFormatOutput();
-        }
+        static auto getInstance() -> KernelFormatOutput&;
 
         // Set the output iterator for logging
         void setStandardOutputIterator(StandardOutputIterator outputIterator) {
@@ -93,7 +91,8 @@ namespace std {
         std::convertableToStringView auto* format,
         Args... args
     ) {
-        auto output = KernelFormatOutput::getInstance().out();
+        auto instance = KernelFormatOutput::getInstance();
+        auto output = instance.out();
         std::formatTo(output, format, args...);
     }
 }

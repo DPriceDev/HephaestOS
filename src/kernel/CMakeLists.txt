@@ -5,7 +5,7 @@ set(LINK ${CMAKE_CURRENT_SOURCE_DIR}/linker.ld)
 set(CMAKE_CXX_LINK_FLAGS ${CMAKE_CXX_LINK_FLAGS} -T${LINK})
 # todo: move to target compile options, also add to all klibs
 set(CMAKE_ASM_NASM_COMPILE_OBJECT "<CMAKE_ASM_NASM_COMPILER> <INCLUDES> -felf32 -g -F dwarf -o <OBJECT> <SOURCE>")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g3 -ffreestanding -nostdlib -fno-rtti -fno-exceptions -fmodules-ts -lgcc -nostdlib -fcommon")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g3 -ffreestanding -nostdlib -fno-rtti -fno-exceptions -fmodules-ts -lgcc -nostdlib -fcommon -std=c++20")
 
 set(LINK_LIBRARIES -nostdlib)
 
@@ -38,16 +38,11 @@ add_executable(
         boot/gdt/global_descriptor.cpp
         boot/idt/interrupt_descriptor.cpp
         boot/idt/exceptions/exception_handler.cpp
-        boot/idt/exceptions/exception_handler.h
-        boot/idt/model/handler_registers.h
-        boot/grub/memory_map.h
         boot/grub/memory_map.cpp
         boot/paging/paging.asm
         boot/paging/paging.cpp
-        boot/paging/paging.h
-        boot/paging/page_table_entry.h
-        boot/paging/page_directory_entry.h
-        boot/serial/serial_port.h boot/serial/serial_port.cpp)
+        boot/serial/serial_port.cpp
+)
 
 target_link_libraries(kernel.elf PRIVATE project_options) # project_warnings)
 target_link_libraries(kernel.elf PUBLIC KLibC KLibCpp KLibDebug gcc)

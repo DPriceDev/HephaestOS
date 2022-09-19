@@ -36,22 +36,17 @@ namespace kernel::boot {
     constexpr uint8_t interruptRequestOffset = 32;
 
     extern "C" void init(MultiBootInfo* info, uint32_t /* magic */, uint32_t stackPointer) {
-        auto serialPort = SerialPortConnection { SerialPort::COM1 };
-        auto* serialPortIterator = serialPort.out();
+        SerialPortConnection connection { SerialPort::COM1 };
 
-        if (serialPort.open()) {
+        if (connection.open()) {
             std::KernelFormatOutput::getInstance().setStandardOutputIterator(
                 std::StandardOutputIterator {
-                    &serialPortIterator,
-                    [] (void* pointer) {
-                        static_cast<SerialIterator*>(pointer)->operator*();
-                    },
+                    &connection,
+                    [] (void* pointer) { },
                     [] (void* pointer, char character) {
-                        static_cast<SerialIterator*>(pointer)->operator=(character);
+                        static_cast<SerialPortConnection*>(pointer)->write(character);
                     },
-                    [] (void* pointer) {
-                        static_cast<SerialIterator*>(pointer)->operator++();
-                    },
+                    [] (void* pointer) { },
                 }
             );
         }
@@ -62,7 +57,7 @@ namespace kernel::boot {
         // todo: replace with log stream? pass to root process?
         auto terminal = Terminal { display };
 
-        auto output = std::Array<char, 200> { };
+        auto output = std::Array<char, 82> { };
         std::print(
             "hello {} {} {} {} {} {} {} world!",
             false,
