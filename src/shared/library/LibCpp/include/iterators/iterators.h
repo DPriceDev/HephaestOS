@@ -40,7 +40,7 @@ namespace std {
     concept weaklyIncrementable =
     std::movable<Type>
     && requires(Type iterator) {
-        typename iteratorDifferenceType<Type>;
+        // todo: typename iteratorDifferenceType<Type>; - need to do for back inserter
         // todo: is signed integer like
         { ++iterator } -> std::same_as<Type&>;
         iterator++;
@@ -204,20 +204,53 @@ namespace std {
      */
     template<class Iterator>
     concept contiguousIterator =
-    std::randomAccessIterator<Iterator>
-    && std::is_lvalue_reference_v<Iterator&>
-    && std::same_as<
-        std::iteratorValueType<Iterator>,
-        std::remove_cvref_t<iteratorReferenceType < Iterator>>
-    >
-    && requires(
-    const Iterator& iterator
-    ) {{
-    std::toAddress(iterator)
-}
-->
-std::same_as<std::add_pointer_t<std::iteratorReferenceType<Iterator>>>;
-};
+        std::randomAccessIterator<Iterator>
+        && std::is_lvalue_reference_v<Iterator&>
+        && std::same_as<
+            std::iteratorValueType<Iterator>,
+            std::remove_cvref_t<iteratorReferenceType < Iterator>>
+        >
+        && requires(const Iterator& iterator) {
+            { std::toAddress(iterator) } -> std::same_as<std::add_pointer_t<std::iteratorReferenceType<Iterator>>>;
+        };
+
+    template<class Container>
+    class BackInsertIterator {
+        Container* container { nullptr };
+
+    public:
+        using valueType = void;
+        using difference_type = std::ptrdiff_t;
+        using pointer = void;
+        using reference = void;
+        using containerType = Container;
+
+        // Constructors
+        BackInsertIterator() = default;
+
+        explicit constexpr BackInsertIterator(Container& container) : container(std::addressof(container)) { }
+
+        constexpr BackInsertIterator& operator*() {
+            return *this;
+        }
+
+        constexpr BackInsertIterator& operator=(const typename Container::valueType& value) {
+            // todo: Push back?
+            return *this;
+        }
+
+        constexpr BackInsertIterator& operator=(typename Container::valueType&& value) {
+            return *this;
+        }
+
+        constexpr BackInsertIterator& operator++() {
+            return *this;
+        }
+
+        constexpr BackInsertIterator operator++(int) {
+            return *this;
+        }
+    };
 };
 
 #endif // HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_ITERATORS_ITERATORS_H

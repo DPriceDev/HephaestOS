@@ -45,7 +45,7 @@ namespace kernel::boot {
 
         auto output = std::Array<char, 200> { };
         std::formatTo(
-            output.begin(),
+            std::BackInsertIterator(output),
             "hello {} {} {} {} {} {} {} world!",
             false,
             'd',

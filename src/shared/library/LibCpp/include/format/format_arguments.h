@@ -79,12 +79,12 @@ namespace std {
      * Constructs a temporary argument store that stores the provided @param args as a
      * set of BasicFormatArgument's.
      */
-    template<class State = std::FormatState, class... Args>
+    template<class State, class... Args>
     std::FormatArgumentStore<State, Args...> makeFormatArguments(Args&& ... args) {
 
         return std::FormatArgumentStore<State, Args...>(
             std::Array<BasicFormatArgument<State>, sizeof...(Args)> {
-                BasicFormatArgument<State>(args)...
+                BasicFormatArgument<State>(std::move(args))...
             }
         );
     }

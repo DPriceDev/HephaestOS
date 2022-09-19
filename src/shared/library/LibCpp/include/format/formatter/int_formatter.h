@@ -74,7 +74,12 @@ namespace std {
             auto digit = value % base;
 
             // use to chars to convert to string
-            std::toChars(outputIterator, outputIterator + DIGIT_OUTPUT_SIZE, digit);
+            auto buffer = std::Array<char, DIGIT_OUTPUT_SIZE> { };
+            auto result = std::toChars(buffer.begin(), buffer.end(), digit);
+
+            std::forEach(buffer.begin(), result, [&outputIterator] (char character) {
+                *outputIterator++ = character;
+            });
 
             return ++outputIterator;
         }
