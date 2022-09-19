@@ -44,7 +44,7 @@ namespace std {
     template<class CharacterType, class OutputIterator>
     class BasicFormatState {
         BasicFormatArguments<BasicFormatState> arguments;
-        OutputIterator outputIterator;
+        OutputIterator& outputIterator;
 
     public:
         using iterator = OutputIterator;
