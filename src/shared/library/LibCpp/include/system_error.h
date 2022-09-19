@@ -15,24 +15,13 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#ifndef HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_MEMORY_H
-#define HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_MEMORY_H
-
-#include <type_traits>
+#ifndef HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_SYSTEM_ERROR_H
+#define HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_SYSTEM_ERROR_H
 
 namespace std {
-
-    template<class T>
-    constexpr T* toAddress(T* p) noexcept {
-        static_assert(!std::is_function_v<T>);
-        return p;
-    }
-
-    template<class Type, class... Args>
-    constexpr Type* construct_at(Type* pointer, Args&& ... args) {
-        *pointer = Type(std::forward<Args>(args)...);
-        return pointer;
-    }
+    enum class Error {
+        INVALID_ARGUMENT
+    };
 }
 
-#endif // HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_MEMORY_H
+#endif // HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_SYSTEM_ERROR_H

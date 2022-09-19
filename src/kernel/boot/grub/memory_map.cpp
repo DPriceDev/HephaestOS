@@ -17,7 +17,7 @@
 
 #include "memory_map.h"
 #include <span.h>
-#include <algorithms.h>
+#include <algorithm.h>
 
 namespace kernel::boot::grub {
 

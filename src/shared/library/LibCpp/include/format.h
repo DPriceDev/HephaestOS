@@ -15,24 +15,12 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#ifndef HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_MEMORY_H
-#define HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_MEMORY_H
+#ifndef HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_H
+#define HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_H
 
-#include <type_traits>
+#include "format/format_format.h"
+#include "format/formatter/formatter.h"
+#include "format/format_arguments.h"
+#include "format/format_state.h"
 
-namespace std {
-
-    template<class T>
-    constexpr T* toAddress(T* p) noexcept {
-        static_assert(!std::is_function_v<T>);
-        return p;
-    }
-
-    template<class Type, class... Args>
-    constexpr Type* construct_at(Type* pointer, Args&& ... args) {
-        *pointer = Type(std::forward<Args>(args)...);
-        return pointer;
-    }
-}
-
-#endif // HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_MEMORY_H
+#endif // HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_H

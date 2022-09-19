@@ -16,6 +16,8 @@
  */
 
 #include <cstdint>
+#include <array.h>
+#include <format.h>
 
 #include "gdt/global_descriptor_table.h"
 #include "idt/interrupt_descriptor_table.h"
@@ -33,16 +35,30 @@ namespace kernel::boot {
 
     constexpr uint8_t interruptRequestOffset = 32;
 
-    extern "C" void init(MultiBootInfo * info, uint32_t /* magic */, uint32_t stackPointer) {
+    extern "C" void init(MultiBootInfo* info, uint32_t /* magic */, uint32_t stackPointer) {
 
         // Construct memory map from grub multiboot information passed from grub
         grub::constructMemoryMap(info);
 
         // todo: replace with log stream? pass to root process?
-        auto terminal = Terminal{display};
+        auto terminal = Terminal { display };
+
+        auto output = std::Array<char, 200> { };
+        std::formatTo(
+            output.begin(),
+            "hello {} {} {} {} {} {} {} world!",
+            false,
+            'd',
+            "test",
+            std::StringView { "test" },
+            static_cast<const void*>(&output),
+            4321.1234f,
+            987654321.1234567
+        );
 
         terminal.clear();
         terminal.println("System init");
+        terminal.println(output.cbegin());
 
         auto tssDescriptor = tss::getTaskStateSegmentDescriptor();
         gdt::initializeGlobalDescriptorTable(tssDescriptor);
@@ -59,8 +75,8 @@ namespace kernel::boot {
         // todo: may need to be moved to init protected method?
         //
         idt::remapProgrammableInterruptController(
-                interruptRequestOffset,
-                interruptRequestOffset + 8
+            interruptRequestOffset,
+            interruptRequestOffset + 8
         );
 
         // todo: move kernel to higher half?

@@ -15,22 +15,21 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#ifndef HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_UTILITY_H
-#define HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_UTILITY_H
-
-#include <type_traits>
+#ifndef HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_FORMATTER_H
+#define HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_FORMATTER_H
 
 namespace std {
 
-    template< class Type>
-    constexpr Type&& forward(std::remove_reference_t<Type>& type) noexcept {
-        return static_cast<Type&&>(type);
-    }
-
-    template< class Type>
-    constexpr Type&& forward(std::remove_reference_t<Type>&& type) noexcept {
-        return static_cast<Type&&>(type);
-    }
+    /**
+     * This is the base definition of the formatter used by std::format.
+     * This is specialised for all standard types defined in format arguments.
+     * This can be specialized for custom types for use with std::format.
+     *
+     * @tparam Type is the type of the value to be formatted.
+     * @tparam CharacterType - is the type of the container the value will be formatted to.
+     */
+    template<class Type, class CharacterType = char>
+    struct Formatter;
 }
 
-#endif // HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_UTILITY_H
+#endif // HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_FORMATTER_H

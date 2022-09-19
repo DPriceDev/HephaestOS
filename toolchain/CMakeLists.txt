@@ -1,6 +1,6 @@
 
 set(BINUTILS_VERSION 2.37)
-set(GCC_VERSION 11.2.0)
+set(GCC_VERSION 12.2.0)
 set(TARGET i386-pc-hephaistos)
 set(SYSROOT ${CMAKE_BINARY_DIR}/src/sysroot)
 set(PATCH_DIR ${CMAKE_SOURCE_DIR}/toolchain/patches)
@@ -37,7 +37,7 @@ ExternalProject_Add(binutils-${BINUTILS_VERSION}
 
 ExternalProject_Add(gcc-${GCC_VERSION}
         URL             https://ftp.gnu.org/gnu/gcc/gcc-${GCC_VERSION}/gcc-${GCC_VERSION}.tar.gz
-        URL_HASH        MD5=dc6886bd44bb49e2d3d662aed9729278
+        URL_HASH        MD5=d7644b494246450468464ffc2c2b19c3
         DEPENDS         binutils-${BINUTILS_VERSION} CopySysRoot
         BINARY_DIR      ${CMAKE_CURRENT_BINARY_DIR}/gcc-${GCC_VERSION}-prefix/src/gcc-${GCC_VERSION}-build
         CONFIGURE_COMMAND

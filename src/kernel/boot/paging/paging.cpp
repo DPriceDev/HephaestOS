@@ -18,7 +18,7 @@
 #include "paging.h"
 #include <cstdint>
 #include <array.h>
-#include <algorithms.h>
+#include <algorithm.h>
 #include <stdoffset.h>
 
 #include "page_directory_entry.h"

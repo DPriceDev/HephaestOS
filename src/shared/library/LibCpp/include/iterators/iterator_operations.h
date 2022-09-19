@@ -31,7 +31,7 @@ namespace std {
         template<std::inputIterator Iterator>
         constexpr void advance(
             Iterator& it,
-            typename std::iteratorTraits<Iterator>::difference_type count
+            typename std::iteratorDifferenceType<Iterator> count
         ) {
             while (count > 0) {
                 --count;
@@ -45,7 +45,7 @@ namespace std {
         template<std::bidirectionalIterator Iterator>
         constexpr void advance(
             Iterator& it,
-            typename std::iteratorTraits<Iterator>::difference_type count
+            typename std::iteratorDifferenceType<Iterator> count
         ) {
             while (count > 0) {
                 --count;
@@ -63,7 +63,7 @@ namespace std {
         template<std::randomAccessIterator Iterator>
         constexpr void advance(
             Iterator& iterator,
-            typename std::iteratorTraits<Iterator>::difference_type count
+            typename std::iteratorDifferenceType<Iterator> count
         ) {
             iterator += count;
         }
@@ -83,7 +83,7 @@ namespace std {
     template<std::inputIterator Iterator>
     constexpr Iterator next(
         Iterator iterator,
-        typename std::iteratorTraits<Iterator>::difference_type count = 1
+        typename std::iteratorDifferenceType<Iterator> count = 1
     ) {
         std::advance(iterator, count);
         return iterator;
@@ -94,8 +94,8 @@ namespace std {
      */
     template<std::bidirectionalIterator Iterator>
     constexpr Iterator prev(
-        Iterator iterator,
-        typename std::iteratorTraits<Iterator>::difference_type count = 1
+        Iterator& iterator,
+        typename std::iteratorDifferenceType<Iterator> count = 1
     ) {
         std::advance(iterator, -count);
         return iterator;

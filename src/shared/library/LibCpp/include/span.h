@@ -45,7 +45,7 @@ namespace std {
             constexpr SpanStorage() noexcept = default;
 
             constexpr SpanStorage(Type* dataPointer) noexcept
-                    : dataPointer(dataPointer) {}
+                : dataPointer(dataPointer) { }
         };
 
         /**
@@ -61,7 +61,7 @@ namespace std {
             constexpr SpanStorage() noexcept = default;
 
             constexpr SpanStorage(Type* dataPointer, std::size_t size) noexcept
-                    : dataPointer(dataPointer), size(size) { }
+                : dataPointer(dataPointer), size(size) { }
         };
     }
 
@@ -97,7 +97,7 @@ namespace std {
          * Constructs an empty span with null data and a size of 0.
          */
         explicit(extent == 0 || extent == std::dynamicExtent)
-        constexpr Span() noexcept : storage(nullptr, 0) { }
+        constexpr Span() noexcept: storage(nullptr, 0) { }
 
         /**
          * Constructs a dynamic span starting at @param first with a size of @param size.
@@ -117,7 +117,7 @@ namespace std {
          * defined @tparam Size.
          */
         template<std::size_t Size>
-        constexpr Span(elementType (&array)[Size] ) noexcept : storage(array, Size) { }
+        constexpr Span(elementType (& array)[Size]) noexcept : storage(array, Size) { }
 
         // todo: Add after implementing std::array
 //        template<class U, std::size_t N>
@@ -162,6 +162,7 @@ namespace std {
         auto rbegin() -> reverseIterator {
             return reverseIterator(data() + size());
         }
+
         auto rend() -> reverseIterator {
             reverseIterator(data());
         }
@@ -187,9 +188,11 @@ namespace std {
         [[nodiscard]] constexpr auto size() const noexcept -> sizeType {
             return storage.size;
         }
+
         [[nodiscard]] constexpr auto sizeInBytes() const noexcept -> sizeType {
             return size() * sizeof(elementType);
         }
+
         [[nodiscard]] constexpr auto empty() const noexcept -> bool {
             return size() == 0;
         }
