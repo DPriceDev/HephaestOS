@@ -15,27 +15,31 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-// TODO: Format Header
-#ifndef HEPHAISTOS_FORMAT_STATE_H
-#define HEPHAISTOS_FORMAT_STATE_H
+#ifndef HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_FORMAT_STATE_H
+#define HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_FORMAT_STATE_H
 
 #include "iterator.h"
 #include "formatter/formatter.h"
 
 namespace std {
 
-    // Forward declare
+    // Forward declaration of the format argument
     template<class State>
     class BasicFormatArgument;
 
-    // Forward declare
+    // Forward declaration of the format arguments
     template<class State>
     class BasicFormatArguments;
 
     /**
-     * TODO: Comment
-     * @tparam CharacterType
-     * @tparam OutputIterator
+     * The format state contains all of the state relating to the arguments values and
+     * output of the formatted values.
+     *
+     * This class will keep the @tparam OutputIterator that points to the next position
+     * to output a formatted value.
+     *
+     * It also contains the indexed arguments that are used by the format methods to
+     * get the required argument for the Formatter.
      */
     template<class CharacterType, outputIterator<const CharacterType&> OutputIterator>
     class BasicFormatState {
@@ -69,9 +73,9 @@ namespace std {
         }
     };
 
-    // TODO: Comment
+    // Declaration of a char based format state.
     using FormatState = BasicFormatState<char, char*>;
 }
 
 
-#endif //HEPHAISTOS_FORMAT_STATE_H
+#endif // HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_FORMAT_STATE_H

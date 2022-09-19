@@ -21,7 +21,6 @@
 #include "iterator_traits.h"
 #include <bits/move.h>
 #include "memory.h"
-#include "utility.h"
 
 namespace std {
 

@@ -23,34 +23,20 @@
 
 namespace std {
 
-    /**
-     * todo: comment
-     */
     template<std::inputIterator Iterator, class UnaryFunction>
-    constexpr UnaryFunction forEach(Iterator first, Iterator last, UnaryFunction function)
-    {
-        for(; first != last; ++first) {
+    constexpr UnaryFunction forEach(Iterator first, Iterator last, UnaryFunction function) {
+        for (; first != last; ++first) {
             function(*first);
         }
         return function;
     }
 
-    // todo: implement when ExecutionPolicy exists
-    // template< class ExecutionPolicy, class ForwardIt, class UnaryFunction2 >
-    // void for_each( ExecutionPolicy&& policy, ForwardIt first, ForwardIt last, UnaryFunction2 f );
-
-    /**
-     *
-     * @tparam Iterator
-     * @tparam OutputIterator
-     * @tparam UnaryOperation
-     */
     template<inputIterator Iterator, class Type, outputIterator<Type> OutputIterator, class UnaryOperation>
     OutputIterator transform(
-            Iterator first,
-            Iterator last,
-            OutputIterator outFirst,
-            UnaryOperation operation
+        Iterator first,
+        Iterator last,
+        OutputIterator outFirst,
+        UnaryOperation operation
     ) {
         while (first != last) {
             *outFirst++ = operation(*first++);
@@ -59,17 +45,18 @@ namespace std {
     }
 
     template<
-            inputIterator IteratorA,
-            inputIterator IteratorB,
-            class Type,
-            outputIterator<Type> OutputIterator,
-            class BinaryOperation>
+        inputIterator IteratorA,
+        inputIterator IteratorB,
+        class Type,
+        outputIterator<Type> OutputIterator,
+        class BinaryOperation
+    >
     OutputIterator transform(
-            IteratorA firstA,
-            IteratorA lastA,
-            IteratorB firstB,
-            OutputIterator outFirst,
-            BinaryOperation operation
+        IteratorA firstA,
+        IteratorA lastA,
+        IteratorB firstB,
+        OutputIterator outFirst,
+        BinaryOperation operation
     ) {
         while (firstA != lastA) {
             *outFirst++ = operation(*firstA++, *firstB++);
@@ -108,7 +95,7 @@ namespace std {
     }
 
     template<class Type>
-    constexpr auto max(const Type& first,const Type& second) -> const Type& {
+    constexpr auto max(const Type& first, const Type& second) -> const Type& {
         return first <= second ? first : second;
     }
 
@@ -119,7 +106,7 @@ namespace std {
 
     template<inputIterator InputIterator, class Type>
     constexpr InputIterator find(InputIterator first, InputIterator last, const Type& value) {
-        for(; first != last; ++first) {
+        for (; first != last; ++first) {
             if (*first == value) {
                 return first;
             }
@@ -129,7 +116,7 @@ namespace std {
 
     template<inputIterator InputIterator, class UnaryPredicate>
     constexpr InputIterator findIf(InputIterator first, InputIterator last, const UnaryPredicate predicate) {
-        for(; first != last; ++first) {
+        for (; first != last; ++first) {
             if (predicate(*first)) {
                 return first;
             }
@@ -146,8 +133,7 @@ namespace std {
     }
 
     template<forwardIterator IteratorA, forwardIterator IteratorB>
-    constexpr void iteratorSwap(IteratorA a, IteratorB b)
-    {
+    constexpr void iteratorSwap(IteratorA a, IteratorB b) {
         std::swap(*a, *b);
     }
 

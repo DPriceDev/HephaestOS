@@ -18,7 +18,6 @@
 #ifndef HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_RESULT_H
 #define HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_RESULT_H
 
-#include "utility.h"
 #include <concepts>
 
 namespace std {

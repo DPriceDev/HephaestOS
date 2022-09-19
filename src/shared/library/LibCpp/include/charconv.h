@@ -21,10 +21,17 @@
 #include "result.h"
 #include "system_error.h"
 #include "span.h"
-#include "algorithms.h"
+#include "algorithm.h"
 
 namespace std {
 
+    /**
+     * This method takes specifically an integral @param value
+     * i.e. int, long, long long, unsigned int, and outputs it to a char string
+     * starting from @param first and ending at @param last.
+     * The base is defaulted to decimal 10, but can be changed to a range of
+     * 2 to 36 to output in a different base.
+     */
     constexpr char* toChars(
             char* first,
             char* last,
@@ -51,6 +58,12 @@ namespace std {
         return first;
     }
 
+    /**
+     * This method takes specifically a floating point @param value
+     * i.e. float, double, long double, and outputs it to a char string
+     * starting from @param first and ending at @param last.
+     * This will output the entire length of the number.
+     */
     constexpr char* toChars(
         char* first,
         char* last,
@@ -74,11 +87,11 @@ namespace std {
     }
 
     /**
-     * Int specialization
-     * @param first
-     * @param last
-     * @param base
-     * @return
+     * This method will take a string in the range of @param first to  @param last
+     * and convert it to an integer type i.e. int, long, unsigned int.
+     *
+     * The given @param base will change how the characters in the string are
+     * interpreted, and will construct the integer result from the correct base.
      */
     template<std::integral Type>
     constexpr std::Result<Type, Error> fromChars(

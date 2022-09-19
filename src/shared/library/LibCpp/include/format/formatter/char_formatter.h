@@ -15,18 +15,16 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-// TODO: Format Header
-#ifndef HEPHAISTOS_CHAR_FORMATTER_H
-#define HEPHAISTOS_CHAR_FORMATTER_H
+#ifndef HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_CHAR_FORMATTER_H
+#define HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_CHAR_FORMATTER_H
 
 #include "formatter.h"
-#include "variant.h"
 
 namespace std {
 
     /**
-     * Char specification
-     * TODO: Comment
+     * Specializes the Formatter for char types.
+     * This will currently print the character out verbatim.
      */
     template<>
     struct Formatter<char> {
@@ -51,7 +49,10 @@ namespace std {
     };
 
     /**
-     * TODO: Comment
+     * Specializes the Formatter for const char* strings.
+     * This will output the string verbatim until it hits a null terminator, and
+     * will not output the null terminator.
+     * The behaviour is undefined if it is not null terminated.
      */
     template<>
     struct Formatter<const char *> {
@@ -78,7 +79,9 @@ namespace std {
     };
 
     /**
-     * TODO: Comment
+     * This specializes the Formatter for a String View.
+     * This will output the underlying string, not including a null
+     * terminator.
      */
     template<>
     struct Formatter<BaseStringView<char>> {
@@ -105,4 +108,4 @@ namespace std {
     };
 }
 
-#endif //HEPHAISTOS_CHAR_FORMATTER_H
+#endif // HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_CHAR_FORMATTER_H

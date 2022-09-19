@@ -1,8 +1,8 @@
-#ifndef D_PRICE_DEV_VARIANT_H
-#define D_PRICE_DEV_VARIANT_H
+#ifndef HEPHAIST_OS_SHARED_LIBRARY_CPP_VARIANT_H
+#define HEPHAIST_OS_SHARED_LIBRARY_CPP_VARIANT_H
 
 #include "variant/variant_variant.h"
 #include "variant/variant_visitor.h"
 #include "variant/variant_get.h"
 
-#endif // D_PRICE_DEV_VARIANT_H
+#endif // HEPHAIST_OS_SHARED_LIBRARY_CPP_VARIANT_H

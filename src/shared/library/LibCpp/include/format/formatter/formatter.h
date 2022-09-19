@@ -15,19 +15,21 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-// TODO: Format Header
-#ifndef HEPHAISTOS_FORMATTER_H
-#define HEPHAISTOS_FORMATTER_H
+#ifndef HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_FORMATTER_H
+#define HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_FORMATTER_H
 
 namespace std {
 
     /**
-     * TODO: Comment
-     * @tparam Type
-     * @tparam CharacterType
+     * This is the base definition of the formatter used by std::format.
+     * This is specialised for all standard types defined in format arguments.
+     * This can be specialized for custom types for use with std::format.
+     *
+     * @tparam Type is the type of the value to be formatted.
+     * @tparam CharacterType - is the type of the container the value will be formatted to.
      */
     template<class Type, class CharacterType = char>
     struct Formatter;
 }
 
-#endif //HEPHAISTOS_FORMATTER_H
+#endif // HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_FORMATTER_H

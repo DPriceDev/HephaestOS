@@ -15,18 +15,18 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-// TODO: Format Header
-#ifndef HEPHAISTOS_BOOL_FORMATTER_H
-#define HEPHAISTOS_BOOL_FORMATTER_H
+#ifndef HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_BOOL_FORMATTER_H
+#define HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_BOOL_FORMATTER_H
 
 #include "formatter.h"
-#include "algorithms.h"
+#include "algorithm.h"
 #include "string_view.h"
 
 namespace std {
 
     /**
-     * TODO: Comment
+     * Specializes the Formatter for bool types.
+     * Will currently format to either 'True' or 'False'.
      */
     template<>
     struct Formatter<bool> {
@@ -59,4 +59,4 @@ namespace std {
     };
 }
 
-#endif // HEPHAISTOS_BOOL_FORMATTER_H
+#endif // HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_BOOL_FORMATTER_H

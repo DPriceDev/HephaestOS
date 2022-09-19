@@ -15,9 +15,8 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-// TODO: Format Header
-#ifndef D_PRICE_DEV_VARIANT_VARIANT_H
-#define D_PRICE_DEV_VARIANT_VARIANT_H
+#ifndef HEPHAIST_OS_SHARED_LIBRARY_CPP_VARIANT_VARIANT_H
+#define HEPHAIST_OS_SHARED_LIBRARY_CPP_VARIANT_VARIANT_H
 
 #include <concepts>
 #include <type_traits>
@@ -27,7 +26,8 @@
 namespace std {
 
     /**
-     * TODO: Comment
+     * MonoState can be a default state for a variant. This can be used to denote
+     * an empty value if required.
      */
     struct MonoState { };
 
@@ -119,8 +119,6 @@ namespace std {
      */
     template<typename FirstType, typename... Types>
     class Variant {
-
-        // todo how does this enum work?
         enum : size_t {
             size = std::max({sizeof(FirstType), sizeof(Types)...})
         };
@@ -152,7 +150,6 @@ namespace std {
 
         ~Variant() {
             detail::destroyLinear<0, FirstType, Types...>(index(), data());
-            //detail::destroyData<FirstType, Types...>(data(), index());
         }
 
         /**
@@ -167,8 +164,6 @@ namespace std {
             // Search the Type pack and call the Type destructor.
             detail::destroyLinear<0, FirstType, Types...>(index(), data());
 
-            //detail::destroyData<FirstType, Types...>(data(), index());
-
             auto *pointer = static_cast<Type *>(data());
             std::construct_at(pointer, args...);
 
@@ -179,4 +174,4 @@ namespace std {
 }
 
 
-#endif // D_PRICE_DEV_VARIANT_VARIANT_H
+#endif // HEPHAIST_OS_SHARED_LIBRARY_CPP_VARIANT_VARIANT_H

@@ -15,9 +15,8 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-// TODO: Format Header
-#ifndef HEPHAISTOS_FORMAT_ARGUMENT_H
-#define HEPHAISTOS_FORMAT_ARGUMENT_H
+#ifndef HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_FORMAT_ARGUMENT_H
+#define HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_FORMAT_ARGUMENT_H
 
 #include "variant.h"
 #include "string_view.h"
@@ -26,9 +25,10 @@
 namespace std {
 
     /**
-     * TODO: Comment
-     * @tparam Type
-     * @tparam CharacterType
+     * This concept defines what is a valid satandard argument.
+     * A standard argument is any of the arguments accepted by
+     * BasicFormatArgument, except customt types that will be stored as
+     * BasicFormatArgument::handle.
      */
     template<class Type, class CharacterType>
     concept StandardFormatArgument = std::is_same_v<Type, bool&> ||
@@ -47,9 +47,9 @@ namespace std {
         std::is_same_v<Type, BaseStringView<CharacterType>&>;
 
     /**
-     * TODO: Comment
-     * @tparam CharacterType
-     * @tparam Type
+     * This concept defines a custom format argument which is basically anything
+     * that is not a standard argument, but more specifically, it is any custom
+     * argument that will be converted to a BasicFormatArgument::handle.
      */
     template<class CharacterType, class Type>
     concept CustomFormatArgument = !StandardFormatArgument<CharacterType, Type>;
@@ -65,6 +65,7 @@ namespace std {
 
         using characterType = typename State::characterType;
 
+        // Defines a variant type that accepts all standard format types, and the handle type.
         using ArgumentVariant = std::Variant<
             std::MonoState,
             bool,
@@ -88,21 +89,29 @@ namespace std {
             ArgumentVariant(std::MonoState())
         ) { }
 
+        /**
+         * Constructs any standard argument (not a handle type) by directly
+         * passing the @param type into the variant.
+         */
         template<StandardFormatArgument<typename State::characterType> Type>
         explicit BasicFormatArgument (Type&& type) : value(
             ArgumentVariant(std::forward<Type>(type))
         ) { }
 
+        /**
+         * Constructs any custom type, by wrapping the @param type in the handle
+         * class and then passing it into the variant.
+         */
         template<CustomFormatArgument<typename State::characterType> Type>
         explicit BasicFormatArgument (Type&& type) : value(
             ArgumentVariant(handle(std::forward<Type>(type)))
         ) { }
 
-        // todo: make this    private:
+        // todo: make this private:
 
         // todo: friend make function
 
-        // todo: friend visit?
+        // todo: friend getVisitorArray?
 
         ArgumentVariant value;
 
@@ -117,17 +126,16 @@ namespace std {
     class BasicFormatArgument<State>::handle {
         using characterType = typename State::characterType;
 
-        const void * data{ nullptr };
+        // Type erased pointer to the stored Type that will be recast and used in formatType.
+        const void * data { nullptr };
 
-        // TODO: Comment
+        // Function pointer that will contain formatType for a given Type.
         void (*formatFunction)(BasicParseState<characterType>&, State&, const void*) { nullptr };
 
         /**
-         * TODO: Comment
-         * @tparam Type
-         * @param parseState
-         * @param formatState
-         * @param pointer
+         * Static method that can be specialized for a given @tparam Type; the @tparam Type will be
+         * used to construct the specialized Formatter for custom Type. The type erased @param pointer
+         * will be cast to the @tparam Type and parsed and formatted by the formatter.
          */
         template<class Type>
         static void formatType(
@@ -145,32 +153,29 @@ namespace std {
         // Constructors
         handle() = default;
 
+        /**
+         * Constructs the handle from a @param type; by erasing the type and storing it in data.
+         * Passes a pointer to the static method formatType specialized for the @tparam Type to formatFunction.
+         */
         template<class Type>
         explicit handle(Type type) : data(std::addressof(type)), formatFunction(this->formatType<Type>) { }
 
         /**
-         * TODO: Comment
-         * @param parseState
-         * @param formatState
+         * This can be called to format the stored data, to the output stored in the @param formatState.
+         * This calls the underlying formatFunction with the provided states, and the erased data.
          */
-        void format(
-            BasicParseState<typename State::characterType> &parseState,
-            State &formatState
-        ) const {
+        void format(BasicParseState<characterType> &parseState, State &formatState) const {
             formatFunction(parseState, formatState, data);
         }
     };
 
     /**
-     *
-     * @tparam Visitor
-     * @tparam State
-     * @param visitor
-     * @param argument
-     * @return
+     * Visitor method wraps std::visit which is used to getVisitorArray the basic argument.
+     * The result is converted to the raw argument, or to a MonoState if the argument
+     * is invalid.
      */
     template<class Visitor, class State>
-    auto visitFormatArgument (Visitor&& visitor, std::BasicFormatArgument<State> argument) {
+    auto visitFormatArgument(Visitor&& visitor, std::BasicFormatArgument<State> argument) {
         return std::visit(
             [&visitor] (auto result) -> decltype(auto) {
                 if (!result.isValid()) {
@@ -184,4 +189,4 @@ namespace std {
     }
 }
 
-#endif //HEPHAISTOS_FORMAT_ARGUMENT_H
+#endif // HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_FORMAT_ARGUMENT_H

@@ -15,9 +15,8 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-// TODO: Format Header
-#ifndef HEPHAISTOS_POINTER_FORMATTER_H
-#define HEPHAISTOS_POINTER_FORMATTER_H
+#ifndef HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_POINTER_FORMATTER_H
+#define HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_POINTER_FORMATTER_H
 
 #include "formatter.h"
 #include "int_formatter.h"
@@ -26,7 +25,9 @@
 namespace std {
 
     /**
-     * TODO: Comment
+     * Specializes the Formatter for void pointers.
+     * This will output the pointer address, prepended with '0x'
+     * e.g. '0x1234567890'.
      */
     template<>
     struct Formatter<const void*> {
@@ -55,4 +56,4 @@ namespace std {
     };
 }
 
-#endif // HEPHAISTOS_POINTER_FORMATTER_H
+#endif // HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_POINTER_FORMATTER_H

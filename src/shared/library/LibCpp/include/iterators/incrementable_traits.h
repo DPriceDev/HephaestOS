@@ -15,9 +15,8 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-// TODO: Rename Header Guard
-#ifndef HEPHAISTOS_INCREMENTABLE_TRAITS_H
-#define HEPHAISTOS_INCREMENTABLE_TRAITS_H
+#ifndef HEPHAIST_OS_SHARED_LIBRARY_CPP_ITERATORS_INCREMENTABLE_TRAITS_H
+#define HEPHAIST_OS_SHARED_LIBRARY_CPP_ITERATORS_INCREMENTABLE_TRAITS_H
 
 #include <type_traits>
 #include <concepts>
@@ -54,4 +53,4 @@ namespace std {
 
 }
 
-#endif //HEPHAISTOS_INCREMENTABLE_TRAITS_H
+#endif // HEPHAIST_OS_SHARED_LIBRARY_CPP_ITERATORS_INCREMENTABLE_TRAITS_H

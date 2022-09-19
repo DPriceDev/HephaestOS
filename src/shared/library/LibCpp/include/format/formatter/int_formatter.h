@@ -15,71 +15,76 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-// TODO: Format Header
-#ifndef HEPHAISTOS_INT_FORMATTER_H
-#define HEPHAISTOS_INT_FORMATTER_H
+#ifndef HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_INT_FORMATTER_H
+#define HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_INT_FORMATTER_H
 
 #include <limits>
 
 #include "formatter.h"
-#include "variant.h"
 
 namespace std {
 
     /**
-     * TODO: Comment
-     * @tparam Type
+     * Concept denotes that a @tparam Type can be divided.
      */
     template<class Type>
     concept dividable = std::integral<Type>
             && requires(const Type a, const Type b) { a / b; };
 
     /**
-     * TODO: Commment
-     * @tparam Type
+     * Concept denotes that a @tparam Type can have its modulus taken.
      */
     template<class Type>
     concept modulusable = std::integral<Type>
                         && requires(const Type a, const Type b) { a % b; };
 
     /**
-     * TODO: Comment
-     * @tparam Type
+     * Concept denotes that a @tparam Type can be formatted by the
+     * Int formatter.
      */
     template<class Type>
     concept formatableIntegral = dividable<Type> && modulusable<Type>;
 
-    /**
-     * TODO: Comment
-     * @tparam OutputIterator
-     * @tparam Type
-     * @param iterator
-     * @param value
-     * @param base
-     * @return
-     */
-    template<class OutputIterator, formatableIntegral Type>
-    auto formatDigit(OutputIterator iterator, Type value, Type base = 10) -> OutputIterator {
-        auto reduction = value / base;
+    namespace detail {
 
-        OutputIterator outputIterator;
-        if (reduction == 0) {
-            outputIterator = iterator;
-        } else {
-            outputIterator = formatDigit(iterator, reduction);
+        // Maximum length of a digit equal to 9 in binary: 1001
+        constexpr static int DIGIT_OUTPUT_SIZE = 4;
+
+        /**
+         * This takes the @param value and splits it into its individual digits by recursively
+         * dividing it by the @param base and taking the individual digit from the modulus from the
+         * @param base.
+         * The individual digit is added to the output using std::toChars. The maximum size of the
+         * output is 4 characters as seen in DIGIT_OUTPUT_SIZE.
+         * The behaviour is undefined if the output container is not large enough.
+         *
+         * @return an iterator to the end of the outputted integer.
+         */
+        template<class OutputIterator, formatableIntegral Type>
+        auto formatInteger(OutputIterator iterator, Type value, Type base = 10) -> OutputIterator {
+            auto reduction = value / base;
+
+            OutputIterator outputIterator;
+            if (reduction == 0) {
+                outputIterator = iterator;
+            } else {
+                outputIterator = formatInteger(iterator, reduction);
+            }
+
+            auto digit = value % base;
+
+            // use to chars to convert to string
+            std::toChars(outputIterator, outputIterator + DIGIT_OUTPUT_SIZE, digit);
+
+            return ++outputIterator;
         }
-
-        auto digit = value % base;
-
-        // use to chars to convert to string
-        std::toChars(outputIterator, outputIterator + 2, digit);
-
-        return ++outputIterator;
     }
 
     /**
-     * Int specification
-     * TODO: Comment
+     * This specializes Formatter for integral types.
+     * i.e. int, long, long long, unsigned int, etc...
+     * This will take an integer, break it into digits, and output each digit
+     * individually.
      */
     template<std::integral Type>
     struct Formatter<Type> {
@@ -98,9 +103,9 @@ namespace std {
 
         auto format(auto &integer, auto &state) {
             auto output = state.out();
-            return formatDigit(output, integer);
+            return detail::formatInteger(output, integer);
         }
     };
 }
 
-#endif // HEPHAISTOS_INT_FORMATTER_H
+#endif // HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_INT_FORMATTER_H

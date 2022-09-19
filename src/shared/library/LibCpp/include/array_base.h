@@ -20,7 +20,7 @@
 
 #include <cstdint>
 #include "iterator.h"
-#include "algorithms.h"
+#include "algorithm.h"
 
 namespace std::detail {
 

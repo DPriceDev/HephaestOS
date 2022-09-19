@@ -15,21 +15,23 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-// TODO: Format Header
-#ifndef HEPHAISTOS_FLOATING_FORMATTER_H
-#define HEPHAISTOS_FLOATING_FORMATTER_H
+#ifndef HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_FLOATING_FORMATTER_H
+#define HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_FLOATING_FORMATTER_H
 
 #include <limits>
 #include <cfloat>
 
 #include "formatter.h"
-#include "variant.h"
 
 namespace std {
 
     /**
-     * Int specification
-     * TODO: Comment
+     * This specialises the Formatter for any Type that is floating point.
+     * i.e. float, double, long double.
+     *
+     * This outputs the floating point number using std::toChars. This will
+     * output the entire number regardless of length.
+     * The behaviour is undefined if the output container is too small.
      */
     template<std::floating_point Type>
     struct Formatter<Type> {
@@ -53,4 +55,4 @@ namespace std {
     };
 }
 
-#endif // HEPHAISTOS_FLOATING_FORMATTER_H
+#endif // HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_FLOATING_FORMATTER_H

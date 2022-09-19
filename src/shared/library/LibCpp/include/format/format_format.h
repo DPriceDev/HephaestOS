@@ -15,14 +15,13 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-// TODO: Format Header
-#ifndef HEPHAISTOS_FORMAT_FORMAT_H
-#define HEPHAISTOS_FORMAT_FORMAT_H
+#ifndef HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_FORMAT_FORMAT_H
+#define HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_FORMAT_FORMAT_H
 
 #include "iterator.h"
 #include "result.h"
 #include "string_view.h"
-#include "algorithms.h"
+#include "algorithm.h"
 #include "charconv.h"
 
 #include "format/formatter/formatter.h"
@@ -37,171 +36,196 @@
 
 namespace std {
 
-    /**
-     * TODO: Comment
-     */
-    struct ArgumentIndex {
-        size_t index;
-        const char* nextCharacter;
-    };
+    namespace detail {
 
-    /**
-     * TODO: Comment
-     * @tparam OutputIterator
-     * @param parseState
-     * @param iterator
-     * @param end
-     * @return
-     */
-    template<std::outputIterator<const char&> OutputIterator>
-    std::Result<ArgumentIndex> getArgumentIndex (
-        ParseState& parseState, // todo: Switch to template param
-        const char* iterator, // todo: Extract to character type template param
-        const char* end // todo: Extract to character type template param
-    ) {
-        auto position = std::findIf(
-            iterator, end, [] (auto character) {
-                return character == ':' || character == '}';
-            }
-        );
+        /**
+         * Result Struct of getArgumentIndex, which contains the index
+         * of the found argument, and the pointer to the next character
+         * after the '{' of the format field.
+         */
+        struct ArgumentIndex {
+            size_t index;
+            const char* nextCharacter;
+        };
 
-        // Invalid if a formatting : or end of argument } is not found
-        if (position == end) {
-            return std::Result<ArgumentIndex>::failure();
-        }
+        /**
+         * This method will carry out formatting and outputting the provided
+         * @param argument to the @tparam OutputIterator.
+         *
+         * This will getVisitorArray the @param argument; if the type is a std::Monostable, then
+         * a failure result is returned as the argument is invalid.
+         *
+         * If the argument is a handle, then the format method on the handle is called
+         * to format the custom type the handle contains. This returns the @tparam OutputIterator
+         * in the @param formatState after formatting.
+         *
+         * If the argument is a standard argument, then the Formatter is constructed from the
+         * argument type. If the @param shouldParse flag is true, then the formatter will first
+         * parse the parse arguments from the @param parseState. The Formatter will format the
+         * argument to the @tparam OutputIterator and the @tparam OutputIterator will be returned.
+         *
+         * The parse and format states are advanced in this method to the end of their parsed or
+         * formatted ranges.
+         */
+        template<std::outputIterator<const char&> OutputIterator>
+        std::Result<OutputIterator> formatArgument(
+            ParseState& parseState, // todo: Switch to template param
+            FormatState& formatState, // todo: Switch to template param
+            const BasicFormatArgument<FormatState>&& argument,
+            const bool shouldParse
+        ) {
+            return visitFormatArgument(
+                [&parseState, &formatState, &shouldParse](auto arg) {
+                    if constexpr (std::same_as<decltype(arg), MonoState>) {
+                        // Fail if argument is not present.
+                        return std::Result<OutputIterator>::failure();
+                    } else if constexpr (std::same_as<decltype(arg), BasicFormatArgument<FormatState>::handle>) {
+                        // Call formatter from the handle for custom types
+                        arg.format(parseState, formatState);
+                        return Result<OutputIterator>::success(
+                            formatState.out()
+                        );
+                    } else {
+                        // Get the formatter for this type and format the argument.
+                        Formatter<decltype(arg), char> formatter;
 
-        size_t index;
-        if (position == iterator) {
-            auto result = parseState.nextArgumentIndex();
-            if (result.isNotValid()) {
-                return std::Result<ArgumentIndex>::failure();
-            }
-            index = result.get();
-        } else {
-            auto result = std::fromChars<size_t>(iterator, position);
-            if (!result.isValid()) {
-                return std::Result<ArgumentIndex>::failure();
-            }
-            index = result.get();
+                        if (shouldParse) {
+                            parseState.advanceTo(formatter.parse(parseState));
+                        }
 
-            if (!parseState.checkArgumentIndex(index).isValid()) {
-                return std::Result<ArgumentIndex>::failure();
-            }
-        }
-
-        return std::Result<ArgumentIndex>::success(ArgumentIndex { index, position });
-    }
-
-    /**
-     * TODO: Comment
-     * @param parseState
-     * @param argumentIndex
-     * @return
-     */
-    std::Result<bool> shouldParse(ParseState& parseState, const ArgumentIndex& argumentIndex) {
-        switch (*argumentIndex.nextCharacter) {
-            case '}':
-                parseState.advanceTo(argumentIndex.nextCharacter);
-                break;
-
-            case ':':
-                parseState.advanceTo(argumentIndex.nextCharacter + 1);
-                break;
-
-            default:
-                // fails if format string is invalid (does not have : or })
-                return std::Result<bool>::failure();
-        }
-
-        return std::Result<bool>::success(*argumentIndex.nextCharacter == ':');
-    }
-
-    /**
-     * TODO: Comment
-     * @tparam OutputIterator
-     * @param parseState
-     * @param formatState
-     * @param argument
-     * @param shouldParse
-     * @return
-     */
-    template<std::outputIterator<const char&> OutputIterator>
-    std::Result<OutputIterator> formatArgument (
-        ParseState& parseState, // todo: Switch to template param
-        FormatState& formatState, // todo: Switch to template param
-        const BasicFormatArgument<FormatState>&& argument,
-        const bool shouldParse
-    ) {
-        return visitFormatArgument(
-            [&parseState, &formatState, &shouldParse] (auto arg) {
-                if constexpr (std::same_as<decltype(arg), MonoState>) {
-                    // Fail if argument is not present.
-                    return std::Result<OutputIterator>::failure();
-                } else if constexpr (std::same_as<decltype(arg), BasicFormatArgument<FormatState>::handle>) {
-                    // Call formatter from the handle for custom types
-                    arg.format(parseState, formatState);
-                    return Result<OutputIterator>::success(
-                       formatState.out()
-                    );
-                } else {
-                    // Get the formatter for this type and format the argument.
-                    Formatter<decltype(arg), char> formatter;
-
-                    if (shouldParse) {
-                        parseState.advanceTo(formatter.parse(parseState));
+                        auto result = formatter.format(arg, formatState);
+                        return Result<OutputIterator>::success(result);
                     }
+                },
+                argument
+            );
+        }
 
-                    auto result = formatter.format(arg, formatState);
-                    return Result<OutputIterator>::success(result);
+        /**
+         * This method checks whether the formatter should also parse the parse arguments. This is
+         * denoted by the existence of the ':' parse identifier.
+         *
+         * The @param parseState will be incremented to the next character after either a closing
+         * format field '}', or one after the parse identifier ':' which should be the first parse
+         * argument. If neither of these identifiers is present, then the result is failure.
+         */
+        std::Result<bool> shouldParse(ParseState& parseState, const char* nextCharacter) {
+            switch (*nextCharacter) {
+                case '}':
+                    parseState.advanceTo(nextCharacter);
+                    break;
+
+                case ':':
+                    parseState.advanceTo(nextCharacter + 1);
+                    break;
+
+                default:
+                    // fails if format string is invalid (does not have : or })
+                    return std::Result<bool>::failure();
+            }
+
+            return std::Result<bool>::success(*nextCharacter == ':');
+        }
+
+        /**
+         * This method finds the Argument index and the next character in the format field.
+         *
+         * If the field contains and index, i.e. '{1}', then that index is used. Otherwise,
+         * the next index from the @param parseState is used. If previous format fields
+         * contained an index, and this one does not (or visa versa), then the field is
+         * invalid and a failure result is returned.
+         *
+         * The next character is found from the position of the first parse identifier ':'
+         * or closing format field identifier '}'. If neither are found, then a failure
+         * result is returned.
+         */
+        template<std::outputIterator<const char&> OutputIterator>
+        std::Result<ArgumentIndex> getArgumentIndex(
+            ParseState& parseState, // todo: Switch to template param
+            const char* iterator, // todo: Extract to character type template param
+            const char* end // todo: Extract to character type template param
+        ) {
+            auto position = std::findIf(
+                iterator, end, [](auto character) {
+                    return character == ':' || character == '}';
                 }
-            },
-            argument
-        );
+            );
+
+            // Invalid if a formatting : or end of argument } is not found
+            if (position == end) {
+                return std::Result<ArgumentIndex>::failure();
+            }
+
+            size_t index;
+            if (position == iterator) {
+                auto result = parseState.nextArgumentIndex();
+                if (result.isNotValid()) {
+                    return std::Result<ArgumentIndex>::failure();
+                }
+                index = result.get();
+            } else {
+                auto result = std::fromChars<size_t>(iterator, position);
+                if (!result.isValid()) {
+                    return std::Result<ArgumentIndex>::failure();
+                }
+                index = result.get();
+
+                if (!parseState.checkArgumentIndex(index).isValid()) {
+                    return std::Result<ArgumentIndex>::failure();
+                }
+            }
+
+            return std::Result<ArgumentIndex>::success(ArgumentIndex { index, position });
+        }
+
+        /**
+         * This method handles formatting a format field. It will find the argument from either
+         * the parse state, or the index in the format field, check if parsing is required, and then
+         * format the argument to the output.
+         * @return
+         */
+        template<std::outputIterator<const char&> OutputIterator>
+        std::Result<OutputIterator> handleFormatField(
+            const char* iterator, // todo: Extract to character type template param
+            const char* end, // todo: Extract to character type template param
+            ParseState& parseState, // todo: Switch to template param
+            FormatState& formatState // todo: Switch to template param
+        ) {
+            auto result = getArgumentIndex<OutputIterator>(parseState, iterator, end);
+            if (!result.isValid()) {
+                return std::Result<OutputIterator>::failure();
+            }
+            auto argumentIndex = result.get();
+
+            auto shouldParseResult = shouldParse(parseState, argumentIndex.nextCharacter);
+            if (!shouldParseResult.isValid()) {
+                return std::Result<OutputIterator>::failure();
+            }
+
+            return formatArgument<OutputIterator>(
+                parseState,
+                formatState,
+                formatState.argument(argumentIndex.index),
+                shouldParseResult.get()
+            );
+        }
     }
 
     /**
-     * TODO: Comment
-     * @tparam OutputIterator
-     * @param output
-     * @param toFormat
-     * @param format
-     * @return
-     */
-    template<std::outputIterator<const char&> OutputIterator>
-    std::Result<OutputIterator> handleFormat (
-        const char* iterator, // todo: Extract to character type template param
-        const char* end, // todo: Extract to character type template param
-        ParseState& parseState, // todo: Switch to template param
-        FormatState& formatState // todo: Switch to template param
-    ) {
-        auto result = getArgumentIndex<OutputIterator>(parseState, iterator, end);
-        if (!result.isValid()) {
-            return std::Result<OutputIterator>::failure();
-        }
-        auto argumentIndex = result.get();
-
-        auto shouldParseResult = shouldParse(parseState, argumentIndex);
-        if (!shouldParseResult.isValid()) {
-            return std::Result<OutputIterator>::failure();
-        }
-
-        return formatArgument<OutputIterator>(
-            parseState,
-            formatState,
-            formatState.argument(argumentIndex.index),
-            shouldParseResult.get()
-        );
-    }
-
-    // todo: Should this return the output iterator of the failed point?
-    // todo: could I reduce this loop to nested stringviews?
-    /**
-     * TODO: Comment
-     * @tparam OutputIterator
-     * @param output
-     * @param format
-     * @param args
-     * @return
+     * DynamicFormatTo takes a @param format and a set of @param args and formats them together
+     * and outputs them to the @param output iterator.
+     *
+     * This method is a non templated version of formatTo, and takes StringView and FormatArguments
+     * classes instead of template parameters.
+     *
+     * The @param format consists of text, interlaced with '{}' format fields, which are
+     * mark where the format arguments are to fall. These format fields can contain an index,
+     * i.e. '{1}' and parse data, i.e. '{:b}', where ':' denotes the start of the parsing arguments.
+     *
+     * The call will fail (finish outputting early) if an error occurs. Errors can be:
+     * - Mixing index '{1}' and non-index '{}'.
+     * - Invalid parse arguments.
+     * - Output iterator overflows the output memory.
      */
     template<std::outputIterator<const char&> OutputIterator>
     std::Result<OutputIterator> dynamicFormatTo (
@@ -228,7 +252,7 @@ namespace std {
 
                 // Update state to current output position and handle formatArgument
                 formatState.advanceTo(output);
-                auto result = handleFormat<OutputIterator>(iterator, end, parsingState, formatState);
+                auto result = detail::handleFormatField<OutputIterator>(iterator, end, parsingState, formatState);
 
                 // Return failure if failed to format argument
                 if (!result.isValid()) {
@@ -264,20 +288,26 @@ namespace std {
     }
 
     /**
-     * TODO: Comment
-     * @tparam CharacterType
-     * @tparam OutputIterator
-     * @tparam Args
-     * @param output
-     * @param format
-     * @param args
-     * @return
+     * FormatTo takes a @param format and a set of @param args and formats them together
+     * and outputs them to the @param output iterator.
+     *
+     * This call converts the template parameters for format and args, to StringView and
+     * FormatArguments, and calls the underlying dynamicFormatTo.
+     *
+     * The @param format consists of text, interlaced with '{}' format fields, which are
+     * mark where the format arguments are to fall. These format fields can contain an index,
+     * i.e. '{1}' and parse data, i.e. '{:b}', where ':' denotes the start of the parsing arguments.
+     *
+     * The call will fail (finish outputting early) if an error occurs. Errors can be:
+     * - Mixing index '{1}' and non-index '{}'.
+     * - Invalid parse arguments.
+     * - Output iterator overflows the output memory.
      */
     template<std::convertableToStringView CharacterType, std::outputIterator<const char&> OutputIterator, class... Args>
-    std::Result<OutputIterator> formatTo (
+    std::Result<OutputIterator> formatTo(
         OutputIterator output,
         CharacterType* format,
-        Args&& ...args
+        Args&& ... args
     ) {
         return dynamicFormatTo(
             output,
@@ -287,4 +317,4 @@ namespace std {
     }
 }
 
-#endif //HEPHAISTOS_FORMAT_FORMAT_H
+#endif // HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_FORMAT_FORMAT_H

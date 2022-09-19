@@ -15,9 +15,8 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-// TODO: Format Header
-#ifndef HEPHAISTOS_BASIC_FORMATTER_H
-#define HEPHAISTOS_BASIC_FORMATTER_H
+#ifndef HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_BASIC_FORMATTER_H
+#define HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_BASIC_FORMATTER_H
 
 #include "format/parse_state.h"
 #include "format/format_state.h"
@@ -25,9 +24,13 @@
 namespace std {
 
     /**
-     * TODO: Comment
-     * @tparam Formatter
-     * @tparam Arg
+     * This concept defines what a basic formatter is, apart from being movable,
+     * The most important attributes of a formatter is that it has the format
+     * and parse methods.
+     * The parse method will take the parse state, and return an iterator to the
+     * end of the parse field '{...}' if successful.
+     * The format method will take the Arg to format, and the format state, and
+     * return an iterator to the end of the outputted value.
      */
     template<class Formatter, class Arg>
     concept BasicFormatter =
@@ -45,4 +48,4 @@ namespace std {
 //        };
 }
 
-#endif // HEPHAISTOS_BASIC_FORMATTER_H
+#endif // HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_BASIC_FORMATTER_H

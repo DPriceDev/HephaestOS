@@ -15,9 +15,8 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-// TODO: Format Header
-#ifndef D_PRICE_DEV_VARIANT_VISITOR_H
-#define D_PRICE_DEV_VARIANT_VISITOR_H
+#ifndef HEPHAIST_OS_SHARED_LIBRARY_CPP_VARIANT_VISITOR_H
+#define HEPHAIST_OS_SHARED_LIBRARY_CPP_VARIANT_VISITOR_H
 
 #include <type_traits>
 #include <array.h>
@@ -32,13 +31,15 @@ namespace std {
     namespace detail {
 
         /**
-         * TODO: Comment
-         * @tparam Visitor
-         * @tparam Variant
-         * @tparam Size
-         * @tparam FunctionType
-         * @tparam Type
-         * @tparam Types
+         * This struct is templated to the specific @tparam Variant Types for a given
+         * @tparam Visitor.
+         *
+         * This is the intermediate struct that will be called if the size is greater than 0.
+         *
+         * The whole array builder structs work by looping through each struct for a given
+         * overall size count, and building the common function type. The current type is
+         * always appended to the end of the Types array again so that they are available
+         * to build the array in the last struct.
          */
         template<class Visitor, class Variant, std::size_t Size, class FunctionType, class Type, class... Types>
         struct VariantVisitorArrayBuilder : public VariantVisitorArrayBuilder<
@@ -54,12 +55,16 @@ namespace std {
         > { };
 
         /**
-         * TODO: Comment
-         * @tparam Visitor
-         * @tparam Variant
-         * @tparam FunctionType
-         * @tparam Type
-         * @tparam Types
+         * This struct is templated to the specific @tparam Variant Types for a given
+         * @tparam Visitor.
+         *
+         * This the last struct that is called when the size drops to zero.
+         *
+         * The whole array builder structs work by looping through each struct for a given
+         * overall size count, and building the common function type.
+         * This last struct takes the current type and converts it to a visitor function,
+         * then takes the other Types and converts those to visitor functions, and
+         * adds them all to a visitor function array with the type of FunctionType.
          */
         template<class Visitor, class Variant, class FunctionType, class Type, class... Types>
         struct VariantVisitorArrayBuilder<Visitor, Variant, 0, FunctionType, Type, Types...> {
@@ -78,12 +83,16 @@ namespace std {
         };
 
         /**
-         * TODO: Comment
-         * @tparam Visitor
-         * @tparam Variant
-         * @tparam Size
-         * @tparam Type
-         * @tparam Types
+         * This struct is templated to the specific @tparam Variant Types for a given
+         * @tparam Visitor.
+         *
+         * This initial struct sets up the first function type that will be used to
+         * build the common array type.
+         *
+         * The whole array builder structs work by looping through each struct for a given
+         * overall size count, and building the common function type. The current type is
+         * always appended to the end of the Types array again so that they are available
+         * to build the array in the last struct.
          */
         template<class Visitor, class Variant, std::size_t Size, class Type, class... Types>
         struct VariantVisitorArray : public VariantVisitorArrayBuilder<
@@ -96,32 +105,28 @@ namespace std {
         > { };
 
         /**
-         * TODO: Comment
-         * @tparam Visitor
-         * @tparam Variant
-         * @tparam Types
-         * @param variant
-         * @return
+         * This retrieves the visitor array from a compile time struct that constructs
+         * the array.
          */
         template<class Visitor, class Variant, class... Types>
-        constexpr auto visit(std::Variant<Types...> &variant) -> decltype(auto) {
+        constexpr auto getVisitorArray(std::Variant<Types...> &variant) -> decltype(auto) {
             return VariantVisitorArray<Visitor, Variant, sizeof...(Types), Types...>::array;
         }
     }
 
     /**
-     * Visit takes a given variant or variants and applies it to a visitor
+     * Visit takes a given variant and applies it to a visitor
      * function. The visitor function will call the corresponding method
      * associated to the active indexes and types in each variant.
      */
     template<class Visitor, class Variant>
     constexpr auto visit(Visitor&& visitor, Variant & variant) -> decltype(auto) {
-        auto array = detail::visit<Visitor, Variant>(variant);
+        auto array = detail::getVisitorArray<Visitor, Variant>(variant);
         return array[variant.index()](std::forward<Visitor>(visitor), variant);
     }
 
     /**
-     * Visit takes a given variant or variants and applies it to a visitor
+     * Visit takes a given variant and applies it to a visitor
      * function. The visitor function will call the corresponding method
      * associated to the active indexes and types in each variant.
      */
@@ -131,4 +136,4 @@ namespace std {
     }
 }
 
-#endif // D_PRICE_DEV_VARIANT_VISITOR_H
+#endif // HEPHAIST_OS_SHARED_LIBRARY_CPP_VARIANT_VISITOR_H

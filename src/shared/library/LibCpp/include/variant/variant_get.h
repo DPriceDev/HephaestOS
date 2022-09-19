@@ -15,9 +15,8 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-// TODO: Format Header
-#ifndef D_PRICE_DEV_VARIANT_GET_H
-#define D_PRICE_DEV_VARIANT_GET_H
+#ifndef HEPHAIST_OS_SHARED_LIBRARY_CPP_VARIANT_VARIANT_GET_H
+#define HEPHAIST_OS_SHARED_LIBRARY_CPP_VARIANT_VARIANT_GET_H
 
 #include "variant_variant.h"
 
@@ -55,12 +54,9 @@ namespace std {
     }
 
     /**
-     * TODO: Comment
-     * @tparam TypeIndex
-     * @tparam Types
-     * @tparam ResultType
-     * @param variant
-     * @return
+     * Returns the value stored in the @param variant at the given @tparam TypeIndex.
+     * If the active index in the variant is not the same as the @tparam TypeIndex, then
+     * a failure result is returned.
      */
     template<size_t TypeIndex, class... Types, class ResultType>
     constexpr auto get(std::Variant<Types...>& variant) -> std::Result<ResultType> {
@@ -75,11 +71,9 @@ namespace std {
     }
 
     /**
-     * TODO: Comment
-     * @tparam Type
-     * @tparam Types
-     * @param variant
-     * @return
+     * Returns the value stored in the @param variant if it is of the type @tparam Type.
+     * If the active value in the variant is not of the type @tparam Type then a failure
+     * result is returned.
      */
     template<class Type, class... Types>
     constexpr auto get(std::Variant<Types...>& variant) -> std::Result<Type> {
@@ -93,4 +87,4 @@ namespace std {
     }
 }
 
-#endif // D_PRICE_DEV_VARIANT_GET_H
+#endif // HEPHAIST_OS_SHARED_LIBRARY_CPP_VARIANT_VARIANT_GET_H

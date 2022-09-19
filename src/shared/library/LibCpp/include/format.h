@@ -23,5 +23,4 @@
 #include "format/format_arguments.h"
 #include "format/format_state.h"
 
-
 #endif // HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_H

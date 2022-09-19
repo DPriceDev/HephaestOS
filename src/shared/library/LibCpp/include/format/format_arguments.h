@@ -19,28 +19,29 @@
 #include "format_argument.h"
 #include "array_base.h"
 
-// TODO: Format Header
-#ifndef HEPHAISTOS_FORMAT_ARGUMENTS_H
-#define HEPHAISTOS_FORMAT_ARGUMENTS_H
+#ifndef HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_FORMAT_ARGUMENTS_H
+#define HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_FORMAT_ARGUMENTS_H
 
 namespace std {
 
     /**
-     * TODO: Comment
-     * @tparam State
-     * @tparam Args
+     * Temporary format arguments storage class used when constructing the
+     * initial arguments.
      */
     template<class State, class... Args>
     struct FormatArgumentStore {
         std::Array<BasicFormatArgument<State>, sizeof...(Args)> args;
 
         // Constructor
-        explicit FormatArgumentStore (std::Array<BasicFormatArgument<State>, sizeof...(Args)> arguments) : args(arguments) { };
+        explicit FormatArgumentStore (
+            std::Array<BasicFormatArgument<State>,
+            sizeof...(Args)> arguments
+        ) : args(arguments) { };
     };
 
     /**
-     * TODO: Comment
-     * @tparam State
+     * Arguments class that stores the format arguments and allows access to get
+     * each argument by index.
      */
     template<class State>
     class BasicFormatArguments {
@@ -51,6 +52,10 @@ namespace std {
         // Constructors
         BasicFormatArguments() noexcept = default;
 
+        /**
+         * Constructs the arguments for an argument store. This is an implicit construction
+         * which allows the argument store to be converted directly to the arguments.
+         */
         template<class... Args>
         BasicFormatArguments(const std::FormatArgumentStore<State, Args...>& store) noexcept
             : size(store.args.size()),
@@ -59,7 +64,7 @@ namespace std {
         // Accessors
         BasicFormatArgument<State> get(std::size_t index) const noexcept {
             // todo: if out of size, return monostate?
-            return data[index]; // todo: Switch to array?
+            return data[index];
         }
 
         auto count() -> std::size_t {
@@ -67,15 +72,12 @@ namespace std {
         }
     };
 
-    // Definition
+    // Defines the format arguments for a char based state.
     using FormatArguments = BasicFormatArguments<std::FormatState>;
 
     /**
-     * TODO: Comment
-     * @tparam State
-     * @tparam Args
-     * @param args
-     * @return
+     * Constructs a temporary argument store that stores the provided @param args as a
+     * set of BasicFormatArgument's.
      */
     template<class State = std::FormatState, class... Args>
     std::FormatArgumentStore<State, Args...> makeFormatArguments(Args&&... args) {
@@ -88,4 +90,4 @@ namespace std {
     }
 }
 
-#endif //HEPHAISTOS_FORMAT_ARGUMENTS_H
+#endif //HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_FORMAT_ARGUMENTS_H
