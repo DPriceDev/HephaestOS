@@ -54,8 +54,8 @@ namespace std {
 
         // Constructor
         explicit BasicParseState(
-                std::BaseStringView<CharacterType> format,
-                std::size_t argumentCount = 0
+            std::BaseStringView<CharacterType> format,
+            std::size_t argumentCount = 0
         ) : format(format), argumentCount(argumentCount) { }
 
         // Accessors

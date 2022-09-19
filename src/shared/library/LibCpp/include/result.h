@@ -32,7 +32,9 @@ namespace std {
         bool isResult;
 
         explicit Result(Type result) : resultValue { result }, isResult { true } { }
+
         explicit Result(Error error) : errorValue { error }, isResult { false } { }
+
     public:
         explicit Result() = default;
 
@@ -56,7 +58,7 @@ namespace std {
 
         template<class Function>
         auto getOr(Function onError) -> Type& {
-            if(!isValid()) {
+            if (!isValid()) {
                 onError(errorValue);
             }
             return resultValue;
@@ -77,7 +79,7 @@ namespace std {
         // Functional Interface
         template<class ResultFunction, class ErrorFunction>
         auto onResult(ResultFunction resultFunction, ErrorFunction errorFunction) -> Result<Type, Error>& {
-            if(isValid()) {
+            if (isValid()) {
                 resultFunction(resultValue);
             } else {
                 errorFunction(errorFunction);
@@ -87,7 +89,7 @@ namespace std {
 
         template<class Function>
         auto onResult(Function function) -> Result<Type, Error>& {
-            if(isValid()) {
+            if (isValid()) {
                 function(resultValue);
             }
             return *this;
@@ -95,7 +97,7 @@ namespace std {
 
         template<class Function>
         auto onError(Function function) -> Result<Type, Error>& {
-            if(!isValid()) {
+            if (!isValid()) {
                 function(errorValue);
             }
             return *this;
@@ -103,7 +105,7 @@ namespace std {
 
         template<class Function>
         constexpr auto map(Function function) -> decltype(auto) {
-            if(!isValid()) {
+            if (!isValid()) {
                 std::Result<Type, Error>::failure();
             }
             return function(resultValue);

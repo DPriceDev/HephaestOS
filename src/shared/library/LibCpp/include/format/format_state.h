@@ -55,8 +55,8 @@ namespace std {
 
         // Constructors
         explicit BasicFormatState(
-                BasicFormatArguments<BasicFormatState>& arguments,
-                OutputIterator& outputIterator
+            BasicFormatArguments<BasicFormatState>& arguments,
+            OutputIterator& outputIterator
         ) : arguments(arguments), outputIterator(outputIterator) { }
 
         // Accessors

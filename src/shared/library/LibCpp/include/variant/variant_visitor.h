@@ -43,16 +43,17 @@ namespace std {
          */
         template<class Visitor, class Variant, std::size_t Size, class FunctionType, class Type, class... Types>
         struct VariantVisitorArrayBuilder : public VariantVisitorArrayBuilder<
-                Visitor,
-                Variant,
-                Size - 1,
-                std::common_type_t<FunctionType, decltype([] (Visitor &&visitor, Variant &variant) {
-                    return visitor(
-                            std::get<Type>(variant));
-                })>,
-                Types...,
-                Type
-        > { };
+            Visitor,
+            Variant,
+            Size - 1,
+            std::common_type_t<FunctionType, decltype([](Visitor&& visitor, Variant& variant) {
+                return visitor(
+                    std::get<Type>(variant));
+            })>,
+            Types...,
+            Type
+        > {
+        };
 
         /**
          * This struct is templated to the specific @tparam Variant Types for a given
@@ -69,16 +70,16 @@ namespace std {
         template<class Visitor, class Variant, class FunctionType, class Type, class... Types>
         struct VariantVisitorArrayBuilder<Visitor, Variant, 0, FunctionType, Type, Types...> {
 
-            static constexpr auto function = [] (Visitor &&visitor, Variant &variant) {
+            static constexpr auto function = [](Visitor&& visitor, Variant& variant) {
                 return visitor(std::get<Type>(variant));
             };
 
             static constexpr auto array = std::Array<std::common_type_t<FunctionType, decltype(function)>,
-                    sizeof...(Types) + 1> {
-                    function,
-                    [] (Visitor &&visitor, Variant &variant) {
-                        return visitor(std::get<Types>(variant));
-                    }...
+                sizeof...(Types) + 1> {
+                function,
+                [](Visitor&& visitor, Variant& variant) {
+                    return visitor(std::get<Types>(variant));
+                }...
             };
         };
 
@@ -96,20 +97,21 @@ namespace std {
          */
         template<class Visitor, class Variant, std::size_t Size, class Type, class... Types>
         struct VariantVisitorArray : public VariantVisitorArrayBuilder<
-                Visitor,
-                Variant,
-                Size - 1,
-                decltype([] (Visitor &&visitor, Variant &variant) { return visitor(std::get<Type>(variant)); }),
-                Types...,
-                Type
-        > { };
+            Visitor,
+            Variant,
+            Size - 1,
+            decltype([](Visitor&& visitor, Variant& variant) { return visitor(std::get<Type>(variant)); }),
+            Types...,
+            Type
+        > {
+        };
 
         /**
          * This retrieves the visitor array from a compile time struct that constructs
          * the array.
          */
         template<class Visitor, class Variant, class... Types>
-        constexpr auto getVisitorArray(std::Variant<Types...> &variant) -> decltype(auto) {
+        constexpr auto getVisitorArray(std::Variant<Types...>& variant) -> decltype(auto) {
             return VariantVisitorArray<Visitor, Variant, sizeof...(Types), Types...>::array;
         }
     }
@@ -120,7 +122,7 @@ namespace std {
      * associated to the active indexes and types in each variant.
      */
     template<class Visitor, class Variant>
-    constexpr auto visit(Visitor&& visitor, Variant & variant) -> decltype(auto) {
+    constexpr auto visit(Visitor&& visitor, Variant& variant) -> decltype(auto) {
         auto array = detail::getVisitorArray<Visitor, Variant>(variant);
         return array[variant.index()](std::forward<Visitor>(visitor), variant);
     }
@@ -131,7 +133,7 @@ namespace std {
      * associated to the active indexes and types in each variant.
      */
     template<class Visitor, class Variant>
-    constexpr auto visit(Visitor& visitor, Variant & variant) -> decltype(auto) {
+    constexpr auto visit(Visitor& visitor, Variant& variant) -> decltype(auto) {
         return std::visit(std::move(visitor), variant);
     }
 }

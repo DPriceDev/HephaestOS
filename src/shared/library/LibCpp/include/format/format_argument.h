@@ -32,19 +32,19 @@ namespace std {
      */
     template<class Type, class CharacterType>
     concept StandardFormatArgument = std::is_same_v<Type, bool&> ||
-        std::is_same_v<Type, CharacterType&> ||
-        std::is_same_v<Type, int&> ||
-        std::is_same_v<Type, unsigned int&> ||
-        std::is_same_v<Type, long int&> ||
-        std::is_same_v<Type, unsigned long&> ||
-        std::is_same_v<Type, unsigned long long int&> ||
-        std::is_same_v<Type, float&> ||
-        std::is_same_v<Type, double&> ||
-        std::is_same_v<Type, long double&> ||
-        std::is_same_v<Type, const CharacterType*&> ||
-        std::is_same_v<Type, const void*&> ||
-        std::convertible_to<Type, const CharacterType*> ||
-        std::is_same_v<Type, BaseStringView<CharacterType>&>;
+                                     std::is_same_v<Type, CharacterType&> ||
+                                     std::is_same_v<Type, int&> ||
+                                     std::is_same_v<Type, unsigned int&> ||
+                                     std::is_same_v<Type, long int&> ||
+                                     std::is_same_v<Type, unsigned long&> ||
+                                     std::is_same_v<Type, unsigned long long int&> ||
+                                     std::is_same_v<Type, float&> ||
+                                     std::is_same_v<Type, double&> ||
+                                     std::is_same_v<Type, long double&> ||
+                                     std::is_same_v<Type, const CharacterType*&> ||
+                                     std::is_same_v<Type, const void*&> ||
+                                     std::convertible_to<Type, const CharacterType*> ||
+                                     std::is_same_v<Type, BaseStringView<CharacterType>&>;
 
     /**
      * This concept defines a custom format argument which is basically anything
@@ -85,7 +85,7 @@ namespace std {
         >;
 
         // Constructors
-        BasicFormatArgument () : value(
+        BasicFormatArgument() : value(
             ArgumentVariant(std::MonoState())
         ) { }
 
@@ -94,7 +94,7 @@ namespace std {
          * passing the @param type into the variant.
          */
         template<StandardFormatArgument<typename State::characterType> Type>
-        explicit BasicFormatArgument (Type&& type) : value(
+        explicit BasicFormatArgument(Type&& type) : value(
             ArgumentVariant(std::forward<Type>(type))
         ) { }
 
@@ -103,7 +103,7 @@ namespace std {
          * class and then passing it into the variant.
          */
         template<CustomFormatArgument<typename State::characterType> Type>
-        explicit BasicFormatArgument (Type&& type) : value(
+        explicit BasicFormatArgument(Type&& type) : value(
             ArgumentVariant(handle(std::forward<Type>(type)))
         ) { }
 
@@ -127,10 +127,10 @@ namespace std {
         using characterType = typename State::characterType;
 
         // Type erased pointer to the stored Type that will be recast and used in formatType.
-        const void * data { nullptr };
+        const void* data { nullptr };
 
         // Function pointer that will contain formatType for a given Type.
-        void (*formatFunction)(BasicParseState<characterType>&, State&, const void*) { nullptr };
+        void (* formatFunction)(BasicParseState<characterType>&, State&, const void*) { nullptr };
 
         /**
          * Static method that can be specialized for a given @tparam Type; the @tparam Type will be
@@ -158,13 +158,13 @@ namespace std {
          * Passes a pointer to the static method formatType specialized for the @tparam Type to formatFunction.
          */
         template<class Type>
-        explicit handle(Type type) : data(std::addressof(type)), formatFunction(this->formatType<Type>) { }
+        explicit handle(Type type) : data(std::addressof(type)), formatFunction(this->formatType < Type > ) { }
 
         /**
          * This can be called to format the stored data, to the output stored in the @param formatState.
          * This calls the underlying formatFunction with the provided states, and the erased data.
          */
-        void format(BasicParseState<characterType> &parseState, State &formatState) const {
+        void format(BasicParseState<characterType>& parseState, State& formatState) const {
             formatFunction(parseState, formatState, data);
         }
     };
@@ -177,7 +177,7 @@ namespace std {
     template<class Visitor, class State>
     auto visitFormatArgument(Visitor&& visitor, std::BasicFormatArgument<State> argument) {
         return std::visit(
-            [&visitor] (auto result) -> decltype(auto) {
+            [&visitor](auto result) -> decltype(auto) {
                 if (!result.isValid()) {
                     return visitor(std::MonoState());
                 }

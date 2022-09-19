@@ -44,15 +44,15 @@ namespace std {
 
         // Constructors
 
-        constexpr BaseStringView() noexcept : stringStart(nullptr), stringEnd(nullptr) { }
+        constexpr BaseStringView() noexcept: stringStart(nullptr), stringEnd(nullptr) { }
 
         constexpr BaseStringView(const CharacterType* string, sizeType count) :
             stringStart(string),
             stringEnd(string + count) { }
 
         constexpr BaseStringView(const CharacterType* string) :
-                stringStart(string),
-                stringEnd(string + Traits::length(string)) { }
+            stringStart(string),
+            stringEnd(string + Traits::length(string)) { }
 
         template<contiguousIterator Iterator, sizedSentinelFor<Iterator> End>
         constexpr BaseStringView(Iterator first, End last) : stringStart(first), stringEnd(last) { }
@@ -97,7 +97,7 @@ namespace std {
 
         // todo: Move to implementation? or wrap later on? make protected and expose in child?
         constexpr std::Result<constReference> at(sizeType index) const {
-            if(index >= 0 && index < size()) {
+            if (index >= 0 && index < size()) {
                 return std::Result<constReference>::success(this->operator[](index));
             }
             return std::Result<constReference>::failure();

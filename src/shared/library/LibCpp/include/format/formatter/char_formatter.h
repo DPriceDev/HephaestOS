@@ -29,7 +29,7 @@ namespace std {
     template<>
     struct Formatter<char> {
 
-        constexpr auto parse(auto &state) {
+        constexpr auto parse(auto& state) {
             auto iterator { state.begin() };
             const auto end { state.end() };
 
@@ -41,7 +41,7 @@ namespace std {
             return iterator;
         }
 
-        auto format(const char &character, auto &state) {
+        auto format(const char& character, auto& state) {
             auto output = state.out();
             *output++ = character;
             return output;
@@ -55,9 +55,9 @@ namespace std {
      * The behaviour is undefined if it is not null terminated.
      */
     template<>
-    struct Formatter<const char *> {
+    struct Formatter<const char*> {
 
-        constexpr auto parse(auto &state) {
+        constexpr auto parse(auto& state) {
             auto iterator { state.begin() };
             const auto end { state.end() };
 
@@ -69,9 +69,9 @@ namespace std {
             return iterator;
         }
 
-        auto format(const char* string, auto &state) {
+        auto format(const char* string, auto& state) {
             auto output = state.out();
-            while(*string != '\0') {
+            while (*string != '\0') {
                 *output++ = *string++;
             }
             return output;
@@ -86,7 +86,7 @@ namespace std {
     template<>
     struct Formatter<BaseStringView<char>> {
 
-        constexpr auto parse(auto &state) {
+        constexpr auto parse(auto& state) {
             auto iterator { state.begin() };
             const auto end { state.end() };
 
@@ -98,9 +98,9 @@ namespace std {
             return iterator;
         }
 
-        auto format(BaseStringView<char> view, auto &state) {
+        auto format(BaseStringView<char> view, auto& state) {
             auto output = state.out();
-            for (char character : view) {
+            for (char character: view) {
                 *output++ = character;
             }
             return output;

@@ -33,10 +33,10 @@ namespace std {
      * 2 to 36 to output in a different base.
      */
     constexpr char* toChars(
-            char* first,
-            char* last,
-            std::integral auto value,
-            int base = 10
+        char* first,
+        char* last,
+        std::integral auto value,
+        int base = 10
     ) {
         const char* characters = "0123456789abcdefghijklmnopqrstuvwxyz";
 
@@ -51,7 +51,7 @@ namespace std {
             remainder = value % base;
             value = value / base;
             *first++ = characters[remainder];
-        } while(value != 0 && first != last);
+        } while (value != 0 && first != last);
 
         std::reverse(initialFirst, first);
 
@@ -76,7 +76,7 @@ namespace std {
         auto decimalNumber = value - wholeNumber;
 
         auto remainder = decimalNumber;
-        while(remainder != 0.0) {
+        while (remainder != 0.0) {
             decimalNumber *= 10;
             remainder = decimalNumber - static_cast<unsigned long long>(decimalNumber);
         }
@@ -95,18 +95,20 @@ namespace std {
      */
     template<std::integral Type>
     constexpr std::Result<Type, Error> fromChars(
-            const char* first,
-            const char* last,
-            int base = 10
+        const char* first,
+        const char* last,
+        int base = 10
     ) {
         auto view = std::StringView(first, last - first);
 
         auto running = 0;
         auto power = 1;
-        std::forEach(view.rbegin(), view.rend(), [&] (auto & character) {
-            running += (Type(character) - 48) * power; // todo: Handle errors / overflow
-            power *= base; // todo: handle int is too big / overflow?
-        });
+        std::forEach(
+            view.rbegin(), view.rend(), [&](auto& character) {
+                running += (Type(character) - 48) * power; // todo: Handle errors / overflow
+                power *= base; // todo: handle int is too big / overflow?
+            }
+        );
 
         return std::Result<std::size_t, Error>::success(running);
     }

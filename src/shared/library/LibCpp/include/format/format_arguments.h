@@ -33,9 +33,9 @@ namespace std {
         std::Array<BasicFormatArgument<State>, sizeof...(Args)> args;
 
         // Constructor
-        explicit FormatArgumentStore (
+        explicit FormatArgumentStore(
             std::Array<BasicFormatArgument<State>,
-            sizeof...(Args)> arguments
+                sizeof...(Args)> arguments
         ) : args(arguments) { };
     };
 
@@ -59,7 +59,7 @@ namespace std {
         template<class... Args>
         BasicFormatArguments(const std::FormatArgumentStore<State, Args...>& store) noexcept
             : size(store.args.size()),
-            data(store.args.data()) { }
+              data(store.args.data()) { }
 
         // Accessors
         BasicFormatArgument<State> get(std::size_t index) const noexcept {
@@ -80,12 +80,12 @@ namespace std {
      * set of BasicFormatArgument's.
      */
     template<class State = std::FormatState, class... Args>
-    std::FormatArgumentStore<State, Args...> makeFormatArguments(Args&&... args) {
+    std::FormatArgumentStore<State, Args...> makeFormatArguments(Args&& ... args) {
 
         return std::FormatArgumentStore<State, Args...>(
-                std::Array<BasicFormatArgument<State>, sizeof...(Args)> {
-                        BasicFormatArgument<State>(args)...
-                }
+            std::Array<BasicFormatArgument<State>, sizeof...(Args)> {
+                BasicFormatArgument<State>(args)...
+            }
         );
     }
 }

@@ -79,7 +79,7 @@ namespace std {
          * todo: that take the data and index and calls the function pointer.
          */
         template<size_t>
-        auto destroyLinear(size_t, void *) -> void { /* No destructor */ }
+        auto destroyLinear(size_t, void*) -> void { /* No destructor */ }
 
         /**
          * Takes the @tparam Type, Types and checks whether the @tparam Index
@@ -87,9 +87,9 @@ namespace std {
          * destructor if it matches.
          */
         template<size_t Index, class Type, class... Types>
-        constexpr auto destroyLinear(size_t index, void *pointer) -> void {
+        constexpr auto destroyLinear(size_t index, void* pointer) -> void {
             if (index == Index) {
-                static_cast<Type *>(pointer)->~Type();
+                static_cast<Type*>(pointer)->~Type();
                 return;
             }
             destroyLinear<Index + 1, Types...>(index, pointer);
@@ -120,7 +120,7 @@ namespace std {
     template<typename FirstType, typename... Types>
     class Variant {
         enum : size_t {
-            size = std::max({sizeof(FirstType), sizeof(Types)...})
+            size = std::max({ sizeof(FirstType), sizeof(Types)... })
         };
 
         detail::VariantStorage<size> storage { };
@@ -142,8 +142,7 @@ namespace std {
 
         template<class Type>
         explicit constexpr Variant(Type initialValue) noexcept:
-            storage { .index = VariantIndex<0, Type, FirstType, Types...>().index }
-        {
+            storage { .index = VariantIndex<0, Type, FirstType, Types...>().index } {
             auto* pointer = static_cast<Type*>(data());
             std::construct_at(pointer, initialValue);
         }
@@ -159,12 +158,12 @@ namespace std {
          * @param args are passed to the types constructor as needed.
          * @return a reference to the newly held type.
          */
-        template <class Type, class... Args>
-        constexpr auto emplace(Args&&... args) -> Type& {
+        template<class Type, class... Args>
+        constexpr auto emplace(Args&& ... args) -> Type& {
             // Search the Type pack and call the Type destructor.
             detail::destroyLinear<0, FirstType, Types...>(index(), data());
 
-            auto *pointer = static_cast<Type *>(data());
+            auto* pointer = static_cast<Type*>(data());
             std::construct_at(pointer, args...);
 
             storage.index = VariantIndex<0, Type, FirstType, Types...>().index;

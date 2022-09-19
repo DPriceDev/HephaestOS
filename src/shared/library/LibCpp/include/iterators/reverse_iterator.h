@@ -40,7 +40,7 @@ namespace std {
         /**
          * Constructs a reverse iterator from a given @param iterator.
          */
-        constexpr explicit reverseIterator(Iterator iterator): iterator(iterator) { }
+        constexpr explicit reverseIterator(Iterator iterator) : iterator(iterator) { }
 
         constexpr reference operator*() const {
             auto temp = iterator;
@@ -62,8 +62,8 @@ namespace std {
         }
 
         constexpr friend bool operator!=(
-                reverseIterator<Iterator> first,
-                reverseIterator<Iterator> second
+            reverseIterator<Iterator> first,
+            reverseIterator<Iterator> second
         ) {
             return first.iterator != second.iterator;
         }

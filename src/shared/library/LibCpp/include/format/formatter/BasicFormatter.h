@@ -39,7 +39,7 @@ namespace std {
     && std::is_copy_assignable_v<Formatter>
     && std::is_destructible_v<Formatter>
     && std::is_swappable_v<Formatter>
-    && requires (Formatter formatter, std::ParseState state) {
+    && requires(Formatter formatter, std::ParseState state) {
         { formatter.parse(state) } -> std::same_as<ParseState::iterator>;
     };
     // todo: Need to constrain format

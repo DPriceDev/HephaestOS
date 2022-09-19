@@ -31,7 +31,7 @@ namespace std {
     template<>
     struct Formatter<bool> {
 
-        constexpr auto parse(auto &state) {
+        constexpr auto parse(auto& state) {
             auto iterator { state.begin() };
             const auto end { state.end() };
 
@@ -43,7 +43,7 @@ namespace std {
             return iterator;
         }
 
-        auto format(const bool &boolean, auto &state) {
+        auto format(const bool& boolean, auto& state) {
             auto output = state.out();
 
             if (boolean) {

@@ -29,14 +29,14 @@ namespace std {
      */
     template<class Type>
     concept dividable = std::integral<Type>
-            && requires(const Type a, const Type b) { a / b; };
+                        && requires(const Type a, const Type b) { a / b; };
 
     /**
      * Concept denotes that a @tparam Type can have its modulus taken.
      */
     template<class Type>
     concept modulusable = std::integral<Type>
-                        && requires(const Type a, const Type b) { a % b; };
+                          && requires(const Type a, const Type b) { a % b; };
 
     /**
      * Concept denotes that a @tparam Type can be formatted by the
@@ -89,7 +89,7 @@ namespace std {
     template<std::integral Type>
     struct Formatter<Type> {
 
-        constexpr auto parse(auto &state) {
+        constexpr auto parse(auto& state) {
             auto iterator { state.begin() };
             const auto end { state.end() };
 
@@ -101,7 +101,7 @@ namespace std {
             return iterator;
         }
 
-        auto format(auto &integer, auto &state) {
+        auto format(auto& integer, auto& state) {
             auto output = state.out();
             return detail::formatInteger(output, integer);
         }

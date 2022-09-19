@@ -32,7 +32,7 @@ namespace std {
     template<>
     struct Formatter<const void*> {
 
-        constexpr auto parse(auto &state) {
+        constexpr auto parse(auto& state) {
             auto iterator { state.begin() };
             const auto end { state.end() };
 
@@ -44,7 +44,7 @@ namespace std {
             return iterator;
         }
 
-        auto format(const void* pointer, auto &state) {
+        auto format(const void* pointer, auto& state) {
             auto output = state.out();
             *output++ = '0';
             *output++ = 'x';

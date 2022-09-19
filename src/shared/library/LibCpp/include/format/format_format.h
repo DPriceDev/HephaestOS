@@ -228,7 +228,7 @@ namespace std {
      * - Output iterator overflows the output memory.
      */
     template<std::outputIterator<const char&> OutputIterator>
-    std::Result<OutputIterator> dynamicFormatTo (
+    std::Result<OutputIterator> dynamicFormatTo(
         OutputIterator output,
         std::StringView format,
         std::FormatArguments args

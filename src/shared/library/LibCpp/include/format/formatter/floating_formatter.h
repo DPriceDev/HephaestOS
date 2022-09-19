@@ -36,7 +36,7 @@ namespace std {
     template<std::floating_point Type>
     struct Formatter<Type> {
 
-        constexpr auto parse(auto &state) {
+        constexpr auto parse(auto& state) {
             auto iterator { state.begin() };
             const auto end { state.end() };
 
@@ -48,7 +48,7 @@ namespace std {
             return iterator;
         }
 
-        auto format(std::floating_point auto &floating, auto &state) {
+        auto format(std::floating_point auto& floating, auto& state) {
             auto output = state.out();
             return std::toChars(output, output + DBL_MAX_10_EXP, floating);
         }

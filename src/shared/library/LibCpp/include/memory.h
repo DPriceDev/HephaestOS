@@ -23,13 +23,13 @@
 namespace std {
 
     template<class T>
-    constexpr T *toAddress(T *p) noexcept {
+    constexpr T* toAddress(T* p) noexcept {
         static_assert(!std::is_function_v<T>);
         return p;
     }
 
     template<class Type, class... Args>
-    constexpr Type* construct_at(Type* pointer, Args&&... args) {
+    constexpr Type* construct_at(Type* pointer, Args&& ... args) {
         *pointer = Type(std::forward<Args>(args)...);
         return pointer;
     }
