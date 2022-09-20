@@ -3,3 +3,4 @@ cmake-build-debug
 .gdbinit
 /.gdbinit
 /bochslog.txt
+serial.log

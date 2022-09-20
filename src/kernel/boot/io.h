@@ -22,17 +22,19 @@
 
 namespace kernel {
 
+    // todo: rename readFromPort
     inline uint8_t inputPortByte(uint32_t port) {
         uint8_t byte{ 0 };
         asm volatile ("inb %%dx,%%al":"=a" (byte):"d" (port));
         return byte;
     }
 
+    // todo: rename writeToPort
     inline void outputPortByte(uint32_t port, uint8_t value) {
         asm volatile ("outb %%al,%%dx": :"d" (port), "a" (value));
     }
 
-
+    // todo: rename waitForIO
     inline void ioWait() {
         asm volatile( "outb %%al, $0x80" : : "a"(0) );
     }

@@ -19,6 +19,7 @@
 #include "boot/idt/pic/programmable_interrupt_controller.h"
 
 #include <format.h>
+#include "boot/io.h"
 #include <stdio.h>
 
 namespace kernel::boot::idt {
@@ -27,9 +28,15 @@ namespace kernel::boot::idt {
      *
      */
     extern "C" void handleInterrupt(InterruptInfo interruptInfo) {
-        if(interruptInfo.interruptCode != 0) {
+        if (interruptInfo.interruptCode == 1) {
+            auto input = inputPortByte(0x60);
+
             std::print("Interrupt!\n");
             std::print("Interrupt code: {}\n", interruptInfo.interruptCode);
+        }
+
+        if (interruptInfo.interruptCode != 0 && interruptInfo.interruptCode != 1) {
+            std::print("Interrupt! {}\n", interruptInfo.interruptCode);
         }
 
         sendEoiFlag(interruptInfo.interruptCode);

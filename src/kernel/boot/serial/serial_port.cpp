@@ -18,42 +18,79 @@
 #include "serial_port.h"
 #include <type_traits>
 #include "boot/io.h"
+#include <bit>
 
 namespace kernel::boot {
 
-    bool SerialPortConnection::open() const {
-        outputPortByte(portAddress + 1, 0x00);    // Disable all interrupts
+    SerialPortConnection::SerialPortConnection(SerialPort port) : portAddress(
+        static_cast<std::underlying_type<SerialPort>::type>(port)
+    ) { }
+
+    void SerialPortConnection::setModemControl(ModemControl&& controlRegister) const {
+        auto registerByte = std::bit_cast<uint8_t>(controlRegister);
+        outputPortByte(portAddress + MODEM_CONTROL_OFFSET, registerByte);
+    }
+
+    void SerialPortConnection::setEnabledInterrupts(const EnabledInterrupts&& interruptRegister) const {
+        auto registerByte = std::bit_cast<uint8_t>(interruptRegister);
+        outputPortByte(portAddress + INTERRUPT_REGISTER_OFFSET, registerByte);
+    }
+
+    void SerialPortConnection::writeToDataRegister(char character) const {
+        outputPortByte(portAddress, character);
+    }
+
+    auto SerialPortConnection::readFromDataRegister() const -> uint8_t {
+        return inputPortByte(portAddress);
+    }
+
+    auto SerialPortConnection::getLineStatus() const -> LineStatus {
+        auto inputByte = inputPortByte(portAddress + LINE_STATUS_OFFSET);
+        return std::bit_cast<LineStatus>(inputByte);
+    }
+
+
+    bool SerialPortConnection::open() {
+        setEnabledInterrupts(EnabledInterrupts::None());
+
         outputPortByte(portAddress + 3, 0x80);    // Enable DLAB (set baud rate divisor)
-        outputPortByte(portAddress + 0, 0x03);    // Set divisor to 3 (lo byte) 38400 baud
-        outputPortByte(portAddress + 1, 0x00);    //                  (hi byte)
+
+        writeToDataRegister(0x3); // Set divisor to 3 (lo byte) 38400 baud
+        setEnabledInterrupts(EnabledInterrupts::None());
+
         outputPortByte(portAddress + 3, 0x03);    // 8 bits, no parity, one stop bit
         outputPortByte(portAddress + 2, 0xC7);    // Enable FIFO, clear them, with 14-byte threshold
-        outputPortByte(portAddress + 4, 0x0B);    // IRQs enabled, RTS/DSR set
-        outputPortByte(portAddress + 4, 0x1E);    // Set in loopback mode, test the serial chip
+
+        setModemControl({
+            .dataTerminalReady = true,
+            .requestToSend = true,
+            .interruptsEnabled = true,
+            .isLoopback = true
+        });
 
         // Test serial chip (send byte 0xAE and check if serial returns same byte)
-        outputPortByte(portAddress + 0, 0xAE);
+        writeToDataRegister(0xAE);
 
         // Check if serial is faulty (i.e: not same byte as sent)
-        if (inputPortByte(portAddress + 0) != 0xAE) {
+        if (readFromDataRegister() != 0xAE) {
             return false;
         }
 
         // If serial is not faulty set it in normal operation mode
         // (not-loopback with IRQs enabled and OUT#1 and OUT#2 bits enabled)
-        outputPortByte(portAddress + 4, 0x0F);
+        setModemControl({
+            .dataTerminalReady = true,
+            .requestToSend = true,
+            .outputOne = true,
+            .interruptsEnabled = true
+        });
+
         return true;
     }
 
-    int isNotTransmitting(unsigned int portAddress) {
-        return inputPortByte(portAddress + 5) & 0x20;
-    }
-
     void SerialPortConnection::write(char character) const {
-        while (isNotTransmitting(portAddress) == 0) { };
+        while (getLineStatus().transmitterBufferEmpty == false) { };
 
-        outputPortByte(portAddress, character);
+        writeToDataRegister(character);
     }
-
-    SerialPortConnection::SerialPortConnection(SerialPort port) : portAddress(static_cast<std::underlying_type<SerialPort>::type>(port)) { }
 }
