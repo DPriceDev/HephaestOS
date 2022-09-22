@@ -23,21 +23,30 @@
 
 namespace kernel::boot::idt {
 
+
+    void handleKeyboardPress(InterruptInfo interruptInfo) {
+        auto input = readFromPort(0x60);
+
+        std::print("Interrupt code: {}\n", interruptInfo.interruptCode);
+        std::print("Key Pressed: {}\n", input);
+    }
+
     /**
      *
      */
     extern "C" void handleInterrupt(InterruptInfo interruptInfo) {
-        if (interruptInfo.interruptCode == 1) {
-            auto input = readFromPort(0x60);
-
-            std::print("Interrupt!\n");
-            std::print("Interrupt code: {}\n", interruptInfo.interruptCode);
-        }
-
-        if (interruptInfo.interruptCode != 0 && interruptInfo.interruptCode != 1) {
-            std::print("Interrupt! {}\n", interruptInfo.interruptCode);
+        switch (interruptInfo.interruptCode) {
+            case 0:
+                break;
+            case 1:
+                handleKeyboardPress(interruptInfo);
+                break;
+            default:
+                std::print("Interrupt code: {}\n", interruptInfo.interruptCode);
+                break;
         }
 
         sendEoiFlag(interruptInfo.interruptCode);
     }
+
 }

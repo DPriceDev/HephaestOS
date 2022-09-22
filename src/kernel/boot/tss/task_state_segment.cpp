@@ -24,10 +24,19 @@ namespace kernel::boot::tss {
 
     //
     // todo: should be in boot class / struct?
-    TssEntry tssEntry;
+    TssEntry tssEntry {
+        .ss0  = 0x10,                   // Set the kernel stack segment.
+        .es =  0x13,                    //
+        .cs =  0x0b,
+        .ss =  0x13,
+        .ds =  0x13,
+        .fs =  0x13,
+        .gs =  0x13,
+        .ioMapBase = sizeof(tss::TssEntry)
+    };
 
     //
-    const uintptr_t tssEntryPtr = reinterpret_cast<uintptr_t>(&tssEntry);
+    static const uintptr_t tssEntryPtr = reinterpret_cast<uintptr_t>(&tssEntry);
 
     /**
      *
@@ -38,17 +47,7 @@ namespace kernel::boot::tss {
         memset(&tssEntry, 0, sizeof(tssEntry));
 
         //
-        tssEntry = {
-                .esp0 = stackPointer,           // Set the kernel stack pointer.
-                .ss0  = 0x10,                   // Set the kernel stack segment.
-                .es =  0x13,                    //
-                .cs =  0x0b,
-                .ss =  0x13,
-                .ds =  0x13,
-                .fs =  0x13,
-                .gs =  0x13,
-                .ioMapBase = sizeof(tss::TssEntry)
-        };
+        tssEntry.esp0 = stackPointer;
 
         //
         loadTaskRegister(gdt::Segment::Tss, gdt::Privilege::Kernel);

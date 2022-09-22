@@ -158,7 +158,10 @@ namespace std {
          * Passes a pointer to the static method formatType specialized for the @tparam Type to formatFunction.
          */
         template<class Type>
-        explicit handle(Type type) : data(std::addressof(type)), formatFunction(this->formatType < Type > ) { }
+        explicit handle(Type type) : formatFunction(this->formatType<Type>) {
+            auto temp = std::addressof(type);
+            data = temp;
+        }
 
         /**
          * This can be called to format the stored data, to the output stored in the @param formatState.

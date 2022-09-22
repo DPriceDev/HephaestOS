@@ -37,7 +37,7 @@ namespace kernel::boot::idt {
     };
 
     //
-    constexpr uint32_t tableLength = 256;
+    constexpr uint32_t IDT_TABLE_LENGTH = 256;
 
     /**
      *
