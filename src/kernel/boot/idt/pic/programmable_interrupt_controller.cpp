@@ -17,7 +17,7 @@
 
 #include "boot/idt/pic/programmable_interrupt_controller.h"
 
-#include "boot/io.h"
+#include "boot/io/io.h"
 
 namespace kernel::boot::idt {
 
@@ -27,35 +27,35 @@ namespace kernel::boot::idt {
             uint8_t slaveOffset
     ) {
         // initialize pic todo: Comment second command
-        outputPortByte(masterPicAddress, initializeCommand | ICW1_ICW4);
-        ioWait();
-        outputPortByte(slavePicAddress, initializeCommand | ICW1_ICW4);
-        ioWait();
+        writeToPort(masterPicAddress, initializeCommand | ICW1_ICW4);
+        waitForIO();
+        writeToPort(slavePicAddress, initializeCommand | ICW1_ICW4);
+        waitForIO();
 
         // Set the interrupt offset
-        outputPortByte(masterPicDataAddress, masterOffset);
-        ioWait();
-        outputPortByte(slavePicDataAddress, slaveOffset);
-        ioWait();
+        writeToPort(masterPicDataAddress, masterOffset);
+        waitForIO();
+        writeToPort(slavePicDataAddress, slaveOffset);
+        waitForIO();
 
         // Setup master pic to recognise the slave pic is on IRQ2
-        outputPortByte(masterPicDataAddress, 4);
-        ioWait();
+        writeToPort(masterPicDataAddress, 4);
+        waitForIO();
         // todo: what is a cascade identity?
-        outputPortByte(slavePicDataAddress, 2);
-        ioWait();
+        writeToPort(slavePicDataAddress, 2);
+        waitForIO();
 
         //
-        outputPortByte(masterPicDataAddress, ICW4_8086);
-        ioWait();
-        outputPortByte(slavePicDataAddress, ICW4_8086);
-        ioWait();
+        writeToPort(masterPicDataAddress, ICW4_8086);
+        waitForIO();
+        writeToPort(slavePicDataAddress, ICW4_8086);
+        waitForIO();
 
         //
-        outputPortByte(masterPicDataAddress, 0);
-        ioWait();
-        outputPortByte(slavePicDataAddress, 0);
-        ioWait();
+        writeToPort(masterPicDataAddress, 0);
+        waitForIO();
+        writeToPort(slavePicDataAddress, 0);
+        waitForIO();
     }
 
     /**
@@ -64,10 +64,10 @@ namespace kernel::boot::idt {
      */
     void sendEoiFlag(uint32_t interruptCode) {
         if(interruptCode >= 8) {
-            outputPortByte(slavePicAddress, picEoiFlag);
+            writeToPort(slavePicAddress, picEoiFlag);
         }
 
-        outputPortByte(masterPicAddress, picEoiFlag);
+        writeToPort(masterPicAddress, picEoiFlag);
     }
 }
 

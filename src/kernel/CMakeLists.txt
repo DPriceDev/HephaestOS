@@ -42,6 +42,7 @@ add_executable(
         boot/paging/paging.asm
         boot/paging/paging.cpp
         boot/serial/serial_port.cpp
+        boot/io/io.asm
 )
 
 target_link_libraries(kernel.elf PRIVATE project_options) # project_warnings)

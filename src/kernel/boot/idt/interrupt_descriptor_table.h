@@ -24,7 +24,6 @@
 #include "terminal/Terminal.h"
 
 #include "interrupt_descriptor.h"
-#include "boot/io.h"
 
 
 namespace kernel::boot::idt {

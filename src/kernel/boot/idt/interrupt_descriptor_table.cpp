@@ -15,8 +15,6 @@
  * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <stdoffset.h>
-
 #include "interrupt_descriptor_table.h"
 #include "array.h"
 

@@ -21,8 +21,11 @@
 #include <cstdint>
 
 namespace kernel::boot {
+    constexpr uint32_t DATA_REGISTER_OFFSET = 0;
+    constexpr uint32_t DLAB_HIGH_BYTE_OFFSET = 1;
+    constexpr uint32_t DLAB_LOW_BYTE_OFFSET = 0;
     constexpr uint32_t INTERRUPT_REGISTER_OFFSET = 1;
-    constexpr uint32_t INTERRUPT_IDENTIFICATION_FIFO_OFFSET = 2;
+    constexpr uint32_t FIFO_CONTROL_OFFSET = 2;
     constexpr uint32_t LINE_CONTROL_OFFSET = 3;
     constexpr uint32_t MODEM_CONTROL_OFFSET = 4;
     constexpr uint32_t LINE_STATUS_OFFSET = 5;
@@ -37,6 +40,11 @@ namespace kernel::boot {
         COM6 = 0x4F8,
         COM7 = 0x5E8,
         COM8 = 0x4E8
+    };
+
+    struct DivisorLatchSettings {
+        uint8_t low;
+        uint8_t high;
     };
 
     struct [[gnu::packed]] ModemControl {
@@ -68,7 +76,53 @@ namespace kernel::boot {
         bool breakIndicator : 1;
         bool transmitterBufferEmpty : 1;
         bool transmitterEmpty : 1;
-        bool ImpendingError : 1;
+        bool impendingError : 1;
+    };
+
+    enum class StopBit {
+        ONE = 0,
+        TWO = 1
+    };
+
+    enum class DataLength {
+        FIVE_BITS = 0,
+        SIX_BITS = 1,
+        SEVEN_BITS = 2,
+        EIGHT_BITS = 3
+    };
+
+    enum Parity {
+        NONE = 0,
+        ODD = 1,
+        EVEN = 2,
+        MARK = 3,
+        SPACE = 4
+    };
+
+    struct [[gnu::packed]] LineControl {
+        DataLength dataLength: 2;
+        StopBit stopBit : 1;
+        Parity parity : 3;
+        bool isBreakEnable: 1;
+        // DLAB
+        bool divisorLatchAccess : 1;
+    };
+
+    enum class FIFOInterruptThreshold {
+        BYTE_1,
+        BYTE_4,
+        BYTE_8,
+        BYTE_14
+    };
+
+    struct [[gnu::packed]] FIFOControl {
+        bool isEnabled: 1;
+        bool clearReceive: 1;
+        bool clearTransmit: 1;
+        bool isDMAMode: 1;
+        bool /* unused */ : 1;
+        bool is64Bit : 1;
+        FIFOInterruptThreshold interruptThreshold: 2;
     };
 
     class SerialPortConnection {
@@ -78,11 +132,19 @@ namespace kernel::boot {
 
         void setEnabledInterrupts(const EnabledInterrupts&& interruptRegister) const;
 
-        void writeToDataRegister(char character) const;
+        void setLineControl(const LineControl&& lineControl) const;
 
-        uint8_t readFromDataRegister() const;
+        void setFIFOControl(const FIFOControl&& fifoControl) const;
+
+        void writeToDataRegister(uint8_t character) const;
+
+        [[nodiscard]] uint8_t readFromDataRegister() const;
+
+        void setBaudRate(uint32_t baudRate) const;
 
     public:
+        constexpr static uint32_t DEFAULT_BAUD_RATE = 38400;
+
         explicit SerialPortConnection(SerialPort port);
 
         ~SerialPortConnection() = default;
@@ -97,7 +159,7 @@ namespace kernel::boot {
 
         SerialPortConnection& operator=(SerialPortConnection&&) noexcept = default;
 
-        [[nodiscard]] bool open();
+        [[nodiscard]] bool open(int32_t baudRate = DEFAULT_BAUD_RATE);
 
         void write(char character) const;
 
