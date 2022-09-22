@@ -20,7 +20,6 @@
 
 #include <format.h>
 #include "boot/io/io.h"
-#include <stdio.h>
 
 namespace kernel::boot::idt {
 

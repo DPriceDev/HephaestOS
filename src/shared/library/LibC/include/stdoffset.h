@@ -25,7 +25,7 @@ namespace kernel {
 
     // todo: move to common file
     // Set of bit-masks that can be used to mask parts of an Integer.
-    constexpr uint16_t Mask20Bit = 0xFFFFF;
+    constexpr uint32_t Mask20Bit = 0xFFFFF;
     constexpr uint16_t Mask16Bit = 0xFFFF;
     constexpr uint8_t Mask8Bit = 0xFF;
     constexpr uint8_t Mask4Bit = 0xF;

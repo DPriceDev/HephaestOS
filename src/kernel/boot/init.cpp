@@ -31,18 +31,19 @@ namespace kernel::boot {
 
     constexpr uint8_t interruptRequestOffset = 32;
 
+    static const SerialPortConnection connection { SerialPort::COM1 };
+
     extern "C" void init(MultiBootInfo* info, uint32_t /* magic */, uint32_t stackPointer) {
-        SerialPortConnection connection { SerialPort::COM1 };
 
         if (connection.open()) {
             std::KernelFormatOutput::getInstance().setStandardOutputIterator(
                 std::StandardOutputIterator {
                     &connection,
-                    [] (void* pointer) { },
-                    [] (void* pointer, char character) {
-                        static_cast<SerialPortConnection*>(pointer)->write(character);
+                    [] (const void* pointer) { },
+                    [] (const void* pointer, char character) {
+                        static_cast<const SerialPortConnection*>(pointer)->write(character);
                     },
-                    [] (void* pointer) { },
+                    [] (const void* pointer) { },
                 }
             );
         }

@@ -79,7 +79,7 @@ namespace kernel::boot {
      * @return
      */
     auto SerialPortConnection::readFromDataRegister() const -> uint8_t {
-        return readFromPort(portAddress);
+        return readFromPort(portAddress + DATA_REGISTER_OFFSET);
     }
 
     /**
@@ -113,7 +113,7 @@ namespace kernel::boot {
      * @param baudRate
      * @return
      */
-    bool SerialPortConnection::open(int32_t baudRate) {
+    bool SerialPortConnection::open(int32_t baudRate) const {
         setEnabledInterrupts(EnabledInterrupts::None());
 
         setBaudRate(baudRate);

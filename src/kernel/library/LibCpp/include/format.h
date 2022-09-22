@@ -24,10 +24,10 @@
 namespace std {
 
     class StandardOutputIterator {
-        void* data { nullptr };
-        void (*onDereference) (void*) { nullptr };
-        void (*onIncrement) (void*) { nullptr };
-        void (*onAssignCharacter) (void*, char) { nullptr };
+        const void* data { nullptr };
+        void (*onDereference) (const void*) { nullptr };
+        void (*onIncrement) (const void*) { nullptr };
+        void (*onAssignCharacter) (const void*, char) { nullptr };
 
     public:
         using pointer = void;
@@ -38,10 +38,10 @@ namespace std {
         StandardOutputIterator() = default;
 
         StandardOutputIterator(
-            void* data,
-            void (*onDereference) (void*),
-            void (*onAssignCharacter) (void*, char),
-            void (*onIncrement) (void*)
+            const void* data,
+            void (*onDereference) (const void*),
+            void (*onAssignCharacter) (const void*, char),
+            void (*onIncrement) (const void*)
         ) : data(data),
         onDereference(onDereference),
         onIncrement(onIncrement),

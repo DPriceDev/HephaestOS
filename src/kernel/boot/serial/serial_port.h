@@ -159,7 +159,7 @@ namespace kernel::boot {
 
         SerialPortConnection& operator=(SerialPortConnection&&) noexcept = default;
 
-        [[nodiscard]] bool open(int32_t baudRate = DEFAULT_BAUD_RATE);
+        [[nodiscard]] bool open(int32_t baudRate = DEFAULT_BAUD_RATE) const;
 
         void write(char character) const;
 
