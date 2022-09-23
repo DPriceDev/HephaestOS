@@ -18,20 +18,20 @@
 #include <span.h>
 #include "elf_loader.h"
 #include "elf_header.h"
-#include "algorithms.h"
+#include "algorithm.h"
 
 namespace kernel::boot::elf {
 
     void loadModules(ModuleEntry* moduleEntry, std::size_t count) {
         auto moduleEntries = std::Span(moduleEntry, count);
 
-        std::forEach(moduleEntries.begin(), moduleEntries.end(), [] (const ModuleEntry & entry) {
+        for (const ModuleEntry & entry : moduleEntries) {
             auto* elfHeader = reinterpret_cast<ElfHeader*>(entry.moduleStart);
 
             auto* programHeaderTable = reinterpret_cast<ProgramHeader*>(entry.moduleStart + elfHeader->programHeader);
 
             auto test = 2;
-        });
+        };
     }
 
 

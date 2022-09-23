@@ -16,58 +16,69 @@
  */
 
 #include <cstdint>
+#include <format.h>
 
 #include "gdt/global_descriptor_table.h"
 #include "idt/interrupt_descriptor_table.h"
 #include "boot/paging/paging.h"
 #include "boot/grub/multiboot_info.h"
-#include "drivers/video_buffer_display.h"
-#include "terminal/Terminal.h"
 #include "boot/idt/pic/programmable_interrupt_controller.h"
 #include "boot/tss/task_state_segment.h"
 #include "boot/grub/memory_map.h"
 #include "boot/elf/elf_loader.h"
+#include "boot/serial/serial_port.h"
 
 namespace kernel::boot {
 
-    static const VideoBufferDisplay display { };
-
     constexpr uint8_t interruptRequestOffset = 32;
 
-    extern "C" void init(MultiBootInfo * info, uint32_t /* magic */, uint32_t stackPointer) {
+    static const SerialPortConnection connection { SerialPort::COM1 };
+
+    extern "C" void init(MultiBootInfo* info, uint32_t /* magic */, uint32_t stackPointer) {
+
+        if (connection.open()) {
+            std::KernelFormatOutput::getInstance().setStandardOutputIterator(
+                std::StandardOutputIterator {
+                    &connection,
+                    [] (const void* pointer) { },
+                    [] (const void* pointer, char character) {
+                        static_cast<const SerialPortConnection*>(pointer)->write(character);
+                    },
+                    [] (const void* pointer) { },
+                }
+            );
+        }
+
+        std::print("System init\n");
+
+        // todo: move kernel to higher half?
+        paging::setupPaging();
+        std::print("Paging has been turned on\n");
 
         // Construct memory map from grub multiboot information passed from grub
         grub::constructMemoryMap(info);
 
-        elf::loadModules(info->modulePtr, info->moduleCount);
-
-        // todo: replace with log stream? pass to root process?
-        auto terminal = Terminal{display};
-
-        terminal.clear();
-        terminal.println("System init");
-
         auto tssDescriptor = tss::getTaskStateSegmentDescriptor();
         gdt::initializeGlobalDescriptorTable(tssDescriptor);
-        terminal.println("Global Descriptor table initialized");
+        std::print("Global Descriptor table initialized\n");
 
         //
         tss::initializeTaskStateSegment(stackPointer);
-        terminal.println("Task State Segment initialized");
+        std::print("Task State Segment initialized\n");
 
         //
         idt::initializeInterruptDescriptorTable();
-        terminal.println("Interrupt Descriptor table initialized");
+        std::print("Interrupt Descriptor table initialized\n");
 
         // todo: may need to be moved to init protected method?
         //
         idt::remapProgrammableInterruptController(
-                interruptRequestOffset,
-                interruptRequestOffset + 8
+            interruptRequestOffset,
+            interruptRequestOffset + 8
         );
-
-        // todo: move kernel to higher half?
-        // todo: verify paging is on
-        paging::setupPaging();
+        std::print("Interrupts remapped\n");
+        
+        // Load Kernel Module
+        elf::loadModules(info->modulePtr, info->moduleCount);
     }
 }

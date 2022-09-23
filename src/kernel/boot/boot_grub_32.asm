@@ -21,7 +21,7 @@ bits            32
 global loader:function (end - loader)
 global stack_ptr
 
-extern kernelMain, init
+extern kernelMain, init, callConstructors
 extern gdtAddress, idtAddress
 
 stackSize:      equ             32798                           ; setup the stack size to be 16KB
@@ -59,6 +59,7 @@ loader:
 
 ;               initialize idt and gdt (when entering straight in from grub)
                 push            stack_start
+                call            callConstructors
                 push            eax                             ; push the magic number to the stack (2nd arg)
                 push            ebx                             ; push the multiboot info pointer to the stack (1st arg)
                 call            init

@@ -18,7 +18,7 @@
 #include <cstdint>
 
 #include "video_buffer_display.h"
-#include "boot/io.h"
+#include "boot/io/io.h"
 
 constexpr uint16_t eightBitOffset = 8;
 
@@ -76,30 +76,30 @@ kernel::VideoBufferDisplay::clearDisplayBuffer(Display::Colour textColour, Displ
 void kernel::VideoBufferDisplay::setCursorPosition(uint32_t x, uint32_t y) const {
     uint32_t cursorPosition = (y * width) + x;
 
-    outputPortByte(address::videoCursorLowAddress, 0x0F);
-    outputPortByte(address::videoCursorHighAddress, static_cast<unsigned char>(cursorPosition));
-    outputPortByte(address::videoCursorLowAddress, 0x0E);
-    outputPortByte(address::videoCursorHighAddress, static_cast<unsigned char>(cursorPosition >> eightBitOffset));
+    writeToPort(address::videoCursorLowAddress, 0x0F);
+    writeToPort(address::videoCursorHighAddress, static_cast<unsigned char>(cursorPosition));
+    writeToPort(address::videoCursorLowAddress, 0x0E);
+    writeToPort(address::videoCursorHighAddress, static_cast<unsigned char>(cursorPosition >> eightBitOffset));
 }
 
 void kernel::VideoBufferDisplay::showCursor() const {
-    outputPortByte(address::videoCursorLowAddress, 0x0A);
-    outputPortByte(address::videoCursorHighAddress, (inputPortByte(address::videoCursorHighAddress) & 0xC0) | cursorStart);
-    outputPortByte(address::videoCursorLowAddress, 0x0B);
-    outputPortByte(address::videoCursorHighAddress, (inputPortByte(address::videoCursorHighAddress) & 0xE0) | cursorEnd);
+    writeToPort(address::videoCursorLowAddress, 0x0A);
+    writeToPort(address::videoCursorHighAddress, (readFromPort(address::videoCursorHighAddress) & 0xC0) | cursorStart);
+    writeToPort(address::videoCursorLowAddress, 0x0B);
+    writeToPort(address::videoCursorHighAddress, (readFromPort(address::videoCursorHighAddress) & 0xE0) | cursorEnd);
 }
 
 void kernel::VideoBufferDisplay::hideCursor() const {
-    outputPortByte(address::videoCursorLowAddress, 0x0A);
-    outputPortByte(address::videoCursorHighAddress, 0x20);
+    writeToPort(address::videoCursorLowAddress, 0x0A);
+    writeToPort(address::videoCursorHighAddress, 0x20);
 }
 
 kernel::Display::Cursor kernel::VideoBufferDisplay::getCursorPosition() const {
-    outputPortByte(address::videoCursorLowAddress, 0x0F);
-    uint16_t position = inputPortByte(address::videoCursorHighAddress);
+    writeToPort(address::videoCursorLowAddress, 0x0F);
+    uint16_t position = readFromPort(address::videoCursorHighAddress);
 
-    outputPortByte(address::videoCursorLowAddress, 0x0E);
-    position += static_cast<uint16_t>(inputPortByte(address::videoCursorHighAddress) << eightBitOffset);
+    writeToPort(address::videoCursorLowAddress, 0x0E);
+    position += static_cast<uint16_t>(readFromPort(address::videoCursorHighAddress) << eightBitOffset);
 
     return Display::Cursor{
             position % width,

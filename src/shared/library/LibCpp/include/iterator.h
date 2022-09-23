@@ -15,10 +15,6 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-//
-// Created by david on 18/01/2022.
-//
-
 #ifndef HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_ITERATORS_H
 #define HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_ITERATORS_H
 

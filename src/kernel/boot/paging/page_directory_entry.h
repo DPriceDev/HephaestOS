@@ -15,12 +15,8 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-//
-// Created by david on 06/04/2022.
-//
-
-#ifndef HEPHAISTOS_PAGE_DIRECTORY_ENTRY_H
-#define HEPHAISTOS_PAGE_DIRECTORY_ENTRY_H
+#ifndef HEPHAIST_OS_KERNEL_BOOT_PAGING_PAGE_DIRECTORY_ENTRY_H
+#define HEPHAIST_OS_KERNEL_BOOT_PAGING_PAGE_DIRECTORY_ENTRY_H
 
 #include <cstdint>
 
@@ -28,6 +24,7 @@
 
 namespace kernel::boot::paging {
 
+    // Defines the access flags of a given Page Directory Entry.
     struct [[gnu::packed]] PageDirectoryAccess {
         bool isPresent : 1;
         bool canWrite : 1;
@@ -39,13 +36,15 @@ namespace kernel::boot::paging {
         bool isMibSize : 1;
     };
 
+    // Defines a Page Directory Entry with a set of access flags and the top 20 bits of
+    // The address this entry points to.
     struct [[gnu::packed]] PageDirectoryEntry {
         PageDirectoryAccess access;
         bool global : 1;
-        uint8_t available : 3;
+        uint8_t unused : 3;
         uint32_t address : 20;
     };
 
 }
 
-#endif //HEPHAISTOS_PAGE_DIRECTORY_ENTRY_H
+#endif // HEPHAIST_OS_KERNEL_BOOT_PAGING_PAGE_DIRECTORY_ENTRY_H

@@ -24,7 +24,6 @@
 #include "terminal/Terminal.h"
 
 #include "interrupt_descriptor.h"
-#include "boot/io.h"
 
 
 namespace kernel::boot::idt {
@@ -38,7 +37,7 @@ namespace kernel::boot::idt {
     };
 
     //
-    constexpr uint32_t tableLength = 256;
+    constexpr uint32_t IDT_TABLE_LENGTH = 256;
 
     /**
      *

@@ -16,6 +16,10 @@ SECTIONS
     }
 
     .data BLOCK(4k): ALIGN (4k)  {
+        startCtors = .;
+        *(SORT(.ctors*))
+        endCtors = .;
+
         *(.data)
     }
 
