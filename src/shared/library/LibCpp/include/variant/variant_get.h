@@ -55,7 +55,7 @@ namespace std {
 
     /**
      * Returns the value stored in the @param variant at the given @tparam TypeIndex.
-     * If the active index in the variant is not the same as the @tparam TypeIndex, then
+     * If the active index in the variant.h is not the same as the @tparam TypeIndex, then
      * a failure result is returned.
      */
     template<size_t TypeIndex, class... Types, class ResultType>
@@ -72,7 +72,7 @@ namespace std {
 
     /**
      * Returns the value stored in the @param variant if it is of the type @tparam Type.
-     * If the active value in the variant is not of the type @tparam Type then a failure
+     * If the active value in the variant.h is not of the type @tparam Type then a failure
      * result is returned.
      */
     template<class Type, class... Types>

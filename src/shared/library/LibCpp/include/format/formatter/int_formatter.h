@@ -64,7 +64,7 @@ namespace std {
         auto formatInteger(OutputIterator iterator, Type value, Type base = 10) -> OutputIterator {
             auto reduction = value / base;
 
-            OutputIterator outputIterator;
+            OutputIterator outputIterator = iterator;
             if (reduction == 0) {
                 outputIterator = iterator;
             } else {
@@ -74,9 +74,14 @@ namespace std {
             auto digit = value % base;
 
             // use to chars to convert to string
-            std::toChars(outputIterator, outputIterator + DIGIT_OUTPUT_SIZE, digit);
+            auto buffer = std::Array<char, DIGIT_OUTPUT_SIZE> { };
+            auto result = std::toChars(buffer.begin(), buffer.end(), digit);
 
-            return ++outputIterator;
+            std::forEach(buffer.begin(), result, [&outputIterator] (char character) {
+                *outputIterator++ = character;
+            });
+
+            return outputIterator;
         }
     }
 

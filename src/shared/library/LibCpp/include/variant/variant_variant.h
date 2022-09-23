@@ -26,7 +26,7 @@
 namespace std {
 
     /**
-     * MonoState can be a default state for a variant. This can be used to denote
+     * MonoState can be a default state for a variant.h. This can be used to denote
      * an empty value if required.
      */
     struct MonoState { };
@@ -83,7 +83,7 @@ namespace std {
 
         /**
          * Takes the @tparam Type, Types and checks whether the @tparam Index
-         * matches the current variant @param index and calls its
+         * matches the current variant.h @param index and calls its
          * destructor if it matches.
          */
         template<size_t Index, class Type, class... Types>
@@ -96,7 +96,7 @@ namespace std {
         }
 
         /**
-         * Storage for a variant of any number of types. This stores an un-typed
+         * Storage for a variant.h of any number of types. This stores an un-typed
          * array of bytes/chars where the @tparam Size is the size in bytes of
          * the largest Type in the Variant Type pack.
          * This also stores the @param index of the currently active type

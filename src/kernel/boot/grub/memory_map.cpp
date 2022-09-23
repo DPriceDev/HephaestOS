@@ -17,38 +17,42 @@
 
 #include "memory_map.h"
 #include <span.h>
-#include <algorithm.h>
+#include <format.h>
 
 namespace kernel::boot::grub {
 
     auto constructMemoryMap(const MultiBootInfo * multiBootInfo) -> void {
 
-        if(multiBootInfo->flags.isMemoryAvailable) {
+        if (multiBootInfo->flags.isMemoryAvailable) {
             auto size = multiBootInfo->memoryMapLength;
             auto memSize = sizeof(MemoryMapEntry);
-            auto div = size / memSize;
+            auto entryCount = size / memSize;
 
-            auto memoryMap = std::Span(multiBootInfo->memoryMapPtr, div);
+            auto memoryMap = std::Span(multiBootInfo->memoryMapPtr, entryCount);
 
-            auto* start = memoryMap.begin();
-            auto* end = memoryMap.end();
+            std::print("\nMemory Map!\n");
 
-            // todo: implement an array? or a vector to capture these values?
+            std::print(
+                "\nlower size: {}KB upper size: {}KB\n\n",
+                multiBootInfo->lowerMemorySize,
+                multiBootInfo->upperMemorySize
+            );
 
-            std::forEach(start, end, [] (const auto & memoryMapEntry) -> void {
-                auto test = memoryMapEntry.type;
-                auto useTest = test;
-            });
+            for (const MemoryMapEntry & memoryMapEntry : memoryMap) {
+                std::print("**Memory Map Entry**\n");
+                std::print("Type: {}\n", memoryMapEntry.type);
+                std::print("Size: {}\n", memoryMapEntry.size);
+                long long address = memoryMapEntry.addr_low + memoryMapEntry.addr_high;
+                std::print("Start Address: {}\n", address);
+                long long length = memoryMapEntry.len_low + memoryMapEntry.len_high;
+                std::print("Length: {}\n\n", length);
+            }
 
-//            auto memoryMap = lib::Span(multiBootInfo->memoryMapPtr, multiBootInfo->memoryMapLength);
-//
-//            auto bas = memoryMap.begin();
-//            //auto* b = *bas;
-//
-//            lib::forEach(memoryMap.begin(), memoryMap.end(), [] (const auto & memoryMapEntry) -> void {
-//                auto test = memoryMapEntry.type;
-//            });
+            std::print("\n");
+
+            // organize memory locations into groups
+
+            // build memory map and return?
         }
     }
-
 }

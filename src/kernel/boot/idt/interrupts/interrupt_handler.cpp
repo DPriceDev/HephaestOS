@@ -18,28 +18,35 @@
 #include "interrupt_handler.h"
 #include "boot/idt/pic/programmable_interrupt_controller.h"
 
-#include "drivers/video_buffer_display.h"
-#include "terminal/Terminal.h"
-#include <stdio.h>
+#include <format.h>
+#include "boot/io/io.h"
 
 namespace kernel::boot::idt {
+
+
+    void handleKeyboardPress(InterruptInfo interruptInfo) {
+        auto input = readFromPort(0x60);
+
+        std::print("Interrupt code: {}\n", interruptInfo.interruptCode);
+        std::print("Key Pressed: {}\n", input);
+    }
 
     /**
      *
      */
     extern "C" void handleInterrupt(InterruptInfo interruptInfo) {
-        VideoBufferDisplay display{};
-        auto terminal = Terminal{display};
-
-        if(interruptInfo.interruptCode != 0) {
-            terminal.clear(Display::green); // todo: not working?
-            terminal.println("Interrupt!");
-            char text[24];
-            sprintf(text, "Interrupt code: %u", interruptInfo.interruptCode);
-            terminal.println(text);
-
+        switch (interruptInfo.interruptCode) {
+            case 0:
+                break;
+            case 1:
+                handleKeyboardPress(interruptInfo);
+                break;
+            default:
+                std::print("Interrupt code: {}\n", interruptInfo.interruptCode);
+                break;
         }
 
         sendEoiFlag(interruptInfo.interruptCode);
     }
+
 }

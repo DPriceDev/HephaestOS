@@ -51,19 +51,19 @@ namespace kernel::boot::paging {
 
     // Initialize all page table entries to empty entries.
     void zeroPageDirectory() {
-        std::forEach(pageDirectory.begin(), pageDirectory.end(), [] (auto & element) {
+        for (auto & element : pageDirectory) {
             element = PageDirectoryEntry {
                 .access = PageDirectoryAccess {
                     .canWrite = true
                 },
             };
-        });
+        };
     }
 
     // Setup each entry of the first page table to map identically to the physical address.
     void identityMapFirstTable() {
         uint32_t address = 0;
-        std::forEach(firstPageTable.begin(), firstPageTable.end(), [&address] (auto & entry) {
+        for (auto & entry : firstPageTable) {
             entry = PageTableEntry {
                 .access = PageTableAccess {
                     .isPresent = true
@@ -71,7 +71,7 @@ namespace kernel::boot::paging {
                 .address = (address >> Offset12Bit) & Mask20Bit
             };
             address += PAGE_SIZE;
-        });
+        };
     }
 
     // Assign the first page table to the first entry in the page directory.

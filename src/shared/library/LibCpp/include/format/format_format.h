@@ -67,11 +67,11 @@ namespace std {
          * The parse and format states are advanced in this method to the end of their parsed or
          * formatted ranges.
          */
-        template<std::outputIterator<const char&> OutputIterator>
+        template<std::outputIterator<const char&> OutputIterator, class CharacterType>
         std::Result<OutputIterator> formatArgument(
-            ParseState& parseState, // todo: Switch to template param
-            FormatState& formatState, // todo: Switch to template param
-            const BasicFormatArgument<FormatState>&& argument,
+            BasicParseState<CharacterType>& parseState, // todo: Switch to template param
+            BasicFormatState<CharacterType, OutputIterator>& formatState, // todo: Switch to template param
+            const BasicFormatArgument<BasicFormatState<CharacterType, OutputIterator>>&& argument,
             const bool shouldParse
         ) {
             return visitFormatArgument(
@@ -79,7 +79,7 @@ namespace std {
                     if constexpr (std::same_as<decltype(arg), MonoState>) {
                         // Fail if argument is not present.
                         return std::Result<OutputIterator>::failure();
-                    } else if constexpr (std::same_as<decltype(arg), BasicFormatArgument<FormatState>::handle>) {
+                    } else if constexpr (std::same_as<decltype(arg), typename BasicFormatArgument<BasicFormatState<CharacterType, OutputIterator>>::handle>) {
                         // Call formatter from the handle for custom types
                         arg.format(parseState, formatState);
                         return Result<OutputIterator>::success(
@@ -109,7 +109,8 @@ namespace std {
          * format field '}', or one after the parse identifier ':' which should be the first parse
          * argument. If neither of these identifiers is present, then the result is failure.
          */
-        std::Result<bool> shouldParse(ParseState& parseState, const char* nextCharacter) {
+        template<class CharacterType>
+        std::Result<bool> shouldParse(BasicParseState<CharacterType>& parseState, const char* nextCharacter) {
             switch (*nextCharacter) {
                 case '}':
                     parseState.advanceTo(nextCharacter);
@@ -139,9 +140,9 @@ namespace std {
          * or closing format field identifier '}'. If neither are found, then a failure
          * result is returned.
          */
-        template<std::outputIterator<const char&> OutputIterator>
+        template<std::outputIterator<const char&> OutputIterator, class CharacterType>
         std::Result<ArgumentIndex> getArgumentIndex(
-            ParseState& parseState, // todo: Switch to template param
+            BasicParseState<CharacterType>& parseState,
             const char* iterator, // todo: Extract to character type template param
             const char* end // todo: Extract to character type template param
         ) {
@@ -184,12 +185,12 @@ namespace std {
          * format the argument to the output.
          * @return
          */
-        template<std::outputIterator<const char&> OutputIterator>
+        template<std::outputIterator<const char&> OutputIterator, class CharacterType>
         std::Result<OutputIterator> handleFormatField(
             const char* iterator, // todo: Extract to character type template param
             const char* end, // todo: Extract to character type template param
-            ParseState& parseState, // todo: Switch to template param
-            FormatState& formatState // todo: Switch to template param
+            BasicParseState<CharacterType>& parseState,
+            BasicFormatState<CharacterType, OutputIterator>& formatState
         ) {
             auto result = getArgumentIndex<OutputIterator>(parseState, iterator, end);
             if (!result.isValid()) {
@@ -227,14 +228,14 @@ namespace std {
      * - Invalid parse arguments.
      * - Output iterator overflows the output memory.
      */
-    template<std::outputIterator<const char&> OutputIterator>
+    template<class OutputIterator>
     std::Result<OutputIterator> dynamicFormatTo(
         OutputIterator output,
         std::StringView format,
-        std::FormatArguments args
+        BasicFormatArguments<BasicFormatState<char, OutputIterator>> args
     ) {
-        auto parsingState = ParseState(format, args.count());
-        auto formatState = FormatState(args, output);
+        auto parsingState = BasicParseState<char>{ format, args.count() };
+        auto formatState = BasicFormatState<char, OutputIterator> { args, output };
 
         const auto* iterator = parsingState.begin();
         const auto* end = parsingState.end();
@@ -303,16 +304,19 @@ namespace std {
      * - Invalid parse arguments.
      * - Output iterator overflows the output memory.
      */
-    template<std::convertableToStringView CharacterType, std::outputIterator<const char&> OutputIterator, class... Args>
+    template<std::convertableToStringView CharacterType, class OutputIterator, class... Args>
     std::Result<OutputIterator> formatTo(
         OutputIterator output,
         CharacterType* format,
         Args&& ... args
     ) {
+        using State = BasicFormatState<char, OutputIterator>;
         return dynamicFormatTo(
             output,
             std::StringView { format },
-            std::makeFormatArguments(args...)
+            BasicFormatArguments<State> {
+                makeFormatArguments<State>(args...)
+            }
         );
     }
 }

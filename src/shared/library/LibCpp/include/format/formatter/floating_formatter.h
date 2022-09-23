@@ -50,7 +50,14 @@ namespace std {
 
         auto format(std::floating_point auto& floating, auto& state) {
             auto output = state.out();
-            return std::toChars(output, output + DBL_MAX_10_EXP, floating);
+            auto buffer = std::Array<char, DBL_MAX_10_EXP> { };
+            auto result = std::toChars(buffer.begin(), buffer.end(), floating);
+
+            std::forEach(buffer.begin(), result, [&output] (char character) {
+                *output++ = character;
+            });
+
+            return output;
         }
     };
 }

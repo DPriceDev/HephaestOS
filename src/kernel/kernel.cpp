@@ -16,10 +16,7 @@
  */
 
 #include <stdoffset.h>
-
-#include "drivers/video_buffer_display.h"
-#include "terminal/Terminal.h"
-#include "boot/tss/task_state_segment.h"
+#include <format.h>
 
 namespace kernel {
 
@@ -36,32 +33,39 @@ namespace kernel {
 
     extern "C" void kernelMain() {
 
-        // todo: Extract out all terminal code to user space
-        static const VideoBufferDisplay display { };
-        auto terminal = kernel::Terminal{display};
+        std::print("HephaistOS\n");
+        std::print("Version 1.0\n");
 
-        terminal.println("HephaistOS");
-        terminal.println("Version 1.0", kernel::Display::cyan);
+        // TODO: Register timer with timer interrupt
 
-        // todo: Init Timer Task? (or in init.LibCpp)
+        // todo: Init Timer? (or in init.LibCpp)
 
-        // todo: Init IPC Task
+        // todo: Init IPC?
 
-        // todo: Init memory manager Task
+        // todo: Init memory manager? basic manager, user space memory manager
 
-        // todo: Init process table task
+        // todo: Init page manager? Basic pages, linked to memory manager? proxy?
 
-        // todo: Init basic scheduler Task?
+        // todo: Init process table
+
+        // Something something Syscalls something?
 
         // todo: Load Ram Disk
 
-        // todo: Start Root Process
+        // Register ram disk root process
 
-        // todo: Switch to Ring 3
+        // todo: Jump to ram disk main in ring 3
+
         //boot::tss::jumpUserMode();
 
+        // todo: Unload boot code
+        // TODO: Unload this bit of kernel code?
+
+        // todo: Remove and add an error message here, should never get here?
         while(true) {
             /* Endless Loop */
         }
+
+        //std::print("ERROR: Reached end of kernel code!");
     }
 }
