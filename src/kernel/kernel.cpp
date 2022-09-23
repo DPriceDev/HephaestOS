@@ -18,8 +18,6 @@
 #include <stdoffset.h>
 #include <format.h>
 
-#include "boot/tss/task_state_segment.h"
-
 namespace kernel {
 
     extern "C" [[noreturn]] void testUserFunction() {
@@ -35,30 +33,39 @@ namespace kernel {
 
     extern "C" void kernelMain() {
 
-        // todo: Extract out all terminal code to user space
-
         std::print("HephaistOS\n");
         std::print("Version 1.0\n");
 
-        // todo: Init Timer Task? (or in init.LibCpp)
+        // TODO: Register timer with timer interrupt
 
-        // todo: Init IPC Task
+        // todo: Init Timer? (or in init.LibCpp)
 
-        // todo: Init memory manager Task
+        // todo: Init IPC?
 
-        // todo: Init process table task
+        // todo: Init memory manager? basic manager, user space memory manager
 
-        // todo: Init basic scheduler Task?
+        // todo: Init page manager? Basic pages, linked to memory manager? proxy?
+
+        // todo: Init process table
+
+        // Something something Syscalls something?
 
         // todo: Load Ram Disk
 
-        // todo: Start Root Process
+        // Register ram disk root process
 
-        // todo: Switch to Ring 3
+        // todo: Jump to ram disk main in ring 3
+
         //boot::tss::jumpUserMode();
 
+        // todo: Unload boot code
+        // TODO: Unload this bit of kernel code?
+
+        // todo: Remove and add an error message here, should never get here?
         while(true) {
             /* Endless Loop */
         }
+
+        //std::print("ERROR: Reached end of kernel code!");
     }
 }

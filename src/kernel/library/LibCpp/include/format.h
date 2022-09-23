@@ -37,11 +37,11 @@ namespace std {
 
         StandardOutputIterator() = default;
 
-        StandardOutputIterator(
+        explicit StandardOutputIterator(
             const void* data,
-            void (*onDereference) (const void*),
-            void (*onAssignCharacter) (const void*, char),
-            void (*onIncrement) (const void*)
+            void (*onDereference) (const void*) = nullptr,
+            void (*onAssignCharacter) (const void*, char) = nullptr,
+            void (*onIncrement) (const void*) = nullptr
         ) : data(data),
         onDereference(onDereference),
         onIncrement(onIncrement),

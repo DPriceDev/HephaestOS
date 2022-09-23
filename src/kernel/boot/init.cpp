@@ -50,6 +50,10 @@ namespace kernel::boot {
 
         std::print("System init\n");
 
+        // todo: move kernel to higher half?
+        paging::setupPaging();
+        std::print("Paging has been turned on\n");
+
         // Construct memory map from grub multiboot information passed from grub
         grub::constructMemoryMap(info);
 
@@ -73,9 +77,8 @@ namespace kernel::boot {
         );
         std::print("Interrupts remapped\n");
 
-        // todo: move kernel to higher half?
-        // todo: verify paging is on
-        paging::setupPaging();
-        std::print("Paging has been turned on\n");
+
+
+        // Load Kernel Module
     }
 }
