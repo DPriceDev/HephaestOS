@@ -43,7 +43,8 @@ add_executable(
         boot/paging/paging.cpp
         boot/serial/serial_port.cpp
         boot/io/io.asm
-        boot/GlobalConstructors.cpp boot/memory/BootMemoryAllocator.cpp boot/memory/BootMemoryAllocator.h)
+        boot/GlobalConstructors.cpp
+)
 
 target_link_libraries(kernel.elf PRIVATE project_options) # project_warnings)
 target_link_libraries(kernel.elf PUBLIC KLibC KLibCpp KLibDebug gcc)
