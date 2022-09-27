@@ -64,6 +64,7 @@ loader:
                 push            kernelPageTable
                 push            pageDirectory
                 call            setupPaging - virtualBase
+                call            callConstructors
 
                 mov             esp, stackStart                             ; Set the stack pointer to the start of the stack.
 

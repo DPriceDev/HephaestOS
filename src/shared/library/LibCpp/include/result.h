@@ -18,7 +18,6 @@
 #ifndef HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_RESULT_H
 #define HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_RESULT_H
 
-#include "utility.h"
 #include <concepts>
 
 namespace std {
@@ -32,9 +31,12 @@ namespace std {
         Error errorValue;
         bool isResult;
 
-        explicit Result(Type result) : resultValue(result), isResult(true) { }
-        explicit Result(Error error) : errorValue(error), isResult(false) { }
+        explicit Result(Type result) : resultValue { result }, isResult { true } { }
+
+        explicit Result(Error error) : errorValue { error }, isResult { false } { }
+
     public:
+        explicit Result() = default;
 
         // Initializers
         static constexpr auto success(Type result) -> Result<Type, Error> {
@@ -54,6 +56,14 @@ namespace std {
             return resultValue;
         }
 
+        template<class Function>
+        auto getOr(Function onError) -> Type& {
+            if (!isValid()) {
+                onError(errorValue);
+            }
+            return resultValue;
+        }
+
         [[nodiscard]] constexpr auto error() const noexcept {
             return errorValue;
         }
@@ -62,10 +72,14 @@ namespace std {
             return isResult;
         }
 
+        [[nodiscard]] constexpr bool isNotValid() const noexcept {
+            return !isResult;
+        }
+
         // Functional Interface
         template<class ResultFunction, class ErrorFunction>
         auto onResult(ResultFunction resultFunction, ErrorFunction errorFunction) -> Result<Type, Error>& {
-            if(isValid()) {
+            if (isValid()) {
                 resultFunction(resultValue);
             } else {
                 errorFunction(errorFunction);
@@ -75,7 +89,7 @@ namespace std {
 
         template<class Function>
         auto onResult(Function function) -> Result<Type, Error>& {
-            if(isValid()) {
+            if (isValid()) {
                 function(resultValue);
             }
             return *this;
@@ -83,10 +97,18 @@ namespace std {
 
         template<class Function>
         auto onError(Function function) -> Result<Type, Error>& {
-            if(!isValid()) {
+            if (!isValid()) {
                 function(errorValue);
             }
             return *this;
+        }
+
+        template<class Function>
+        constexpr auto map(Function function) -> decltype(auto) {
+            if (!isValid()) {
+                std::Result<Type, Error>::failure();
+            }
+            return function(resultValue);
         }
     };
 }

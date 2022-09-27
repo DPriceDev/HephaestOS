@@ -13,6 +13,13 @@ SECTIONS
         *(.multiboot)
     }
 
+  .data BLOCK(4k): ALIGN (4k)  {
+        startCtors = .;
+        *(SORT(.ctors*))
+        endCtors = .;
+
+        *(.data)
+  }
     /* Section that contains the boot code and paging constants */
     .boot BLOCK(4k): ALIGN (4k) {
         *(boot)

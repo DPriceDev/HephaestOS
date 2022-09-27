@@ -16,15 +16,16 @@
  */
 
 #include <cstdint>
+#include <format.h>
 
 #include "gdt/global_descriptor_table.h"
 #include "idt/interrupt_descriptor_table.h"
 #include "boot/paging/paging.h"
 #include "boot/grub/multiboot_info.h"
-#include "drivers/video_buffer_display.h"
-#include "terminal/Terminal.h"
 #include "boot/idt/pic/programmable_interrupt_controller.h"
 #include "boot/tss/task_state_segment.h"
+#include "boot/grub/memory_map.h"
+#include "boot/serial/serial_port.h"
 #include "boot_info.h"
 
 namespace kernel::boot {
@@ -39,6 +40,7 @@ namespace kernel::boot {
 
     constexpr uint8_t interruptRequestOffset = 32;
 
+    static const SerialPortConnection connection { SerialPort::COM1 };
     extern "C" void init(
             MultiBootInfo * info,
             uint32_t magic,
@@ -46,39 +48,43 @@ namespace kernel::boot {
             BootInfo bootInfo
     ) {
 
-        VideoBufferDisplay display { 0xC0000000 /* todo: change */ };
 
-        // todo: unmap lower pages
+        if (connection.open()) {
+            std::KernelFormatOutput::getInstance().setStandardOutputIterator(
+                std::StandardOutputIterator {
+                    &connection,
+                    [] (const void* pointer) { },
+                    [] (const void* pointer, char character) {
+                        static_cast<const SerialPortConnection*>(pointer)->write(character);
+                    },
+                    [] (const void* pointer) { },
+                }
+            );
+        }
 
-        // todo: also interupts and exceptions are not working?
-
+        std::print("System init\n");
         // Construct memory map from grub multiboot information passed from grub
 //        grub::constructMemoryMap(info);
 
-        // todo: replace with log stream? pass to root process?
-        auto terminal = Terminal{display};
-
-        terminal.clear();
-        terminal.println("System init");
-
         auto tssDescriptor = tss::getTaskStateSegmentDescriptor();
         gdt::initializeGlobalDescriptorTable(tssDescriptor);
-        terminal.println("Global Descriptor table initialized");
+        std::print("Global Descriptor table initialized\n");
 
         //
         tss::initializeTaskStateSegment(stackPointer);
-        terminal.println("Task State Segment initialized");
+        std::print("Task State Segment initialized\n");
 
         //
         idt::initializeInterruptDescriptorTable();
-        terminal.println("Interrupt Descriptor table initialized");
+        std::print("Interrupt Descriptor table initialized\n");
 
         // todo: may need to be moved to init protected method?
         // todo: move register addresses to header of idt
         idt::remapProgrammableInterruptController(
-                interruptRequestOffset,
-                interruptRequestOffset + 8
+            interruptRequestOffset,
+            interruptRequestOffset + 8
         );
+        std::print("Interrupts remapped\n");
 
         paging::unmapLowerKernel(bootInfo.pageDirectory);
 

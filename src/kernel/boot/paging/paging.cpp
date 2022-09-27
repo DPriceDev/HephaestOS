@@ -18,7 +18,7 @@
 #include "paging.h"
 #include <cstdint>
 #include <array.h>
-#include <algorithms.h>
+#include <algorithm.h>
 #include <stdoffset.h>
 
 #include "page_directory_entry.h"
@@ -105,7 +105,7 @@ namespace kernel::boot::paging {
                     .canWrite = true
                 },
             };
-        });
+        };
     }
 
     // Setup each entry of the first page table to map identically to the physical address.
@@ -129,7 +129,7 @@ namespace kernel::boot::paging {
                 .address = (address >> Offset12Bit) & Mask20Bit
             };
             address += PAGE_SIZE;
-        });
+        };
     }
 
     // Assign the first page table to the first entry in the page directory.

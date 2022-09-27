@@ -19,8 +19,8 @@
 #define HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_ITERATORS_ITERATORS_H
 
 #include "iterator_traits.h"
+#include <bits/move.h>
 #include "memory.h"
-#include "utility.h"
 
 namespace std {
 
@@ -40,7 +40,9 @@ namespace std {
     concept weaklyIncrementable =
     std::movable<Type>
     && requires(Type iterator) {
-        { ++iterator } -> std::same_as<Type &>;
+        // todo: typename iteratorDifferenceType<Type>; - need to do for back inserter
+        // todo: is signed integer like
+        { ++iterator } -> std::same_as<Type&>;
         iterator++;
     };
 
@@ -52,7 +54,7 @@ namespace std {
     concept incrementable =
     std::regular<Type>
     && std::weaklyIncrementable<Type>
-    && requires (Type type) {
+    && requires(Type type) {
         { type++ } -> std::same_as<Type>;
     };
 
@@ -73,14 +75,14 @@ namespace std {
      * Also the l-value & and r-value && Types must be of the same reference type.
      */
     template<class Type>
-    concept indirectlyReadable =
-            requires(const Type type) {
-                *type;
-                // { *type } -> std::same_as<Type &>; todo : Need to define referencable, i.e. not void?
-            }
-            && std::common_reference_with<Type&&, Type&>
-            && std::common_reference_with<Type&&, Type&&>
-            && std::common_reference_with<Type&&, const Type&>;
+    concept indirectlyReadable =requires(const Type type) {
+        typename std::iteratorValueType<Type>;
+        typename std::iteratorReferenceType<Type>;
+        { *type } -> std::same_as<std::iteratorReferenceType<Type>>;
+    }
+                                && std::common_reference_with<Type&&, Type&>
+                                && std::common_reference_with<Type&&, Type&&>
+                                && std::common_reference_with<Type&&, const Type&>;
 
     /**
      * todo comment
@@ -88,25 +90,26 @@ namespace std {
      * @tparam Type
      */
     template<class Output, class Type>
-    concept indirectlyWritable =
-    requires(Output&& output, Type&& type) {
+    concept indirectlyWritable =requires(Output&& output, Type&& type) {
         *output = std::forward<Type>(type);
         *std::forward<Output>(output) = std::forward<Type>(type);
         const_cast<const std::iteratorReferenceType<Output>&&>(*output) = std::forward<Type>(type);
-        const_cast<const std::iteratorReferenceType<Output>&&>(*std::forward<Output>(output)) = std::forward<Type>(type);
+        const_cast<const std::iteratorReferenceType<Output>&&>(*std::forward<Output>(output)) = std::forward<Type>(
+            type
+        );
     };
 
     /**
      * todo comment
      * @tparam Iterator
      */
-     template<class Iterator, class Type>
-     concept outputIterator =
-        std::inputOrOutputIterator<Iterator>
-        && std::indirectlyWritable<Iterator, Type>
-        && requires(Iterator iterator, Type&& type) {
-            *iterator++ = std::forward<Type>(type);
-        };
+    template<class Iterator, class Type>
+    concept outputIterator =
+    std::inputOrOutputIterator<Iterator>
+    && std::indirectlyWritable<Iterator, Type>
+    && requires(Iterator iterator, Type&& type) {
+        *iterator++ = std::forward<Type>(type);
+    };
 
 
     /**
@@ -182,16 +185,16 @@ namespace std {
     && std::totally_ordered<Iterator>
     && std::sizedSentinelFor<Iterator, Iterator>
     && requires(
-            Iterator iterator,
-            const Iterator constIterator,
-            const std::iteratorDifferenceType<Iterator> difference
+        Iterator iterator,
+        const Iterator constIterator,
+        const std::iteratorDifferenceType<Iterator> difference
     ) {
         { iterator += difference } -> std::same_as<Iterator&>;
         { constIterator + difference } -> std::same_as<Iterator>;
         { difference + constIterator } -> std::same_as<Iterator>;
         { iterator -= difference } -> std::same_as<Iterator&>;
         { constIterator - difference } -> std::same_as<Iterator>;
-        {  constIterator[difference]  } -> std::same_as<std::iteratorReferenceType<Iterator>>;
+        { constIterator[difference] } -> std::same_as<std::iteratorReferenceType<Iterator>>;
     };
 
     /**
@@ -201,15 +204,52 @@ namespace std {
      */
     template<class Iterator>
     concept contiguousIterator =
-    std::randomAccessIterator<Iterator>
-    && std::is_lvalue_reference_v<Iterator&>
-    && std::same_as<
+        std::randomAccessIterator<Iterator>
+        && std::is_lvalue_reference_v<Iterator&>
+        && std::same_as<
             std::iteratorValueType<Iterator>,
-            std::remove_cvref_t<iteratorReferenceType<Iterator>>
-    >
-    && requires(const Iterator& iterator) {
-        { std::toAddress(iterator) } ->
-        std::same_as<std::add_pointer_t<std::iteratorReferenceType<Iterator>>>;
+            std::remove_cvref_t<iteratorReferenceType < Iterator>>
+        >
+        && requires(const Iterator& iterator) {
+            { std::toAddress(iterator) } -> std::same_as<std::add_pointer_t<std::iteratorReferenceType<Iterator>>>;
+        };
+
+    template<class Container>
+    class BackInsertIterator {
+        Container* container { nullptr };
+
+    public:
+        using valueType = void;
+        using difference_type = std::ptrdiff_t;
+        using pointer = void;
+        using reference = void;
+        using containerType = Container;
+
+        // Constructors
+        BackInsertIterator() = default;
+
+        explicit constexpr BackInsertIterator(Container& container) : container(std::addressof(container)) { }
+
+        constexpr BackInsertIterator& operator*() {
+            return *this;
+        }
+
+        constexpr BackInsertIterator& operator=(const typename Container::valueType& value) {
+            // todo: Push back?
+            return *this;
+        }
+
+        constexpr BackInsertIterator& operator=(typename Container::valueType&& value) {
+            return *this;
+        }
+
+        constexpr BackInsertIterator& operator++() {
+            return *this;
+        }
+
+        constexpr BackInsertIterator operator++(int) {
+            return *this;
+        }
     };
 };
 

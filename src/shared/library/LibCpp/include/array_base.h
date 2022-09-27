@@ -20,7 +20,7 @@
 
 #include <cstdint>
 #include "iterator.h"
-#include "algorithms.h"
+#include "algorithm.h"
 
 namespace std::detail {
 
@@ -33,12 +33,12 @@ namespace std::detail {
         using valueType = elementType;
         using sizeType = typename std::size_t;
         using differenceType = std::ptrdiff_t;
-        using pointer = valueType *;
-        using constPointer = const valueType *;
-        using reference = valueType &;
-        using constReference = const valueType &;
-        using iterator = valueType *;
-        using constIterator = const valueType *;
+        using pointer = valueType*;
+        using constPointer = const valueType*;
+        using reference = valueType&;
+        using constReference = const valueType&;
+        using iterator = valueType*;
+        using constIterator = const valueType*;
         using reverseIterator = std::reverseIterator<iterator>;
         using constReverseIterator = std::reverseIterator<constIterator>;
 
@@ -142,9 +142,11 @@ namespace std::detail {
 
         // Operations
         constexpr void fill(const Type& value) {
-            std::forEach(begin(), end(), [value] (auto & element) {
-                element = value;
-            });
+            std::forEach(
+                begin(), end(), [value](auto& element) {
+                    element = value;
+                }
+            );
         }
 
 

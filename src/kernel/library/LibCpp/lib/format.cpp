@@ -15,22 +15,13 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#ifndef HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_UTILITY_H
-#define HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_UTILITY_H
-
-#include <type_traits>
+#include "format.h"
 
 namespace std {
 
-    template< class Type>
-    constexpr Type&& forward(std::remove_reference_t<Type>& type) noexcept {
-        return static_cast<Type&&>(type);
-    }
+    static KernelFormatOutput instance;
 
-    template< class Type>
-    constexpr Type&& forward(std::remove_reference_t<Type>&& type) noexcept {
-        return static_cast<Type&&>(type);
+    auto KernelFormatOutput::getInstance() -> KernelFormatOutput& {
+        return instance;
     }
 }
-
-#endif // HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_UTILITY_H

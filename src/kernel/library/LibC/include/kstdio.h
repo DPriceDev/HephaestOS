@@ -1,4 +1,4 @@
-/* Copyright (C) 2021 David Price - All Rights Reserved
+/* Copyright (C) 2022 David Price - All Rights Reserved
  * This file is part of HephaistOS.
  *
  * HephaistOS is free software: you can redistribute it and/or modify
@@ -17,6 +17,7 @@
 
 #ifndef HEPHAISTOS_STDIO_H
 #define HEPHAISTOS_STDIO_H
+
 
 
 #endif //HEPHAISTOS_STDIO_H

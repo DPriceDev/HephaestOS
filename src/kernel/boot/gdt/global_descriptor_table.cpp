@@ -21,10 +21,19 @@
 namespace kernel::boot::gdt {
 
     // Array of Global Descriptors that defines the Global Descriptor Table.
-    std::Array<GlobalDescriptor, 6> globalDescriptorTable;
+    std::Array<GlobalDescriptor, 6> globalDescriptorTable {
+        constructGlobalDescriptor(0, 0, zeroAccess, zeroFlags),
+        constructGlobalDescriptor(0, MaximumMemoryLimit, codeKernelAccess, Page32BitFlags),
+        constructGlobalDescriptor(0, MaximumMemoryLimit, dataKernelAccess, Page32BitFlags),
+        constructGlobalDescriptor(0, MaximumMemoryLimit, codeUserAccess, Page32BitFlags),
+        constructGlobalDescriptor(0, MaximumMemoryLimit, dataUserAccess, Page32BitFlags)
+    };
 
     // Structure holding the Global descriptor Table array pointer and size of the array.
-    GdtPointer gdtPointer;
+    static const GdtPointer gdtPointer {
+        .size = sizeof(globalDescriptorTable) - 1,
+        .address = globalDescriptorTable.data()
+    };
 
     /**
      * Initializes the CPU's Global Descriptor Table with the minimum required segments for the
@@ -43,20 +52,7 @@ namespace kernel::boot::gdt {
 
         // Initialize the GDT with the null, kernel code, kernel data, userspace code, userspace
         // data, and tss segment descriptors.
-        globalDescriptorTable = {
-            constructGlobalDescriptor(0, 0, zeroAccess, zeroFlags),
-            constructGlobalDescriptor(0, MaximumMemoryLimit, codeKernelAccess, Page32BitFlags),
-            constructGlobalDescriptor(0, MaximumMemoryLimit, dataKernelAccess, Page32BitFlags),
-            constructGlobalDescriptor(0, MaximumMemoryLimit, codeUserAccess, Page32BitFlags),
-            constructGlobalDescriptor(0, MaximumMemoryLimit, dataUserAccess, Page32BitFlags),
-            tssDescriptor
-        };
-
-        // Initialize the pointer structure with the GDT size and array pointer.
-        gdtPointer = {
-                .size = sizeof(globalDescriptorTable) - 1,
-                .address = globalDescriptorTable.data()
-        };
+        globalDescriptorTable[5] = tssDescriptor;
 
         // Load the GDT from the pointer into the CPU Registers.
         loadGdtTable(&gdtPointer);
