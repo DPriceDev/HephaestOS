@@ -19,7 +19,7 @@ jobs:
           command: "sudo apt-get update && sudo apt-get install nasm graphviz doxygen ccache --no-install-recommends -y"
       - run:
           name: "Setup and configure cmake"
-          command: "cmake --configure ."
+          command: "cmake --configure . --config release"
       - run:
           name: "Build Gcc Compiler and freestanding C library"
           command: "mkdir build && cmake --build build --config release --target gcc-12.2.0"
