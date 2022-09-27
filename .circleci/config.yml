@@ -21,7 +21,7 @@ jobs:
           name: "Setup and configure cmake"
           command: "mkdir cmake-build-release && cmake -DCMAKE_BUILD_TYPE=Release -B cmake-build-release"
       - run:
-          name: "Build Gcc Compiler and freestanding C library"
+          name: "Build Gcc Compiler and freestanding C library "
           command: "cmake --build cmake-build-release --target gcc-12.2.0"
 
 # Invoke jobs via workflows
