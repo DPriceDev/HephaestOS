@@ -16,7 +16,7 @@ jobs:
       - checkout
       - run:
           name: "Update libraries"
-          command: "sudo apt-get update && sudo apt-get install nasm graphviz doxygen ccache --no-install-recommends -y"
+          command: "sudo apt-get update && sudo apt-get install nasm graphviz doxygen ccache libmpfr-dev libmpc-dev doxygen grub-common xorriso --no-install-recommends -y"
       - run:
           name: "Setup and configure cmake"
           command: "mkdir cmake-build-release && cmake -DCMAKE_BUILD_TYPE=Release -B cmake-build-release"
