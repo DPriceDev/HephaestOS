@@ -16,7 +16,7 @@ jobs:
       - checkout
       - run:
           name: "Update libraries"
-          command: "sudo apt get nasm -y"
+          command: "sudo apt-get install nasm --no-install-recommends -y"
       - run:
           name: "Setup and configure cmake"
           command: "cmake --configure ."
