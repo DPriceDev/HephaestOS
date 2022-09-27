@@ -25,7 +25,7 @@ jobs:
           command: "cmake --build cmake-build-release --target gcc-12.2.0"
       - run:
           name: "Setup and configure cmake for OS"
-          command: "mkdir cmake-build-release && cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=cmake-build-release/toolchain/output/bin/i386-pc-hephaistos-gcc -DCMAKE_CXX_COMPILER=cmake-build-release/toolchain/output/bin/i386-pc-hephaistos-g++ -B cmake-build-release"
+          command: "cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=cmake-build-release/toolchain/output/bin/i386-pc-hephaistos-gcc -DCMAKE_CXX_COMPILER=cmake-build-release/toolchain/output/bin/i386-pc-hephaistos-g++ -B cmake-build-release"
       - run:
           name: "Build OS ISO"
           command: "cmake --build cmake-build-release --target HephaistOS.iso"
