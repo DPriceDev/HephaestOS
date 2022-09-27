@@ -19,10 +19,10 @@ jobs:
           command: "sudo apt-get update && sudo apt-get install nasm graphviz doxygen ccache --no-install-recommends -y"
       - run:
           name: "Setup and configure cmake"
-          command: "mkdir build && cmake -DCMAKE_BUILD_TYPE=Release build"
+          command: "mkdir cmake-build-release && cmake -DCMAKE_BUILD_TYPE=Release -B cmake-build-release"
       - run:
           name: "Build Gcc Compiler and freestanding C library"
-          command: "cmake --build build --config Release --target gcc-12.2.0"
+          command: "cmake --build /tmp/HephaistOS/cmake-build-release --target gcc-12.2.0"
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
