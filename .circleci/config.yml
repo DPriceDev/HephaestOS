@@ -16,7 +16,7 @@ jobs:
       - checkout
       - run:
           name: "Build Gcc Compiler and freestanding C library"
-          command: "cmake --build build --config release --target gcc-12.2.0"
+          command: "mkdir build && cmake --build build --config release --target gcc-12.2.0"
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
