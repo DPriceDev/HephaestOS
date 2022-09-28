@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.21.1)
+cmake_minimum_required(VERSION 3.15.0)
 
 SET (CMAKE_CXX_COMPILER_WORKS 1)
 
@@ -11,7 +11,7 @@ target_compile_features(project_options INTERFACE cxx_std_20)
 
 add_library(project_warnings INTERFACE)
 
-include(cmake/Cache.cmake)
+#include(cmake/Cache.cmake)
 
 include(cmake/CompilerWarnings.cmake)
 set_project_warnings(project_warnings)
@@ -19,9 +19,9 @@ set_project_warnings(project_warnings)
 include(cmake/Sanitizers.cmake)
 enable_sanitizers(project_options)
 
-include(cmake/Doxygen.cmake)
-enable_doxygen()
-SET(ENABLE_DOXYGEN TRUE)
+#include(cmake/Doxygen.cmake)
+#enable_doxygen()
+#SET(ENABLE_DOXYGEN TRUE)
 
 include(cmake/StaticAnalyzers.cmake)
 

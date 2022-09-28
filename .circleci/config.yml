@@ -1,0 +1,61 @@
+version: 2.1
+
+jobs:
+  build-toolchain:
+    docker:
+      - image: cimg/base:stable
+    resource_class: small
+
+    steps:
+      - checkout
+      - restore_cache:
+          name: Restore Toolchain
+          keys:
+            - toolchain-v1
+      # TODO: Skip building toolchain if toolchain exists
+      # TODO: force toolchain to rebuild if the toolchain files have changed
+      # - run:
+      #     name: "Update libraries"
+      #     command: "sudo apt-get update && sudo apt-get install nasm graphviz doxygen ccache libmpfr-dev libmpc-dev doxygen --no-install-recommends -y"
+      # - run:
+      #     name: "Setup and configure cmake for Toolchain"
+      #     command: "mkdir -p cmake-build-release && cmake -DCMAKE_BUILD_TYPE=Release -B cmake-build-release"
+      # - run:
+      #     name: "Build Gcc Compiler and freestanding C library"
+      #     command: "cmake --build cmake-build-release --target gcc-12.2.0"
+      # - save_cache:
+      #     name: Cache Toolchain
+      #     paths:
+      #       - "/home/circleci/project/cmake-build-release/toolchain/output"
+      #     key: toolchain-v1
+
+  build-hephaistos:
+    docker:
+      - image: cimg/base:stable
+    resource_class: small
+    
+    steps:
+      - checkout
+      - restore_cache:
+          name: Restore Toolchain
+          keys:
+            - toolchain-v1
+      - run:
+          name: "Update libraries"
+          command: "sudo apt-get update && sudo apt-get install nasm graphviz doxygen ccache libmpfr-dev libmpc-dev doxygen grub-common xorriso --no-install-recommends -y"
+      - run:
+          name: "Setup and configure cmake for OS"
+          command: "cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=/home/circleci/project/cmake-build-release/toolchain/output/bin/i386-pc-hephaistos-gcc -DCMAKE_CXX_COMPILER=/home/circleci/project/cmake-build-release/toolchain/output/bin/i386-pc-hephaistos-g++ -B cmake-build-release"
+      - run:
+          name: "Build OS ISO"
+          command: "cmake --build cmake-build-release --target HephaistOS.iso"
+      - store_artifacts:
+          path: /home/circleci/project/cmake-build-release/HephaistOS.iso
+workflows:
+  version: 2
+  build-hephaistOS-workflow:
+    jobs:
+      - build-toolchain
+      - build-hephaistos:
+          requires:
+            - build-toolchain

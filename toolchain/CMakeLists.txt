@@ -24,6 +24,7 @@ ExternalProject_Add(binutils-${BINUTILS_VERSION}
             && export SYSROOT=${SYSROOT}
             && export TARGET=${TARGET}
             && export PREFIX=${PREFIX}
+            && export BUILD_DIR=${CMAKE_CURRENT_BINARY_DIR}/binutils-${BINUTILS_VERSION}-prefix/src/binutils-${BINUTILS_VERSION}-build
             && export CONFIG_DIR=${CMAKE_CURRENT_BINARY_DIR}/binutils-${BINUTILS_VERSION}-prefix/src/binutils-${BINUTILS_VERSION}/
             && sh ${CMAKE_CURRENT_SOURCE_DIR}/configureBinutils.sh
         BUILD_COMMAND
@@ -44,7 +45,9 @@ ExternalProject_Add(gcc-${GCC_VERSION}
             export PATCH_DIR=${PATCH_DIR}
             && export SYSROOT=${SYSROOT}
             && export TARGET=${TARGET}
-            && export PREFIX=${PREFIX} export CONFIG_DIR=${CMAKE_CURRENT_BINARY_DIR}/gcc-${GCC_VERSION}-prefix/src/gcc-${GCC_VERSION}/
+            && export PREFIX=${PREFIX}
+            && export BUILD_DIR=${CMAKE_CURRENT_BINARY_DIR}/gcc-${GCC_VERSION}-prefix/src/gcc-${GCC_VERSION}-build
+            && export CONFIG_DIR=${CMAKE_CURRENT_BINARY_DIR}/gcc-${GCC_VERSION}-prefix/src/gcc-${GCC_VERSION}/
             && sh ${CMAKE_CURRENT_SOURCE_DIR}/configureGcc.sh
         BUILD_COMMAND
             ${MAKE_EXE} CFLAGS=-g0 CXXFLAGS=-g0 -j ${PARALLEL_MAKE_JOBS} all-gcc all-target-libgcc
