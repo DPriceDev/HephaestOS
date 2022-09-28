@@ -23,7 +23,7 @@ jobs:
       - save_cache:
           name: Cache Toolchain
           paths:
-            - "./cmake-build-release/toolchain/output"
+            - "/home/circleci/project/cmake-build-release/toolchain/output"
           key: toolchain-v1-{{ checksum "toolchain.lock" }}
 
   build-hephaistos:
@@ -37,7 +37,7 @@ jobs:
           command: "sudo apt-get update && sudo apt-get install nasm graphviz doxygen ccache libmpfr-dev libmpc-dev doxygen grub-common xorriso --no-install-recommends -y"
       - run:
           name: "Setup and configure cmake for OS"
-          command: "cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=./cmake-build-release/toolchain/output/bin/i386-pc-hephaistos-gcc -DCMAKE_CXX_COMPILER=./cmake-build-release/toolchain/output/bin/i386-pc-hephaistos-g++ -B cmake-build-release"
+          command: "cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=/home/circleci/project/cmake-build-release/toolchain/output/bin/i386-pc-hephaistos-gcc -DCMAKE_CXX_COMPILER=/home/circleci/project/cmake-build-release/toolchain/output/bin/i386-pc-hephaistos-g++ -B cmake-build-release"
       - restore_cache:
           name: Restore Toolchain
           keys:
@@ -46,7 +46,10 @@ jobs:
           name: "Build OS ISO"
           command: "cmake --build cmake-build-release --target HephaistOS.iso"
 workflows:
+  version: 2
   build-hephaistOS-workflow:
     jobs:
       - build-toolchain
-      - build-hephaistos
+      - build-hephaistos:
+          requires:
+            - build-toolchain
