@@ -16,7 +16,7 @@ jobs:
       - restore_cache:
           name: Restore Toolchain
           keys:
-            - toolchain-v1-{{ checksum "toolchain.lock" }}
+            - toolchain-v1
       - run:
           name: "Build Gcc Compiler and freestanding C library"
           command: "cmake --build cmake-build-release --target gcc-12.2.0"
@@ -24,7 +24,7 @@ jobs:
           name: Cache Toolchain
           paths:
             - "/home/circleci/project/cmake-build-release/toolchain/output"
-          key: toolchain-v1-{{ checksum "toolchain.lock" }}
+          key: toolchain-v1
 
   build-hephaistos:
     docker:
@@ -41,7 +41,7 @@ jobs:
       - restore_cache:
           name: Restore Toolchain
           keys:
-            - toolchain-v1-{{ checksum "toolchain.lock" }}
+            - toolchain-v1
       - run:
           name: "Build OS ISO"
           command: "cmake --build cmake-build-release --target HephaistOS.iso"
