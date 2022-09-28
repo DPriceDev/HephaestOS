@@ -4,6 +4,7 @@ jobs:
   build-toolchain:
     docker:
       - image: cimg/base:stable
+    resource_class: small
 
     steps:
       - checkout
@@ -31,7 +32,8 @@ jobs:
   build-hephaistos:
     docker:
       - image: cimg/base:stable
-
+    resource_class: small
+    
     steps:
       - checkout
       - restore_cache:
