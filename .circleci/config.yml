@@ -16,7 +16,7 @@ jobs:
             - toolchain-v1
       - run:
           name: "Setup and configure cmake for Toolchain"
-          command: "mkdir cmake-build-release && cmake -DCMAKE_BUILD_TYPE=Release -B cmake-build-release"
+          command: "mkdir -p cmake-build-release && cmake -DCMAKE_BUILD_TYPE=Release -B cmake-build-release"
       - run:
           name: "Build Gcc Compiler and freestanding C library"
           command: "cmake --build cmake-build-release --target gcc-12.2.0"
