@@ -49,7 +49,6 @@ jobs:
           command: "cmake --build cmake-build-release --target HephaistOS.iso"
       - store_artifacts:
           path: /home/circleci/project/cmake-build-release/HephaistOS.iso
-          destination: artifact-file
 workflows:
   version: 2
   build-hephaistOS-workflow:
