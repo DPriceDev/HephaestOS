@@ -21,7 +21,7 @@ bits            32
 global loader:function (end - loader)
 global stack_ptr
 
-extern kernelMain, init, setupPaging
+extern kernelMain, init, setupPaging, callConstructors
 extern pageDirectory, kernelPageTable
 extern kernelStart, kernelEnd, stackStart
 
