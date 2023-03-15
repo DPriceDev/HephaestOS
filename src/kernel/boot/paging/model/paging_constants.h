@@ -1,4 +1,4 @@
-// Copyright (C) 2022 David Price - All Rights Reserved
+// Copyright (C) 2023 David Price - All Rights Reserved
 // This file is part of HephaistOS.
 //
 // HephaistOS is free software: you can redistribute it and/or modify
@@ -15,25 +15,17 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#ifndef HEPHAISTOS_BOOT_INFO_H
-#define HEPHAISTOS_BOOT_INFO_H
+#ifndef HEPHAEST_OS_KERNEL_BOOT_PAGING_MODEL_PAGING_CONSTANTS_H
+#define HEPHAEST_OS_KERNEL_BOOT_PAGING_MODEL_PAGING_CONSTANTS_H
 
-#include <cstdint>
+#include "cstdint"
 
-#include "boot/paging/model/page_directory_entry.h"
-#include "boot/paging/model/page_table_entry.h"
+namespace kernel::boot::paging {
 
-namespace kernel::boot {
-
-    struct BootInfo {
-        paging::PageDirectoryEntry *pageDirectory;
-        paging::PageTableEntry *kernelPageTable;
-        uintptr_t kernelVirtualAddress;
-        uintptr_t kernelStartAddress;
-        uintptr_t kernelEndAddress;
-
-    };
-
+    // Page directory
+    static constexpr std::size_t PAGE_DIRECTORY_SIZE = 1024;
+    static constexpr std::size_t PAGE_TABLE_SIZE = 1024;
+    static constexpr std::size_t PAGE_SIZE = 0x1000;
 }
 
-#endif //HEPHAISTOS_BOOT_INFO_H
+#endif // HEPHAEST_OS_KERNEL_BOOT_PAGING_MODEL_PAGING_CONSTANTS_H

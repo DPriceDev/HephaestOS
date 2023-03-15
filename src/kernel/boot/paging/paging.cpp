@@ -19,29 +19,64 @@
 #include <cstdint>
 #include <algorithm.h>
 #include <stdoffset.h>
+#include "model/paging_constants.h"
 
-#include "page_directory_entry.h"
+#include "model/page_directory_entry.h"
 #include "span.h"
 
 namespace kernel::boot::paging {
 
-    extern "C" PageTableEntry* kernelPageTable;
+    // Initialize all page table entries to empty entries.
+    void zeroPageDirectory(std::Span<PageDirectoryEntry>& pageDirectory) {
+        std::forEach(pageDirectory.begin(), pageDirectory.end(), [] (auto & element) {
+            element = PageDirectoryEntry {
+                .access = PageDirectoryAccess {
+                    .canWrite = true
+                },
+            };
+        });
+    }
 
-
-    void updateTableInDirectory(
-        std::Span<PageDirectoryEntry>& pageDirectory,
-        uint32_t index,
-        PageTableEntry* pageTablePointer
-    );
+    // Setup each entry of the first page table to map identically to the physical address.
     void mapAddressRangeInTable(
         PageTableEntry* pageTablePointer,
         uintptr_t virtualStartAddress,
         uintptr_t startAddress,
         uintptr_t endAddress
-    );
-    void zeroPageDirectory(std::Span<PageDirectoryEntry>& pageDirectory);
+    ) {
+        auto pageTable = std::Span(pageTablePointer, PAGE_TABLE_SIZE);
 
-    void unmapPageTable(std::Span<PageDirectoryEntry, std::dynamicExtent> pageDirectory, int index);
+        uintptr_t address = startAddress;
+        uint32_t startIndex = (virtualStartAddress & 0xFFFFFFF) / PAGE_SIZE;
+        uint32_t endIndex = startIndex + ((endAddress / PAGE_SIZE) - (startAddress / PAGE_SIZE));
+
+        std::forEach(pageTable.begin() + startIndex, pageTable.begin() + endIndex + 1, [&address] (auto & entry) {
+            entry = PageTableEntry {
+                .access = PageTableAccess {
+                    .isPresent = true
+                },
+                .address = (address >> Offset12Bit) & Mask20Bit
+            };
+            address += PAGE_SIZE;
+        });
+    }
+
+    // Assign the first page table to the first entry in the page directory.
+    void updateTableInDirectory(
+        std::Span<PageDirectoryEntry>& pageDirectory,
+        uintptr_t virtualAddress,
+        PageTableEntry* pageTablePointer
+    ) {
+        auto address = reinterpret_cast<unsigned int>(pageTablePointer);
+        auto index = (virtualAddress >> Offset22Bit) & Mask10Bit;
+        pageDirectory[index] = {
+            .access = PageDirectoryAccess {
+                .isPresent = true,
+                .canWrite = true
+            },
+            .address = (address >> Offset12Bit) & Mask20Bit
+        };
+    }
 
     void setupIdentityPage(
         PageDirectoryEntry* pageDirectoryPointer,
@@ -114,57 +149,4 @@ namespace kernel::boot::paging {
             },
         };
     }
-
-    // Initialize all page table entries to empty entries.
-    void zeroPageDirectory(std::Span<PageDirectoryEntry>& pageDirectory) {
-        std::forEach(pageDirectory.begin(), pageDirectory.end(), [] (auto & element) {
-            element = PageDirectoryEntry {
-                .access = PageDirectoryAccess {
-                    .canWrite = true
-                },
-            };
-        });
-    }
-
-    // Setup each entry of the first page table to map identically to the physical address.
-    void mapAddressRangeInTable(
-        PageTableEntry* pageTablePointer,
-        uintptr_t virtualStartAddress,
-        uintptr_t startAddress,
-        uintptr_t endAddress
-    ) {
-        auto pageTable = std::Span(pageTablePointer, PAGE_TABLE_SIZE);
-
-        uintptr_t address = startAddress;
-        uint32_t startIndex = (virtualStartAddress & 0xFFFFFFF) / PAGE_SIZE;
-        uint32_t endIndex = startIndex + ((endAddress / PAGE_SIZE) - (startAddress / PAGE_SIZE));
-
-        std::forEach(pageTable.begin() + startIndex, pageTable.begin() + endIndex + 1, [&address] (auto & entry) {
-            entry = PageTableEntry {
-                .access = PageTableAccess {
-                    .isPresent = true
-                },
-                .address = (address >> Offset12Bit) & Mask20Bit
-            };
-            address += PAGE_SIZE;
-        });
-    }
-
-    // Assign the first page table to the first entry in the page directory.
-    void updateTableInDirectory(
-        std::Span<PageDirectoryEntry>& pageDirectory,
-        uintptr_t virtualAddress,
-        PageTableEntry* pageTablePointer
-    ) {
-        auto address = reinterpret_cast<unsigned int>(pageTablePointer);
-        auto index = (virtualAddress >> Offset22Bit) & Mask10Bit;
-        pageDirectory[index] = {
-                .access = PageDirectoryAccess {
-                        .isPresent = true,
-                        .canWrite = true
-                },
-                .address = (address >> Offset12Bit) & Mask20Bit
-        };
-    }
-
 }

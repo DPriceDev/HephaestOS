@@ -19,14 +19,9 @@
 #define HEPHAIST_OS_KERNEL_BOOT_PAGING_PAGING_H
 
 #include "cstdint"
-#include "page_directory_entry.h"
+#include "model/page_directory_entry.h"
 
 namespace kernel::boot::paging {
-
-    // Page directory
-    static constexpr std::size_t PAGE_DIRECTORY_SIZE = 1024;
-    static constexpr std::size_t PAGE_TABLE_SIZE = 1024;
-    static constexpr std::size_t PAGE_SIZE = 0x1000;
 
     /**
      * Takes a pointer to the first entry in a @param pageDirectory and loads it to the

@@ -17,7 +17,7 @@
 
 #include "serial_port.h"
 #include <type_traits>
-#include "boot/io/io.h"
+#include "hal/io/io.h"
 #include <bit>
 
 namespace kernel::boot {

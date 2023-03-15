@@ -41,6 +41,7 @@ namespace kernel::boot {
     constexpr uint8_t interruptRequestOffset = 32;
 
     static const SerialPortConnection connection { SerialPort::COM1 };
+
     extern "C" void init(
             MultiBootInfo * info,
             uint32_t magic,

@@ -18,7 +18,7 @@
 #include <cstdint>
 
 #include "video_buffer_display.h"
-#include "boot/io/io.h"
+#include "hal/io/io.h"
 
 constexpr uint16_t eightBitOffset = 8;
 

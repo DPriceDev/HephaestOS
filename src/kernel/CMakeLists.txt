@@ -42,12 +42,9 @@ add_executable(
         boot/paging/paging.asm
         boot/paging/paging.cpp
         boot/serial/serial_port.cpp
-        boot/io/io.asm
+        hal/io/io.asm
         boot/GlobalConstructors.cpp
-        boot/paging/paging.h
-        boot/paging/page_table_entry.h
-        boot/paging/page_directory_entry.h
-        boot/boot_info.h)
+)
 
 target_link_libraries(kernel.elf PRIVATE project_options) # project_warnings)
 target_link_libraries(kernel.elf PUBLIC KLibC KLibCpp KLibDebug gcc)
