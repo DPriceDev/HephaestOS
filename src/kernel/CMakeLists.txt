@@ -26,8 +26,6 @@ add_executable(
         boot/idt/exceptions/exception_handler.asm
         boot/gdt/global_descriptor_table.asm
         boot/tss/task_state_segment.asm
-        terminal/Terminal.cpp
-        drivers/video_buffer_display.cpp
         boot/init.cpp
         library/LibCpp/lib/pure_function.cpp
         boot/gdt/global_descriptor_table.cpp

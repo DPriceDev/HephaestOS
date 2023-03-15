@@ -17,8 +17,6 @@
 
 #include "exception_handler.h"
 
-#include "drivers/video_buffer_display.h"
-#include "terminal/Terminal.h"
 #include <format.h>
 
 namespace kernel::boot::idt {
