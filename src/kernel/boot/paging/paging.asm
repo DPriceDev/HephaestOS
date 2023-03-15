@@ -36,14 +36,3 @@ enablePaging:
                 or              eax, 0x80000000
                 mov             cr0, eax
                 ret
-
-section .text
-jumpToHigherKernel:
-                xchg            bx, bx
-                lea             eax, higher
-                jmp             eax
-
-higher:
-
-                nop
-                ret

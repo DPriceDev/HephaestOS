@@ -14,16 +14,14 @@
 ; You should have received a copy of the GNU General Public License
 ; along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 
-;%include         "boot_config.asm"     need to include into nasm -p
-
 bits            32
 
 global loader:function (end - loader)
 global stack_ptr
 
-extern kernelMain, init, setupPaging, callConstructors
+extern initializePaging, enterHigherKernel
 extern pageDirectory, kernelPageTable
-extern kernelStart, kernelEnd, stackStart
+extern kernelEnd, stackStart
 
 ; ------------------------------------------------------------- ;
 ; Multi-boot Header
@@ -63,29 +61,10 @@ loader:
                 push            virtualBase
                 push            kernelPageTable
                 push            pageDirectory
-                call            setupPaging - virtualBase
-                call            callConstructors
+                call            initializePaging - virtualBase
 
-                mov             esp, stackStart                             ; Set the stack pointer to the start of the stack.
-
-                push            kernelEnd
-                push            kernelStart
-                push            virtualBase
-                push            kernelPageTable + virtualBase
-                push            pageDirectory + virtualBase
-                push            stackStart
-                ; todo Also need to map the vga buffer? maybe do that later on?
-                push            esi                             ; push the magic number to the stack (2nd arg)
-                push            edi                             ; push the multiboot info pointer to the stack (1st arg)
-                lea             eax, init
-                ; todo need to figure out if we want to call and return to halt loop, or jmp and never return
+                ; jump to higher kernel
+                lea             eax, enterHigherKernel
                 push            eax
                 jmp             eax
-                ;call            eax
-
-; ------------------------------------------------------------- ;
-; Halts the CPU
-halt:
-                hlt
-                jmp             halt
 end:

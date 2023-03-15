@@ -47,8 +47,6 @@ namespace kernel::boot {
             uint32_t stackPointer,
             BootInfo bootInfo
     ) {
-
-
         if (connection.open()) {
             std::KernelFormatOutput::getInstance().setStandardOutputIterator(
                 std::StandardOutputIterator {
@@ -64,7 +62,7 @@ namespace kernel::boot {
 
         std::print("System init\n");
         // Construct memory map from grub multiboot information passed from grub
-//        grub::constructMemoryMap(info);
+    //        grub::constructMemoryMap(info);
 
         auto tssDescriptor = tss::getTaskStateSegmentDescriptor();
         gdt::initializeGlobalDescriptorTable(tssDescriptor);
@@ -78,7 +76,6 @@ namespace kernel::boot {
         idt::initializeInterruptDescriptorTable();
         std::print("Interrupt Descriptor table initialized\n");
 
-        // todo: may need to be moved to init protected method?
         // todo: move register addresses to header of idt
         idt::remapProgrammableInterruptController(
             interruptRequestOffset,

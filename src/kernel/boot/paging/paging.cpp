@@ -17,7 +17,6 @@
 
 #include "paging.h"
 #include <cstdint>
-#include <array.h>
 #include <algorithm.h>
 #include <stdoffset.h>
 
@@ -44,8 +43,26 @@ namespace kernel::boot::paging {
 
     void unmapPageTable(std::Span<PageDirectoryEntry, std::dynamicExtent> pageDirectory, int index);
 
-// todo update comment
-    void setupPaging(
+    void setupIdentityPage(
+        PageDirectoryEntry* pageDirectoryPointer,
+        uintptr_t kernelStartAddress,
+        uintptr_t kernelEndAddress
+    ) {
+        auto pageDirectory = std::Span(pageDirectoryPointer, PAGE_DIRECTORY_SIZE);
+        PageTableEntry identityMappedPageTableArray[PAGE_TABLE_SIZE] __attribute__ ((aligned (4096)));
+        auto identityMappedPageTable = std::Span(identityMappedPageTableArray, PAGE_TABLE_SIZE);
+
+        mapAddressRangeInTable(
+            identityMappedPageTable.data(),
+            kernelStartAddress,
+            kernelStartAddress,
+            kernelEndAddress
+        );
+
+        updateTableInDirectory(pageDirectory, 0, identityMappedPageTable.data());
+    }
+
+    void setupHigherHalfPage(
         PageDirectoryEntry* pageDirectoryPointer,
         PageTableEntry* kernelPageTablePointer,
         uintptr_t virtualKernelBaseAddress,
@@ -54,34 +71,35 @@ namespace kernel::boot::paging {
     ) {
         auto pageDirectory = std::Span(pageDirectoryPointer, PAGE_DIRECTORY_SIZE);
         auto higherHalfKernelPageTable = std::Span(kernelPageTablePointer, PAGE_TABLE_SIZE);
-        PageTableEntry identityMappedPageTableArray[PAGE_TABLE_SIZE] __attribute__ ((aligned (4096)));
-        auto identityMappedPageTable = std::Span(identityMappedPageTableArray, PAGE_TABLE_SIZE);
+
+        mapAddressRangeInTable(
+            higherHalfKernelPageTable.data(),
+            virtualKernelBaseAddress + kernelStartAddress,
+            kernelStartAddress,
+            kernelEndAddress
+        );
+
+        updateTableInDirectory(pageDirectory, virtualKernelBaseAddress, higherHalfKernelPageTable.data());
+    }
+
+    void initializePaging(
+        PageDirectoryEntry* pageDirectoryPointer,
+        PageTableEntry* kernelPageTablePointer,
+        uintptr_t virtualKernelBaseAddress,
+        uintptr_t kernelStartAddress,
+        uintptr_t kernelEndAddress
+    ) {
+        auto pageDirectory = std::Span(pageDirectoryPointer, PAGE_DIRECTORY_SIZE);
 
         zeroPageDirectory(pageDirectory);
 
-        mapAddressRangeInTable(
-                identityMappedPageTable.data(),
-                kernelStartAddress,
-                kernelStartAddress,
-                kernelEndAddress
-        );
-        mapAddressRangeInTable(
-                higherHalfKernelPageTable.data(),
-                virtualKernelBaseAddress + kernelStartAddress,
-                kernelStartAddress,
-                kernelEndAddress
-        );
+        setupIdentityPage(pageDirectoryPointer, kernelStartAddress, kernelEndAddress);
 
-        updateTableInDirectory(pageDirectory, 0, identityMappedPageTable.data());
-        updateTableInDirectory(pageDirectory, virtualKernelBaseAddress, higherHalfKernelPageTable.data());
+        setupHigherHalfPage(pageDirectoryPointer, kernelPageTablePointer, virtualKernelBaseAddress, kernelStartAddress, kernelEndAddress);
 
         // enable paging
         loadPageDirectory(pageDirectory.data());
         enablePaging();
-
-        auto address = virtualKernelBaseAddress - kernelStartAddress;
-        //jumpToHigherKernel(address);
-        //unmapPageTable(pageDirectory, 0);
     }
 
     void unmapPageTable(std::Span<PageDirectoryEntry, std::dynamicExtent> pageDirectory, int index) {

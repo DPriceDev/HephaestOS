@@ -19,8 +19,8 @@ add_executable(
         kernel.elf
 
         kernel.cpp
-        boot/boot_grub_32.asm
-        boot/boot_config.asm
+        boot/boot_main.asm
+        boot/boot_higher.asm
         boot/idt/interrupt_descriptor_table.asm
         boot/idt/interrupts/interrupt_handler.asm
         boot/idt/exceptions/exception_handler.asm
