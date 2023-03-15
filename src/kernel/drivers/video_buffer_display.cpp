@@ -18,7 +18,7 @@
 #include <cstdint>
 
 #include "video_buffer_display.h"
-#include "boot/io/io.h"
+#include "hal/io/io.h"
 
 constexpr uint16_t eightBitOffset = 8;
 
@@ -31,7 +31,7 @@ const uint32_t &kernel::VideoBufferDisplay::getHeight() const {
 }
 
 uint32_t kernel::VideoBufferDisplay::setDisplayBuffer(const Display::Character *character, uint32_t length) const {
-    auto *videoPointer = reinterpret_cast<char *>(address::videoMemoryAddress);
+    auto *videoPointer = reinterpret_cast<char *>(virtualVideoAddress);
     unsigned int index = 0;
     for (; index < screenBufferLength; index += 2) {
         videoPointer[index] = character->character;
@@ -49,7 +49,7 @@ uint32_t kernel::VideoBufferDisplay::setDisplayBuffer(const Display::Character *
                                                               uint32_t length,
                                                               uint32_t x,
                                                               uint32_t y) const {
-    auto *videoPointer = reinterpret_cast<char *>(address::videoMemoryAddress);
+    auto *videoPointer = reinterpret_cast<char *>(virtualVideoAddress);
     uint32_t index = 0;
     uint32_t offset = (y * characterWidth) + (x * 2);
     for (; index < screenBufferLength ; index += 2) {
@@ -66,7 +66,7 @@ uint32_t kernel::VideoBufferDisplay::setDisplayBuffer(const Display::Character *
 
 void
 kernel::VideoBufferDisplay::clearDisplayBuffer(Display::Colour textColour, Display::Colour backgroundColour) const {
-    auto *videoPointer = reinterpret_cast<char *>(address::videoMemoryAddress);
+    auto *videoPointer = reinterpret_cast<char *>(virtualVideoAddress);
     for (unsigned int index = 0; index < screenBufferLength; index += 2) {
         videoPointer[index] = ' ';
         videoPointer[index + 1] = static_cast<char>(textColour | backgroundColour << 4);
@@ -101,8 +101,8 @@ kernel::Display::Cursor kernel::VideoBufferDisplay::getCursorPosition() const {
     writeToPort(address::videoCursorLowAddress, 0x0E);
     position += static_cast<uint16_t>(readFromPort(address::videoCursorHighAddress) << eightBitOffset);
 
-    return Display::Cursor{
-            position % width,
-            position / width,
-    };
+    auto x = position % width;
+    auto y = position / width;
+
+    return Display::Cursor{x, y};
 }

@@ -26,15 +26,28 @@
 #include "boot/tss/task_state_segment.h"
 #include "boot/grub/memory_map.h"
 #include "boot/serial/serial_port.h"
+#include "boot_info.h"
 
 namespace kernel::boot {
+
+    extern "C" void kernelMain();
+
+    extern "C" void loadKernelSegment();
+
+    extern "C" void enableInterrupts();
+
+    extern "C" void disableInterrupts();
 
     constexpr uint8_t interruptRequestOffset = 32;
 
     static const SerialPortConnection connection { SerialPort::COM1 };
 
-    extern "C" void init(MultiBootInfo* info, uint32_t /* magic */, uint32_t stackPointer) {
-
+    extern "C" void init(
+            MultiBootInfo * info,
+            uint32_t magic,
+            uint32_t stackPointer,
+            BootInfo bootInfo
+    ) {
         if (connection.open()) {
             std::KernelFormatOutput::getInstance().setStandardOutputIterator(
                 std::StandardOutputIterator {
@@ -49,13 +62,8 @@ namespace kernel::boot {
         }
 
         std::print("System init\n");
-
-        // todo: move kernel to higher half?
-        paging::setupPaging();
-        std::print("Paging has been turned on\n");
-
         // Construct memory map from grub multiboot information passed from grub
-        grub::constructMemoryMap(info);
+    //        grub::constructMemoryMap(info);
 
         auto tssDescriptor = tss::getTaskStateSegmentDescriptor();
         gdt::initializeGlobalDescriptorTable(tssDescriptor);
@@ -69,16 +77,18 @@ namespace kernel::boot {
         idt::initializeInterruptDescriptorTable();
         std::print("Interrupt Descriptor table initialized\n");
 
-        // todo: may need to be moved to init protected method?
-        //
+        // todo: move register addresses to header of idt
         idt::remapProgrammableInterruptController(
             interruptRequestOffset,
             interruptRequestOffset + 8
         );
         std::print("Interrupts remapped\n");
 
+        paging::unmapLowerKernel(bootInfo.pageDirectory);
 
-
-        // Load Kernel Module
+        loadKernelSegment();
+        enableInterrupts();
+        kernelMain();
+        disableInterrupts();
     }
 }

@@ -16,6 +16,7 @@
 
 ; Definitions of methods that can be called by external code.
 global loadGdtTable
+global loadKernelSegment
 
 ; Takes a pointer to a GDT size and address (in that order) and loads it into the gdt register,
 ; then calls the flush method to reload the GDT to update the CPU.
@@ -25,14 +26,18 @@ loadGdtTable:
                 call            flushGdtTable                   ;
                 ret
 
-; Called to enable the Global descriptor table loaded in the gdt register.
-flushGdtTable:
-                mov             ax, 0x10                        ; Move the kernel data segment into the ex register.
-                mov             ds, ax                          ; Move the kernel data segment into the cpu segment registers.
+loadKernelSegment:
+                mov             ax, 0x10
+                mov             ds, ax
                 mov             es, ax
                 mov             fs, ax
                 mov             gs, ax
                 mov             ss, ax
+                ret
+
+; Called to enable the Global descriptor table loaded in the gdt register.
+flushGdtTable:
+                call            loadKernelSegment
                 jmp             0x08:.flush                     ; Far jump to the kernel code segment. This reloads the gdt.
 
 ; Far jump destination. Returns to the calling code.
