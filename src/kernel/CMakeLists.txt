@@ -19,29 +19,6 @@ add_executable(
         kernel.elf
 
         kernel.cpp
-        boot/boot_main.asm
-        boot/boot_higher.asm
-        boot/idt/interrupt_descriptor_table.asm
-        boot/idt/interrupts/interrupt_handler.asm
-        boot/idt/exceptions/exception_handler.asm
-        boot/gdt/global_descriptor_table.asm
-        boot/tss/task_state_segment.asm
-        boot/init.cpp
-        library/LibCpp/lib/pure_function.cpp
-        boot/gdt/global_descriptor_table.cpp
-        boot/idt/interrupt_descriptor_table.cpp
-        boot/idt/interrupts/interrupt_handler.cpp
-        boot/idt/pic/programmable_interrupt_controller.cpp
-        boot/tss/task_state_segment.cpp
-        boot/gdt/global_descriptor.cpp
-        boot/idt/interrupt_descriptor.cpp
-        boot/idt/exceptions/exception_handler.cpp
-        boot/grub/memory_map.cpp
-        boot/paging/paging.asm
-        boot/paging/paging.cpp
-        boot/serial/serial_port.cpp
-        hal/io/io.asm
-        boot/GlobalConstructors.cpp
 )
 
 target_link_libraries(kernel.elf PRIVATE project_options) # project_warnings)

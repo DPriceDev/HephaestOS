@@ -20,12 +20,6 @@
 
 namespace kernel {
 
-    extern "C" [[noreturn]] void testUserFunction() {
-        while(true) {
-            /* Endless Loop */
-        }
-    };
-
     // todo: Should this live in a config file somewhere?
     constexpr uint32_t majorVersion = 1;
     constexpr uint32_t minorVersion = 0;
@@ -64,7 +58,10 @@ namespace kernel {
         // todo: Remove and add an error message here, should never get here?
         while(true) {
             /* Endless Loop */
+            std::print("HephaistOS\n");
         }
+
+        std::print("HephaistOS\n");
 
         //std::print("ERROR: Reached end of kernel code!");
     }

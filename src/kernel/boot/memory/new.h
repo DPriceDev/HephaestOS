@@ -1,4 +1,4 @@
-// Copyright (C) 2022 David Price - All Rights Reserved
+// Copyright (C) 2023 David Price - All Rights Reserved
 // This file is part of HephaistOS.
 //
 // HephaistOS is free software: you can redistribute it and/or modify
@@ -15,35 +15,11 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#include "stdint.h"
-#include "string.h"
+#ifndef HEPHAISTOS_NEW_H
+#define HEPHAISTOS_NEW_H
 
-template<typename T>
-int Size(T str) {
+#include <cstdint>
 
-    uint8_t i(0);
+void* operator new (std::size_t count);
 
-    // count each characters in the characters.
-    for (; str[i]; i++);
-
-    return i;       // return count
-}
-
-void* memset(void* pointer, int value, uint32_t length) {
-    unsigned char* ptr = static_cast<unsigned char *>(pointer);
-    while(length--)
-    {
-        *ptr++ = (unsigned char) value;
-    }
-    return pointer;
-}
-
-void *memcpy(void *dest, const void* src, size_t n) {
-    char *csrc = (char *) src;
-    char *cdest = (char *) dest;
-    while(n--)
-    {
-        *cdest++ = *csrc;
-    }
-    return dest;
-}
+#endif //HEPHAISTOS_NEW_H

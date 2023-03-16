@@ -20,6 +20,7 @@
 
 #include "cstdint"
 #include "model/page_directory_entry.h"
+#include "grub/multiboot_info.h"
 
 namespace kernel::boot::paging {
 
@@ -39,6 +40,7 @@ namespace kernel::boot::paging {
      * loads the paging directory into cr3 and enables paging.
      */
     extern "C" void initializePaging(
+        MultiBootInfo * info,
         paging::PageDirectoryEntry* pageDirectory,
         paging::PageTableEntry* kernelPageTable,
         uintptr_t virtualKernelBaseAddress,

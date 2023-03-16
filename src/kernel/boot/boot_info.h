@@ -20,8 +20,8 @@
 
 #include <cstdint>
 
-#include "boot/paging/model/page_directory_entry.h"
-#include "boot/paging/model/page_table_entry.h"
+#include "paging/model/page_directory_entry.h"
+#include "paging/model/page_table_entry.h"
 
 namespace kernel::boot {
 
