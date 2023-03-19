@@ -19,6 +19,8 @@
 #define HEPHAISTOS_ELF_HEADER_H
 
 #include <cstdint>
+#include <array.h>
+#include <span.h>
 
 namespace kernel::boot::elf {
 
@@ -26,6 +28,7 @@ namespace kernel::boot::elf {
         BIT_32 = 1,
         BIT_64 = 2
     };
+
     enum class Endian {
         LITTLE = 1,
         BIG = 2
@@ -67,40 +70,42 @@ namespace kernel::boot::elf {
         READABLE = 4
     };
 
-    struct ProgramHeader {
+    struct [[gnu::packed]] ProgramHeader {
         SegmentType segmentType;
         uint32_t dataOffset;
-        uint32_t virtualMemoryOffset;
-        uint32_t undefined;
-        uint32_t segmentFileSize;
-        uint32_t segmentMemorySize;
+        uint32_t virtualAddress;
+        uint32_t physicalAddress;
+        uint32_t fileSize;
+        uint32_t memorySize;
         ProgramFlags flags;
         uint32_t alignment;
     };
 
-    struct ElfHeader {
+    constexpr size_t ELF_HEADER_PADDING = 7;
+
+    struct [[gnu::packed]] ElfHeader {
         uint8_t magicNumber;
-        char elfString[3];
+        std::Array<uint8_t, 3> identifier;
         BitSize bitSize : 8;
         Endian endian : 8;
         uint8_t headerVersion;
         uint8_t osAbi;
-        uint64_t padding;
+        uint8_t abiVersion;
+        std::Array<uint8_t, ELF_HEADER_PADDING> padding;
         ElfType type : 16;
         InstructionSet instructionSet : 16;
         uint32_t elfVersion;
-        uint32_t programEntryPosition;
-        uint32_t programHeader;
-        uint32_t sectionHeader;
+        uint32_t programEntryAddress;
+        uint32_t programHeaderOffset;
+        uint32_t sectionHeaderOffset;
         uint32_t flags;
         uint16_t headerSize;
-        uint16_t programHeaderEntrySize;
-        uint16_t programHeaderEntryCount;
-        uint16_t sectionHeaderEntrySize;
-        uint16_t sectionHeaderEntryCount;
+        uint16_t programHeaderSize;
+        uint16_t programHeaderCount;
+        uint16_t sectionHeaderSize;
+        uint16_t sectionHeaderCount;
         uint16_t sectionHeaderIndex;
     };
-
 }
 
 #endif //HEPHAISTOS_ELF_HEADER_H
