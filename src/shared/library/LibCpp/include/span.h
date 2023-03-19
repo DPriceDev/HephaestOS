@@ -85,7 +85,7 @@ namespace std {
         using constPointer = const elementType*;
         using reference = elementType&;
         using constReference = const elementType&;
-        using iterator = valueType*;
+        using iterator = pointer;
         using reverseIterator = std::reverseIterator<iterator>;
 
         // Span Definitions
@@ -151,11 +151,19 @@ namespace std {
         constexpr Span& operator=(const Span& other) noexcept = default;
 
         // Iterators
-        auto begin() -> iterator {
+        auto begin() const -> iterator {
             return data();
         }
 
-        auto end() -> iterator {
+        auto end() const -> iterator {
+            return data() + size();
+        }
+
+        auto cbegin() const -> const iterator {
+            return data();
+        }
+
+        auto cend() const -> const iterator {
             return data() + size();
         }
 

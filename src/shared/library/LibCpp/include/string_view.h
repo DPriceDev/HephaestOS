@@ -23,6 +23,7 @@
 #include "iterator.h"
 #include "string"
 #include "result.h"
+#include "algorithm.h"
 
 namespace std {
     template<class CharacterType, class Traits = std::CharacterTraits<CharacterType>>
@@ -117,11 +118,11 @@ namespace std {
 
         // Capacity
         [[nodiscard]] constexpr sizeType size() const noexcept {
-            return stringStart - stringEnd;
+            return stringEnd - stringStart;
         }
 
         [[nodiscard]] constexpr sizeType length() const noexcept {
-            return stringStart - stringEnd;
+            return stringEnd - stringStart;
         }
 
         [[nodiscard]] constexpr sizeType maxSize() const noexcept {
@@ -129,7 +130,7 @@ namespace std {
         }
 
         [[nodiscard]] constexpr bool empty() const noexcept {
-            return (stringStart - stringEnd) <= 0;
+            return (stringEnd - stringStart) <= 0;
         }
 
         // Modifiers
@@ -138,11 +139,35 @@ namespace std {
         // Operations
         // todo as required
 
+       // todo: constexpr auto startsWith()
+
+        constexpr int compare(BaseStringView other) const noexcept {
+            const sizeType minSize = std::min(length(), other.length());
+            const auto compared = traitsType::compare(data(), other.data(), minSize);
+            if (compared != 0) {
+                return compared;
+            }
+
+            if (length() == other.length()) {
+                return 0;
+            }
+
+            if (length() < other.length()) {
+                return -1;
+            }
+
+            return 1;
+        }
+
+        // Operators
+        friend constexpr auto operator==(BaseStringView lhs, BaseStringView rhs) noexcept -> bool {
+            return lhs.compare(rhs) == 0;
+        }
+
     private:
         constIterator stringStart;
         constIterator stringEnd;
     };
-
 
     using StringView = BaseStringView<char>;
 
@@ -150,7 +175,8 @@ namespace std {
     concept convertableToStringView = requires(Type* type) {
         std::BaseStringView<Type>(type);
     };
-
 }
 
 #endif // HEPHAIST_OS_SHARED_LIBRARY_CPP_STRING_VIEW_H
+
+#pragma clang diagnostic pop
