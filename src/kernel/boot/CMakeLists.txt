@@ -35,7 +35,7 @@ add_executable(
         ../hal/io/io.asm
         GlobalConstructors.cpp
         memory/boot_allocator.cpp
-        memory/new.h memory/new.cpp)
+        memory/new.h memory/new.cpp elf/boot_elf_loader.cpp elf/elf_header.h)
 
 target_link_libraries(boot.elf PRIVATE project_options) # project_warnings)
 

@@ -58,11 +58,8 @@ namespace kernel {
         // todo: Remove and add an error message here, should never get here?
         while(true) {
             /* Endless Loop */
-            std::print("HephaistOS\n");
         }
 
-        std::print("HephaistOS\n");
-
-        //std::print("ERROR: Reached end of kernel code!");
+        std::print("ERROR: Reached end of kernel code!");
     }
 }

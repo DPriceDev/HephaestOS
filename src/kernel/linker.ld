@@ -1,10 +1,9 @@
 ENTRY (kernelMain)
 
-virtualBase = 0xC0000000;
+virtualBase = 0xC0200000;
 
 SECTIONS
 {
-
     . += virtualBase;
 
     .text ALIGN(4k): AT(ADDR(.text) - virtualBase) {

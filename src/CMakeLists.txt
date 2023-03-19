@@ -18,7 +18,7 @@ add_custom_target(
         COMMAND echo 'set default-0' >> ${CMAKE_BINARY_DIR}/iso/boot/grub/grub.cfg
         COMMAND echo 'menuentry \"HephaistOS\"{' >> ${CMAKE_BINARY_DIR}/iso/boot/grub/grub.cfg
         COMMAND echo ' multiboot /boot/boot.elf' >> ${CMAKE_BINARY_DIR}/iso/boot/grub/grub.cfg
-        COMMAND echo ' module /boot/kernel.elf /boot/kernel.elf' >> ${CMAKE_BINARY_DIR}/iso/boot/grub/grub.cfg
+        COMMAND echo ' module /boot/kernel.elf kernel' >> ${CMAKE_BINARY_DIR}/iso/boot/grub/grub.cfg
         COMMAND echo ' boot' >> ${CMAKE_BINARY_DIR}/iso/boot/grub/grub.cfg
         COMMAND echo '}' >> ${CMAKE_BINARY_DIR}/iso/boot/grub/grub.cfg
         COMMAND grub-mkrescue --output=${CMAKE_BINARY_DIR}/HephaistOS.iso ${CMAKE_BINARY_DIR}/iso

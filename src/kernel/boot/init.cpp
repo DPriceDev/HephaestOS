@@ -15,39 +15,49 @@
  * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <cstdint>
+#include <bit>
+#include <boot_info.h>
+#include <elf.h>
+#include <elf/boot_elf_loader.h>
 #include <format.h>
-
-#include "gdt/global_descriptor_table.h"
-#include "idt/interrupt_descriptor_table.h"
-#include "paging/paging.h"
-#include "grub/multiboot_info.h"
-#include "idt/pic/programmable_interrupt_controller.h"
-#include "tss/task_state_segment.h"
-#include "grub/memory_map.h"
-#include "serial/serial_port.h"
-#include "boot_info.h"
-#include "elf.h"
-#include "elf/elf_header.h"
-#include "memory/boot_allocator.h"
-#include "memory/new.h"
-#include "string.h"
+#include <gdt/global_descriptor_table.h>
+#include <idt/interrupt_descriptor_table.h>
+#include <idt/pic/programmable_interrupt_controller.h>
+#include <memory/boot_allocator.h>
+#include <paging/paging.h>
+#include <serial/serial_port.h>
+#include <tss/task_state_segment.h>
 
 namespace kernel::boot {
 
-    extern "C" void kernelMain();
-
     extern "C" void loadKernelSegment();
+
+    extern "C" void jumpToKernel(uintptr_t address);
 
     extern "C" void enableInterrupts();
 
     extern "C" void disableInterrupts();
 
-    constexpr uint8_t interruptRequestOffset = 32;
-
     static const SerialPortConnection connection { SerialPort::COM1 };
 
-    uintptr_t loadKernelModule(MultiBootInfo* pInfo, BootInfo info);
+    auto loadModules(const MultiBootInfo* info, const BootInfo& bootInfo) -> std::Result<uintptr_t>;
+
+    void initializeBootAllocator(const BootInfo& bootInfo);
+
+    void initializeSerialPort();
+
+    void initializeDescriptorTables(uint32_t stackPointer);
+
+    void setupInterrupts();
+
+    void enterKernelModule(const std::Result<uintptr_t>& kernelAddress);
+
+    struct LoadedModule {
+        std::StringView name;
+        uintptr_t address;
+    };
+
+    auto loadBootModule(const BootInfo& bootInfo, const ModuleEntry& bootModule) -> std::Result<LoadedModule>;
 
     extern "C" void init(
             MultiBootInfo * info,
@@ -55,12 +65,62 @@ namespace kernel::boot {
             uint32_t stackPointer,
             BootInfo bootInfo
     ) {
-        const auto bootSize = bootInfo.kernelEndAddress - bootInfo.kernelStartAddress;
-        BootAllocator::getInstance().setMemoryPointer(
-            bootInfo.kernelEndAddress,
-            bootInfo.kernelVirtualAddress + bootSize
-        );
+        initializeSerialPort();
+        std::print("System init\n");
 
+        initializeBootAllocator(bootInfo);
+
+        initializeDescriptorTables(stackPointer);
+
+        setupInterrupts();
+
+        if (info->moduleCount == 0) {
+            std::print("No Boot Modules Found\n");
+            return;
+        }
+
+        // todo: paging::unmapLowerKernel(bootInfo.pageDirectory);
+
+        const auto kernelAddress = loadModules(info, bootInfo);
+        if (kernelAddress.isValid()) {
+            std::print("Entering kernel module");
+            enterKernelModule(kernelAddress);
+        } else {
+            std::print("Failed to enter kernel module");
+        }
+    }
+
+    void enterKernelModule(const std::Result<uintptr_t>& kernelAddress) {
+        typedef void (*EnterKernel)();
+        EnterKernel enterKernel = std::bit_cast<EnterKernel>(kernelAddress.get());
+
+        loadKernelSegment();
+    //    enableInterrupts();
+        //enterKernel();
+        jumpToKernel(kernelAddress.get());
+        disableInterrupts();
+    }
+
+    void setupInterrupts() {
+        constexpr uint8_t masterDeviceOffset = 32;
+        constexpr uint8_t slaveDeviceOffset = masterDeviceOffset + 8;
+        idt::remapProgrammableInterruptController(masterDeviceOffset,slaveDeviceOffset);
+        std::print("Interrupts remapped\n");
+    }
+
+    void initializeDescriptorTables(uint32_t stackPointer) {
+        auto tssDescriptor = tss::getTaskStateSegmentDescriptor();
+        gdt::initializeGlobalDescriptorTable(tssDescriptor);
+        std::print("Global Descriptor table initialized\n");
+
+        tss::initializeTaskStateSegment(stackPointer);
+        std::print("Task State Segment initialized\n");
+
+        idt::initializeInterruptDescriptorTable();
+        std::print("Interrupt Descriptor table initialized\n");
+    }
+
+    void initializeSerialPort() {
         if (connection.open()) {
             std::KernelFormatOutput::getInstance().setStandardOutputIterator(
                 std::StandardOutputIterator {
@@ -73,82 +133,56 @@ namespace kernel::boot {
                 }
             );
         }
+    }
 
-        std::print("System init\n");
-        // Construct memory map from grub multiboot information passed from grub
-    //        grub::constructMemoryMap(info);
-
-        auto tssDescriptor = tss::getTaskStateSegmentDescriptor();
-        gdt::initializeGlobalDescriptorTable(tssDescriptor);
-        std::print("Global Descriptor table initialized\n");
-
-        //
-        tss::initializeTaskStateSegment(stackPointer);
-        std::print("Task State Segment initialized\n");
-
-        //
-        idt::initializeInterruptDescriptorTable();
-        std::print("Interrupt Descriptor table initialized\n");
-
-        // todo: move register addresses to header of idt
-        idt::remapProgrammableInterruptController(
-            interruptRequestOffset,
-            interruptRequestOffset + 8
+    void initializeBootAllocator(const BootInfo& bootInfo) {
+        const auto bootSize = bootInfo.kernelEndAddress - bootInfo.kernelStartAddress;
+        BootAllocator::getInstance().setMemoryPointer(
+            bootInfo.kernelEndAddress,
+            bootInfo.kernelVirtualAddress + bootSize
         );
-        std::print("Interrupts remapped\n");
-
-        auto kernelAddress = loadKernelModule(info, bootInfo);
-
-        typedef void (*EnterKernel)();
-        EnterKernel enterKernel = reinterpret_cast<EnterKernel>(kernelAddress);
-
-        paging::unmapLowerKernel(bootInfo.pageDirectory);
-
-        loadKernelSegment();
-        enableInterrupts();
-        enterKernel();
-
-        disableInterrupts();
+        std::print("Early Boot Allocator initialized\n");
     }
 
-    void loadElfToMemory(uintptr_t header);
+    auto loadModules(const MultiBootInfo* info, const BootInfo& bootInfo) -> std::Result<uintptr_t> {
+        std::print("Loading {} Boot Module{}\n", info->moduleCount, (info->moduleCount == 1) ? "" : "s");
 
-    uintptr_t loadKernelModule(MultiBootInfo* info, BootInfo bootInfo) {
-        std::print("Loading Kernel Module\n");
+        uintptr_t kernelAddress = 0; // todo: Optional or replace with list of modules
 
-        if (info->moduleCount == 0) {
-            std::print("No Modules Found\n");
-            return 0;
+        const auto bootModules = std::Span<ModuleEntry> { info->modulePtr, info->moduleCount };
+        for (const auto& bootModule: bootModules) {
+            const auto loadedModule = loadBootModule(bootInfo, bootModule);
+
+            // todo: maybe just return a list of pairs of module name and address
+            if (loadedModule.isValid() && loadedModule.get().name == "kernel") {
+                kernelAddress = loadedModule.get().address;
+            }
         }
 
-        auto& kernelModule = info->modulePtr[0];
-
-        // todo: map kernel module memory to page table
-
-        // todo: Align to page
-
-        const auto elfAddress = kernelModule.moduleStart + bootInfo.kernelVirtualAddress;
-        loadElfToMemory(kernelModule.moduleStart + bootInfo.kernelVirtualAddress);
-
-        auto t = 0;
-
-        // todo: Return entry address?
-
-        auto* elfHeader = reinterpret_cast<Elf32_Ehdr*>(elfAddress);
-        return elfHeader->e_entry;
-    }
-
-
-    void loadElfToMemory(uintptr_t elfPointer) {
-        auto* elfHeader = reinterpret_cast<Elf32_Ehdr*>(elfPointer);
-        auto* programHeader = reinterpret_cast<Elf32_Phdr*>(elfPointer + elfHeader->e_phoff);
-        auto programHeaders = std::Span<Elf32_Phdr>(programHeader, elfHeader->e_phnum);
-
-        for (const auto & header : programHeaders) {
-            const auto programAddress = reinterpret_cast<void*>(elfPointer + header.p_offset);
-            const auto memoryAddress = reinterpret_cast<void*>(header.p_vaddr);
-            memset(memoryAddress, 0, header.p_memsz);
-            memcpy(memoryAddress, programAddress, header.p_filesz);
+        if (kernelAddress == 0) {
+            return std::Result<uintptr_t>::failure();
         }
+
+        return std::Result<uintptr_t>::success(kernelAddress);
     }
+
+    auto loadBootModule(const BootInfo& bootInfo, const ModuleEntry& bootModule) -> std::Result<LoadedModule> {
+        const auto moduleName = std::StringView { std::bit_cast<char*>(bootModule.string) };
+        std::print("Loading Boot Module: {}\n", moduleName);
+
+        const auto elfAddress = bootModule.moduleStart + bootInfo.kernelVirtualAddress;
+        const auto elfInfo = elf::getElfInfo(elfAddress);
+
+        if (elfInfo.isNotValid()) {
+            std::print("Failed to load boot module: {}\n", moduleName);
+            return std::Result<LoadedModule>::failure();
+        }
+
+        // todo: map boot module memory (alignment)
+
+        elf::loadStaticElf(elfInfo.get());
+        return std::Result<LoadedModule>::success({ moduleName, elfInfo.get().entryAddress });
+    }
+
+    // todo: map boot module memory (alignment)
 }
