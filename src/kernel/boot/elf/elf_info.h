@@ -21,14 +21,22 @@
 #include <cstdint>
 #include <span.h>
 #include "elf_header.h"
+#include <variant_base.h>
 
 namespace kernel::boot::elf {
 
-    struct ElfInfo {
+    struct ExecutableElf {
         std::uintptr_t entryAddress;
-        const ElfHeader* header;
+        std::uintptr_t headerAddress;
         std::Span<const ProgramHeader> programHeaders;
     };
+
+    struct RelocatableElf {
+        std::uintptr_t headerAddress;
+        std::Span<const ProgramHeader> programHeaders;
+    };
+
+    using ElfInfo = std::Variant<ExecutableElf, RelocatableElf>;
 }
 
 #endif // HEPHAISTOS_ELF_INFO_H

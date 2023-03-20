@@ -18,9 +18,10 @@
 #ifndef HEPHAISTOS_BOOT_ELF_LOADER_H
 #define HEPHAISTOS_BOOT_ELF_LOADER_H
 
+#include <cstdint>
 #include "elf.h"
 #include "elf_info.h"
-#include <cstdint>
+#include <variant_base.h>
 
 namespace kernel::boot::elf {
 
@@ -28,10 +29,10 @@ namespace kernel::boot::elf {
     auto getElfInfo(uintptr_t headerAddress) -> std::Result<ElfInfo>;
 
     // load static elf to memory
-    void loadStaticElf(const ElfInfo& info);
+    void loadElf(const ExecutableElf& elf);
 
     // load relocatable elf to memory
-    void loadRelocatableElf(const ElfInfo&, uintptr_t loadAddress);
+    void loadElf(const RelocatableElf& elf, uintptr_t loadAddress);
 }
 
 #endif // HEPHAISTOS_BOOT_ELF_LOADER_H

@@ -9,7 +9,7 @@ set(LINK_LIBRARIES -nostdlib)
 
 message(linker: ${CMAKE_CXX_LINK_EXECUTABLE})
 
-SET(CMAKE_CXX_LINK_EXECUTABLE "<CMAKE_CXX_COMPILER> <FLAGS> <CMAKE_CXX_LINK_FLAGS> <LINK_FLAGS> <OBJECTS> -o <TARGET> <LINK_LIBRARIES> -ffreestanding -nostdlib -fcommon")
+SET(CMAKE_CXX_LINK_EXECUTABLE "<CMAKE_CXX_COMPILER> <FLAGS> <CMAKE_CXX_LINK_FLAGS> <LINK_FLAGS> <OBJECTS> -o <TARGET> <LINK_LIBRARIES> -ffreestanding -nostdlib -fcommon -r")
 
 add_subdirectory(library)
 add_subdirectory(hal)

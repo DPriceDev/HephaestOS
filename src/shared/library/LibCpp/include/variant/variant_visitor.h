@@ -136,6 +136,26 @@ namespace std {
     constexpr auto visit(Visitor& visitor, Variant& variant) -> decltype(auto) {
         return std::visit(std::move(visitor), variant);
     }
+
+    template<typename... Functions>
+    struct Visitors : Functions... {
+        using Functions::operator()...;
+    };
+
+    template<typename... Functions>
+    Visitors(Functions...) -> Visitors<Functions...>;
+
+    template<class... Functions>
+    struct Overloaded : Functions ... {
+        using Functions::operator()...;
+    };
+
+    /**
+     * Constructs an Overloaded set of functions that exposes each operator()
+     * method in the same struct.
+     */
+    template<class... Functions>
+    Overloaded(Functions...) -> Overloaded<Functions...>;
 }
 
 #endif // HEPHAIST_OS_SHARED_LIBRARY_CPP_VARIANT_VISITOR_H

@@ -32,8 +32,6 @@ namespace kernel::boot {
 
     extern "C" void loadKernelSegment();
 
-    extern "C" void jumpToKernel(uintptr_t address);
-
     extern "C" void enableInterrupts();
 
     extern "C" void disableInterrupts();
@@ -79,9 +77,11 @@ namespace kernel::boot {
             return;
         }
 
-        // todo: paging::unmapLowerKernel(bootInfo.pageDirectory);
 
         const auto kernelAddress = loadModules(info, bootInfo);
+
+        paging::unmapLowerKernel(bootInfo.pageDirectory);
+
         if (kernelAddress.isValid()) {
             std::print("Entering kernel module\n");
             enterKernelModule(kernelAddress);
@@ -166,22 +166,35 @@ namespace kernel::boot {
     }
 
     auto loadBootModule(const BootInfo& bootInfo, const ModuleEntry& bootModule) -> std::Result<LoadedModule> {
-        const auto moduleName = std::StringView { std::bit_cast<char*>(bootModule.string) };
+        const auto moduleName = std::StringView { std::bit_cast<char*>(bootModule.string + bootInfo.kernelVirtualAddress) };
         std::print("Loading Boot Module: {}\n", moduleName);
 
         const auto elfAddress = bootModule.moduleStart + bootInfo.kernelVirtualAddress;
-        const auto elfInfo = elf::getElfInfo(elfAddress);
+        const auto elfInfoResult = elf::getElfInfo(elfAddress);
 
-        if (elfInfo.isNotValid()) {
+        if (elfInfoResult.isNotValid()) {
             std::print("Failed to load boot module: {}\n", moduleName);
             return std::Result<LoadedModule>::failure();
         }
+        elf::ElfInfo elfInfo = elfInfoResult.get();
 
         // todo: map boot module memory (alignment)
 
-        elf::loadStaticElf(elfInfo.get());
-        return std::Result<LoadedModule>::success({ moduleName, elfInfo.get().entryAddress });
-    }
+        const auto entryAddress = std::visit(
+            std::Visitors {
+                [] (const std::Result<elf::RelocatableElf>&& elf) {
+                    const auto address = 0xC0300000;
+                    elf::loadElf(elf.get(), address);
+                    return address;
+                },
+                [] (const std::Result<elf::ExecutableElf>&& elf) {
+                    elf::loadElf(elf.get());
+                    return elf.get().entryAddress;
+                }
+            },
+            elfInfo
+        );
 
-    // todo: map boot module memory (alignment)
+        return std::Result<LoadedModule>::success({ moduleName, entryAddress });
+    }
 }
