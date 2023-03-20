@@ -1,6 +1,4 @@
 
-set(CMAKE_ASM_NASM_OBJECT_FORMAT elf32-i386)
-
 set(LINK ${CMAKE_CURRENT_SOURCE_DIR}/linker.ld)
 set(CMAKE_CXX_LINK_FLAGS ${CMAKE_CXX_LINK_FLAGS} -T${LINK})
 # todo: move to target compile options, also add to all klibs
@@ -18,6 +16,7 @@ add_subdirectory(library)
 add_executable(
         kernel.elf
 
+        kernel_main.asm
         kernel.cpp
 )
 

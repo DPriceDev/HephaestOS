@@ -52,7 +52,7 @@ namespace std {
         }
 
         // Accessors
-        [[nodiscard]] constexpr auto get() const noexcept {
+        [[nodiscard]] constexpr auto& get() const noexcept {
             return resultValue;
         }
 

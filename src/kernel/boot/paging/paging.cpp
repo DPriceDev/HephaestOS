@@ -129,9 +129,9 @@ namespace kernel::boot::paging {
 
         zeroPageDirectory(pageDirectory);
 
-        setupIdentityPage(pageDirectoryPointer, kernelStartAddress, 0x300000);
+        setupIdentityPage(pageDirectoryPointer, kernelStartAddress, 0x400000);
 
-        setupHigherHalfPage(pageDirectoryPointer, kernelPageTablePointer, virtualKernelBaseAddress, kernelStartAddress, 0x300000);
+        setupHigherHalfPage(pageDirectoryPointer, kernelPageTablePointer, virtualKernelBaseAddress, kernelStartAddress, 0x400000);
 
         // enable paging
         loadPageDirectory(pageDirectory.data());

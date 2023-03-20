@@ -1,6 +1,6 @@
-ENTRY (kernelMain)
+ENTRY (loader)
 
-virtualBase = 0xC0200000;
+virtualBase = 0xC0300000;
 
 SECTIONS
 {

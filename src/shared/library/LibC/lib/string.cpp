@@ -43,7 +43,7 @@ void *memcpy(void *dest, const void* src, size_t n) {
     char *cdest = (char *) dest;
     while(n--)
     {
-        *cdest++ = *csrc;
+        *cdest++ = *csrc++;
     }
     return dest;
 }

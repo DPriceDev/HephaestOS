@@ -25,10 +25,27 @@ namespace kernel {
     constexpr uint32_t minorVersion = 0;
     constexpr uint32_t fixVersion = 0;
 
-    extern "C" void kernelMain() {
+//    static const SerialPortConnection connection { SerialPort::COM1 };
+//
+//    void initializeSerialPort() {
+//        if (connection.open()) {
+//            std::KernelFormatOutput::getInstance().setStandardOutputIterator(
+//                std::StandardOutputIterator {
+//                    &connection,
+//                    [] (const void* pointer) { },
+//                    [] (const void* pointer, char character) {
+//                        static_cast<const SerialPortConnection*>(pointer)->write(character);
+//                    },
+//                    [] (const void* pointer) { },
+//                }
+//            );
+//        }
+//    }
 
-        std::print("HephaistOS\n");
-        std::print("Version 1.0\n");
+    extern "C" [[maybe_unused]] void kernelMain() {
+
+     //   std::print("HephaistOS\n");
+      //  std::print("Version 1.0\n");
 
         // TODO: Register timer with timer interrupt
 
