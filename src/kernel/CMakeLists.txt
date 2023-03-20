@@ -12,6 +12,7 @@ message(linker: ${CMAKE_CXX_LINK_EXECUTABLE})
 SET(CMAKE_CXX_LINK_EXECUTABLE "<CMAKE_CXX_COMPILER> <FLAGS> <CMAKE_CXX_LINK_FLAGS> <LINK_FLAGS> <OBJECTS> -o <TARGET> <LINK_LIBRARIES> -ffreestanding -nostdlib -fcommon")
 
 add_subdirectory(library)
+add_subdirectory(hal)
 
 add_executable(
         kernel.elf
@@ -21,7 +22,7 @@ add_executable(
 )
 
 target_link_libraries(kernel.elf PRIVATE project_options) # project_warnings)
-target_link_libraries(kernel.elf PUBLIC KLibC KLibCpp KLibDebug gcc)
+target_link_libraries(kernel.elf PUBLIC KLibC KLibCpp KLibDebug KLibHal gcc)
 
 target_include_directories(kernel.elf PUBLIC .)
 

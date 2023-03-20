@@ -30,13 +30,6 @@ section .bss
 section .text
 virtualBase     equ             0xC0000000
 
-jumpToKernel:
-              ;  mov             eax, [esp+4]
-                mov             eax, [esp+4]
-                mov             esp, stackStart
-                push            eax
-                jmp             eax
-
 enterHigherKernel:
 ; Set the stack pointer to the start of the stack at the higher kernel address
                 mov             esp, stackStart

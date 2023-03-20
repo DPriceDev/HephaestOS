@@ -25,7 +25,7 @@
 #include <idt/pic/programmable_interrupt_controller.h>
 #include <memory/boot_allocator.h>
 #include <paging/paging.h>
-#include <serial/serial_port.h>
+#include <serial_port.h>
 #include <tss/task_state_segment.h>
 
 namespace kernel::boot {
@@ -38,7 +38,7 @@ namespace kernel::boot {
 
     extern "C" void disableInterrupts();
 
-    static const SerialPortConnection connection { SerialPort::COM1 };
+    static const debug::SerialPortConnection connection { debug::SerialPort::COM1 };
 
     auto loadModules(const MultiBootInfo* info, const BootInfo& bootInfo) -> std::Result<uintptr_t>;
 
@@ -83,21 +83,20 @@ namespace kernel::boot {
 
         const auto kernelAddress = loadModules(info, bootInfo);
         if (kernelAddress.isValid()) {
-            std::print("Entering kernel module");
+            std::print("Entering kernel module\n");
             enterKernelModule(kernelAddress);
         } else {
-            std::print("Failed to enter kernel module");
+            std::print("Failed to enter kernel module\n");
         }
     }
 
     void enterKernelModule(const std::Result<uintptr_t>& kernelAddress) {
-        typedef void (*EnterKernel)();
+        typedef void (*EnterKernel)(const std::StandardOutputIterator&);
         EnterKernel enterKernel = std::bit_cast<EnterKernel>(kernelAddress.get());
-
+        const auto& interator = std::KernelFormatOutput::getInstance().out();
         loadKernelSegment();
-    //    enableInterrupts();
-        //enterKernel();
-        jumpToKernel(kernelAddress.get());
+        enableInterrupts();
+        enterKernel(interator);
         disableInterrupts();
     }
 
@@ -127,7 +126,7 @@ namespace kernel::boot {
                     &connection,
                     [] (const void* pointer) { },
                     [] (const void* pointer, char character) {
-                        static_cast<const SerialPortConnection*>(pointer)->write(character);
+                        static_cast<const debug::SerialPortConnection*>(pointer)->write(character);
                     },
                     [] (const void* pointer) { },
                 }

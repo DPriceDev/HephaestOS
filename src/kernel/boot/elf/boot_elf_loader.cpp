@@ -50,9 +50,8 @@ namespace kernel::boot::elf {
 
     void loadStaticElf(const ElfInfo& info) {
         for (const auto& programHeader : info.programHeaders) {
-            const auto addr = std::bit_cast<uintptr_t>(info.header);
-            const auto dsf = addr + programHeader.dataOffset;
-            const auto* programAddress = std::bit_cast<void*>(dsf);
+            const auto headerAddress = std::bit_cast<uintptr_t>(info.header);
+            const auto* programAddress = std::bit_cast<void*>(headerAddress + programHeader.dataOffset);
             auto* memoryAddress = std::bit_cast<void*>(programHeader.virtualAddress);
             memset(memoryAddress, 0, programHeader.memorySize);
             memcpy(memoryAddress, programAddress, programHeader.fileSize);

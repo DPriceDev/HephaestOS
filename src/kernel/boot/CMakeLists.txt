@@ -19,8 +19,6 @@ add_executable(
         tss/task_state_segment.asm
         init.cpp
 
-        ../library/LibCpp/lib/pure_function.cpp
-
         gdt/global_descriptor_table.cpp
         idt/interrupt_descriptor_table.cpp
         idt/interrupts/interrupt_handler.cpp
@@ -33,14 +31,14 @@ add_executable(
         grub/memory_map.cpp
         paging/paging.asm
         paging/paging.cpp
-        serial/serial_port.cpp
-        ../hal/io/io.asm
         GlobalConstructors.cpp
         memory/boot_allocator.cpp
-        memory/new.h memory/new.cpp elf/boot_elf_loader.cpp elf/elf_header.h)
+        memory/new.cpp
+        elf/boot_elf_loader.cpp
+)
 
 target_link_libraries(boot.elf PRIVATE project_options) # project_warnings)
 
-target_link_libraries(boot.elf PUBLIC KLibC KLibCpp KLibDebug gcc)
+target_link_libraries(boot.elf PUBLIC KLibC KLibCpp KLibDebug KLibHal gcc)
 
 target_include_directories(boot.elf PUBLIC .)

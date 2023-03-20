@@ -27,13 +27,7 @@ section .text
 virtualBase     equ             0xC0000000
 
 loader:
-                mov             esi, eax
-                mov             edi, ebx
+                mov             eax, [esp+4]
+                push            eax
                 call            kernelMain
-
-halt:
-                hlt
-                jmp             halt
-end:
-
 end:

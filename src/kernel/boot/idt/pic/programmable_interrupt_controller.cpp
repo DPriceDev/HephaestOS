@@ -27,35 +27,35 @@ namespace kernel::boot::idt {
             uint8_t slaveOffset
     ) {
         // initialize pic todo: Comment second command
-        writeToPort(masterPicAddress, initializeCommand | ICW1_ICW4);
-        waitForIO();
-        writeToPort(slavePicAddress, initializeCommand | ICW1_ICW4);
-        waitForIO();
+        hal::writeToPort(masterPicAddress, initializeCommand | ICW1_ICW4);
+        hal::waitForIO();
+        hal::writeToPort(slavePicAddress, initializeCommand | ICW1_ICW4);
+        hal::waitForIO();
 
         // Set the interrupt offset
-        writeToPort(masterPicDataAddress, masterOffset);
-        waitForIO();
-        writeToPort(slavePicDataAddress, slaveOffset);
-        waitForIO();
+        hal::writeToPort(masterPicDataAddress, masterOffset);
+        hal::waitForIO();
+        hal::writeToPort(slavePicDataAddress, slaveOffset);
+        hal::waitForIO();
 
         // Setup master pic to recognise the slave pic is on IRQ2
-        writeToPort(masterPicDataAddress, 4);
-        waitForIO();
+        hal::writeToPort(masterPicDataAddress, 4);
+        hal::waitForIO();
         // todo: what is a cascade identity?
-        writeToPort(slavePicDataAddress, 2);
-        waitForIO();
+        hal::writeToPort(slavePicDataAddress, 2);
+        hal::waitForIO();
 
         //
-        writeToPort(masterPicDataAddress, ICW4_8086);
-        waitForIO();
-        writeToPort(slavePicDataAddress, ICW4_8086);
-        waitForIO();
+        hal::writeToPort(masterPicDataAddress, ICW4_8086);
+        hal::waitForIO();
+        hal::writeToPort(slavePicDataAddress, ICW4_8086);
+        hal::waitForIO();
 
         //
-        writeToPort(masterPicDataAddress, 0);
-        waitForIO();
-        writeToPort(slavePicDataAddress, 0);
-        waitForIO();
+        hal::writeToPort(masterPicDataAddress, 0);
+        hal::waitForIO();
+        hal::writeToPort(slavePicDataAddress, 0);
+        hal::waitForIO();
     }
 
     /**
@@ -64,10 +64,10 @@ namespace kernel::boot::idt {
      */
     void sendEoiFlag(uint32_t interruptCode) {
         if(interruptCode >= 8) {
-            writeToPort(slavePicAddress, picEoiFlag);
+            hal::writeToPort(slavePicAddress, picEoiFlag);
         }
 
-        writeToPort(masterPicAddress, picEoiFlag);
+        hal::writeToPort(masterPicAddress, picEoiFlag);
     }
 }
 

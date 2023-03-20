@@ -1,4 +1,4 @@
-// Copyright (C) 2022 David Price - All Rights Reserved
+// Copyright (C) 2023 David Price - All Rights Reserved
 // This file is part of HephaistOS.
 //
 // HephaistOS is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 
 #include <cstdint>
 
-namespace kernel::boot {
+namespace debug {
     constexpr uint32_t DATA_REGISTER_OFFSET = 0;
     constexpr uint32_t DLAB_HIGH_BYTE_OFFSET = 1;
     constexpr uint32_t DLAB_LOW_BYTE_OFFSET = 0;

@@ -18,7 +18,7 @@
 #ifndef HEPHAIST_OS_KERNEL_LIB_DEBUG_H
 #define HEPHAIST_OS_KERNEL_LIB_DEBUG_H
 
-namespace kernel::lib::debug {
+namespace debug {
 
     /**
      * Magic Break Point will stop execution within bochs and switch to the

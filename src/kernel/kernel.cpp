@@ -17,6 +17,7 @@
 
 #include <stdoffset.h>
 #include <format.h>
+#include <serial_port.h>
 
 namespace kernel {
 
@@ -25,27 +26,13 @@ namespace kernel {
     constexpr uint32_t minorVersion = 0;
     constexpr uint32_t fixVersion = 0;
 
-//    static const SerialPortConnection connection { SerialPort::COM1 };
-//
-//    void initializeSerialPort() {
-//        if (connection.open()) {
-//            std::KernelFormatOutput::getInstance().setStandardOutputIterator(
-//                std::StandardOutputIterator {
-//                    &connection,
-//                    [] (const void* pointer) { },
-//                    [] (const void* pointer, char character) {
-//                        static_cast<const SerialPortConnection*>(pointer)->write(character);
-//                    },
-//                    [] (const void* pointer) { },
-//                }
-//            );
-//        }
-//    }
+    extern "C" [[maybe_unused]] void kernelMain(
+        const std::StandardOutputIterator& outputIterator
+    ) {
+        std::KernelFormatOutput::getInstance().setStandardOutputIterator(outputIterator);
 
-    extern "C" [[maybe_unused]] void kernelMain() {
-
-     //   std::print("HephaistOS\n");
-      //  std::print("Version 1.0\n");
+        std::print("HephaistOS\n");
+        std::print("Version 1.0\n");
 
         // TODO: Register timer with timer interrupt
 
