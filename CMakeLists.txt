@@ -2,16 +2,20 @@ cmake_minimum_required(VERSION 3.15.0)
 
 SET (CMAKE_CXX_COMPILER_WORKS 1)
 
+cmake_policy(SET CMP0135 NEW)
+
 enable_language(ASM_NASM)
 project(HephaistOS LANGUAGES ASM_NASM CXX VERSION 1.0.0)
-include(cmake/StandardProjectSettings.cmake)
+set(CMAKE_ASM_NASM_COMPILE_OBJECT "<CMAKE_ASM_NASM_COMPILER> <INCLUDES> <FLAGS> -o <OBJECT> <SOURCE>")
 
+include(cmake/StandardProjectSettings.cmake)
 add_library(project_options INTERFACE)
-target_compile_features(project_options INTERFACE cxx_std_20)
+target_compile_features(project_options INTERFACE cxx_std_23)
+set_target_properties(project_options PROPERTIES NASM_OBJ_FORMAT elf32-i386)
 
 add_library(project_warnings INTERFACE)
 
-#include(cmake/Cache.cmake)
+include(cmake/Cache.cmake)
 
 include(cmake/CompilerWarnings.cmake)
 set_project_warnings(project_warnings)

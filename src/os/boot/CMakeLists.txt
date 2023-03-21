@@ -1,12 +1,4 @@
 
-set(CMAKE_ASM_NASM_OBJECT_FORMAT elf32-i386)
-
-set(LINK ${CMAKE_CURRENT_SOURCE_DIR}/linker.ld)
-set(CMAKE_CXX_LINK_FLAGS ${CMAKE_CXX_LINK_FLAGS} -T${LINK})
-# todo: move to target compile options, also add to all klibs
-set(CMAKE_ASM_NASM_COMPILE_OBJECT "<CMAKE_ASM_NASM_COMPILER> <INCLUDES> -felf32 -g -F dwarf -o <OBJECT> <SOURCE>")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g3 -ffreestanding -nostdlib -lgcc -fno-rtti -fno-exceptions -fmodules-ts")
-
 add_executable(
         boot.elf
 
@@ -33,10 +25,12 @@ add_executable(
         GlobalConstructors.cpp
         memory/boot_allocator.cpp
         elf/boot_elf_loader.cpp
-        modules/module_loader.cpp modules/module_loader.h)
+        modules/module_loader.cpp
+)
 
-target_link_libraries(boot.elf PRIVATE project_options) # project_warnings)
-
+target_link_libraries(boot.elf PRIVATE os_options) # project_warnings)
 target_link_libraries(boot.elf PUBLIC KLibC KLibCpp KLibDebug KLibHal gcc)
+
+target_link_options(boot.elf PRIVATE -T${CMAKE_CURRENT_SOURCE_DIR}/linker.ld)
 
 target_include_directories(boot.elf PUBLIC .)

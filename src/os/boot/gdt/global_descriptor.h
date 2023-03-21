@@ -53,7 +53,7 @@ namespace kernel::boot::gdt {
     };
 
     /**
-     * Describes the type of descriptor being defined, either a system or a code/Data descriptor.
+     * Describes the type of descriptor being defined, either a os or a code/Data descriptor.
      */
     enum class DescriptorType {
         // Provides x86 specific definitions, such as a Task State Segment Descriptor.
@@ -134,7 +134,7 @@ namespace kernel::boot::gdt {
 
     /**
      * Global Descriptor describes the memory location and size of a Segment, whether it is a code,
-     * data, or system segment, and the attributes that describe its use, size and access.
+     * data, or os segment, and the attributes that describe its use, size and access.
      */
     struct [[gnu::packed]] GlobalDescriptor {
 

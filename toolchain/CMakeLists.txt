@@ -13,7 +13,6 @@ include(ProcessorCount)
 find_program(MAKE_EXE NAMES gmake nmake make)
 set(PARALLEL_MAKE_JOBS 1)
 ProcessorCount(PARALLEL_MAKE_JOBS)
-message(Processor Count = ${PARALLEL_MAKE_JOBS})
 
 ExternalProject_Add(binutils-${BINUTILS_VERSION}
         URL             https://ftp.gnu.org/gnu/binutils/binutils-${BINUTILS_VERSION}.tar.gz

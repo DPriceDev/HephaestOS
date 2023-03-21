@@ -114,7 +114,7 @@ namespace kernel::boot::gdt {
             .granularity = Granularity::Page
     };
 
-    // Maximum memory limit for a 32 bit system - 4GB from a 4KiB page size.
+    // Maximum memory limit for a 32 bit os - 4GB from a 4KiB page size.
     constexpr uint32_t MaximumMemoryLimit = 0xFFFFF;
 
     /**

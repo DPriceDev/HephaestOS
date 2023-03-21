@@ -34,38 +34,38 @@ namespace kernel::boot::tss {
      *
      */
     struct [[gnu::packed]] TssEntry {
-        uint32_t previousTss;
+        uint32_t previousTss = 0;
 
         //
-        uint32_t esp0;
-        uint32_t ss0;
+        uint32_t esp0 = 0;
+        uint32_t ss0 = 0;
 
         //
-        uint32_t esp1;
-        uint32_t ss1;
-        uint32_t esp2;
-        uint32_t ss2;
-        uint32_t cr3;
-        uint32_t eip;
-        uint32_t eFlags;
-        uint32_t eax;
-        uint32_t ecx;
-        uint32_t edx;
-        uint32_t ebx;
-        uint32_t esp;
-        uint32_t ebp;
-        uint32_t esi;
-        uint32_t edi;
+        uint32_t esp1 = 0;
+        uint32_t ss1 = 0;
+        uint32_t esp2 = 0;
+        uint32_t ss2 = 0;
+        uint32_t cr3 = 0;
+        uint32_t eip = 0;
+        uint32_t eFlags = 0;
+        uint32_t eax = 0;
+        uint32_t ecx = 0;
+        uint32_t edx = 0;
+        uint32_t ebx = 0;
+        uint32_t esp = 0;
+        uint32_t ebp = 0;
+        uint32_t esi = 0;
+        uint32_t edi = 0;
 
         //
-        uint32_t es;
-        uint32_t cs;
-        uint32_t ss;
-        uint32_t ds;
-        uint32_t fs;
-        uint32_t gs;
-        uint32_t ldt;
-        uint16_t trap;
+        uint32_t es = 0;
+        uint32_t cs = 0;
+        uint32_t ss = 0;
+        uint32_t ds = 0;
+        uint32_t fs = 0;
+        uint32_t gs = 0;
+        uint32_t ldt = 0;
+        uint16_t trap = 0;
 
         //
         uint16_t ioMapBase;

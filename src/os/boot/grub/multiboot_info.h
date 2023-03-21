@@ -28,7 +28,7 @@ namespace kernel::boot {
     static constexpr uint8_t MULTIBOOT_MEMORY_NVS = 4;
     static constexpr uint8_t MULTIBOOT_MEMORY_BAD_RAM = 5;
 
-    struct [[gun::packed]] MultiBootFlags {
+    struct [[gnu::packed]] MultiBootFlags {
         bool isPageAligned : 1;
         bool isMemoryAvailable : 1;
         bool isVideoModeAvailable : 1;
@@ -41,7 +41,7 @@ namespace kernel::boot {
         uint32_t unusedUpperFlags : 15;
     };
 
-    struct [[gun::packed]] BootDevice {
+    struct [[gnu::packed]] BootDevice {
         uint8_t a;
         uint8_t b;
         uint8_t c;

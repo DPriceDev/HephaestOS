@@ -25,22 +25,22 @@ namespace kernel::boot {
         std::uintptr_t physicalAddress,
         paging::PageTableEntry* kernelPageTable
     ) : currentAddress(physicalAddress),
-    virtualBaseAddress(virtualBaseAddress),
-    kernelPageTable(kernelPageTable) { }
+        virtualAddress(virtualBaseAddress),
+        pageTable(kernelPageTable) { }
 
     auto BootAllocator::allocate(std::size_t count, std::size_t alignment) -> void* {
         const auto startAddress = (currentAddress / alignment) + (currentAddress % alignment ? alignment : 0);
         const auto endAddress = startAddress + count;
 
         paging::mapAddressRangeInTable(
-            kernelPageTable,
-            virtualBaseAddress + currentAddress,
+            pageTable,
+            virtualAddress + currentAddress,
             currentAddress,
             endAddress
         );
 
         currentAddress = endAddress;
-        return std::bit_cast<void*>(virtualBaseAddress + startAddress);
+        return std::bit_cast<void*>(virtualAddress + startAddress);
     }
 }
 

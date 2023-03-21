@@ -25,8 +25,8 @@ namespace kernel::boot {
 
     class BootAllocator {
         std::uintptr_t currentAddress;
-        std::uintptr_t virtualBaseAddress;
-        paging::PageTableEntry* kernelPageTable;
+        std::uintptr_t virtualAddress;
+        paging::PageTableEntry* pageTable;
 
     public:
         BootAllocator(
