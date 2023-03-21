@@ -17,15 +17,18 @@
 
 #include <bit>
 #include "boot_elf_loader.h"
+#include "elf.h"
 #include <result.h>
 #include <span.h>
 #include <string.h>
 
 namespace kernel::boot::elf {
 
-    auto extractExecutableElfInfo(const ElfHeader* header, uintptr_t headerAddress) -> ElfInfo;
+    auto getExecutableElfInfo(const ElfHeader* header, uintptr_t headerAddress) -> ElfInfo;
 
-    auto extractRelocatableElfInfo(const ElfHeader* header, uintptr_t headerAddress) -> ElfInfo;
+    auto extractExecutableElf(const ElfHeader* header, uintptr_t headerAddress) -> StaticExecutableElf;
+
+    auto extractDynamicExecutableElf(const ElfHeader* header, uintptr_t headerAddress) -> DynamicExecutableElf;
 
     auto extractProgramHeaders(const ElfHeader* header, uintptr_t headerAddress) -> std::Span<const ProgramHeader>;
 
@@ -38,32 +41,47 @@ namespace kernel::boot::elf {
             return std::Result<ElfInfo>::failure();
         }
 
-        switch (elfHeader->type) {
-            case ElfType::EXECUTABLE:
-                return std::Result<ElfInfo>::success(extractExecutableElfInfo(elfHeader, headerAddress));
-            case ElfType::RELOCATABLE:
-                return std::Result<ElfInfo>::success(extractRelocatableElfInfo(elfHeader, headerAddress));
-            default:
-                return std::Result<ElfInfo>::failure();
+        if (elfHeader->type != ElfType::EXECUTABLE) {
+            return std::Result<ElfInfo>::failure();
         }
+
+        return std::Result<ElfInfo>::success(getExecutableElfInfo(elfHeader, headerAddress));
     }
 
-    auto extractExecutableElfInfo(const ElfHeader* header, uintptr_t headerAddress) -> ElfInfo {
-        return ElfInfo {
-            ExecutableElf {
-                .entryAddress = header->programEntryAddress,
-                .headerAddress = headerAddress,
-                .programHeaders = extractProgramHeaders(header, headerAddress)
-            }
+    auto getExecutableElfInfo(const ElfHeader* header, uintptr_t headerAddress) -> ElfInfo {
+        if (header->programEntryAddress == 0) {
+            return ElfInfo { extractDynamicExecutableElf(header, headerAddress) };
+        }
+
+        return ElfInfo { extractExecutableElf(header, headerAddress) };
+    }
+
+    size_t getProgramSize(const std::Span<const ProgramHeader> headers) {
+        size_t memorySize = 0;
+        for (const auto& header : headers) {
+            memorySize += header.memorySize;
+        }
+        return memorySize;
+    }
+
+    auto extractExecutableElf(const ElfHeader* header, uintptr_t headerAddress) -> StaticExecutableElf {
+        const auto programHeaders = extractProgramHeaders(header, headerAddress);
+        const auto memorySize = getProgramSize(programHeaders);
+        return StaticExecutableElf {
+            .entryAddress = header->programEntryAddress,
+            .headerAddress = headerAddress,
+            .memorySize = memorySize,
+            .programHeaders = programHeaders
         };
     }
 
-    auto extractRelocatableElfInfo(const ElfHeader* header, uintptr_t headerAddress) -> ElfInfo {
-        return ElfInfo {
-            RelocatableElf {
-                .headerAddress = headerAddress,
-                .programHeaders = extractProgramHeaders(header, headerAddress)
-            }
+    auto extractDynamicExecutableElf(const ElfHeader* header, uintptr_t headerAddress) -> DynamicExecutableElf {
+        const auto programHeaders = extractProgramHeaders(header, headerAddress);
+        const auto memorySize = getProgramSize(programHeaders);
+        return DynamicExecutableElf {
+            .headerAddress = headerAddress,
+            .memorySize = memorySize,
+            .programHeaders = programHeaders
         };
     }
 
@@ -72,17 +90,24 @@ namespace kernel::boot::elf {
         return { programHeader, header->programHeaderCount };
     }
 
-    void loadElf(const ExecutableElf& elf) {
-        for (const auto& programHeader : elf.programHeaders) {
-            const auto* programAddress = std::bit_cast<void*>(elf.headerAddress + programHeader.dataOffset);
-            auto* memoryAddress = std::bit_cast<void*>(programHeader.virtualAddress);
-            memset(memoryAddress, 0, programHeader.memorySize);
+    void loadExecutableElf(
+        uintptr_t headerAddress,
+        std::Span<const ProgramHeader> programHeaders,
+        uintptr_t loadAddress
+    ) {
+        for (const auto& programHeader : programHeaders) {
+            const auto* programAddress = std::bit_cast<void*>(headerAddress + programHeader.dataOffset);
+            auto* memoryAddress = std::bit_cast<void*>(loadAddress);
+            memset(memoryAddress, 0, programHeader.memorySize + programHeader.virtualAddress);
             memcpy(memoryAddress, programAddress, programHeader.fileSize);
         }
     }
 
-    void loadElf(const RelocatableElf& elf, uintptr_t loadAddress) {
-
+    void loadElf(const StaticExecutableElf& elf) {
+        loadExecutableElf(elf.headerAddress, elf.programHeaders, elf.entryAddress);
     }
 
+    void loadElf(const DynamicExecutableElf& elf, uintptr_t loadAddress) {
+        loadExecutableElf(elf.headerAddress, elf.programHeaders, loadAddress);
+    }
 }

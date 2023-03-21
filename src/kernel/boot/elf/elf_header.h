@@ -64,6 +64,7 @@ namespace kernel::boot::elf {
 
     };
 
+    // todo: Might need to be struct
     enum class ProgramFlags {
         EXECUTABLE = 1,
         WRITABLE = 2,
@@ -79,6 +80,57 @@ namespace kernel::boot::elf {
         uint32_t memorySize;
         ProgramFlags flags;
         uint32_t alignment;
+    };
+
+    enum class SectionType {
+        UNUSED = 0,
+        PROGRAM_DATA = 1,
+        SYMBOL_TABLE = 2,
+        STRING_TABLE = 3,
+        RELOCATION_WITH_ADDENDS = 4,
+        HASH_TABLE = 5,
+        DYNAMIC_LINK_INFO = 6,
+        NOTES = 7,
+        BSS = 8,
+        RELOCATION_WITHOUT_ADDENDS = 9,
+        SHLIB_RESERVED = 0x0A,
+        DYNAMIC_LINK_SYMBOL_TABLE = 0x0B,
+        CONSTRUCTORS = 0x0E,
+        DESTRUCTORS = 0x0F,
+        PRE_CONSTRUCTORS = 0x10,
+        GROUP = 0x11,
+        EXTENDED_SECTION_INDICES = 0x12,
+        DEFINED_TYPES = 0x13
+    };
+
+    struct SectionFlags {
+        bool isWritable : 1;
+        bool isAllocated: 1;
+        bool isInstructions: 1;
+        bool : 1;
+        bool canBeMerged: 1;
+        bool containsStrings: 1;
+        bool containsSHTIndex: 1;
+        bool preserveLinkOrder: 1;
+        bool isNonOSConforming: 1;
+        bool isInGroup: 1;
+        bool hasThreadLocalStorage: 1;
+        uint32_t : 19;
+        bool isOrdered : 1;
+        bool isExcluded: 1;
+    };
+
+    struct [[gnu::packed]] SectionHeader {
+        const char* name;
+        SectionType type;
+        SectionFlags flags;
+        uintptr_t virtualAddress;
+        uintptr_t offset;
+        size_t fileSize;
+        uint32_t linkIndex;
+        uint32_t info;
+        size_t alignment;
+        size_t entrySize;
     };
 
     constexpr size_t ELF_HEADER_PADDING = 7;

@@ -25,18 +25,20 @@
 
 namespace kernel::boot::elf {
 
-    struct ExecutableElf {
+    struct StaticExecutableElf {
         std::uintptr_t entryAddress;
         std::uintptr_t headerAddress;
+        size_t memorySize;
         std::Span<const ProgramHeader> programHeaders;
     };
 
-    struct RelocatableElf {
+    struct DynamicExecutableElf {
         std::uintptr_t headerAddress;
+        size_t memorySize;
         std::Span<const ProgramHeader> programHeaders;
     };
 
-    using ElfInfo = std::Variant<ExecutableElf, RelocatableElf>;
+    using ElfInfo = std::Variant<StaticExecutableElf, DynamicExecutableElf>;
 }
 
 #endif // HEPHAISTOS_ELF_INFO_H

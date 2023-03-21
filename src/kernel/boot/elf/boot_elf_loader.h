@@ -29,10 +29,9 @@ namespace kernel::boot::elf {
     auto getElfInfo(uintptr_t headerAddress) -> std::Result<ElfInfo>;
 
     // load static elf to memory
-    void loadElf(const ExecutableElf& elf);
+    void loadElf(const StaticExecutableElf& elf);
 
-    // load relocatable elf to memory
-    void loadElf(const RelocatableElf& elf, uintptr_t loadAddress);
+    void loadElf(const DynamicExecutableElf& elf, uintptr_t loadAddress);
 }
 
 #endif // HEPHAISTOS_BOOT_ELF_LOADER_H
