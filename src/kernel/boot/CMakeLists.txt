@@ -28,14 +28,12 @@ add_executable(
         idt/interrupt_descriptor.cpp
         idt/exceptions/exception_handler.cpp
 
-        grub/memory_map.cpp
         paging/paging.asm
         paging/paging.cpp
         GlobalConstructors.cpp
         memory/boot_allocator.cpp
-        memory/new.cpp
         elf/boot_elf_loader.cpp
-)
+        modules/module_loader.cpp modules/module_loader.h)
 
 target_link_libraries(boot.elf PRIVATE project_options) # project_warnings)
 

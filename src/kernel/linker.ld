@@ -1,24 +1,21 @@
 ENTRY (loader)
 
-virtualBase = 0xC0300000;
 
 SECTIONS
 {
-    . += virtualBase;
-
-    .text ALIGN(4k): AT(ADDR(.text) - virtualBase) {
+    .text BLOCK(4k): ALIGN (4k) {
         *(.text)
     }
 
-    .rodata ALIGN(4k): AT(ADDR(.rodata) - virtualBase) {
+    .rodata BLOCK(4k): ALIGN (4k) {
         *(.rodata)
     }
 
-    .data ALIGN(4k): AT(ADDR(.data) - virtualBase)  {
+    .data BLOCK(4k): ALIGN (4k) {
         *(.data)
     }
 
-    .bss ALIGN(4k) : AT(ADDR(.bss) - virtualBase) {
+    .bss BLOCK(4k): ALIGN (4k) {
         *(COMMON)
         *(.bss)
     }

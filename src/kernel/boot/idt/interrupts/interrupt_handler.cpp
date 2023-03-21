@@ -27,8 +27,8 @@ namespace kernel::boot::idt {
     void handleKeyboardPress(InterruptInfo interruptInfo) {
         auto input = hal::readFromPort(0x60);
 
-        std::print("Interrupt code: {}\n", interruptInfo.interruptCode);
-        std::print("Key Pressed: {}\n", input);
+        std::print("INFO: Interrupt code: {}\n", interruptInfo.interruptCode);
+        std::print("INFO: Key Pressed: {}\n", input);
     }
 
     /**
@@ -42,7 +42,7 @@ namespace kernel::boot::idt {
                 handleKeyboardPress(interruptInfo);
                 break;
             default:
-                std::print("Interrupt code: {}\n", interruptInfo.interruptCode);
+                std::print("INFO: Interrupt code: {}\n", interruptInfo.interruptCode);
                 break;
         }
 

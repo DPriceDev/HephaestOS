@@ -15,11 +15,35 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#ifndef HEPHAISTOS_NEW_H
-#define HEPHAISTOS_NEW_H
+#ifndef HEPHAISTOS_INIT_H
+#define HEPHAISTOS_INIT_H
 
-#include <cstdint>
+#include <boot_info.h>
+#include "grub/multiboot_info.h"
 
-void* operator new (std::size_t count);
 
-#endif //HEPHAISTOS_NEW_H
+namespace kernel::boot {
+
+    extern "C" void loadKernelSegment();
+
+    extern "C" void enableInterrupts();
+
+    extern "C" void init(
+        kernel::boot::MultiBootInfo * info,
+        uint32_t magic,
+        uint32_t stackPointer,
+        kernel::boot::BootInfo bootInfo
+    );
+
+    void initializeSerialPort();
+
+    void initializeDescriptorTables(uint32_t stackPointer);
+
+    void setupInterrupts();
+
+    auto findNextAvailableMemory(const std::Span<ModuleEntry>& bootModules, const BootInfo& bootInfo) -> uintptr_t;
+
+    void enterKernelModule(uintptr_t kernelAddress);
+}
+
+#endif //HEPHAISTOS_INIT_H

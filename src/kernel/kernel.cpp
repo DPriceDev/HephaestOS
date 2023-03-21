@@ -17,7 +17,6 @@
 
 #include <stdoffset.h>
 #include <format.h>
-#include <serial_port.h>
 
 namespace kernel {
 
@@ -31,8 +30,8 @@ namespace kernel {
     ) {
         std::KernelFormatOutput::getInstance().setStandardOutputIterator(outputIterator);
 
-        std::print("HephaistOS\n");
-        std::print("Version 1.0\n");
+        std::print("INFO: HephaistOS\n");
+        std::print("INFO: Version 1.0\n");
 
         // TODO: Register timer with timer interrupt
 

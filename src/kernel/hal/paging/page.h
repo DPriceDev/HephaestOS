@@ -15,9 +15,9 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#include "new.h"
-#include "boot_allocator.h"
+#ifndef HEPHAISTOS_PAGE_H
+#define HEPHAISTOS_PAGE_H
 
-void* operator new (std::size_t count) {
-    return kernel::boot::BootAllocator::getInstance().allocateMemory(count);
-}
+
+
+#endif //HEPHAISTOS_PAGE_H

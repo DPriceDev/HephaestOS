@@ -1,4 +1,4 @@
-// Copyright (C) 2022 David Price - All Rights Reserved
+// Copyright (C) 2023 David Price - All Rights Reserved
 // This file is part of HephaistOS.
 //
 // HephaistOS is free software: you can redistribute it and/or modify
@@ -15,23 +15,6 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#ifndef HEPHAISTOS_BOOT_INFO_H
-#define HEPHAISTOS_BOOT_INFO_H
+#include "page.h"
 
-#include <cstdint>
 
-#include "paging/model/page_directory_entry.h"
-#include "paging/model/page_table_entry.h"
-
-namespace kernel::boot {
-
-    struct BootInfo {
-        paging::PageDirectoryEntry *pageDirectory;
-        paging::PageTableEntry *bootPageTable;
-        uintptr_t baseVirtualAddress;
-        uintptr_t bootStartLocation;
-        uintptr_t bootEndLocation;
-    };
-}
-
-#endif //HEPHAISTOS_BOOT_INFO_H

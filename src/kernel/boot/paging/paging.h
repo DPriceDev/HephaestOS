@@ -48,6 +48,13 @@ namespace kernel::boot::paging {
         uintptr_t kernelEndAddress
     );
 
+    void mapAddressRangeInTable(
+        PageTableEntry* pageTablePointer,
+        uintptr_t virtualStartAddress,
+        uintptr_t startAddress,
+        uintptr_t endAddress
+    );
+
     void unmapLowerKernel(paging::PageDirectoryEntry* pageDirectoryPointer);
 }
 
