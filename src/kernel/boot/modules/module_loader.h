@@ -18,7 +18,7 @@
 #ifndef HEPHAISTOS_MODULE_LOADER_H
 #define HEPHAISTOS_MODULE_LOADER_H
 
-#include "elf/elf_info.h"
+#include <elf/boot_elf_loader.h>
 
 namespace kernel::boot {
 

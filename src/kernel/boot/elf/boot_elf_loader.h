@@ -19,11 +19,26 @@
 #define HEPHAISTOS_BOOT_ELF_LOADER_H
 
 #include <cstdint>
-#include "elf.h"
-#include "elf_info.h"
+#include <elf.h>
+#include <span.h>
 #include <variant_base.h>
 
 namespace kernel::boot::elf {
+
+    struct StaticExecutableElf {
+        std::uintptr_t entryAddress;
+        std::uintptr_t headerAddress;
+        size_t memorySize;
+        std::Span<const Elf32_Phdr> programHeaders;
+    };
+
+    struct DynamicExecutableElf {
+        std::uintptr_t headerAddress;
+        size_t memorySize;
+        std::Span<const Elf32_Phdr> programHeaders;
+    };
+
+    using ElfInfo = std::Variant<StaticExecutableElf, DynamicExecutableElf>;
 
     // get elf info
     auto getElfInfo(uintptr_t headerAddress) -> std::Result<ElfInfo>;

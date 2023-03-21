@@ -112,7 +112,7 @@ namespace kernel::boot {
         using EnterKernel = void (*)(const std::StandardOutputIterator&);
 
         const auto enterKernel = std::bit_cast<EnterKernel>(kernelAddress);
-        std::print("Entering kernel module at address: {:x}\n", kernelAddress);
+        std::print("INFO: Entering kernel module at address: {:x}\n", kernelAddress);
         const auto& output = std::KernelFormatOutput::getInstance().out();
         loadKernelSegment();
         enableInterrupts();

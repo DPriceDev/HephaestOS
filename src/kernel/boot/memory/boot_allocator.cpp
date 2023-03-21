@@ -28,8 +28,8 @@ namespace kernel::boot {
     virtualBaseAddress(virtualBaseAddress),
     kernelPageTable(kernelPageTable) { }
 
-    auto BootAllocator::allocate(std::size_t count) -> void* {
-        const auto startAddress = currentAddress;
+    auto BootAllocator::allocate(std::size_t count, std::size_t alignment) -> void* {
+        const auto startAddress = (currentAddress / alignment) + (currentAddress % alignment ? alignment : 0);
         const auto endAddress = startAddress + count;
 
         paging::mapAddressRangeInTable(

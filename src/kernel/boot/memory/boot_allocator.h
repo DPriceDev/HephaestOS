@@ -35,7 +35,7 @@ namespace kernel::boot {
             paging::PageTableEntry* kernelPageTable
         );
 
-        auto allocate(std::size_t count) -> void*;
+        auto allocate(std::size_t count, std::size_t alignment = 1) -> void*;
     };
 }
 

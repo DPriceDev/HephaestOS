@@ -16,6 +16,8 @@
 
 bits            32
 
+global loader
+
 extern kernelMain
 
 section .bss
