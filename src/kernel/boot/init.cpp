@@ -15,80 +15,107 @@
  * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <cstdint>
+#include <bit>
 #include <format.h>
+#include <gdt/global_descriptor_table.h>
+#include <idt/interrupt_descriptor_table.h>
+#include <idt/pic/programmable_interrupt_controller.h>
+#include <init.h>
+#include <memory/boot_allocator.h>
+#include <modules/module_loader.h>
+#include <serial_port.h>
+#include <tss/task_state_segment.h>
 
-#include "gdt/global_descriptor_table.h"
-#include "idt/interrupt_descriptor_table.h"
-#include "boot/paging/paging.h"
-#include "boot/grub/multiboot_info.h"
-#include "boot/idt/pic/programmable_interrupt_controller.h"
-#include "boot/tss/task_state_segment.h"
-#include "boot/grub/memory_map.h"
-#include "boot/serial/serial_port.h"
-#include "boot_info.h"
+extern "C" void init(
+    kernel::boot::MultiBootInfo * info,
+    uint32_t magic,
+    uint32_t stackPointer,
+    kernel::boot::BootInfo bootInfo
+) {
+    kernel::boot::initializeSerialPort();
+    std::print("INFO: System init\n");
+
+    constexpr uint32_t MULTIBOOT_ONE_MAGIC_NUMBER = 0x2BADB002;
+    if (magic != MULTIBOOT_ONE_MAGIC_NUMBER) {
+        std::print("ERROR: Multiboot magic number is not correct.\n");
+        return;
+    }
+
+    kernel::boot::initializeDescriptorTables(stackPointer);
+
+    const auto bootModules = std::Span<kernel::boot::ModuleEntry> { info->modulePtr, info->moduleCount };
+    const auto nextAvailableMemory = findNextAvailableMemory(bootModules, bootInfo);
+
+    auto allocator = kernel::boot::BootAllocator(bootInfo.baseVirtualAddress, nextAvailableMemory, bootInfo.bootPageTable);
+    const auto kernelAddress = loadModules(bootModules, allocator, bootInfo);
+
+    kernel::boot::paging::unmapLowerKernel(bootInfo.pageDirectory);
+
+    if (!kernelAddress.isValid()) {
+        std::print("ERROR: Failed to enter kernel module\n");
+        return;
+    }
+    kernel::boot::enterKernelModule(kernelAddress.get());
+}
 
 namespace kernel::boot {
 
-    extern "C" void kernelMain();
+    static const debug::SerialPortConnection connection { debug::SerialPort::COM1 };
 
-    extern "C" void loadKernelSegment();
-
-    extern "C" void enableInterrupts();
-
-    extern "C" void disableInterrupts();
-
-    constexpr uint8_t interruptRequestOffset = 32;
-
-    static const SerialPortConnection connection { SerialPort::COM1 };
-
-    extern "C" void init(
-            MultiBootInfo * info,
-            uint32_t magic,
-            uint32_t stackPointer,
-            BootInfo bootInfo
-    ) {
+    void initializeSerialPort() {
         if (connection.open()) {
             std::KernelFormatOutput::getInstance().setStandardOutputIterator(
                 std::StandardOutputIterator {
                     &connection,
-                    [] (const void* pointer) { },
+                    [] (const void*) { /* Serial port cannot be de-referenced. */ },
                     [] (const void* pointer, char character) {
-                        static_cast<const SerialPortConnection*>(pointer)->write(character);
+                        static_cast<const debug::SerialPortConnection*>(pointer)->write(character);
                     },
-                    [] (const void* pointer) { },
+                    [] (const void*) { /* Serial Port self increments. */ },
                 }
             );
         }
+    }
 
-        std::print("System init\n");
-        // Construct memory map from grub multiboot information passed from grub
-    //        grub::constructMemoryMap(info);
-
+    void initializeDescriptorTables(uint32_t stackPointer) {
         auto tssDescriptor = tss::getTaskStateSegmentDescriptor();
         gdt::initializeGlobalDescriptorTable(tssDescriptor);
-        std::print("Global Descriptor table initialized\n");
+        std::print("INFO: Global Descriptor table initialized\n");
 
-        //
         tss::initializeTaskStateSegment(stackPointer);
-        std::print("Task State Segment initialized\n");
+        std::print("INFO: Task State Segment initialized\n");
 
-        //
         idt::initializeInterruptDescriptorTable();
-        std::print("Interrupt Descriptor table initialized\n");
+        std::print("INFO: Interrupt Descriptor table initialized\n");
 
-        // todo: move register addresses to header of idt
-        idt::remapProgrammableInterruptController(
-            interruptRequestOffset,
-            interruptRequestOffset + 8
-        );
-        std::print("Interrupts remapped\n");
+        setupInterrupts();
+    }
 
-        paging::unmapLowerKernel(bootInfo.pageDirectory);
+    void setupInterrupts() {
+        constexpr uint8_t masterDeviceOffset = 32;
+        constexpr uint8_t slaveDeviceOffset = masterDeviceOffset + 8;
+        idt::remapProgrammableInterruptController(masterDeviceOffset,slaveDeviceOffset);
+        std::print("INFO: Interrupts remapped\n");
+    }
 
+    auto findNextAvailableMemory(const std::Span<ModuleEntry>& bootModules, const BootInfo& bootInfo) -> uintptr_t {
+        uintptr_t address = bootInfo.bootEndLocation;
+        for (const auto& bootModule : bootModules) {
+            if (bootModule.moduleEnd > address) {
+                address = bootModule.moduleEnd;
+            }
+        }
+        return address;
+    }
+
+    void enterKernelModule(uintptr_t kernelAddress) {
+        using EnterKernel = void (*)(const std::StandardOutputIterator&);
+
+        const auto enterKernel = std::bit_cast<EnterKernel>(kernelAddress);
+        std::print("INFO: Entering kernel module at address: {:x}\n", kernelAddress);
+        const auto& output = std::KernelFormatOutput::getInstance().out();
         loadKernelSegment();
         enableInterrupts();
-        kernelMain();
-        disableInterrupts();
+        enterKernel(output);
     }
 }

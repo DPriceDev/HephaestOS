@@ -20,20 +20,18 @@
 
 #include <cstdint>
 
-#include "boot/paging/model/page_directory_entry.h"
-#include "boot/paging/model/page_table_entry.h"
+#include "paging/model/page_directory_entry.h"
+#include "paging/model/page_table_entry.h"
 
 namespace kernel::boot {
 
     struct BootInfo {
         paging::PageDirectoryEntry *pageDirectory;
-        paging::PageTableEntry *kernelPageTable;
-        uintptr_t kernelVirtualAddress;
-        uintptr_t kernelStartAddress;
-        uintptr_t kernelEndAddress;
-
+        paging::PageTableEntry *bootPageTable;
+        uintptr_t baseVirtualAddress;
+        uintptr_t bootStartLocation;
+        uintptr_t bootEndLocation;
     };
-
 }
 
 #endif //HEPHAISTOS_BOOT_INFO_H

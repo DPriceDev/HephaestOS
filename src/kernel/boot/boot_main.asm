@@ -61,6 +61,7 @@ loader:
                 push            virtualBase
                 push            kernelPageTable
                 push            pageDirectory
+                push            edi
                 call            initializePaging - virtualBase
 
                 ; jump to higher kernel

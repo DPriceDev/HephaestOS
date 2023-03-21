@@ -16,19 +16,19 @@
  */
 
 #include "interrupt_handler.h"
-#include "boot/idt/pic/programmable_interrupt_controller.h"
+#include "idt/pic/programmable_interrupt_controller.h"
 
 #include <format.h>
-#include "hal/io/io.h"
+#include "../hal/io/io.h"
 
 namespace kernel::boot::idt {
 
 
     void handleKeyboardPress(InterruptInfo interruptInfo) {
-        auto input = readFromPort(0x60);
+        auto input = hal::readFromPort(0x60);
 
-        std::print("Interrupt code: {}\n", interruptInfo.interruptCode);
-        std::print("Key Pressed: {}\n", input);
+        std::print("INFO: Interrupt code: {}\n", interruptInfo.interruptCode);
+        std::print("INFO: Key Pressed: {}\n", input);
     }
 
     /**
@@ -42,7 +42,7 @@ namespace kernel::boot::idt {
                 handleKeyboardPress(interruptInfo);
                 break;
             default:
-                std::print("Interrupt code: {}\n", interruptInfo.interruptCode);
+                std::print("INFO: Interrupt code: {}\n", interruptInfo.interruptCode);
                 break;
         }
 

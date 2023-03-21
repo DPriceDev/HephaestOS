@@ -104,6 +104,11 @@ namespace std {
         return *std::maxElement(initializerList.begin(), initializerList.end());
     }
 
+    template<class Type>
+    constexpr const Type& min(const Type& first, const Type& second) {
+        return (second < first) ? second : first;
+    }
+
     template<inputIterator InputIterator, class Type>
     constexpr InputIterator find(InputIterator first, InputIterator last, const Type& value) {
         for (; first != last; ++first) {

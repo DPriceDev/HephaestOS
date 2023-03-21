@@ -61,21 +61,21 @@ namespace std {
          * @return an iterator to the end of the outputted integer.
          */
         template<class OutputIterator, formatableIntegral Type>
-        auto formatInteger(OutputIterator iterator, Type value, Type base = 10) -> OutputIterator {
+        auto formatInteger(OutputIterator iterator, Type value, int32_t base) -> OutputIterator {
             auto reduction = value / base;
 
             OutputIterator outputIterator = iterator;
             if (reduction == 0) {
                 outputIterator = iterator;
             } else {
-                outputIterator = formatInteger(iterator, reduction);
+                outputIterator = formatInteger(iterator, reduction, base);
             }
 
             auto digit = value % base;
 
             // use to chars to convert to string
             auto buffer = std::Array<char, DIGIT_OUTPUT_SIZE> { };
-            auto result = std::toChars(buffer.begin(), buffer.end(), digit);
+            auto result = std::toChars(buffer.begin(), buffer.end(), digit, base);
 
             std::forEach(buffer.begin(), result, [&outputIterator] (char character) {
                 *outputIterator++ = character;
@@ -94,12 +94,27 @@ namespace std {
     template<std::integral Type>
     struct Formatter<Type> {
 
+        enum OutputType {
+            DECIMAL = 10,
+            HEX = 16,
+            BINARY = 2
+        };
+
+        OutputType outputType = DECIMAL;
+
         constexpr auto parse(auto& state) {
             auto iterator { state.begin() };
             const auto end { state.end() };
 
             while (iterator != end && *iterator != '}') {
-                // todo: Parse Formatter Arguments
+                switch (*iterator) {
+                    case 'x':
+                        outputType = HEX;
+                        break;
+                    case 'b':
+                        outputType = BINARY;
+                        break;
+                }
                 ++iterator;
             }
 
@@ -108,7 +123,18 @@ namespace std {
 
         auto format(auto& integer, auto& state) {
             auto output = state.out();
-            return detail::formatInteger(output, integer);
+
+            if (outputType == HEX) {
+                *output++ = '0';
+                *output++ = 'x';
+            }
+
+            if (outputType == BINARY) {
+                *output++ = '0';
+                *output++ = 'b';
+            }
+
+            return detail::formatInteger(output, integer, outputType);
         }
     };
 }

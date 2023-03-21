@@ -20,7 +20,7 @@
 
 #include <stdoffset.h>
 
-namespace kernel {
+namespace hal {
 
     extern "C" auto readFromPort(uint32_t port) -> uint8_t;
 

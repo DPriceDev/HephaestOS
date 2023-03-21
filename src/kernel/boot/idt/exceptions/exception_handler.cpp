@@ -17,8 +17,6 @@
 
 #include "exception_handler.h"
 
-#include "drivers/video_buffer_display.h"
-#include "terminal/Terminal.h"
 #include <format.h>
 
 namespace kernel::boot::idt {
@@ -26,8 +24,8 @@ namespace kernel::boot::idt {
     // handles an exception for the provided exception info
     extern "C" void handleException(ExceptionInfo exceptionInfo) {
 
-        std::print("Exception\n!");
-        std::print("Exception code: {}\n", exceptionInfo.interruptCode);
+        std::print("ERROR: Exception\n!");
+        std::print("ERROR: Exception code: {}\n", exceptionInfo.interruptCode);
 
         const auto* description = exceptionDescription[exceptionInfo.interruptCode];
         std::print(description);

@@ -1,4 +1,4 @@
-// Copyright (C) 2022 David Price - All Rights Reserved
+// Copyright (C) 2023 David Price - All Rights Reserved
 // This file is part of HephaistOS.
 //
 // HephaistOS is free software: you can redistribute it and/or modify
@@ -17,10 +17,10 @@
 
 #include "serial_port.h"
 #include <type_traits>
-#include "hal/io/io.h"
+#include "io.h"
 #include <bit>
 
-namespace kernel::boot {
+namespace debug {
 
     /**
      * TODO: Comment
@@ -36,7 +36,7 @@ namespace kernel::boot {
      */
     void SerialPortConnection::setModemControl(ModemControl&& controlRegister) const {
         auto registerByte = std::bit_cast<uint8_t>(controlRegister);
-        writeToPort(portAddress + MODEM_CONTROL_OFFSET, registerByte);
+        hal::writeToPort(portAddress + MODEM_CONTROL_OFFSET, registerByte);
     }
 
     /**
@@ -45,7 +45,7 @@ namespace kernel::boot {
      */
     void SerialPortConnection::setEnabledInterrupts(const EnabledInterrupts&& interruptRegister) const {
         auto registerByte = std::bit_cast<uint8_t>(interruptRegister);
-        writeToPort(portAddress + INTERRUPT_REGISTER_OFFSET, registerByte);
+        hal::writeToPort(portAddress + INTERRUPT_REGISTER_OFFSET, registerByte);
     }
 
     /**
@@ -54,7 +54,7 @@ namespace kernel::boot {
      */
     void SerialPortConnection::setLineControl(const LineControl&& lineControl) const {
         auto registerByte = std::bit_cast<uint8_t>(lineControl);
-        writeToPort(portAddress + LINE_CONTROL_OFFSET, registerByte);
+        hal::writeToPort(portAddress + LINE_CONTROL_OFFSET, registerByte);
     }
 
     /**
@@ -63,7 +63,7 @@ namespace kernel::boot {
      */
     void SerialPortConnection::setFIFOControl(const FIFOControl&& fifoControl) const {
         auto registerByte = std::bit_cast<uint8_t>(fifoControl);
-        writeToPort(portAddress + FIFO_CONTROL_OFFSET, registerByte);
+        hal::writeToPort(portAddress + FIFO_CONTROL_OFFSET, registerByte);
     }
 
     /**
@@ -71,7 +71,7 @@ namespace kernel::boot {
      * @param character
      */
     void SerialPortConnection::writeToDataRegister(uint8_t character) const {
-        writeToPort(portAddress + DATA_REGISTER_OFFSET, character);
+        hal::writeToPort(portAddress + DATA_REGISTER_OFFSET, character);
     }
 
     /**
@@ -79,7 +79,7 @@ namespace kernel::boot {
      * @return
      */
     auto SerialPortConnection::readFromDataRegister() const -> uint8_t {
-        return readFromPort(portAddress + DATA_REGISTER_OFFSET);
+        return hal::readFromPort(portAddress + DATA_REGISTER_OFFSET);
     }
 
     /**
@@ -87,7 +87,7 @@ namespace kernel::boot {
      * @return
      */
     auto SerialPortConnection::getLineStatus() const -> LineStatus {
-        auto inputByte = readFromPort(portAddress + LINE_STATUS_OFFSET);
+        auto inputByte = hal::readFromPort(portAddress + LINE_STATUS_OFFSET);
         return std::bit_cast<LineStatus>(inputByte);
     }
 
@@ -102,8 +102,8 @@ namespace kernel::boot {
         uint16_t divisor = MAX_BAUD_RATE / baudRate;
         auto settings = std::bit_cast<DivisorLatchSettings>(divisor);
 
-        writeToPort(portAddress + DLAB_LOW_BYTE_OFFSET, settings.low);
-        writeToPort(portAddress + DLAB_HIGH_BYTE_OFFSET, settings.high);
+        hal::writeToPort(portAddress + DLAB_LOW_BYTE_OFFSET, settings.low);
+        hal::writeToPort(portAddress + DLAB_HIGH_BYTE_OFFSET, settings.high);
 
         setLineControl({ .divisorLatchAccess = false });
     }

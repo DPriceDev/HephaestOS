@@ -20,9 +20,6 @@
 
 #include <stdoffset.h>
 
-#include "drivers/video_buffer_display.h"
-#include "terminal/Terminal.h"
-
 #include "interrupt_descriptor.h"
 
 

@@ -118,6 +118,7 @@ namespace kernel::boot::paging {
     }
 
     void initializePaging(
+        MultiBootInfo * info,
         PageDirectoryEntry* pageDirectoryPointer,
         PageTableEntry* kernelPageTablePointer,
         uintptr_t virtualKernelBaseAddress,

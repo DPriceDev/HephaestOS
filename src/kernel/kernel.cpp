@@ -20,21 +20,18 @@
 
 namespace kernel {
 
-    extern "C" [[noreturn]] void testUserFunction() {
-        while(true) {
-            /* Endless Loop */
-        }
-    };
-
     // todo: Should this live in a config file somewhere?
     constexpr uint32_t majorVersion = 1;
     constexpr uint32_t minorVersion = 0;
     constexpr uint32_t fixVersion = 0;
 
-    extern "C" void kernelMain() {
+    extern "C" [[maybe_unused]] void kernelMain(
+        const std::StandardOutputIterator& outputIterator
+    ) {
+        std::KernelFormatOutput::getInstance().setStandardOutputIterator(outputIterator);
 
-        std::print("HephaistOS\n");
-        std::print("Version 1.0\n");
+        std::print("INFO: HephaistOS\n");
+        std::print("INFO: Version 1.0\n");
 
         // TODO: Register timer with timer interrupt
 
@@ -66,6 +63,6 @@ namespace kernel {
             /* Endless Loop */
         }
 
-        //std::print("ERROR: Reached end of kernel code!");
+        std::print("ERROR: Reached end of kernel code!");
     }
 }

@@ -39,9 +39,9 @@ namespace std {
 
         explicit StandardOutputIterator(
             const void* data,
-            void (*onDereference) (const void*) = nullptr,
-            void (*onAssignCharacter) (const void*, char) = nullptr,
-            void (*onIncrement) (const void*) = nullptr
+            void (*onDereference) (const void*) = [] (const void*) { /* no-op */ },
+            void (*onAssignCharacter) (const void*, char) = [] (const void*, char) { /* no-op */ },
+            void (*onIncrement) (const void*) = [] (const void*) { /* no-op */ }
         ) : data(data),
         onDereference(onDereference),
         onIncrement(onIncrement),

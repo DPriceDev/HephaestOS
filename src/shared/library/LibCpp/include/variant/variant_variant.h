@@ -20,6 +20,7 @@
 
 #include <concepts>
 #include <type_traits>
+#include <algorithm.h>
 
 #include "parameter_pack.h"
 

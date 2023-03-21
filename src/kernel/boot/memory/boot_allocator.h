@@ -1,4 +1,4 @@
-// Copyright (C) 2022 David Price - All Rights Reserved
+// Copyright (C) 2023 David Price - All Rights Reserved
 // This file is part of HephaistOS.
 //
 // HephaistOS is free software: you can redistribute it and/or modify
@@ -15,35 +15,28 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#include "stdint.h"
-#include "string.h"
+#ifndef HEPHAISTOS_BOOTALLOCATOR_H
+#define HEPHAISTOS_BOOTALLOCATOR_H
 
-template<typename T>
-int Size(T str) {
+#include <cstdint>
+#include "paging/paging.h"
 
-    uint8_t i(0);
+namespace kernel::boot {
 
-    // count each characters in the characters.
-    for (; str[i]; i++);
+    class BootAllocator {
+        std::uintptr_t currentAddress;
+        std::uintptr_t virtualBaseAddress;
+        paging::PageTableEntry* kernelPageTable;
 
-    return i;       // return count
+    public:
+        BootAllocator(
+            std::uintptr_t baseVirtualAddress,
+            std::uintptr_t physicalAddress,
+            paging::PageTableEntry* kernelPageTable
+        );
+
+        auto allocate(std::size_t count, std::size_t alignment = 1) -> void*;
+    };
 }
 
-void* memset(void* pointer, int value, uint32_t length) {
-    unsigned char* ptr = static_cast<unsigned char *>(pointer);
-    while(length--)
-    {
-        *ptr++ = (unsigned char) value;
-    }
-    return pointer;
-}
-
-void *memcpy(void *dest, const void* src, size_t n) {
-    char *csrc = (char *) src;
-    char *cdest = (char *) dest;
-    while(n--)
-    {
-        *cdest++ = *csrc++;
-    }
-    return dest;
-}
+#endif //HEPHAISTOS_BOOTALLOCATOR_H

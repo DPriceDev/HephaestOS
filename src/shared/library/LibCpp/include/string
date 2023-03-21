@@ -32,6 +32,33 @@ namespace std {
                 while (*(runner) != '\0') { ++runner; }
                 return runner - string;
             }
+
+            static constexpr auto compare(
+                const CharacterType* s1,
+                const CharacterType* s2,
+                std::size_t count
+            ) -> int {
+                while (--count) {
+                    if (!equal(*s1, *s2)) {
+                        if (lessThan(*s1, *s2)) {
+                            return -1;
+                        } else {
+                            return 1;
+                        }
+                    }
+                    ++s1;
+                    ++s2;
+                }
+                return 0;
+            }
+
+            static constexpr auto equal(CharacterType a, CharacterType b) noexcept -> bool {
+                return a == b;
+            }
+
+            static constexpr auto lessThan(CharacterType a, CharacterType b) noexcept -> bool {
+                return a < b;
+            }
         };
     }
 

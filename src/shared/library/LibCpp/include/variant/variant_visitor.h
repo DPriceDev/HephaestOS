@@ -136,6 +136,15 @@ namespace std {
     constexpr auto visit(Visitor& visitor, Variant& variant) -> decltype(auto) {
         return std::visit(std::move(visitor), variant);
     }
+
+    // todo: Comment
+    template<typename... Functions>
+    struct Visitors : Functions... {
+        using Functions::operator()...;
+    };
+
+    template<typename... Functions>
+    Visitors(Functions...) -> Visitors<Functions...>;
 }
 
 #endif // HEPHAIST_OS_SHARED_LIBRARY_CPP_VARIANT_VISITOR_H

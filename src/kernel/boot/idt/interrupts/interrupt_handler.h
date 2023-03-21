@@ -20,7 +20,7 @@
 
 #include <stdoffset.h>
 
-#include "boot/idt/model/handler_registers.h"
+#include "idt/model/handler_registers.h"
 
 namespace kernel::boot::idt {
 
