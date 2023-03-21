@@ -19,29 +19,23 @@
 #define HEPHAISTOS_BOOTALLOCATOR_H
 
 #include <cstdint>
+#include "paging/paging.h"
 
 namespace kernel::boot {
 
     class BootAllocator {
-        std::uintptr_t memoryPointer;
-        std::uintptr_t virtualPointer;
+        std::uintptr_t currentAddress;
+        std::uintptr_t virtualBaseAddress;
+        paging::PageTableEntry* kernelPageTable;
 
     public:
-        static BootAllocator& getInstance() {
-            static BootAllocator instance;
-            return instance;
-        }
+        BootAllocator(
+            std::uintptr_t baseVirtualAddress,
+            std::uintptr_t physicalAddress,
+            paging::PageTableEntry* kernelPageTable
+        );
 
-        void setMemoryPointer(std::uintptr_t pointer, std::uintptr_t virtualPointer) {
-            this->memoryPointer = pointer;
-            this->virtualPointer = virtualPointer;
-        }
-
-        auto allocateMemory(std::size_t count) -> void* {
-            auto pointer = memoryPointer;
-            memoryPointer += count;
-            return reinterpret_cast<void*>(pointer);
-        }
+        auto allocate(std::size_t count) -> void*;
     };
 }
 

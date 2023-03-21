@@ -15,3 +15,32 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
+#include <bit>
+#include "boot_allocator.h"
+
+namespace kernel::boot {
+
+    BootAllocator::BootAllocator(
+        std::uintptr_t virtualBaseAddress,
+        std::uintptr_t physicalAddress,
+        paging::PageTableEntry* kernelPageTable
+    ) : currentAddress(physicalAddress),
+    virtualBaseAddress(virtualBaseAddress),
+    kernelPageTable(kernelPageTable) { }
+
+    auto BootAllocator::allocate(std::size_t count) -> void* {
+        const auto startAddress = currentAddress;
+        const auto endAddress = startAddress + count;
+
+        paging::mapAddressRangeInTable(
+            kernelPageTable,
+            virtualBaseAddress + currentAddress,
+            currentAddress,
+            endAddress
+        );
+
+        currentAddress = endAddress;
+        return std::bit_cast<void*>(virtualBaseAddress + startAddress);
+    }
+}
+
