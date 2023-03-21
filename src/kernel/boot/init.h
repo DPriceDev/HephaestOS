@@ -21,7 +21,6 @@
 #include <boot_info.h>
 #include "grub/multiboot_info.h"
 
-
 namespace kernel::boot {
 
     extern "C" void loadKernelSegment();

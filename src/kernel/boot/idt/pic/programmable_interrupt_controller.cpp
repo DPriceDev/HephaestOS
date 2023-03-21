@@ -17,7 +17,7 @@
 
 #include "idt/pic/programmable_interrupt_controller.h"
 
-#include "../hal/io/io.h"
+#include "io.h"
 
 namespace kernel::boot::idt {
 

@@ -26,7 +26,6 @@ section .bss
 ; Boot data section
 
 section .text
-virtualBase     equ             0xC0000000
 
 loader:
                 mov             eax, [esp+4]

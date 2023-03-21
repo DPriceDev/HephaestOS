@@ -16,7 +16,7 @@
 
 bits            32
 
-global enterHigherKernel, jumpToKernel
+global enterHigherKernel
 
 extern kernelMain, init, callConstructors
 extern pageDirectory, kernelPageTable
