@@ -20,7 +20,7 @@
 
 #include <cstdint>
 
-namespace kernel::boot::paging {
+namespace boot {
 
     // Defines the access flags of a given Page Table Entry.
     struct [[gnu::packed]] PageTableAccess {
@@ -42,6 +42,6 @@ namespace kernel::boot::paging {
         uint8_t unused : 3 = 0;
         uint32_t address : 20 = 0x0;
     };
-}// namespace kernel::boot::paging
+}// namespace boot
 
 #endif// HEPHAIST_OS_KERNEL_BOOT_PAGING_PAGE_TABLE_ENTRY_H

@@ -23,7 +23,7 @@
 #include <span.h>
 #include <variant_base.h>
 
-namespace kernel::boot::elf {
+namespace boot {
 
     struct StaticExecutableElf {
         std::uintptr_t entryAddress;
@@ -47,6 +47,6 @@ namespace kernel::boot::elf {
     void loadElf(const StaticExecutableElf& elf);
 
     void loadElf(const DynamicExecutableElf& elf, uintptr_t loadAddress);
-}// namespace kernel::boot::elf
+}// namespace boot
 
 #endif// HEPHAISTOS_BOOT_ELF_LOADER_H

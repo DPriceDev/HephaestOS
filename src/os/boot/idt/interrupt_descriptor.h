@@ -20,7 +20,7 @@
 
 #include <cstdint>
 
-namespace kernel::boot::idt {
+namespace boot {
 
     constexpr uint16_t InterruptSegment = 0x08;
 
@@ -56,6 +56,6 @@ namespace kernel::boot::idt {
      * @return an interrupt descriptor setup to call the provided method on the interrupt firing.
      */
     auto constructInterruptDescriptor(int (*handler)(), GateType type) -> InterruptDescriptor;
-}// namespace kernel::boot::idt
+}// namespace boot
 
 #endif// HEPHAIST_OS_KERNEL_BOOT_IDT_INTERRUPT_DESCRIPTOR_H

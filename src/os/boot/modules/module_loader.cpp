@@ -23,8 +23,7 @@
 #include <format.h>
 #include <memory/boot_allocator.h>
 
-namespace kernel::boot {
-
+namespace boot {
     auto loadModules(const std::Span<ModuleEntry>& bootModules, BootAllocator& allocator, const BootInfo& bootInfo)
         -> std::Result<uintptr_t> {
         std::print("INFO: Loading {} Boot Module{}\n", bootModules.size(), (bootModules.size()) ? "" : "s");
@@ -37,7 +36,7 @@ namespace kernel::boot {
         uintptr_t kernelAddress = 0;// todo: Make optional?
         for (const auto& bootModule : bootModules) {
 
-            paging::mapAddressRangeInTable(
+            mapAddressRangeInTable(
                 bootInfo.bootPageTable,
                 bootInfo.baseVirtualAddress + bootModule.moduleStart,
                 bootModule.moduleStart,
@@ -63,14 +62,14 @@ namespace kernel::boot {
         std::print("INFO: Loading Boot Module: {}\n", moduleName);
 
         const auto elfAddress = baseVirtualAddress + bootModule.moduleStart;
-        const auto elfInfoResult = elf::getElfInfo(elfAddress);
+        const auto elfInfoResult = getElfInfo(elfAddress);
 
         if (elfInfoResult.isNotValid()) {
             std::print("ERROR: Failed to load boot module: {}\n", moduleName);
             return std::Result<LoadedModule>::failure();
         }
 
-        elf::ElfInfo elfInfo = elfInfoResult.get();
+        ElfInfo elfInfo = elfInfoResult.get();
 
         const auto elfVisitor = [&allocator](const auto& elf) { return loadElf(elf.get(), allocator); };
 
@@ -78,16 +77,16 @@ namespace kernel::boot {
         return std::Result<LoadedModule>::success({ moduleName, entryAddress });
     }
 
-    auto loadElf(const elf::StaticExecutableElf& elf, const BootAllocator&) -> uintptr_t {
+    auto loadElf(const StaticExecutableElf& elf, const BootAllocator&) -> uintptr_t {
         // todo: remove or add page allocation
-        elf::loadElf(elf);
+        loadElf(elf);
         return elf.entryAddress;
     }
 
 
-    auto loadElf(const elf::DynamicExecutableElf& elf, BootAllocator& allocator) -> uintptr_t {
+    auto loadElf(const DynamicExecutableElf& elf, BootAllocator& allocator) -> uintptr_t {
         const auto address = std::bit_cast<uintptr_t>(allocator.allocate(elf.memorySize));
-        elf::loadElf(elf, address);
+        loadElf(elf, address);
         return address;
     }
-}// namespace kernel::boot
+}// namespace boot

@@ -19,8 +19,7 @@
 
 #include <format.h>
 
-namespace kernel::boot::idt {
-
+namespace boot {
     // handles an exception for the provided exception info
     extern "C" void handleException(ExceptionInfo exceptionInfo) {
 
@@ -32,4 +31,4 @@ namespace kernel::boot::idt {
 
         while (true) {}
     }
-}// namespace kernel::boot::idt
+}// namespace boot

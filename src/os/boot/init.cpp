@@ -26,9 +26,8 @@
 #include <serial_port.h>
 #include <tss/task_state_segment.h>
 
-extern "C" void
-    init(kernel::boot::MultiBootInfo* info, uint32_t magic, uint32_t stackPointer, kernel::boot::BootInfo bootInfo) {
-    kernel::boot::initializeSerialPort();
+extern "C" void init(boot::MultiBootInfo* info, uint32_t magic, uint32_t stackPointer, boot::BootInfo bootInfo) {
+    boot::initializeSerialPort();
     std::print("INFO: System init\n");
 
     constexpr uint32_t MULTIBOOT_ONE_MAGIC_NUMBER = 0x2BADB002;
@@ -37,26 +36,24 @@ extern "C" void
         return;
     }
 
-    kernel::boot::initializeDescriptorTables(stackPointer);
+    boot::initializeDescriptorTables(stackPointer);
 
-    const auto bootModules = std::Span<kernel::boot::ModuleEntry> { info->modulePtr, info->moduleCount };
+    const auto bootModules = std::Span<boot::ModuleEntry> { info->modulePtr, info->moduleCount };
     const auto nextAvailableMemory = findNextAvailableMemory(bootModules, bootInfo);
 
-    auto allocator =
-        kernel::boot::BootAllocator(bootInfo.baseVirtualAddress, nextAvailableMemory, bootInfo.bootPageTable);
+    auto allocator = boot::BootAllocator(bootInfo.baseVirtualAddress, nextAvailableMemory, bootInfo.bootPageTable);
     const auto kernelAddress = loadModules(bootModules, allocator, bootInfo);
 
-    kernel::boot::paging::unmapLowerKernel(bootInfo.pageDirectory);
+    boot::unmapLowerKernel(bootInfo.pageDirectory);
 
     if (!kernelAddress.isValid()) {
         std::print("ERROR: Failed to enter kernel module\n");
         return;
     }
-    kernel::boot::enterKernelModule(kernelAddress.get());
+    boot::enterKernelModule(kernelAddress.get());
 }
 
-namespace kernel::boot {
-
+namespace boot {
     static const debug::SerialPortConnection connection { debug::SerialPort::COM1 };
 
     void initializeSerialPort() {
@@ -65,6 +62,7 @@ namespace kernel::boot {
                 &connection,
                 [](const void*) { /* Serial port cannot be de-referenced. */ },
                 [](const void* pointer, char character) {
+                    // todo: std::any here?
                     static_cast<const debug::SerialPortConnection*>(pointer)->write(character);
                 },
                 [](const void*) { /* Serial Port self increments. */ },
@@ -73,14 +71,14 @@ namespace kernel::boot {
     }
 
     void initializeDescriptorTables(uint32_t stackPointer) {
-        auto tssDescriptor = tss::getTaskStateSegmentDescriptor();
-        gdt::initializeGlobalDescriptorTable(tssDescriptor);
+        auto tssDescriptor = getTaskStateSegmentDescriptor();
+        initializeGlobalDescriptorTable(tssDescriptor);
         std::print("INFO: Global Descriptor table initialized\n");
 
-        tss::initializeTaskStateSegment(stackPointer);
+        initializeTaskStateSegment(stackPointer);
         std::print("INFO: Task State Segment initialized\n");
 
-        idt::initializeInterruptDescriptorTable();
+        initializeInterruptDescriptorTable();
         std::print("INFO: Interrupt Descriptor table initialized\n");
 
         setupInterrupts();
@@ -89,7 +87,7 @@ namespace kernel::boot {
     void setupInterrupts() {
         constexpr uint8_t masterDeviceOffset = 32;
         constexpr uint8_t slaveDeviceOffset = masterDeviceOffset + 8;
-        idt::remapProgrammableInterruptController(masterDeviceOffset, slaveDeviceOffset);
+        remapProgrammableInterruptController(masterDeviceOffset, slaveDeviceOffset);
         std::print("INFO: Interrupts remapped\n");
     }
 
@@ -113,4 +111,4 @@ namespace kernel::boot {
         enableInterrupts();
         enterKernel(output);
     }
-}// namespace kernel::boot
+}// namespace boot

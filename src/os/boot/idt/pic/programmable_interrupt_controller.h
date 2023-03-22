@@ -20,7 +20,7 @@
 
 #include <cstdint>
 
-namespace kernel::boot::idt {
+namespace boot {
     constexpr uint8_t masterPicAddress = 0x20;// IO Address of Master PIC
     constexpr uint8_t slavePicAddress = 0xA0;// IO Address of Slave PIC
     constexpr uint8_t masterPicDataAddress = 0x21;// IO Data Address of Master PIC
@@ -53,6 +53,6 @@ namespace kernel::boot::idt {
      * @param interruptCode
      */
     void sendEoiFlag(uint32_t interruptCode);
-}// namespace kernel::boot::idt
+}// namespace boot
 
 #endif// HEPHAIST_OS_KERNEL_BOOT_IDT_PROGRAMMABLE_INTERRUPT_CONTROLLER_H

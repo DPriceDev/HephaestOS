@@ -18,25 +18,26 @@
 #ifndef HEPHAISTOS_BOOTALLOCATOR_H
 #define HEPHAISTOS_BOOTALLOCATOR_H
 
-#include "paging/paging.h"
+#include <cstddef>
+#include <paging/paging.h>
 #include <cstdint>
 
-namespace kernel::boot {
+namespace boot {
 
     class BootAllocator {
         std::uintptr_t currentAddress;
         std::uintptr_t virtualAddress;
-        paging::PageTableEntry* pageTable;
+        PageTableEntry* pageTable;
 
       public:
         BootAllocator(
             std::uintptr_t baseVirtualAddress,
             std::uintptr_t physicalAddress,
-            paging::PageTableEntry* kernelPageTable
+            PageTableEntry* kernelPageTable
         );
 
-        auto allocate(std::size_t count, std::size_t alignment = 1) -> void*;
+        auto allocate(std::size_t count, std::size_t alignment = 1) -> std::byte*;
     };
-}// namespace kernel::boot
+}// namespace boot
 
 #endif// HEPHAISTOS_BOOTALLOCATOR_H

@@ -18,7 +18,7 @@
 #ifndef HEPHAIST_OS_KERNEL_BOOT_IDT_HANDLER_REGISTERS_H
 #define HEPHAIST_OS_KERNEL_BOOT_IDT_HANDLER_REGISTERS_H
 
-namespace kernel::boot::idt {
+namespace boot {
 
     /**
      *
@@ -52,6 +52,6 @@ namespace kernel::boot::idt {
         const uint32_t cs;
         const uint16_t eflags;
     };
-}// namespace kernel::boot::idt
+}// namespace boot
 
 #endif// HEPHAIST_OS_KERNEL_BOOT_IDT_HANDLER_REGISTERS_H

@@ -21,14 +21,12 @@
 #include "grub/multiboot_info.h"
 #include <boot_info.h>
 
-namespace kernel::boot {
-
+namespace boot {
     extern "C" void loadKernelSegment();
 
     extern "C" void enableInterrupts();
 
-    extern "C" void
-        init(kernel::boot::MultiBootInfo* info, uint32_t magic, uint32_t stackPointer, kernel::boot::BootInfo bootInfo);
+    extern "C" void init(MultiBootInfo* info, uint32_t magic, uint32_t stackPointer, BootInfo bootInfo);
 
     void initializeSerialPort();
 
@@ -39,6 +37,6 @@ namespace kernel::boot {
     auto findNextAvailableMemory(const std::Span<ModuleEntry>& bootModules, const BootInfo& bootInfo) -> uintptr_t;
 
     void enterKernelModule(uintptr_t kernelAddress);
-}// namespace kernel::boot
+}// namespace boot
 
 #endif// HEPHAISTOS_INIT_H

@@ -18,7 +18,7 @@
 #include "global_descriptor.h"
 #include <stdoffset.h>
 
-namespace kernel::boot::gdt {
+namespace boot {
 
     /**
      * Constructs a Global descriptor that can be inserted in a Global descriptor table. This takes a set of
@@ -33,20 +33,21 @@ namespace kernel::boot::gdt {
      * @return Global Descriptor constructed from the parameters.
      */
     auto constructGlobalDescriptor(
-        const uint32_t baseAddress,
+        const uintptr_t baseAddress,
         const uint32_t memoryLimit,
         const Access& access,
         const Flags& flags
     ) -> GlobalDescriptor {
-        return GlobalDescriptor { .lowerLimit = static_cast<uint16_t>((memoryLimit & Mask16Bit)),
-                                  .lowerBase = static_cast<uint16_t>((baseAddress & Mask16Bit)),
-                                  .midBase = static_cast<uint8_t>((baseAddress >> Offset16Bit) & Mask8Bit),
+        return GlobalDescriptor { .lowerLimit = static_cast<uint16_t>((memoryLimit & std::Mask16Bit)),
+                                  .lowerBase = static_cast<uint16_t>((baseAddress & std::Mask16Bit)),
+                                  .midBase = static_cast<uint8_t>((baseAddress >> std::Offset16Bit) & std::Mask8Bit),
                                   .access = access,
-                                  .upperLimit = static_cast<uint8_t>((memoryLimit >> Offset16Bit) & Mask4Bit),
+                                  .upperLimit = static_cast<uint8_t>((memoryLimit >> std::Offset16Bit) & std::Mask4Bit),
                                   .available = flags.available,
                                   .longMode = flags.longMode,
                                   .size = flags.size,
                                   .granularity = flags.granularity,
-                                  .upperBase = static_cast<uint8_t>((baseAddress >> Offset24Bit) & Mask8Bit) };
+                                  .upperBase =
+                                      static_cast<uint8_t>((baseAddress >> std::Offset24Bit) & std::Mask8Bit) };
     }
-}// namespace kernel::boot::gdt
+}// namespace boot

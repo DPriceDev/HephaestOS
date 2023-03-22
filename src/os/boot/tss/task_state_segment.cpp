@@ -21,7 +21,7 @@
 
 #include "task_state_segment.h"
 
-namespace kernel::boot::tss {
+namespace boot {
 
     //
     // todo: should be in boot class / struct?
@@ -32,7 +32,7 @@ namespace kernel::boot::tss {
                         .ds = 0x13,
                         .fs = 0x13,
                         .gs = 0x13,
-                        .ioMapBase = sizeof(tss::TssEntry) };
+                        .ioMapBase = sizeof(TssEntry) };
 
     //
     static const uintptr_t tssEntryPtr = std::bit_cast<uintptr_t>(&tssEntry);
@@ -49,15 +49,15 @@ namespace kernel::boot::tss {
         tssEntry.esp0 = stackPointer;
 
         //
-        loadTaskRegister(gdt::Segment::Tss, gdt::Privilege::Kernel);
+        loadTaskRegister(Segment::Tss, Privilege::Kernel);
     }
 
     /**
      *
      * @return
      */
-    auto getTaskStateSegmentDescriptor() -> gdt::GlobalDescriptor {
+    auto getTaskStateSegmentDescriptor() -> GlobalDescriptor {
         //
-        return constructGlobalDescriptor(tssEntryPtr, sizeof(tss::TssEntry), tssEntryAccess, tssFlags);
+        return constructGlobalDescriptor(tssEntryPtr, sizeof(TssEntry), tssEntryAccess, tssFlags);
     }
-}// namespace kernel::boot::tss
+}// namespace boot

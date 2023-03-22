@@ -24,8 +24,7 @@
 #include <elf/boot_elf_loader.h>
 #include <string_view.h>
 
-namespace kernel::boot {
-
+namespace boot {
     struct LoadedModule {
         std::StringView name;
         uintptr_t address;
@@ -37,9 +36,9 @@ namespace kernel::boot {
     auto loadBootModule(const ModuleEntry& bootModule, BootAllocator& allocator, uintptr_t baseVirtualAddress)
         -> std::Result<LoadedModule>;
 
-    auto loadElf(const elf::StaticExecutableElf& elf, const BootAllocator&) -> uintptr_t;
+    auto loadElf(const StaticExecutableElf& elf, const BootAllocator&) -> uintptr_t;
 
-    auto loadElf(const elf::DynamicExecutableElf& elf, BootAllocator&) -> uintptr_t;
-}// namespace kernel::boot
+    auto loadElf(const DynamicExecutableElf& elf, BootAllocator&) -> uintptr_t;
+}// namespace boot
 
 #endif// HEPHAISTOS_MODULE_LOADER_H

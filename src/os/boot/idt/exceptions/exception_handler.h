@@ -23,8 +23,7 @@
 
 #include "idt/model/handler_registers.h"
 
-namespace kernel::boot::idt {
-
+namespace boot {
     /**
      *
      */
@@ -77,6 +76,6 @@ namespace kernel::boot::idt {
      *
      */
     extern "C" [[noreturn]] void handleException(ExceptionInfo exceptionInfo);
-}// namespace kernel::boot::idt
+}// namespace boot
 
 #endif// HEPHAISTOS_EXCEPTION_HANDLER_H

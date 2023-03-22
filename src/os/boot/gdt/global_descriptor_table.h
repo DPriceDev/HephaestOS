@@ -21,7 +21,7 @@
 #include "global_descriptor.h"
 #include <stdoffset.h>
 
-namespace kernel::boot::gdt {
+namespace boot {
 
     /**
      * Defines a pointer to the first Global Descriptor in an array of Global Descriptors that make
@@ -128,6 +128,6 @@ namespace kernel::boot::gdt {
      * @param tssDescriptor provides the task state segments descriptor to be added to the array.
      */
     void initializeGlobalDescriptorTable(const GlobalDescriptor& tssDescriptor);
-}// namespace kernel::boot::gdt
+}// namespace boot
 
 #endif// HEPHAIST_OS_KERNEL_BOOT_GDT_GLOBAL_DESCRIPTOR_TABLE_H
