@@ -20,7 +20,7 @@
 
 #include "cstdint"
 
-namespace kernel::boot::paging {
+namespace boot {
 
     // Page directory
     static constexpr std::size_t PAGE_DIRECTORY_SIZE = 1024;
@@ -28,6 +28,6 @@ namespace kernel::boot::paging {
     static constexpr std::size_t PAGE_TABLE_SIZE = 1024;
 
     static constexpr std::size_t PAGE_SIZE = 0x1000;
-}// namespace kernel::boot::paging
+}// namespace boot
 
 #endif// HEPHAEST_OS_KERNEL_BOOT_PAGING_MODEL_PAGING_CONSTANTS_H

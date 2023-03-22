@@ -22,7 +22,7 @@
 
 #include "page_table_entry.h"
 
-namespace kernel::boot::paging {
+namespace boot {
 
     // Defines the access flags of a given Page Directory Entry.
     struct [[gnu::packed]] PageDirectoryAccess {
@@ -45,6 +45,6 @@ namespace kernel::boot::paging {
         uintptr_t address : 20 = 0;
     };
 
-}// namespace kernel::boot::paging
+}// namespace boot
 
 #endif// HEPHAIST_OS_KERNEL_BOOT_PAGING_PAGE_DIRECTORY_ENTRY_H

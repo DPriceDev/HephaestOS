@@ -18,7 +18,7 @@
 #include "global_descriptor_table.h"
 #include "array.h"
 
-namespace kernel::boot::gdt {
+namespace boot {
 
     // Array of Global Descriptors that defines the Global Descriptor Table.
     std::Array<GlobalDescriptor, 6> globalDescriptorTable {
@@ -55,4 +55,4 @@ namespace kernel::boot::gdt {
         // Load the GDT from the pointer into the CPU Registers.
         loadGdtTable(&gdtPointer);
     }
-}// namespace kernel::boot::gdt
+}// namespace boot {

@@ -20,7 +20,7 @@
 #include <result.h>
 #include <string.h>
 
-namespace kernel::boot::elf {
+namespace boot {
 
     auto getExecutableElfInfo(const Elf32_Ehdr* header, uintptr_t headerAddress) -> ElfInfo;
 
@@ -98,4 +98,4 @@ namespace kernel::boot::elf {
     void loadElf(const DynamicExecutableElf& elf, uintptr_t loadAddress) {
         loadExecutableElf(elf.headerAddress, elf.programHeaders, loadAddress);
     }
-}// namespace kernel::boot::elf
+}// namespace boot {

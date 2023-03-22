@@ -18,12 +18,12 @@
 #include "boot_allocator.h"
 #include <bit>
 
-namespace kernel::boot {
+namespace boot {
 
     BootAllocator::BootAllocator(
         std::uintptr_t virtualBaseAddress,
         std::uintptr_t physicalAddress,
-        paging::PageTableEntry* kernelPageTable
+        PageTableEntry* kernelPageTable
     )
         : currentAddress(physicalAddress), virtualAddress(virtualBaseAddress), pageTable(kernelPageTable) {}
 
@@ -31,9 +31,9 @@ namespace kernel::boot {
         const auto startAddress = (currentAddress / alignment) + (currentAddress % alignment ? alignment : 0);
         const auto endAddress = startAddress + count;
 
-        paging::mapAddressRangeInTable(pageTable, virtualAddress + currentAddress, currentAddress, endAddress);
+        mapAddressRangeInTable(pageTable, virtualAddress + currentAddress, currentAddress, endAddress);
 
         currentAddress = endAddress;
         return std::bit_cast<void*>(virtualAddress + startAddress);
     }
-}// namespace kernel::boot
+}// namespace boot

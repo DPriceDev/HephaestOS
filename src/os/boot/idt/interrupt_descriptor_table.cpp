@@ -18,7 +18,7 @@
 #include "interrupt_descriptor_table.h"
 #include "array.h"
 
-namespace kernel::boot::idt {
+namespace boot {
 
     // Array of Interrupt Descriptors that defines the Interrupt Descriptor Table.
     static const std::Array<InterruptDescriptor, IDT_TABLE_LENGTH> interruptDescriptorTable {
@@ -82,4 +82,4 @@ namespace kernel::boot::idt {
      *
      */
     void initializeInterruptDescriptorTable() { loadIdtTable(&idtPointer); }
-}// namespace kernel::boot::idt
+}// namespace boot

@@ -19,7 +19,7 @@
 #include <bit>
 #include <stdoffset.h>
 
-namespace kernel::boot::idt {
+namespace boot {
 
     /**
      * Constructs an Interrupt Descriptor that can be inserted in a Interrupt descriptor table.
@@ -35,14 +35,15 @@ namespace kernel::boot::idt {
      */
     auto constructInterruptDescriptor(int (*handler)(), GateType type) -> InterruptDescriptor {
         return InterruptDescriptor {
-            .lowerOffset = static_cast<uint16_t>(std::bit_cast<uintptr_t>(handler) & Mask16Bit),
+            .lowerOffset = static_cast<uint16_t>(std::bit_cast<uintptr_t>(handler) & std::Mask16Bit),
             .selector = InterruptSegment,
             .zero = 0,
             .gateType = TypeAttributes { .gateType = type,
                                          .storageSegment = 0,
                                          .descriptorPrivilege = DescriptorPrivilege::Kernel,
                                          .isPresent = true },
-            .higherOffset = static_cast<uint16_t>((std::bit_cast<uintptr_t>(handler) >> Offset16Bit) & Mask16Bit)
+            .higherOffset =
+                static_cast<uint16_t>((std::bit_cast<uintptr_t>(handler) >> std::Offset16Bit) & std::Mask16Bit)
         };
     }
-}// namespace kernel::boot::idt
+}// namespace boot

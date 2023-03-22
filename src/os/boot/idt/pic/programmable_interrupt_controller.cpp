@@ -19,7 +19,7 @@
 
 #include "io.h"
 
-namespace kernel::boot::idt {
+namespace boot {
 
     // Maps the overlapping interrupts to after the exceptions.
     void remapProgrammableInterruptController(uint8_t masterOffset, uint8_t slaveOffset) {
@@ -66,4 +66,4 @@ namespace kernel::boot::idt {
 
         hal::writeToPort(masterPicAddress, picEoiFlag);
     }
-}// namespace kernel::boot::idt
+}// namespace boot

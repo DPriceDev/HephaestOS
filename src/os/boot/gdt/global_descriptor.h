@@ -20,7 +20,7 @@
 
 #include <cstdint>
 
-namespace kernel::boot::gdt {
+namespace boot {
 
     /**
      * Describes the privilege levels available in x86, mapped to the ring level. This class
@@ -178,6 +178,6 @@ namespace kernel::boot::gdt {
      */
     GlobalDescriptor
         constructGlobalDescriptor(uint32_t baseAddress, uint32_t memoryLimit, const Access& access, const Flags& flags);
-}// namespace kernel::boot::gdt
+}// namespace boot {
 
 #endif// HEPHAIST_OS_KERNEL_BOOT_GDT_GLOBAL_DESCRIPTOR_H

@@ -20,7 +20,7 @@
 
 #include <stdoffset.h>
 
-namespace kernel::boot {
+namespace boot {
 
     static constexpr uint8_t MULTIBOOT_MEMORY_AVAILABLE = 1;
 
@@ -104,5 +104,5 @@ namespace kernel::boot {
         uint32_t vbeInterfaceOff;
         uint32_t vbeInterfaceLength;
     };
-}// namespace kernel::boot
+}// namespace boot {
 #endif// HEPHAIST_OS_KERNEL_BOOT_MULTIBOOT_INFO_H

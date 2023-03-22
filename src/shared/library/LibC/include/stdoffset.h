@@ -21,7 +21,7 @@
 #include <cstdint>
 
 // todo: add as library do not copy
-namespace kernel {
+namespace std {
 
     // todo: move to common file
     // Set of bit-masks that can be used to mask parts of an Integer.

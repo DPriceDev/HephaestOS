@@ -22,13 +22,13 @@
 #include "grub/multiboot_info.h"
 #include "model/page_directory_entry.h"
 
-namespace kernel::boot::paging {
+namespace boot {
 
     /**
      * Takes a pointer to the first entry in a @param pageDirectory and loads it to the
      * cr3 register.
      */
-    extern "C" void loadPageDirectory(paging::PageDirectoryEntry* pageDirectory);
+    extern "C" void loadPageDirectory(PageDirectoryEntry* pageDirectory);
 
     /**
      * Enables paging by setting the paging flag in cr0.
@@ -41,8 +41,8 @@ namespace kernel::boot::paging {
      */
     extern "C" void initializePaging(
         MultiBootInfo* info,
-        paging::PageDirectoryEntry* pageDirectory,
-        paging::PageTableEntry* kernelPageTable,
+        PageDirectoryEntry* pageDirectory,
+        PageTableEntry* kernelPageTable,
         uintptr_t virtualKernelBaseAddress,
         uintptr_t kernelStartAddress,
         uintptr_t kernelEndAddress
@@ -55,7 +55,7 @@ namespace kernel::boot::paging {
         uintptr_t endAddress
     );
 
-    void unmapLowerKernel(paging::PageDirectoryEntry* pageDirectoryPointer);
-}// namespace kernel::boot::paging
+    void unmapLowerKernel(PageDirectoryEntry* pageDirectoryPointer);
+}// namespace boot
 
 #endif// HEPHAIST_OS_KERNEL_BOOT_PAGING_PAGING_H

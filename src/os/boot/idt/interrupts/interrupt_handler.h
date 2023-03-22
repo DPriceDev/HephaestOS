@@ -22,7 +22,7 @@
 
 #include "idt/model/handler_registers.h"
 
-namespace kernel::boot::idt {
+namespace boot {
 
     /**
      *
@@ -38,6 +38,6 @@ namespace kernel::boot::idt {
      *
      */
     extern "C" void handleInterrupt(InterruptInfo interruptInfo);
-}// namespace kernel::boot::idt
+}// namespace boot
 
 #endif// HEPHAIST_OS_KERNEL_BOOT_IDT_INTERRUPT_HANDLER_H

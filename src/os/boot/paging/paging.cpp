@@ -25,7 +25,7 @@
 #include "model/page_directory_entry.h"
 #include "span.h"
 
-namespace kernel::boot::paging {
+namespace boot {
 
     struct EntryAddressMask {
         uint16_t : 12;
@@ -68,7 +68,7 @@ namespace kernel::boot::paging {
         PageTableEntry* table
     ) {
         auto address = std::bit_cast<uintptr_t>(table);
-        auto index = (virtualAddress >> Offset22Bit) & Mask10Bit;
+        auto index = (virtualAddress >> std::Offset22Bit) & std::Mask10Bit;
         directory[index] = { .access = PageDirectoryAccess { .isPresent = true, .canWrite = true },
                              .address = std::bit_cast<EntryAddressMask>(address).top };
     }
@@ -140,4 +140,4 @@ namespace kernel::boot::paging {
             .access = PageDirectoryAccess { .canWrite = true },
         };
     }
-}// namespace kernel::boot::paging
+}// namespace boot

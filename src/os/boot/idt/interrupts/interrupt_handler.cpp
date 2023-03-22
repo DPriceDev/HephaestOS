@@ -21,7 +21,7 @@
 #include "../hal/io/io.h"
 #include <format.h>
 
-namespace kernel::boot::idt {
+namespace boot {
 
 
     void handleKeyboardPress(InterruptInfo interruptInfo) {
@@ -49,4 +49,4 @@ namespace kernel::boot::idt {
         sendEoiFlag(interruptInfo.interruptCode);
     }
 
-}// namespace kernel::boot::idt
+}// namespace boot
