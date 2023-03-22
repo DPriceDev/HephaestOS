@@ -33,7 +33,7 @@ namespace boot {
      * @return Global Descriptor constructed from the parameters.
      */
     auto constructGlobalDescriptor(
-        const uint32_t baseAddress,
+        const uintptr_t baseAddress,
         const uint32_t memoryLimit,
         const Access& access,
         const Flags& flags
@@ -47,6 +47,7 @@ namespace boot {
                                   .longMode = flags.longMode,
                                   .size = flags.size,
                                   .granularity = flags.granularity,
-                                  .upperBase = static_cast<uint8_t>((baseAddress >> std::Offset24Bit) & std::Mask8Bit) };
+                                  .upperBase =
+                                      static_cast<uint8_t>((baseAddress >> std::Offset24Bit) & std::Mask8Bit) };
     }
-}// namespace boot {
+}// namespace boot

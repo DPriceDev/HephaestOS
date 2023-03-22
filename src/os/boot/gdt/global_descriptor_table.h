@@ -128,6 +128,6 @@ namespace boot {
      * @param tssDescriptor provides the task state segments descriptor to be added to the array.
      */
     void initializeGlobalDescriptorTable(const GlobalDescriptor& tssDescriptor);
-}// namespace boot {
+}// namespace boot
 
 #endif// HEPHAIST_OS_KERNEL_BOOT_GDT_GLOBAL_DESCRIPTOR_TABLE_H

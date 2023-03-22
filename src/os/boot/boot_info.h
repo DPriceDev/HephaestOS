@@ -32,6 +32,6 @@ namespace boot {
         uintptr_t bootStartLocation;
         uintptr_t bootEndLocation;
     };
-}// namespace boot {
+}// namespace boot
 
 #endif// HEPHAISTOS_BOOT_INFO_H

@@ -104,5 +104,5 @@ namespace boot {
         uint32_t vbeInterfaceOff;
         uint32_t vbeInterfaceLength;
     };
-}// namespace boot {
+}// namespace boot
 #endif// HEPHAIST_OS_KERNEL_BOOT_MULTIBOOT_INFO_H

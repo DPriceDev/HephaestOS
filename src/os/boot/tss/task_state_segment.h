@@ -74,18 +74,18 @@ namespace boot {
 
     //
     constexpr Flags tssFlags { .available = false,
-                                    .longMode = false,
-                                    .size = Size::Bit16,
-                                    .granularity = Granularity::Byte };
+                               .longMode = false,
+                               .size = Size::Bit16,
+                               .granularity = Granularity::Byte };
 
     //
     constexpr Access tssEntryAccess { .accessed = true,
-                                           .readWritable = false,
-                                           .isConforming = false,
-                                           .isExecutable = true,
-                                           .descriptorType = DescriptorType::System,
-                                           .privilege = Privilege::Kernel,
-                                           .present = true };
+                                      .readWritable = false,
+                                      .isConforming = false,
+                                      .isExecutable = true,
+                                      .descriptorType = DescriptorType::System,
+                                      .privilege = Privilege::Kernel,
+                                      .present = true };
 }// namespace boot
 
 #endif// HEPHAIST_OS_KERNEL_BOOT_TSS_H

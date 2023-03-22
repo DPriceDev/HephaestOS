@@ -26,13 +26,7 @@
 #include <serial_port.h>
 #include <tss/task_state_segment.h>
 
-extern "C" void
-    init(
-        boot::MultiBootInfo* info,
-        uint32_t magic,
-        uint32_t stackPointer,
-        boot::BootInfo bootInfo
-    ) {
+extern "C" void init(boot::MultiBootInfo* info, uint32_t magic, uint32_t stackPointer, boot::BootInfo bootInfo) {
     boot::initializeSerialPort();
     std::print("INFO: System init\n");
 
@@ -47,8 +41,7 @@ extern "C" void
     const auto bootModules = std::Span<boot::ModuleEntry> { info->modulePtr, info->moduleCount };
     const auto nextAvailableMemory = findNextAvailableMemory(bootModules, bootInfo);
 
-    auto allocator =
-        boot::BootAllocator(bootInfo.baseVirtualAddress, nextAvailableMemory, bootInfo.bootPageTable);
+    auto allocator = boot::BootAllocator(bootInfo.baseVirtualAddress, nextAvailableMemory, bootInfo.bootPageTable);
     const auto kernelAddress = loadModules(bootModules, allocator, bootInfo);
 
     boot::unmapLowerKernel(bootInfo.pageDirectory);

@@ -55,4 +55,4 @@ namespace boot {
         // Load the GDT from the pointer into the CPU Registers.
         loadGdtTable(&gdtPointer);
     }
-}// namespace boot {
+}// namespace boot

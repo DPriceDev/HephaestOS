@@ -177,7 +177,7 @@ namespace boot {
      * @return Global Descriptor constructed from the parameters.
      */
     GlobalDescriptor
-        constructGlobalDescriptor(uint32_t baseAddress, uint32_t memoryLimit, const Access& access, const Flags& flags);
-}// namespace boot {
+        constructGlobalDescriptor(uintptr_t baseAddress, uint32_t memoryLimit, const Access& access, const Flags& flags);
+}// namespace boot
 
 #endif// HEPHAIST_OS_KERNEL_BOOT_GDT_GLOBAL_DESCRIPTOR_H

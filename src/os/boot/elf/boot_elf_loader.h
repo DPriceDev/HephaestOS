@@ -47,6 +47,6 @@ namespace boot {
     void loadElf(const StaticExecutableElf& elf);
 
     void loadElf(const DynamicExecutableElf& elf, uintptr_t loadAddress);
-}// namespace boot {
+}// namespace boot
 
 #endif// HEPHAISTOS_BOOT_ELF_LOADER_H

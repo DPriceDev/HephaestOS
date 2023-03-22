@@ -50,6 +50,6 @@ namespace std {
     constexpr uint8_t Offset24Bit = 24U;
 
     constexpr uint8_t Offset32Bit = 32U;
-}// namespace kernel
+}// namespace std
 
 #endif// HEPHAIST_OS_KERNEL_LIB_STD_INT_H

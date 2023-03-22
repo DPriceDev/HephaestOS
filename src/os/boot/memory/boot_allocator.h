@@ -18,8 +18,8 @@
 #ifndef HEPHAISTOS_BOOTALLOCATOR_H
 #define HEPHAISTOS_BOOTALLOCATOR_H
 
-#include "paging/paging.h"
-#include "cstddef"
+#include <cstddef>
+#include <paging/paging.h>
 #include <cstdint>
 
 namespace boot {

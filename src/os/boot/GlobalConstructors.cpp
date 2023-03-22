@@ -27,4 +27,4 @@ namespace boot {
     extern "C" void callConstructors() {
         for (GlobalConstructor& constructor : std::Span(&startCtors, &endCtors)) { constructor(); }
     }
-}// namespace boot {
+}// namespace boot

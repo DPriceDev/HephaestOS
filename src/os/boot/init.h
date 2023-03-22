@@ -26,8 +26,7 @@ namespace boot {
 
     extern "C" void enableInterrupts();
 
-    extern "C" void
-        init(MultiBootInfo* info, uint32_t magic, uint32_t stackPointer, BootInfo bootInfo);
+    extern "C" void init(MultiBootInfo* info, uint32_t magic, uint32_t stackPointer, BootInfo bootInfo);
 
     void initializeSerialPort();
 

@@ -98,4 +98,4 @@ namespace boot {
     void loadElf(const DynamicExecutableElf& elf, uintptr_t loadAddress) {
         loadExecutableElf(elf.headerAddress, elf.programHeaders, loadAddress);
     }
-}// namespace boot {
+}// namespace boot
