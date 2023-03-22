@@ -26,12 +26,8 @@
 #include <serial_port.h>
 #include <tss/task_state_segment.h>
 
-extern "C" void init(
-    kernel::boot::MultiBootInfo* info,
-    uint32_t magic,
-    uint32_t stackPointer,
-    kernel::boot::BootInfo bootInfo
-) {
+extern "C" void
+    init(kernel::boot::MultiBootInfo* info, uint32_t magic, uint32_t stackPointer, kernel::boot::BootInfo bootInfo) {
     kernel::boot::initializeSerialPort();
     std::print("INFO: System init\n");
 
@@ -46,11 +42,8 @@ extern "C" void init(
     const auto bootModules = std::Span<kernel::boot::ModuleEntry> { info->modulePtr, info->moduleCount };
     const auto nextAvailableMemory = findNextAvailableMemory(bootModules, bootInfo);
 
-    auto allocator = kernel::boot::BootAllocator(
-        bootInfo.baseVirtualAddress,
-        nextAvailableMemory,
-        bootInfo.bootPageTable
-    );
+    auto allocator =
+        kernel::boot::BootAllocator(bootInfo.baseVirtualAddress, nextAvailableMemory, bootInfo.bootPageTable);
     const auto kernelAddress = loadModules(bootModules, allocator, bootInfo);
 
     kernel::boot::paging::unmapLowerKernel(bootInfo.pageDirectory);
@@ -68,16 +61,14 @@ namespace kernel::boot {
 
     void initializeSerialPort() {
         if (connection.open()) {
-            std::KernelFormatOutput::getInstance().setStandardOutputIterator(
-                std::StandardOutputIterator {
-                    &connection,
-                    [](const void*) { /* Serial port cannot be de-referenced. */ },
-                    [](const void* pointer, char character) {
-                        static_cast<const debug::SerialPortConnection*>(pointer)->write(character);
-                    },
-                    [](const void*) { /* Serial Port self increments. */ },
-                }
-            );
+            std::KernelFormatOutput::getInstance().setStandardOutputIterator(std::StandardOutputIterator {
+                &connection,
+                [](const void*) { /* Serial port cannot be de-referenced. */ },
+                [](const void* pointer, char character) {
+                    static_cast<const debug::SerialPortConnection*>(pointer)->write(character);
+                },
+                [](const void*) { /* Serial Port self increments. */ },
+            });
         }
     }
 
@@ -104,7 +95,7 @@ namespace kernel::boot {
 
     auto findNextAvailableMemory(const std::Span<ModuleEntry>& bootModules, const BootInfo& bootInfo) -> uintptr_t {
         uintptr_t address = bootInfo.bootEndLocation;
-        for (const auto& bootModule: bootModules) {
+        for (const auto& bootModule : bootModules) {
             if (bootModule.moduleEnd > address) {
                 address = bootModule.moduleEnd;
             }
@@ -122,4 +113,4 @@ namespace kernel::boot {
         enableInterrupts();
         enterKernel(output);
     }
-}
+}// namespace kernel::boot

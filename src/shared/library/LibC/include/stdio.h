@@ -18,9 +18,9 @@
 #ifndef _STDIO_H
 #define _STDIO_H 1
 
-#include <stdarg.h>
-#include "stdio/sprintf.h"
 #include "stdio/file.h"
+#include "stdio/sprintf.h"
+#include <stdarg.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -74,4 +74,4 @@ int fprintf(FILE* stream, const char* format, ...);
 }
 #endif
 
-#endif // HEPHAIST_OS_USER_LIB_C_STDIO_H
+#endif// HEPHAIST_OS_USER_LIB_C_STDIO_H

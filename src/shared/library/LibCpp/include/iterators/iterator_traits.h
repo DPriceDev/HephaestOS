@@ -51,9 +51,7 @@ namespace std {
      * De-referenceable defines that @tparam Type can be de-referenced, and is not todo: void.
      */
     template<class Type>
-    concept Dereferenceable = requires(Type type) {
-        *type;
-    };
+    concept Dereferenceable = requires(Type type) { *type; };
 
     /**
      * iterator Value Type is a shorthand concept for retrieving the value type of an
@@ -61,7 +59,7 @@ namespace std {
      */
     template<class Iterator>
     using iteratorValueType =
-        typename std::iteratorTraits<std::remove_cvref_t<Iterator>>::valueType; // todo: need to be std::remove_cvref<...
+        typename std::iteratorTraits<std::remove_cvref_t<Iterator>>::valueType;// todo: need to be std::remove_cvref<...
 
     /**
      * iterator Reference Type computes the reference type for a given @tparam Iterator.
@@ -75,7 +73,8 @@ namespace std {
      */
     template<class Iterator>
     using iteratorDifferenceType =
-        typename std::iteratorTraits<std::remove_cvref_t<Iterator>>::differenceType; // todo: need to be std::remove_cvref<...
-}
+        typename std::iteratorTraits<std::remove_cvref_t<Iterator>>::differenceType;// todo: need to be
+                                                                                    // std::remove_cvref<...
+}// namespace std
 
-#endif // HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_ITERATORS_ITERATOR_TRAITS_H
+#endif// HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_ITERATORS_ITERATOR_TRAITS_H

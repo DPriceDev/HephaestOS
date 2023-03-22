@@ -47,4 +47,4 @@ void* memcpy(void* dest, const void* src, size_t n);
  */
 char* strcpy(char* dest, const char* src);
 
-#endif // HEPHAIST_OS_USER_LIB_C_STRING_H
+#endif// HEPHAIST_OS_USER_LIB_C_STRING_H

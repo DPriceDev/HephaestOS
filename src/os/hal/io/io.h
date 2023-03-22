@@ -30,7 +30,7 @@ namespace hal {
         constexpr static uint32_t TEST_POST_CODES_PORT = 0x80;
         writeToPort(TEST_POST_CODES_PORT, 0);
     }
-}
+}// namespace hal
 
 #endif
 ////////////////////////////////////////////////////////////////////////////////

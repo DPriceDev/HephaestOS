@@ -18,16 +18,17 @@
 #ifndef HEPHAIST_OS_SHARED_LIBRARY_CPP_ITERATORS_INCREMENTABLE_TRAITS_H
 #define HEPHAIST_OS_SHARED_LIBRARY_CPP_ITERATORS_INCREMENTABLE_TRAITS_H
 
-#include <type_traits>
 #include <concepts>
+#include <type_traits>
 
 // TODO: Comment or remove
 namespace std {
 
     template<class Iterator>
-    struct incrementableTraits { };
+    struct incrementableTraits {};
 
-    template<class Iterator> requires std::is_object_v<Iterator>
+    template<class Iterator>
+        requires std::is_object_v<Iterator>
     struct incrementableTraits<Iterator*> {
         using differenceType = std::ptrdiff_t;
     };
@@ -37,17 +38,20 @@ namespace std {
         using differenceType = std::ptrdiff_t;
     };
 
-    template<class Iterator> requires requires { typename Iterator::difference_type; }
+    template<class Iterator>
+        requires requires { typename Iterator::difference_type; }
     struct incrementableTraits<Iterator> {
         using differenceType = typename Iterator::difference_type;
     };
 
-    template<class Iterator> requires (!requires { typename Iterator::difference_type; }) &&
-                                      requires(const Iterator& a, const Iterator& b) {{ a - b } -> std::integral; }
+    template<class Iterator>
+        requires(!requires { typename Iterator::difference_type; }) && requires(const Iterator& a, const Iterator& b) {
+                                                                           { a - b } -> std::integral;
+                                                                       }
     struct incrementableTraits<Iterator> {
         using differenceType = std::make_signed_t<decltype(std::declval<Iterator>() - std::declval<Iterator>())>;
     };
 
-}
+}// namespace std
 
-#endif // HEPHAIST_OS_SHARED_LIBRARY_CPP_ITERATORS_INCREMENTABLE_TRAITS_H
+#endif// HEPHAIST_OS_SHARED_LIBRARY_CPP_ITERATORS_INCREMENTABLE_TRAITS_H

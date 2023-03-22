@@ -16,4 +16,4 @@
  */
 
 // TODO: Comment
-extern "C" [[maybe_unused]] void _cxa_pure_virtual() { }
+extern "C" [[maybe_unused]] void _cxa_pure_virtual() {}

@@ -18,10 +18,10 @@
 #ifndef HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_POINTER_FORMATTER_H
 #define HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_POINTER_FORMATTER_H
 
-#include <bit>
-#include <charconv.h>
 #include "formatter.h"
 #include "int_formatter.h"
+#include <bit>
+#include <charconv.h>
 
 namespace std {
 
@@ -55,6 +55,6 @@ namespace std {
             return Formatter<std::uintptr_t>().format(address, state);
         }
     };
-}
+}// namespace std
 
-#endif // HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_POINTER_FORMATTER_H
+#endif// HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_POINTER_FORMATTER_H

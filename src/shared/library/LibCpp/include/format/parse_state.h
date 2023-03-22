@@ -47,29 +47,21 @@ namespace std {
         std::size_t argumentIndex_ { 0 };
         CountingType countingType_ { CountingType::NOT_SET };
 
-    public:
+      public:
         using CharacterType = Type;
         using Iterator = typename std::BaseStringView<CharacterType>::Iterator;
         using ConstIterator = typename std::BaseStringView<CharacterType>::ConstIterator;
 
         // Constructor
-        explicit BasicParseState(
-            std::BaseStringView<CharacterType> format,
-            std::size_t argumentCount = 0
-        ) : format_(format), argumentCount_(argumentCount) { }
+        explicit BasicParseState(std::BaseStringView<CharacterType> format, std::size_t argumentCount = 0)
+            : format_(format), argumentCount_(argumentCount) {}
 
         // Accessors
-        constexpr auto begin() const noexcept -> ConstIterator {
-            return format_.begin();
-        }
+        constexpr auto begin() const noexcept -> ConstIterator { return format_.begin(); }
 
-        constexpr auto end() const noexcept -> ConstIterator {
-            return format_.end();
-        }
+        constexpr auto end() const noexcept -> ConstIterator { return format_.end(); }
 
-        constexpr void advanceTo(ConstIterator location) {
-            format_ = std::BaseStringView<CharacterType> { location };
-        }
+        constexpr void advanceTo(ConstIterator location) { format_ = std::BaseStringView<CharacterType> { location }; }
 
         // Operations
 
@@ -106,5 +98,5 @@ namespace std {
 
     // Declaration of a char based parse state.
     using ParseState = BasicParseState<char>;
-}
-#endif // HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_PARSE_STATE_H
+}// namespace std
+#endif// HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_PARSE_STATE_H

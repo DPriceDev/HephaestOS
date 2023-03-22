@@ -45,4 +45,4 @@ int execve(const char*, char* const[], char* const[]);
  */
 int execvp(const char*, char* const[]);
 
-#endif // HEPHAIST_OS_USER_LIB_C_UNISTD_H
+#endif// HEPHAIST_OS_USER_LIB_C_UNISTD_H

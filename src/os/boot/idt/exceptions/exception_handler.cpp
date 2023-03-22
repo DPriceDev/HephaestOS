@@ -30,6 +30,6 @@ namespace kernel::boot::idt {
         const auto* description = exceptionDescription[exceptionInfo.interruptCode];
         std::print(description);
 
-        while (true) { }
+        while (true) {}
     }
-}
+}// namespace kernel::boot::idt

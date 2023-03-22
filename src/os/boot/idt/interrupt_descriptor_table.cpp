@@ -75,15 +75,11 @@ namespace kernel::boot::idt {
     };
 
     // Structure holding the Interrupt descriptor Table array pointer and size of the array.
-    static const IdtPointer idtPointer {
-        (sizeof(InterruptDescriptor) * IDT_TABLE_LENGTH) - 1,
-        interruptDescriptorTable.data()
-    };
+    static const IdtPointer idtPointer { (sizeof(InterruptDescriptor) * IDT_TABLE_LENGTH) - 1,
+                                         interruptDescriptorTable.data() };
 
     /**
      *
      */
-    void initializeInterruptDescriptorTable() {
-        loadIdtTable(&idtPointer);
-    }
-}
+    void initializeInterruptDescriptorTable() { loadIdtTable(&idtPointer); }
+}// namespace kernel::boot::idt

@@ -38,6 +38,6 @@ namespace kernel::boot::idt {
      *
      */
     extern "C" void handleInterrupt(InterruptInfo interruptInfo);
-}
+}// namespace kernel::boot::idt
 
-#endif // HEPHAIST_OS_KERNEL_BOOT_IDT_INTERRUPT_HANDLER_H
+#endif// HEPHAIST_OS_KERNEL_BOOT_IDT_INTERRUPT_HANDLER_H

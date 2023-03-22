@@ -15,8 +15,8 @@
  * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <stdoffset.h>
 #include <format.h>
+#include <stdoffset.h>
 
 namespace kernel {
 
@@ -27,9 +27,7 @@ namespace kernel {
 
     constexpr uint32_t fixVersion = 0;
 
-    extern "C" [[maybe_unused]] void kernelMain(
-        const std::StandardOutputIterator& outputIterator
-    ) {
+    extern "C" [[maybe_unused]] void kernelMain(const std::StandardOutputIterator& outputIterator) {
         std::KernelFormatOutput::getInstance().setStandardOutputIterator(outputIterator);
 
         std::print("INFO: HephaistOS\n");
@@ -55,16 +53,15 @@ namespace kernel {
 
         // todo: Jump to ram disk main in ring 3
 
-        //boot::tss::jumpUserMode();
+        // boot::tss::jumpUserMode();
 
         // todo: Unload boot code
         // TODO: Unload this bit of kernel code?
 
         // todo: Remove and add an error message here, should never get here?
-        while (true) {
-            /* Endless Loop */
+        while (true) { /* Endless Loop */
         }
 
         std::print("ERROR: Reached end of kernel code!");
     }
-}
+}// namespace kernel

@@ -24,21 +24,15 @@ namespace kernel::boot::idt {
 
     constexpr uint16_t InterruptSegment = 0x08;
 
-    enum class GateType {
-        Interrupt = 0xE,
-        Trap = 0xF
-    };
+    enum class GateType { Interrupt = 0xE, Trap = 0xF };
 
-    enum class DescriptorPrivilege {
-        Kernel = 0,
-        UserSpace = 3
-    };
+    enum class DescriptorPrivilege { Kernel = 0, UserSpace = 3 };
 
     struct [[gnu::packed]] TypeAttributes {
-        GateType gateType: 4;
-        uint8_t storageSegment: 1;
-        DescriptorPrivilege descriptorPrivilege: 2;
-        bool isPresent: 1;
+        GateType gateType : 4;
+        uint8_t storageSegment : 1;
+        DescriptorPrivilege descriptorPrivilege : 2;
+        bool isPresent : 1;
     };
 
     struct [[gnu::packed]] InterruptDescriptor {
@@ -61,7 +55,7 @@ namespace kernel::boot::idt {
      * for exceptions.
      * @return an interrupt descriptor setup to call the provided method on the interrupt firing.
      */
-    auto constructInterruptDescriptor(int (* handler)(), GateType type) -> InterruptDescriptor;
-}
+    auto constructInterruptDescriptor(int (*handler)(), GateType type) -> InterruptDescriptor;
+}// namespace kernel::boot::idt
 
-#endif // HEPHAIST_OS_KERNEL_BOOT_IDT_INTERRUPT_DESCRIPTOR_H
+#endif// HEPHAIST_OS_KERNEL_BOOT_IDT_INTERRUPT_DESCRIPTOR_H

@@ -12,8 +12,7 @@ namespace std {
      * without it interfering or picking up types from another set of variadic parameters.
      */
     template<class... Parameters>
-    struct ParameterPack {
-    };
+    struct ParameterPack {};
 
     /**
      * Parameter Type allows a given @tparam Type to be passed to a function as
@@ -21,9 +20,8 @@ namespace std {
      * allows the Type to be defined out of order.
      */
     template<class Type>
-    struct ParameterType {
-    };
+    struct ParameterType {};
 
-}
+}// namespace std
 
-#endif //VARIANT_VARIANT_PARAMETER_H
+#endif// VARIANT_VARIANT_PARAMETER_H

@@ -25,16 +25,14 @@ namespace kernel::boot::tss {
 
     //
     // todo: should be in boot class / struct?
-    TssEntry tssEntry {
-        .ss0  = 0x10,                   // Set the kernel stack segment.
-        .es =  0x13,                    //
-        .cs =  0x0b,
-        .ss =  0x13,
-        .ds =  0x13,
-        .fs =  0x13,
-        .gs =  0x13,
-        .ioMapBase = sizeof(tss::TssEntry)
-    };
+    TssEntry tssEntry { .ss0 = 0x10,// Set the kernel stack segment.
+                        .es = 0x13,//
+                        .cs = 0x0b,
+                        .ss = 0x13,
+                        .ds = 0x13,
+                        .fs = 0x13,
+                        .gs = 0x13,
+                        .ioMapBase = sizeof(tss::TssEntry) };
 
     //
     static const uintptr_t tssEntryPtr = std::bit_cast<uintptr_t>(&tssEntry);
@@ -62,4 +60,4 @@ namespace kernel::boot::tss {
         //
         return constructGlobalDescriptor(tssEntryPtr, sizeof(tss::TssEntry), tssEntryAccess, tssFlags);
     }
-}
+}// namespace kernel::boot::tss

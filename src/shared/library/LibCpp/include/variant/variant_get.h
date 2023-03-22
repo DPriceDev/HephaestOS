@@ -65,9 +65,7 @@ namespace std {
         }
 
         using Type = typename VariantType<TypeIndex, Types...>::type;
-        return std::Result<ResultType>::success(
-            *static_cast<Type*>(variant.data())
-        );
+        return std::Result<ResultType>::success(*static_cast<Type*>(variant.data()));
     }
 
     /**
@@ -81,10 +79,8 @@ namespace std {
         if (getIndex != variant.index()) {
             return std::Result<Type>::failure();
         }
-        return std::Result<Type>::success(
-            *static_cast<Type*>(variant.data())
-        );
+        return std::Result<Type>::success(*static_cast<Type*>(variant.data()));
     }
-}
+}// namespace std
 
-#endif // HEPHAIST_OS_SHARED_LIBRARY_CPP_VARIANT_VARIANT_GET_H
+#endif// HEPHAIST_OS_SHARED_LIBRARY_CPP_VARIANT_VARIANT_GET_H

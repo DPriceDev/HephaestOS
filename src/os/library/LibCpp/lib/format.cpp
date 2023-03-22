@@ -21,7 +21,5 @@ namespace std {
 
     static KernelFormatOutput instance;
 
-    auto KernelFormatOutput::getInstance() -> KernelFormatOutput& {
-        return instance;
-    }
-}
+    auto KernelFormatOutput::getInstance() -> KernelFormatOutput& { return instance; }
+}// namespace std

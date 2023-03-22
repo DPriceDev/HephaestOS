@@ -18,25 +18,24 @@
 #ifndef HEPHAISTOS_ARRAY_H
 #define HEPHAISTOS_ARRAY_H
 
-#include <cstdint>
 #include "array_base.h"
 #include "result.h"
+#include <cstdint>
 
 namespace std {
 
     template<typename Type, std::size_t Length>
     struct Array : public detail::Array<Type, Length> {
 
-        [[nodiscard]]
-        constexpr auto at(typename Array<Type, Length>::sizeType index) -> std::Result<Type&> {
+        [[nodiscard]] constexpr auto at(typename Array<Type, Length>::sizeType index) -> std::Result<Type&> {
             if (index >= 0 && index < Length) {
                 return std::Result<Type&>::success(this->operator[](index));
             }
             return std::Result<Type&>::failure();
         }
 
-        [[nodiscard]]
-        constexpr auto at(typename Array<Type, Length>::sizeType index) const -> const std::Result<Type&> {
+        [[nodiscard]] constexpr auto at(typename Array<Type, Length>::sizeType index) const
+            -> const std::Result<Type&> {
             if (index >= 0 && index < Length) {
                 return std::Result<Type&>::success(this->operator[](index));
             }
@@ -45,6 +44,6 @@ namespace std {
 
         // todo: constexpr auto swap(Array<Type, Length>& other) noexcept;
     };
-}
+}// namespace std
 
-#endif //HEPHAISTOS_ARRAY_H
+#endif// HEPHAISTOS_ARRAY_H

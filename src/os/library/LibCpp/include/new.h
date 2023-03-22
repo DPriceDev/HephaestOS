@@ -17,14 +17,13 @@
 
 #include <stdoffset.h>
 
-//extern "C++" void * operator new(kernel::uint32_t n) {
-//    void * const p = std::malloc(n);
-//    // handle p == 0
-//    return p;
-//}
+// extern "C++" void * operator new(kernel::uint32_t n) {
+//     void * const p = std::malloc(n);
+//     // handle p == 0
+//     return p;
+// }
 //
-//extern "C++" void operator delete(void * p) // or delete(void *, std::size_t)
+// extern "C++" void operator delete(void * p) // or delete(void *, std::size_t)
 //{
-//    std::free(p);
-//}
-
+//     std::free(p);
+// }

@@ -17,8 +17,8 @@
 #ifndef HEPHAIST_OS_KERNEL_BOOT_TSS_H
 #define HEPHAIST_OS_KERNEL_BOOT_TSS_H
 
-#include <cstdint>
 #include "gdt/global_descriptor.h"
+#include <cstdint>
 
 namespace kernel::boot::tss {
 
@@ -73,23 +73,19 @@ namespace kernel::boot::tss {
     };
 
     //
-    constexpr gdt::Flags tssFlags {
-        .available = false,
-        .longMode = false,
-        .size = gdt::Size::Bit16,
-        .granularity = gdt::Granularity::Byte
-    };
+    constexpr gdt::Flags tssFlags { .available = false,
+                                    .longMode = false,
+                                    .size = gdt::Size::Bit16,
+                                    .granularity = gdt::Granularity::Byte };
 
     //
-    constexpr gdt::Access tssEntryAccess {
-        .accessed = true,
-        .readWritable = false,
-        .isConforming = false,
-        .isExecutable = true,
-        .descriptorType = gdt::DescriptorType::System,
-        .privilege = gdt::Privilege::Kernel,
-        .present = true
-    };
-}
+    constexpr gdt::Access tssEntryAccess { .accessed = true,
+                                           .readWritable = false,
+                                           .isConforming = false,
+                                           .isExecutable = true,
+                                           .descriptorType = gdt::DescriptorType::System,
+                                           .privilege = gdt::Privilege::Kernel,
+                                           .present = true };
+}// namespace kernel::boot::tss
 
-#endif // HEPHAIST_OS_KERNEL_BOOT_TSS_H
+#endif// HEPHAIST_OS_KERNEL_BOOT_TSS_H

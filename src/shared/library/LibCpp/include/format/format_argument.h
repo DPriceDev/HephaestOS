@@ -18,9 +18,9 @@
 #ifndef HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_FORMAT_ARGUMENT_H
 #define HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_FORMAT_ARGUMENT_H
 
-#include "variant_base.h"
-#include "string_view.h"
 #include "parse_state.h"
+#include "string_view.h"
+#include "variant_base.h"
 
 namespace std {
 
@@ -31,20 +31,13 @@ namespace std {
      * BasicFormatArgument::handle.
      */
     template<class Type, class CharacterType>
-    concept StandardFormatArgument = std::is_same_v<Type, bool&> ||
-                                     std::is_same_v<Type, CharacterType&> ||
-                                     std::is_same_v<Type, int&> ||
-                                     std::is_same_v<Type, unsigned int&> ||
-                                     std::is_same_v<Type, long int&> ||
-                                     std::is_same_v<Type, unsigned long&> ||
-                                     std::is_same_v<Type, unsigned long long int&> ||
-                                     std::is_same_v<Type, float&> ||
-                                     std::is_same_v<Type, double&> ||
-                                     std::is_same_v<Type, long double&> ||
-                                     std::is_same_v<Type, const CharacterType*&> ||
-                                     std::is_same_v<Type, const void*&> ||
-                                     std::convertible_to<Type, const CharacterType*> ||
-                                     std::is_same_v<Type, BaseStringView<CharacterType>&>;
+    concept StandardFormatArgument =
+        std::is_same_v<Type, bool&> || std::is_same_v<Type, CharacterType&> || std::is_same_v<Type, int&>
+        || std::is_same_v<Type, unsigned int&> || std::is_same_v<Type, long int&>
+        || std::is_same_v<Type, unsigned long&> || std::is_same_v<Type, unsigned long long int&>
+        || std::is_same_v<Type, float&> || std::is_same_v<Type, double&> || std::is_same_v<Type, long double&>
+        || std::is_same_v<Type, const CharacterType*&> || std::is_same_v<Type, const void*&>
+        || std::convertible_to<Type, const CharacterType*> || std::is_same_v<Type, BaseStringView<CharacterType>&>;
 
     /**
      * This concept defines a custom format argument which is basically anything
@@ -60,7 +53,7 @@ namespace std {
      */
     template<class State>
     class BasicFormatArgument {
-    public:
+      public:
         class handle;
 
         using CharacterType = typename State::CharacterType;
@@ -81,31 +74,24 @@ namespace std {
             const CharacterType*,
             BaseStringView<CharacterType>,
             const void*,
-            handle
-        >;
+            handle>;
 
         // Constructors
-        BasicFormatArgument() : value_(
-            ArgumentVariant(std::MonoState())
-        ) { }
+        BasicFormatArgument() : value_(ArgumentVariant(std::MonoState())) {}
 
         /**
          * Constructs any standard argument (not a handle type) by directly
          * passing the @param type into the variant.h.
          */
         template<StandardFormatArgument<typename State::CharacterType> Type>
-        explicit BasicFormatArgument(Type&& type) : value_(
-            ArgumentVariant(std::forward<Type>(type))
-        ) { }
+        explicit BasicFormatArgument(Type&& type) : value_(ArgumentVariant(std::forward<Type>(type))) {}
 
         /**
          * Constructs any custom type, by wrapping the @param type in the handle
          * class and then passing it into the variant.h.
          */
         template<CustomFormatArgument<typename State::CharacterType> Type>
-        explicit BasicFormatArgument(Type&& type) : value_(
-            ArgumentVariant(handle(std::forward<Type>(type)))
-        ) { }
+        explicit BasicFormatArgument(Type&& type) : value_(ArgumentVariant(handle(std::forward<Type>(type)))) {}
 
         // todo: make this private:
 
@@ -132,7 +118,7 @@ namespace std {
 
         // Function pointer that will contain formatType for a given Type.
         // todo: replace with std function?
-        void (* formatFunction_)(BasicParseState<CharacterType>&, State&, const void*) { nullptr };
+        void (*formatFunction_)(BasicParseState<CharacterType>&, State&, const void*) { nullptr };
 
         /**
          * Static method that can be specialized for a given @tparam Type; the @tparam Type will be
@@ -140,18 +126,14 @@ namespace std {
          * will be cast to the @tparam Type and parsed and formatted by the formatter.
          */
         template<class Type>
-        static void formatType(
-            BasicParseState<CharacterType>& parseState,
-            State& formatState,
-            const void* pointer
-        ) {
+        static void formatType(BasicParseState<CharacterType>& parseState, State& formatState, const void* pointer) {
             typename State::template FormatterType<Type> formatter;
             parseState.advanceTo(formatter.parse(parseState));
             auto newType = *static_cast<const Type*>(pointer);
             formatState.advanceTo(formatter.format(newType, formatState));
         }
 
-    public:
+      public:
         // Constructors
         handle() = default;
 
@@ -160,7 +142,7 @@ namespace std {
          * Passes a pointer to the static method formatType specialized for the @tparam Type to formatFunction.
          */
         template<class Type>
-        explicit handle(Type type) : formatFunction_(this->formatType < Type > ) {
+        explicit handle(Type type) : formatFunction_(this->formatType<Type>) {
             auto temp = std::addressof(type);
             data_ = temp;
         }
@@ -192,6 +174,6 @@ namespace std {
             argument.value_
         );
     }
-}
+}// namespace std
 
-#endif // HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_FORMAT_ARGUMENT_H
+#endif// HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_FORMAT_ARGUMENT_H

@@ -56,81 +56,60 @@ namespace debug {
     };
 
     struct [[gnu::packed]] ModemControl {
-        bool dataTerminalReady: 1 = false;
-        bool requestToSend: 1 = false;
-        bool outputOne: 1 = false;
-        bool interruptsEnabled: 1 = false;
-        bool isLoopback: 1 = false;
+        bool dataTerminalReady : 1 = false;
+        bool requestToSend : 1 = false;
+        bool outputOne : 1 = false;
+        bool interruptsEnabled : 1 = false;
+        bool isLoopback : 1 = false;
         uint8_t /* Unused padding */ : 3;
     };
 
     struct [[gnu::packed]] EnabledInterrupts {
-        bool dataAvailable: 1 = false;
-        bool transmitterEmpty: 1 = false;
-        bool breakOrError: 1 = false;
-        bool statusChanged: 1 = false;
+        bool dataAvailable : 1 = false;
+        bool transmitterEmpty : 1 = false;
+        bool breakOrError : 1 = false;
+        bool statusChanged : 1 = false;
         uint8_t /* Unused padding */ : 4;
 
-        static EnabledInterrupts None() {
-            return { };
-        }
+        static EnabledInterrupts None() { return {}; }
     };
 
     struct [[gnu::packed]] LineStatus {
-        bool dataReady: 1 = false;
-        bool overrunError: 1 = false;
-        bool parityError: 1 = false;
-        bool framingError: 1 = false;
-        bool breakIndicator: 1 = false;
-        bool transmitterBufferEmpty: 1 = false;
-        bool transmitterEmpty: 1 = false;
-        bool impendingError: 1 = false;
+        bool dataReady : 1 = false;
+        bool overrunError : 1 = false;
+        bool parityError : 1 = false;
+        bool framingError : 1 = false;
+        bool breakIndicator : 1 = false;
+        bool transmitterBufferEmpty : 1 = false;
+        bool transmitterEmpty : 1 = false;
+        bool impendingError : 1 = false;
     };
 
-    enum class StopBit {
-        ONE = 0,
-        TWO = 1
-    };
+    enum class StopBit { ONE = 0, TWO = 1 };
 
-    enum class DataLength : uint8_t {
-        FIVE_BITS = 0,
-        SIX_BITS = 1,
-        SEVEN_BITS = 2,
-        EIGHT_BITS = 3
-    };
+    enum class DataLength : uint8_t { FIVE_BITS = 0, SIX_BITS = 1, SEVEN_BITS = 2, EIGHT_BITS = 3 };
 
-    enum Parity {
-        NONE = 0,
-        ODD = 1,
-        EVEN = 2,
-        MARK = 3,
-        SPACE = 4
-    };
+    enum Parity { NONE = 0, ODD = 1, EVEN = 2, MARK = 3, SPACE = 4 };
 
     struct [[gnu::packed]] LineControl {
-        DataLength dataLength: 2 = DataLength::FIVE_BITS;
-        StopBit stopBit: 1 = StopBit::ONE;
-        Parity parity: 3 = Parity::NONE;
-        bool isBreakEnable: 1 = false;
+        DataLength dataLength : 2 = DataLength::FIVE_BITS;
+        StopBit stopBit : 1 = StopBit::ONE;
+        Parity parity : 3 = Parity::NONE;
+        bool isBreakEnable : 1 = false;
         // DLAB
-        bool divisorLatchAccess: 1 = false;
+        bool divisorLatchAccess : 1 = false;
     };
 
-    enum class FIFOInterruptThreshold : uint8_t {
-        BYTE_1,
-        BYTE_4,
-        BYTE_8,
-        BYTE_14
-    };
+    enum class FIFOInterruptThreshold : uint8_t { BYTE_1, BYTE_4, BYTE_8, BYTE_14 };
 
     struct [[gnu::packed]] FIFOControl {
-        bool isEnabled: 1 = false;
-        bool clearReceive: 1 = false;
-        bool clearTransmit: 1 = false;
-        bool isDMAMode: 1 = false;
+        bool isEnabled : 1 = false;
+        bool clearReceive : 1 = false;
+        bool clearTransmit : 1 = false;
+        bool isDMAMode : 1 = false;
         bool /* unused */ : 1;
-        bool is64Bit: 1 = false;
-        FIFOInterruptThreshold interruptThreshold: 2;
+        bool is64Bit : 1 = false;
+        FIFOInterruptThreshold interruptThreshold : 2;
     };
 
     class SerialPortConnection {
@@ -150,7 +129,7 @@ namespace debug {
 
         void setBaudRate(uint32_t baudRate) const;
 
-    public:
+      public:
         constexpr static uint32_t DEFAULT_BAUD_RATE = 38400;
 
         explicit SerialPortConnection(SerialPort port);
@@ -173,6 +152,6 @@ namespace debug {
 
         [[nodiscard]] LineStatus getLineStatus() const;
     };
-}
+}// namespace debug
 
-#endif //HEPHAISTOS_SERIAL_PORT_H
+#endif// HEPHAISTOS_SERIAL_PORT_H

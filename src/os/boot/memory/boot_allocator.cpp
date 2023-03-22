@@ -15,8 +15,8 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#include <bit>
 #include "boot_allocator.h"
+#include <bit>
 
 namespace kernel::boot {
 
@@ -24,23 +24,16 @@ namespace kernel::boot {
         std::uintptr_t virtualBaseAddress,
         std::uintptr_t physicalAddress,
         paging::PageTableEntry* kernelPageTable
-    ) : currentAddress(physicalAddress),
-        virtualAddress(virtualBaseAddress),
-        pageTable(kernelPageTable) { }
+    )
+        : currentAddress(physicalAddress), virtualAddress(virtualBaseAddress), pageTable(kernelPageTable) {}
 
     auto BootAllocator::allocate(std::size_t count, std::size_t alignment) -> void* {
         const auto startAddress = (currentAddress / alignment) + (currentAddress % alignment ? alignment : 0);
         const auto endAddress = startAddress + count;
 
-        paging::mapAddressRangeInTable(
-            pageTable,
-            virtualAddress + currentAddress,
-            currentAddress,
-            endAddress
-        );
+        paging::mapAddressRangeInTable(pageTable, virtualAddress + currentAddress, currentAddress, endAddress);
 
         currentAddress = endAddress;
         return std::bit_cast<void*>(virtualAddress + startAddress);
     }
-}
-
+}// namespace kernel::boot

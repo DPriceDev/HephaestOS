@@ -27,21 +27,15 @@ namespace kernel::boot {
         uintptr_t address;
     };
 
-    auto loadModules(
-        const std::Span<ModuleEntry>& bootModules,
-        BootAllocator& allocator,
-        const BootInfo& bootInfo
-    ) -> std::Result<uintptr_t>;
+    auto loadModules(const std::Span<ModuleEntry>& bootModules, BootAllocator& allocator, const BootInfo& bootInfo)
+        -> std::Result<uintptr_t>;
 
-    auto loadBootModule(
-        const ModuleEntry& bootModule,
-        BootAllocator& allocator,
-        uintptr_t baseVirtualAddress
-    ) -> std::Result<LoadedModule>;
+    auto loadBootModule(const ModuleEntry& bootModule, BootAllocator& allocator, uintptr_t baseVirtualAddress)
+        -> std::Result<LoadedModule>;
 
     auto loadElf(const elf::StaticExecutableElf& elf, const BootAllocator&) -> uintptr_t;
 
     auto loadElf(const elf::DynamicExecutableElf& elf, BootAllocator&) -> uintptr_t;
-}
+}// namespace kernel::boot
 
-#endif //HEPHAISTOS_MODULE_LOADER_H
+#endif// HEPHAISTOS_MODULE_LOADER_H

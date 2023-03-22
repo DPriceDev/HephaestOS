@@ -28,15 +28,13 @@ namespace std {
      * Concept denotes that a @tparam Type can be divided.
      */
     template<class Type>
-    concept dividable = std::integral<Type>
-                        && requires(const Type a, const Type b) { a / b; };
+    concept dividable = std::integral<Type> && requires(const Type a, const Type b) { a / b; };
 
     /**
      * Concept denotes that a @tparam Type can have its modulus taken.
      */
     template<class Type>
-    concept modulusable = std::integral<Type>
-                          && requires(const Type a, const Type b) { a % b; };
+    concept modulusable = std::integral<Type> && requires(const Type a, const Type b) { a % b; };
 
     /**
      * Concept denotes that a @tparam Type can be formatted by the
@@ -74,18 +72,14 @@ namespace std {
             auto digit = value % base;
 
             // use to chars to convert to string
-            auto buffer = std::Array<char, DIGIT_OUTPUT_SIZE> { };
+            auto buffer = std::Array<char, DIGIT_OUTPUT_SIZE> {};
             auto result = std::toChars(buffer.begin(), buffer.end(), digit, static_cast<int>(base));
 
-            std::forEach(
-                buffer.begin(), result, [&outputIterator](char character) {
-                    *outputIterator++ = character;
-                }
-            );
+            std::forEach(buffer.begin(), result, [&outputIterator](char character) { *outputIterator++ = character; });
 
             return outputIterator;
         }
-    }
+    }// namespace detail
 
     /**
      * This specializes Formatter for integral types.
@@ -96,11 +90,7 @@ namespace std {
     template<std::integral Type>
     struct Formatter<Type> {
 
-        enum class OutputType : uint32_t {
-            DECIMAL = 10,
-            HEX = 16,
-            BINARY = 2
-        };
+        enum class OutputType : uint32_t { DECIMAL = 10, HEX = 16, BINARY = 2 };
 
         OutputType outputType = OutputType::DECIMAL;
 
@@ -140,6 +130,6 @@ namespace std {
             return detail::formatInteger(output, integer, static_cast<std::remove_cvref_t<decltype(integer)>>(base));
         }
     };
-}
+}// namespace std
 
-#endif // HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_INT_FORMATTER_H
+#endif// HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_INT_FORMATTER_H

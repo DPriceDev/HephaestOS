@@ -15,12 +15,12 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#include <bit>
 #include "paging.h"
-#include <cstdint>
-#include <algorithm.h>
-#include <stdoffset.h>
 #include "model/paging_constants.h"
+#include <algorithm.h>
+#include <bit>
+#include <cstdint>
+#include <stdoffset.h>
 
 #include "model/page_directory_entry.h"
 #include "span.h"
@@ -29,20 +29,16 @@ namespace kernel::boot::paging {
 
     struct EntryAddressMask {
         uint16_t : 12;
-        uint32_t top: 20;
+        uint32_t top : 20;
     };
 
     // Initialize all page table entries to empty entries.
     void zeroPageDirectory(std::Span<PageDirectoryEntry>& pageDirectory) {
-        std::forEach(
-            pageDirectory.begin(), pageDirectory.end(), [](auto& element) {
-                element = PageDirectoryEntry {
-                    .access = PageDirectoryAccess {
-                        .canWrite = true
-                    },
-                };
-            }
-        );
+        std::forEach(pageDirectory.begin(), pageDirectory.end(), [](auto& element) {
+            element = PageDirectoryEntry {
+                .access = PageDirectoryAccess { .canWrite = true },
+            };
+        });
     }
 
     // Setup each entry of the first page table to map identically to the physical address.
@@ -58,17 +54,11 @@ namespace kernel::boot::paging {
         uint32_t startIndex = (virtualStartAddress & 0xFFFFFFF) / PAGE_SIZE;
         uint32_t endIndex = startIndex + ((endAddress / PAGE_SIZE) - (startAddress / PAGE_SIZE));
 
-        std::forEach(
-            pageTable.begin() + startIndex, pageTable.begin() + endIndex + 1, [&address](auto& entry) {
-                entry = PageTableEntry {
-                    .access = PageTableAccess {
-                        .isPresent = true
-                    },
-                    .address = std::bit_cast<EntryAddressMask>(address).top
-                };
-                address += PAGE_SIZE;
-            }
-        );
+        std::forEach(pageTable.begin() + startIndex, pageTable.begin() + endIndex + 1, [&address](auto& entry) {
+            entry = PageTableEntry { .access = PageTableAccess { .isPresent = true },
+                                     .address = std::bit_cast<EntryAddressMask>(address).top };
+            address += PAGE_SIZE;
+        });
     }
 
     // Assign the first page table to the first entry in the page directory.
@@ -79,13 +69,8 @@ namespace kernel::boot::paging {
     ) {
         auto address = std::bit_cast<uintptr_t>(table);
         auto index = (virtualAddress >> Offset22Bit) & Mask10Bit;
-        directory[index] = {
-            .access = PageDirectoryAccess {
-                .isPresent = true,
-                .canWrite = true
-            },
-            .address = std::bit_cast<EntryAddressMask>(address).top
-        };
+        directory[index] = { .access = PageDirectoryAccess { .isPresent = true, .canWrite = true },
+                             .address = std::bit_cast<EntryAddressMask>(address).top };
     }
 
     void setupIdentityPage(
@@ -98,10 +83,7 @@ namespace kernel::boot::paging {
         auto identityMappedPageTable = std::Span(identityMappedPageTableArray, PAGE_TABLE_SIZE);
 
         mapAddressRangeInTable(
-            identityMappedPageTable.data(),
-            kernelStartAddress,
-            kernelStartAddress,
-            kernelEndAddress
+            identityMappedPageTable.data(), kernelStartAddress, kernelStartAddress, kernelEndAddress
         );
 
         updateTableInDirectory(pageDirectory, 0, identityMappedPageTable.data());
@@ -150,16 +132,12 @@ namespace kernel::boot::paging {
         enablePaging();
     }
 
-    void unmapPageTable(std::Span<PageDirectoryEntry, std::dynamicExtent>, int) {
-
-    }
+    void unmapPageTable(std::Span<PageDirectoryEntry, std::dynamicExtent>, int) {}
 
     void unmapLowerKernel(PageDirectoryEntry* pageDirectoryPointer) {
         auto pageDirectory = std::Span(pageDirectoryPointer, PAGE_DIRECTORY_SIZE);
         pageDirectory.front() = PageDirectoryEntry {
-            .access = PageDirectoryAccess {
-                .canWrite = true
-            },
+            .access = PageDirectoryAccess { .canWrite = true },
         };
     }
-}
+}// namespace kernel::boot::paging

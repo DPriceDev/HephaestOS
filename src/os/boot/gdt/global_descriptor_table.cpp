@@ -30,10 +30,8 @@ namespace kernel::boot::gdt {
     };
 
     // Structure holding the Global descriptor Table array pointer and size of the array.
-    static const GdtPointer gdtPointer {
-        .size = sizeof(globalDescriptorTable) - 1,
-        .address = globalDescriptorTable.data()
-    };
+    static const GdtPointer gdtPointer { .size = sizeof(globalDescriptorTable) - 1,
+                                         .address = globalDescriptorTable.data() };
 
     /**
      * Initializes the CPU's Global Descriptor Table with the minimum required segments for the
@@ -57,4 +55,4 @@ namespace kernel::boot::gdt {
         // Load the GDT from the pointer into the CPU Registers.
         loadGdtTable(&gdtPointer);
     }
-}
+}// namespace kernel::boot::gdt

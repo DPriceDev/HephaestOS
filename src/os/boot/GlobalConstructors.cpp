@@ -25,8 +25,6 @@ namespace kernel::boot {
     extern "C" GlobalConstructor endCtors;
 
     extern "C" void callConstructors() {
-        for (GlobalConstructor& constructor: std::Span(&startCtors, &endCtors)) {
-            constructor();
-        }
+        for (GlobalConstructor& constructor : std::Span(&startCtors, &endCtors)) { constructor(); }
     }
-}
+}// namespace kernel::boot

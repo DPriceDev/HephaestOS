@@ -16,9 +16,9 @@
 //
 
 #include "serial_port.h"
-#include <type_traits>
 #include "io.h"
 #include <bit>
+#include <type_traits>
 
 namespace debug {
 
@@ -26,9 +26,8 @@ namespace debug {
      * TODO: Comment
      * @param port
      */
-    SerialPortConnection::SerialPortConnection(SerialPort port) : portAddress(
-        static_cast<std::underlying_type<SerialPort>::type>(port)
-    ) { }
+    SerialPortConnection::SerialPortConnection(SerialPort port)
+        : portAddress(static_cast<std::underlying_type<SerialPort>::type>(port)) {}
 
     /**
      * TODO: Comment
@@ -118,30 +117,16 @@ namespace debug {
 
         setBaudRate(baudRate);
 
-        setLineControl(
-            LineControl {
-                .dataLength = DataLength::EIGHT_BITS,
-                .stopBit = StopBit::ONE,
-                .parity = Parity::NONE
-            }
-        );
+        setLineControl(LineControl {
+            .dataLength = DataLength::EIGHT_BITS, .stopBit = StopBit::ONE, .parity = Parity::NONE });
 
-        setFIFOControl(
-            FIFOControl {
-                .isEnabled = true,
-                .clearReceive = true,
-                .clearTransmit = true,
-                .interruptThreshold = FIFOInterruptThreshold::BYTE_14
-            }
-        );
+        setFIFOControl(FIFOControl { .isEnabled = true,
+                                     .clearReceive = true,
+                                     .clearTransmit = true,
+                                     .interruptThreshold = FIFOInterruptThreshold::BYTE_14 });
 
         setModemControl(
-            {
-                .dataTerminalReady = true,
-                .requestToSend = true,
-                .interruptsEnabled = true,
-                .isLoopback = true
-            }
+            { .dataTerminalReady = true, .requestToSend = true, .interruptsEnabled = true, .isLoopback = true }
         );
 
         // Test serial chip
@@ -153,12 +138,7 @@ namespace debug {
 
         // If serial is not faulty set it in normal operation mode
         setModemControl(
-            {
-                .dataTerminalReady = true,
-                .requestToSend = true,
-                .outputOne = true,
-                .interruptsEnabled = true
-            }
+            { .dataTerminalReady = true, .requestToSend = true, .outputOne = true, .interruptsEnabled = true }
         );
 
         return true;
@@ -169,8 +149,8 @@ namespace debug {
      * @param character
      */
     void SerialPortConnection::write(char character) const {
-        while (getLineStatus().transmitterBufferEmpty == false) { };
+        while (getLineStatus().transmitterBufferEmpty == false) {};
 
         writeToDataRegister(static_cast<uint8_t>(character));
     }
-}
+}// namespace debug

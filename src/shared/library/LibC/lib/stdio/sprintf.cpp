@@ -34,11 +34,7 @@ char* reverseBuffer(char* buffer, uint32_t length) {
  * @param base
  * @return
  */
-char* convertNumberToString(
-    int32_t value,
-    char* buffer,
-    int32_t base
-) {
+char* convertNumberToString(int32_t value, char* buffer, int32_t base) {
     char* bufferStart = buffer;
     auto shouldAddMinus = value < 0 && base == 10;
     if (shouldAddMinus) {

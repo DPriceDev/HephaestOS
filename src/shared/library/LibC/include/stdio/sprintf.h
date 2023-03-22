@@ -49,4 +49,4 @@ char* convertNumberToString(int32_t value, char* buffer, int32_t base);
 int sprintf(char* str, const char* format, ...);
 
 
-#endif // HEPHAIST_OS_KERNEL_LIB_STDIO_SPRINTF_H
+#endif// HEPHAIST_OS_KERNEL_LIB_STDIO_SPRINTF_H

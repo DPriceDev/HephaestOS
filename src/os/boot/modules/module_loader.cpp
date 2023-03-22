@@ -15,21 +15,18 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
+#include "module_loader.h"
 #include <bit>
 #include <boot_info.h>
 #include <elf.h>
 #include <elf/boot_elf_loader.h>
 #include <format.h>
 #include <memory/boot_allocator.h>
-#include "module_loader.h"
 
 namespace kernel::boot {
 
-    auto loadModules(
-        const std::Span<ModuleEntry>& bootModules,
-        BootAllocator& allocator,
-        const BootInfo& bootInfo
-    ) -> std::Result<uintptr_t> {
+    auto loadModules(const std::Span<ModuleEntry>& bootModules, BootAllocator& allocator, const BootInfo& bootInfo)
+        -> std::Result<uintptr_t> {
         std::print("INFO: Loading {} Boot Module{}\n", bootModules.size(), (bootModules.size()) ? "" : "s");
 
         if (bootModules.empty()) {
@@ -37,8 +34,8 @@ namespace kernel::boot {
             return std::Result<uintptr_t>::failure();
         }
 
-        uintptr_t kernelAddress = 0; // todo: Make optional?
-        for (const auto& bootModule: bootModules) {
+        uintptr_t kernelAddress = 0;// todo: Make optional?
+        for (const auto& bootModule : bootModules) {
 
             paging::mapAddressRangeInTable(
                 bootInfo.bootPageTable,
@@ -60,11 +57,8 @@ namespace kernel::boot {
         return std::Result<uintptr_t>::success(kernelAddress);
     }
 
-    auto loadBootModule(
-        const ModuleEntry& bootModule,
-        BootAllocator& allocator,
-        uintptr_t baseVirtualAddress
-    ) -> std::Result<LoadedModule> {
+    auto loadBootModule(const ModuleEntry& bootModule, BootAllocator& allocator, uintptr_t baseVirtualAddress)
+        -> std::Result<LoadedModule> {
         const auto moduleName = std::StringView { std::bit_cast<char*>(baseVirtualAddress + bootModule.string) };
         std::print("INFO: Loading Boot Module: {}\n", moduleName);
 
@@ -78,9 +72,7 @@ namespace kernel::boot {
 
         elf::ElfInfo elfInfo = elfInfoResult.get();
 
-        const auto elfVisitor = [&allocator](const auto& elf) {
-            return loadElf(elf.get(), allocator);
-        };
+        const auto elfVisitor = [&allocator](const auto& elf) { return loadElf(elf.get(), allocator); };
 
         const auto entryAddress = std::visit(elfVisitor, elfInfo);
         return std::Result<LoadedModule>::success({ moduleName, entryAddress });
@@ -98,4 +90,4 @@ namespace kernel::boot {
         elf::loadElf(elf, address);
         return address;
     }
-}
+}// namespace kernel::boot

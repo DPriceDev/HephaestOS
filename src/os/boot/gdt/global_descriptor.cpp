@@ -15,8 +15,8 @@
  * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <stdoffset.h>
 #include "global_descriptor.h"
+#include <stdoffset.h>
 
 namespace kernel::boot::gdt {
 
@@ -38,17 +38,15 @@ namespace kernel::boot::gdt {
         const Access& access,
         const Flags& flags
     ) -> GlobalDescriptor {
-        return GlobalDescriptor {
-            .lowerLimit     = static_cast<uint16_t>((memoryLimit & Mask16Bit)),
-            .lowerBase      = static_cast<uint16_t>((baseAddress & Mask16Bit)),
-            .midBase        = static_cast<uint8_t>((baseAddress >> Offset16Bit) & Mask8Bit),
-            .access         = access,
-            .upperLimit     = static_cast<uint8_t>((memoryLimit >> Offset16Bit) & Mask4Bit),
-            .available      = flags.available,
-            .longMode       = flags.longMode,
-            .size           = flags.size,
-            .granularity    = flags.granularity,
-            .upperBase      = static_cast<uint8_t>((baseAddress >> Offset24Bit) & Mask8Bit)
-        };
+        return GlobalDescriptor { .lowerLimit = static_cast<uint16_t>((memoryLimit & Mask16Bit)),
+                                  .lowerBase = static_cast<uint16_t>((baseAddress & Mask16Bit)),
+                                  .midBase = static_cast<uint8_t>((baseAddress >> Offset16Bit) & Mask8Bit),
+                                  .access = access,
+                                  .upperLimit = static_cast<uint8_t>((memoryLimit >> Offset16Bit) & Mask4Bit),
+                                  .available = flags.available,
+                                  .longMode = flags.longMode,
+                                  .size = flags.size,
+                                  .granularity = flags.granularity,
+                                  .upperBase = static_cast<uint8_t>((baseAddress >> Offset24Bit) & Mask8Bit) };
     }
-}
+}// namespace kernel::boot::gdt

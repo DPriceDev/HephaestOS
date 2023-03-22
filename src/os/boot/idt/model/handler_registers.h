@@ -52,6 +52,6 @@ namespace kernel::boot::idt {
         const uint32_t cs;
         const uint16_t eflags;
     };
-}
+}// namespace kernel::boot::idt
 
-#endif // HEPHAIST_OS_KERNEL_BOOT_IDT_HANDLER_REGISTERS_H
+#endif// HEPHAIST_OS_KERNEL_BOOT_IDT_HANDLER_REGISTERS_H

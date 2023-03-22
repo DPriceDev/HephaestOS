@@ -25,6 +25,6 @@ namespace debug {
      * internal debugger.
      */
     extern "C" void magicBreakPoint();
-}
+}// namespace debug
 
-#endif // HEPHAIST_OS_KERNEL_LIB_DEBUG_H
+#endif// HEPHAIST_OS_KERNEL_LIB_DEBUG_H

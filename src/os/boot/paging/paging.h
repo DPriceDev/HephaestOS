@@ -19,8 +19,8 @@
 #define HEPHAIST_OS_KERNEL_BOOT_PAGING_PAGING_H
 
 #include "cstdint"
-#include "model/page_directory_entry.h"
 #include "grub/multiboot_info.h"
+#include "model/page_directory_entry.h"
 
 namespace kernel::boot::paging {
 
@@ -56,6 +56,6 @@ namespace kernel::boot::paging {
     );
 
     void unmapLowerKernel(paging::PageDirectoryEntry* pageDirectoryPointer);
-}
+}// namespace kernel::boot::paging
 
-#endif // HEPHAIST_OS_KERNEL_BOOT_PAGING_PAGING_H
+#endif// HEPHAIST_OS_KERNEL_BOOT_PAGING_PAGING_H

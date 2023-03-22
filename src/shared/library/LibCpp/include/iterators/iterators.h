@@ -19,8 +19,8 @@
 #define HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_ITERATORS_ITERATORS_H
 
 #include "iterator_traits.h"
-#include <bits/move.h>
 #include "memory.h"
+#include <bits/move.h>
 
 namespace std {
 
@@ -28,35 +28,30 @@ namespace std {
      * Is Reference defines that @tparam Type is a reference type.
      */
     template<class Type>
-    concept isReference = requires(Type type) {
-        std::is_reference<Type>(type);
-    };
+    concept isReference = requires(Type type) { std::is_reference<Type>(type); };
 
     /**
      * Weakly Incrementable defines that Type @tparam Iterator can be incremented using pre and post operators
      * i.e. ++i and i++. Weakly defines that it does not preserve equality, therefore a == b does not mean a++ == b++.
      */
     template<class Type>
-    concept weaklyIncrementable =
-    std::movable<Type>
-    && requires(Type iterator) {
-        // todo: typename iteratorDifferenceType<Type>; - need to do for back inserter
-        // todo: is signed integer like
-        { ++iterator } -> std::same_as<Type&>;
-        iterator++;
-    };
+    concept weaklyIncrementable = std::movable<Type> && requires(Type iterator) {
+                                                            // todo: typename iteratorDifferenceType<Type>; - need to do
+                                                            // for back inserter todo: is signed integer like
+                                                            { ++iterator } -> std::same_as<Type&>;
+                                                            iterator++;
+                                                        };
 
     /**
      * Incrementable defines that Type @tparam Iterator can be incremented using pre and post operators
      * i.e. ++i and i++. it also preserves equality, therefore a == b has the guarantee that a++ == b++.
      */
     template<class Type>
-    concept incrementable =
-    std::regular<Type>
-    && std::weaklyIncrementable<Type>
-    && requires(Type type) {
-        { type++ } -> std::same_as<Type>;
-    };
+    concept incrementable = std::regular<Type> && std::weaklyIncrementable<Type> && requires(Type type) {
+                                                                                        {
+                                                                                            type++
+                                                                                        } -> std::same_as<Type>;
+                                                                                    };
 
     /**
      * Input Or Output Iterator is the base @tparam Iterator Type that all Iterators will satisfy.
@@ -65,9 +60,10 @@ namespace std {
      */
     template<class Iterator>
     concept inputOrOutputIterator = requires(Iterator iterator) {
-        *iterator;
-        //{ *iterator } -> std::same_as<Iterator&>; // todo: Need to define referencable, i.e. not void?
-    } && std::weaklyIncrementable<Iterator>;
+                                        *iterator;
+                                        //{ *iterator } -> std::same_as<Iterator&>; // todo: Need to define
+                                        // referencable, i.e. not void?
+                                    } && std::weaklyIncrementable<Iterator>;
 
     /**
      * Defines a @tparam Type that can be "read" by calling the * operator. This requires that the
@@ -75,14 +71,13 @@ namespace std {
      * Also the l-value & and r-value && Types must be of the same reference type.
      */
     template<class Type>
-    concept indirectlyReadable =requires(const Type type) {
-        typename std::iteratorValueType<Type>;
-        typename std::iteratorReferenceType<Type>;
-        { *type } -> std::same_as<std::iteratorReferenceType<Type>>;
-    }
-                                && std::common_reference_with<Type&&, Type&>
-                                && std::common_reference_with<Type&&, Type&&>
-                                && std::common_reference_with<Type&&, const Type&>;
+    concept indirectlyReadable =
+        requires(const Type type) {
+            typename std::iteratorValueType<Type>;
+            typename std::iteratorReferenceType<Type>;
+            { *type } -> std::same_as<std::iteratorReferenceType<Type>>;
+        } && std::common_reference_with<Type&&, Type&> && std::common_reference_with<Type&&, Type&&>
+        && std::common_reference_with<Type&&, const Type&>;
 
     /**
      * todo comment
@@ -90,26 +85,22 @@ namespace std {
      * @tparam Type
      */
     template<class Output, class Type>
-    concept indirectlyWritable =requires(Output&& output, Type&& type) {
-        *output = std::forward<Type>(type);
-        *std::forward<Output>(output) = std::forward<Type>(type);
-        const_cast<const std::iteratorReferenceType<Output>&&>(*output) = std::forward<Type>(type);
-        const_cast<const std::iteratorReferenceType<Output>&&>(*std::forward<Output>(output)) = std::forward<Type>(
-            type
-        );
-    };
+    concept indirectlyWritable =
+        requires(Output&& output, Type&& type) {
+            *output = std::forward<Type>(type);
+            *std::forward<Output>(output) = std::forward<Type>(type);
+            const_cast<const std::iteratorReferenceType<Output>&&>(*output) = std::forward<Type>(type);
+            const_cast<const std::iteratorReferenceType<Output>&&>(*std::forward<Output>(output)) =
+                std::forward<Type>(type);
+        };
 
     /**
      * todo comment
      * @tparam Iterator
      */
     template<class Iterator, class Type>
-    concept outputIterator =
-    std::inputOrOutputIterator<Iterator>
-    && std::indirectlyWritable<Iterator, Type>
-    && requires(Iterator iterator, Type&& type) {
-        *iterator++ = std::forward<Type>(type);
-    };
+    concept outputIterator = std::inputOrOutputIterator<Iterator> && std::indirectlyWritable<Iterator, Type>
+                          && requires(Iterator iterator, Type&& type) { *iterator++ = std::forward<Type>(type); };
 
 
     /**
@@ -117,9 +108,7 @@ namespace std {
      * with the restriction that it can use operator * to allow the Iterator to be read.
      */
     template<class Iterator>
-    concept inputIterator =
-    std::inputOrOutputIterator<Iterator>
-    && std::indirectlyReadable<Iterator>;
+    concept inputIterator = std::inputOrOutputIterator<Iterator> && std::indirectlyReadable<Iterator>;
 
     /**
      * Sentinel For defines the type @tparam Sentinel can act as the last "sentinel" Type in a range of
@@ -127,10 +116,8 @@ namespace std {
      * This requires that i == s is defined, that the sentinel is copyable, and the iterator can be de-referenced.
      */
     template<class Iterator, class Sentinel>
-    concept sentinelFor =
-    std::semiregular<Sentinel>
-    && std::inputOrOutputIterator<Iterator>
-    && std::equality_comparable_with<Iterator, Sentinel>;
+    concept sentinelFor = std::semiregular<Sentinel> && std::inputOrOutputIterator<Iterator>
+                       && std::equality_comparable_with<Iterator, Sentinel>;
 
     /**
      * Forward iterator defines an @tparam Iterator that extends an Input Iterator, and is incrementable,
@@ -138,9 +125,7 @@ namespace std {
      */
     template<class Iterator>
     concept forwardIterator =
-    std::inputIterator<Iterator>
-    && std::incrementable<Iterator>
-    && std::sentinelFor<Iterator, Iterator>;
+        std::inputIterator<Iterator> && std::incrementable<Iterator> && std::sentinelFor<Iterator, Iterator>;
 
     /**
      * Bidirectional Iterator defines an @tparam Iterator that extends the forward iterator, but also supports
@@ -148,12 +133,10 @@ namespace std {
      * @tparam Iterator
      */
     template<class Iterator>
-    concept bidirectionalIterator =
-    std::forwardIterator<Iterator>
-    && requires(Iterator iterator) {
-        { --iterator } -> std::same_as<Iterator&>;
-        { iterator-- } -> std::same_as<Iterator>;
-    };
+    concept bidirectionalIterator = std::forwardIterator<Iterator> && requires(Iterator iterator) {
+                                                                          { --iterator } -> std::same_as<Iterator&>;
+                                                                          { iterator-- } -> std::same_as<Iterator>;
+                                                                      };
 
     template<class Iterator, class Sentinel>
     inline constexpr bool disable_sized_sentinel_for = false;
@@ -163,13 +146,12 @@ namespace std {
      * that the @tparam Sentinel provides the correct difference as the @tparam Iterator.
      */
     template<class Iterator, class Sentinel>
-    concept sizedSentinelFor =
-    std::sentinelFor<Iterator, Sentinel>
-    && !disable_sized_sentinel_for<std::remove_cv_t<Iterator>, std::remove_cv_t<Sentinel>>
-    && requires(const Iterator& iterator, const Sentinel& sentinel) {
-        { sentinel - iterator } -> std::same_as<std::iteratorDifferenceType<Iterator>>;
-        { iterator - sentinel } -> std::same_as<std::iteratorDifferenceType<Iterator>>;
-    };
+    concept sizedSentinelFor = std::sentinelFor<Iterator, Sentinel>
+                            && !disable_sized_sentinel_for<std::remove_cv_t<Iterator>, std::remove_cv_t<Sentinel>>
+                            && requires(const Iterator& iterator, const Sentinel& sentinel) {
+                                   { sentinel - iterator } -> std::same_as<std::iteratorDifferenceType<Iterator>>;
+                                   { iterator - sentinel } -> std::same_as<std::iteratorDifferenceType<Iterator>>;
+                               };
 
     /**
      * Random Access Iterator defines an @tparam Iterator that extends the Bidirectional iterator.
@@ -180,22 +162,22 @@ namespace std {
      * decrements or increments more than 1 are made.
      */
     template<class Iterator>
-    concept randomAccessIterator =
-    std::bidirectionalIterator<Iterator>
-    && std::totally_ordered<Iterator>
-    && std::sizedSentinelFor<Iterator, Iterator>
-    && requires(
-        Iterator iterator,
-        const Iterator constIterator,
-        const std::iteratorDifferenceType<Iterator> difference
-    ) {
-        { iterator += difference } -> std::same_as<Iterator&>;
-        { constIterator + difference } -> std::same_as<Iterator>;
-        { difference + constIterator } -> std::same_as<Iterator>;
-        { iterator -= difference } -> std::same_as<Iterator&>;
-        { constIterator - difference } -> std::same_as<Iterator>;
-        { constIterator[difference] } -> std::same_as<std::iteratorReferenceType<Iterator>>;
-    };
+    concept randomAccessIterator = std::bidirectionalIterator<Iterator> && std::totally_ordered<Iterator>
+                                && std::sizedSentinelFor<Iterator, Iterator>
+                                && requires(
+                                       Iterator iterator,
+                                       const Iterator constIterator,
+                                       const std::iteratorDifferenceType<Iterator> difference
+                                ) {
+                                       { iterator += difference } -> std::same_as<Iterator&>;
+                                       { constIterator + difference } -> std::same_as<Iterator>;
+                                       { difference + constIterator } -> std::same_as<Iterator>;
+                                       { iterator -= difference } -> std::same_as<Iterator&>;
+                                       { constIterator - difference } -> std::same_as<Iterator>;
+                                       {
+                                           constIterator[difference]
+                                       } -> std::same_as<std::iteratorReferenceType<Iterator>>;
+                                   };
 
     /**
      * Random Access Iterator defines an @tparam Iterator that extends the randomAccessIterator
@@ -204,21 +186,17 @@ namespace std {
      */
     template<class Iterator>
     concept contiguousIterator =
-    std::randomAccessIterator<Iterator>
-    && std::is_lvalue_reference_v<Iterator&>
-    && std::same_as<
-        std::iteratorValueType<Iterator>,
-        std::remove_cvref_t<iteratorReferenceType<Iterator>>
-    >
-    && requires(const Iterator& iterator) {
-        { std::toAddress(iterator) } -> std::same_as<std::add_pointer_t<std::iteratorReferenceType<Iterator>>>;
-    };
+        std::randomAccessIterator<Iterator> && std::is_lvalue_reference_v<Iterator&>
+        && std::same_as<std::iteratorValueType<Iterator>, std::remove_cvref_t<iteratorReferenceType<Iterator>>>
+        && requires(const Iterator& iterator) {
+               { std::toAddress(iterator) } -> std::same_as<std::add_pointer_t<std::iteratorReferenceType<Iterator>>>;
+           };
 
     template<class Container>
     class BackInsertIterator {
         Container* container_ { nullptr };
 
-    public:
+      public:
         using value_type = void;
         using difference_type = std::ptrdiff_t;
         using pointer = void;
@@ -228,29 +206,21 @@ namespace std {
         // Constructors
         BackInsertIterator() = default;
 
-        explicit constexpr BackInsertIterator(Container& container) : container_(std::addressof(container)) { }
+        explicit constexpr BackInsertIterator(Container& container) : container_(std::addressof(container)) {}
 
-        constexpr BackInsertIterator& operator*() {
-            return *this;
-        }
+        constexpr BackInsertIterator& operator*() { return *this; }
 
         constexpr BackInsertIterator& operator=(const typename Container::valueType&) {
             // todo: Push back?
             return *this;
         }
 
-        constexpr BackInsertIterator& operator=(typename Container::valueType&&) {
-            return *this;
-        }
+        constexpr BackInsertIterator& operator=(typename Container::valueType&&) { return *this; }
 
-        constexpr BackInsertIterator& operator++() {
-            return *this;
-        }
+        constexpr BackInsertIterator& operator++() { return *this; }
 
-        constexpr BackInsertIterator operator++(int) {
-            return *this;
-        }
+        constexpr BackInsertIterator operator++(int) { return *this; }
     };
-}
+}// namespace std
 
-#endif // HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_ITERATORS_ITERATORS_H
+#endif// HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_ITERATORS_ITERATORS_H

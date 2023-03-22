@@ -102,6 +102,6 @@ namespace kernel::boot::idt {
     extern "C" int fireInterruptRequest13();
     extern "C" int fireInterruptRequest14();
     extern "C" int fireInterruptRequest15();
-}
+}// namespace kernel::boot::idt
 
-#endif // HEPHAIST_OS_KERNEL_BOOT_IDT_INTERRUPT_DESCRIPTOR_TABLE_H
+#endif// HEPHAIST_OS_KERNEL_BOOT_IDT_INTERRUPT_DESCRIPTOR_TABLE_H

@@ -26,13 +26,13 @@ namespace std {
     class StandardOutputIterator {
         const void* data_ { nullptr };
 
-        void (* onDereference_)(const void*) { nullptr };
+        void (*onDereference_)(const void*) { nullptr };
 
-        void (* onIncrement_)(const void*) { nullptr };
+        void (*onIncrement_)(const void*) { nullptr };
 
-        void (* onAssignCharacter_)(const void*, char) { nullptr };
+        void (*onAssignCharacter_)(const void*, char) { nullptr };
 
-    public:
+      public:
         using pointer = void;
         using reference = void;
         using valueType = void;
@@ -42,13 +42,12 @@ namespace std {
 
         explicit StandardOutputIterator(
             const void* output,
-            void (* onDereference)(const void*) = [](const void*) { /* no-op */ },
-            void (* onAssignCharacter)(const void*, char) = [](const void*, char) { /* no-op */ },
-            void (* onIncrement)(const void*) = [](const void*) { /* no-op */ }
-        ) : data_(output),
-            onDereference_(onDereference),
-            onIncrement_(onIncrement),
-            onAssignCharacter_(onAssignCharacter) { }
+            void (*onDereference)(const void*) = [](const void*) { /* no-op */ },
+            void (*onAssignCharacter)(const void*, char) = [](const void*, char) { /* no-op */ },
+            void (*onIncrement)(const void*) = [](const void*) { /* no-op */ }
+        )
+            : data_(output), onDereference_(onDereference), onIncrement_(onIncrement),
+              onAssignCharacter_(onAssignCharacter) {}
 
         StandardOutputIterator& operator=(char character) {
             onAssignCharacter_(data_, character);
@@ -74,30 +73,22 @@ namespace std {
     class KernelFormatOutput {
         StandardOutputIterator iterator;
 
-    public:
+      public:
         static auto getInstance() -> KernelFormatOutput&;
 
         // Set the output iterator for logging
-        void setStandardOutputIterator(StandardOutputIterator outputIterator) {
-            iterator = outputIterator;
-        }
+        void setStandardOutputIterator(StandardOutputIterator outputIterator) { iterator = outputIterator; }
 
         // Accessor
-        [[nodiscard]]
-        auto out() -> StandardOutputIterator& {
-            return iterator;
-        }
+        [[nodiscard]] auto out() -> StandardOutputIterator& { return iterator; }
     };
 
     template<class... Args>
-    void print(
-        std::convertableToStringView auto* format,
-        Args... args
-    ) {
+    void print(std::convertableToStringView auto* format, Args... args) {
         auto instance = KernelFormatOutput::getInstance();
         auto output = instance.out();
         std::formatTo(output, format, args...);
     }
-}
+}// namespace std
 
-#endif // HEPHAIST_OS_KERNEL_LIBRARY_CPP_FORMAT_H
+#endif// HEPHAIST_OS_KERNEL_LIBRARY_CPP_FORMAT_H

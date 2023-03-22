@@ -25,22 +25,13 @@ namespace std {
 
     template<std::inputIterator Iterator, class UnaryFunction>
     constexpr UnaryFunction forEach(Iterator first, Iterator last, UnaryFunction function) {
-        for (; first != last; ++first) {
-            function(*first);
-        }
+        for (; first != last; ++first) { function(*first); }
         return function;
     }
 
     template<inputIterator Iterator, class Type, outputIterator<Type> OutputIterator, class UnaryOperation>
-    OutputIterator transform(
-        Iterator first,
-        Iterator last,
-        OutputIterator outFirst,
-        UnaryOperation operation
-    ) {
-        while (first != last) {
-            *outFirst++ = operation(*first++);
-        }
+    OutputIterator transform(Iterator first, Iterator last, OutputIterator outFirst, UnaryOperation operation) {
+        while (first != last) { *outFirst++ = operation(*first++); }
         return outFirst;
     }
 
@@ -49,8 +40,7 @@ namespace std {
         inputIterator IteratorB,
         class Type,
         outputIterator<Type> OutputIterator,
-        class BinaryOperation
-    >
+        class BinaryOperation>
     OutputIterator transform(
         IteratorA firstA,
         IteratorA lastA,
@@ -58,9 +48,7 @@ namespace std {
         OutputIterator outFirst,
         BinaryOperation operation
     ) {
-        while (firstA != lastA) {
-            *outFirst++ = operation(*firstA++, *firstB++);
-        }
+        while (firstA != lastA) { *outFirst++ = operation(*firstA++, *firstB++); }
         return outFirst;
     }
 
@@ -82,7 +70,9 @@ namespace std {
 
     template<forwardIterator Iterator>
     constexpr Iterator maxElement(Iterator first, Iterator last) {
-        if (first == last) { return last; }
+        if (first == last) {
+            return last;
+        }
 
         Iterator largest = first;
         ++first;
@@ -131,9 +121,7 @@ namespace std {
 
     template<inputIterator InputIterator, class OutputIterator>
     constexpr OutputIterator copy(InputIterator first, InputIterator last, OutputIterator output) {
-        for (; first != last; ++first, ++output) {
-            *output = *first;
-        }
+        for (; first != last; ++first, ++output) { *output = *first; }
         return output;
     }
 
@@ -144,10 +132,8 @@ namespace std {
 
     template<bidirectionalIterator Iterator>
     constexpr void reverse(Iterator first, Iterator last) {
-        while ((first != last) && (first != --last)) {
-            std::iteratorSwap(first++, last);
-        }
+        while ((first != last) && (first != --last)) { std::iteratorSwap(first++, last); }
     }
-}
+}// namespace std
 
-#endif // HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_ALGORITHMS_H
+#endif// HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_ALGORITHMS_H

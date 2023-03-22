@@ -18,8 +18,8 @@
 #include "interrupt_handler.h"
 #include "idt/pic/programmable_interrupt_controller.h"
 
-#include <format.h>
 #include "../hal/io/io.h"
+#include <format.h>
 
 namespace kernel::boot::idt {
 
@@ -49,4 +49,4 @@ namespace kernel::boot::idt {
         sendEoiFlag(interruptInfo.interruptCode);
     }
 
-}
+}// namespace kernel::boot::idt

@@ -33,16 +33,16 @@ namespace kernel::boot {
     static constexpr uint8_t MULTIBOOT_MEMORY_BAD_RAM = 5;
 
     struct [[gnu::packed]] MultiBootFlags {
-        bool isPageAligned: 1;
-        bool isMemoryAvailable: 1;
-        bool isVideoModeAvailable: 1;
-        bool unusedFlagA: 1;
-        bool unusedFlagB: 1;
-        bool unusedFlagC: 1;
-        bool isMemoryMapAvailable: 1;
-        uint32_t unusedLowerFlags: 9;
-        bool hasExecutableHeader: 1;
-        uint32_t unusedUpperFlags: 15;
+        bool isPageAligned : 1;
+        bool isMemoryAvailable : 1;
+        bool isVideoModeAvailable : 1;
+        bool unusedFlagA : 1;
+        bool unusedFlagB : 1;
+        bool unusedFlagC : 1;
+        bool isMemoryMapAvailable : 1;
+        uint32_t unusedLowerFlags : 9;
+        bool hasExecutableHeader : 1;
+        uint32_t unusedUpperFlags : 15;
     };
 
     struct [[gnu::packed]] BootDevice {
@@ -74,9 +74,9 @@ namespace kernel::boot {
         uint32_t len_high;
         uint32_t type;
 
-        //bool operator==(const MemoryMapEntry& rhs) const = default;
+        // bool operator==(const MemoryMapEntry& rhs) const = default;
 
-        //auto operator<=>(const MemoryMapEntry&) const = default;
+        // auto operator<=>(const MemoryMapEntry&) const = default;
     };
 
     /**
@@ -94,7 +94,7 @@ namespace kernel::boot {
         uint32_t memoryMapLength;
         MemoryMapEntry* memoryMapPtr;
         uint32_t drivesLength;
-        uint32_t drivesAddress;                     // Can be a pointer to a struct
+        uint32_t drivesAddress;// Can be a pointer to a struct
         uint32_t configTable;
         uint32_t advancedPowerManagementTable;
         uint32_t vbeControlInfo;
@@ -104,5 +104,5 @@ namespace kernel::boot {
         uint32_t vbeInterfaceOff;
         uint32_t vbeInterfaceLength;
     };
-}
-#endif // HEPHAIST_OS_KERNEL_BOOT_MULTIBOOT_INFO_H
+}// namespace kernel::boot
+#endif// HEPHAIST_OS_KERNEL_BOOT_MULTIBOOT_INFO_H

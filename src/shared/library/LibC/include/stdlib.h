@@ -47,7 +47,7 @@ void abort(void);
  * Stubbed atexit.
  * Stubbed to allow GCC to compile, just needs to exist at this point without an implementation.
  */
-int atexit(void (* func)(void));
+int atexit(void (*func)(void));
 
 /**
  * Stubbed atoi.
@@ -61,4 +61,4 @@ int atoi(const char* str);
  */
 char* getenv(const char* name);
 
-#endif // HEPHAIST_OS_USER_LIB_C_STDLIB_H
+#endif// HEPHAIST_OS_USER_LIB_C_STDLIB_H

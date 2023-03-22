@@ -18,13 +18,13 @@
 #ifndef HEPHAIST_OS_SHARED_LIBRARY_CPP_VARIANT_VISITOR_H
 #define HEPHAIST_OS_SHARED_LIBRARY_CPP_VARIANT_VISITOR_H
 
-#include <type_traits>
 #include <array.h>
 #include <bits/move.h>
+#include <type_traits>
 
 #include "parameter_pack.h"
-#include "variant_variant.h"
 #include "variant_get.h"
+#include "variant_variant.h"
 
 namespace std {
 
@@ -42,18 +42,16 @@ namespace std {
          * to build the array in the last struct.
          */
         template<class Visitor, class Variant, std::size_t Size, class FunctionType, class Type, class... Types>
-        struct VariantVisitorArrayBuilder : public VariantVisitorArrayBuilder<
-            Visitor,
-            Variant,
-            Size - 1,
-            std::common_type_t<FunctionType, decltype([](Visitor&& visitor, Variant& variant) {
-                return visitor(
-                    std::get<Type>(variant));
-            })>,
-            Types...,
-            Type
-        > {
-        };
+        struct VariantVisitorArrayBuilder
+            : public VariantVisitorArrayBuilder<
+                  Visitor,
+                  Variant,
+                  Size - 1,
+                  std::common_type_t<FunctionType, decltype([](Visitor&& visitor, Variant& variant) {
+                                         return visitor(std::get<Type>(variant));
+                                     })>,
+                  Types...,
+                  Type> {};
 
         /**
          * This struct is templated to the specific @tparam Variant Types for a given
@@ -74,13 +72,11 @@ namespace std {
                 return visitor(std::get<Type>(variant));
             };
 
-            static constexpr auto array = std::Array<std::common_type_t<FunctionType, decltype(function)>,
-                sizeof...(Types) + 1> {
-                function,
-                [](Visitor&& visitor, Variant& variant) {
-                    return visitor(std::get<Types>(variant));
-                }...
-            };
+            static constexpr auto array =
+                std::Array<std::common_type_t<FunctionType, decltype(function)>, sizeof...(Types) + 1> {
+                    function,
+                    [](Visitor&& visitor, Variant& variant) { return visitor(std::get<Types>(variant)); }...
+                };
         };
 
         /**
@@ -96,15 +92,14 @@ namespace std {
          * to build the array in the last struct.
          */
         template<class Visitor, class Variant, std::size_t Size, class Type, class... Types>
-        struct VariantVisitorArray : public VariantVisitorArrayBuilder<
-            Visitor,
-            Variant,
-            Size - 1,
-            decltype([](Visitor&& visitor, Variant& variant) { return visitor(std::get<Type>(variant)); }),
-            Types...,
-            Type
-        > {
-        };
+        struct VariantVisitorArray
+            : public VariantVisitorArrayBuilder<
+                  Visitor,
+                  Variant,
+                  Size - 1,
+                  decltype([](Visitor&& visitor, Variant& variant) { return visitor(std::get<Type>(variant)); }),
+                  Types...,
+                  Type> {};
 
         /**
          * This retrieves the visitor array from a compile time struct that constructs
@@ -114,7 +109,7 @@ namespace std {
         constexpr auto getVisitorArray(std::Variant<Types...>&) -> decltype(auto) {
             return VariantVisitorArray<Visitor, Variant, sizeof...(Types), Types...>::array;
         }
-    }
+    }// namespace detail
 
     /**
      * Visit takes a given variant.h and applies it to a visitor
@@ -139,12 +134,12 @@ namespace std {
 
     // todo: Comment
     template<typename... Functions>
-    struct Visitors : Functions ... {
+    struct Visitors : Functions... {
         using Functions::operator()...;
     };
 
     template<typename... Functions>
     Visitors(Functions...) -> Visitors<Functions...>;
-}
+}// namespace std
 
-#endif // HEPHAIST_OS_SHARED_LIBRARY_CPP_VARIANT_VISITOR_H
+#endif// HEPHAIST_OS_SHARED_LIBRARY_CPP_VARIANT_VISITOR_H

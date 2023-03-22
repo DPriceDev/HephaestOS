@@ -18,8 +18,8 @@
 #ifndef HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_BOOL_FORMATTER_H
 #define HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_BOOL_FORMATTER_H
 
-#include "formatter.h"
 #include "algorithm.h"
+#include "formatter.h"
 #include "string_view.h"
 
 namespace std {
@@ -53,10 +53,10 @@ namespace std {
             return std::copy(falseView.begin(), falseView.end(), output);
         }
 
-    private:
+      private:
         constexpr static auto trueView = std::StringView { "True" };
         constexpr static auto falseView = std::StringView { "False" };
     };
-}
+}// namespace std
 
-#endif // HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_BOOL_FORMATTER_H
+#endif// HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_BOOL_FORMATTER_H

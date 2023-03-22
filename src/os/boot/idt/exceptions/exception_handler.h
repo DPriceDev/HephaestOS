@@ -18,8 +18,8 @@
 #ifndef HEPHAISTOS_EXCEPTION_HANDLER_H
 #define HEPHAISTOS_EXCEPTION_HANDLER_H
 
-#include <stdoffset.h>
 #include <array.h>
+#include <stdoffset.h>
 
 #include "idt/model/handler_registers.h"
 
@@ -40,45 +40,43 @@ namespace kernel::boot::idt {
     constexpr uint32_t exceptionTableSize = 32;
 
     //
-    constexpr std::Array<const char*, exceptionTableSize> exceptionDescription {
-        "Division By Zero",
-        "Debug",
-        "Non Maskable Interrupt",
-        "Breakpoint",
-        "Into Detected Overflow",
-        "Out of Bounds",
-        "Invalid Opcode",
-        "No Coprocessor",
-        "Double Fault",
-        "Coprocessor Segment Overrun",
-        "Bad TSS",
-        "Segment Not Present",
-        "Stack Fault",
-        "General Protection Fault",
-        "Page Fault",
-        "Unknown Interrupt",
-        "Coprocessor Fault",
-        "Alignment Check",
-        "Machine Check",
-        "Reserved",
-        "Reserved",
-        "Reserved",
-        "Reserved",
-        "Reserved",
-        "Reserved",
-        "Reserved",
-        "Reserved",
-        "Reserved",
-        "Reserved",
-        "Reserved",
-        "Reserved",
-        "Reserved"
-    };
+    constexpr std::Array<const char*, exceptionTableSize> exceptionDescription { "Division By Zero",
+                                                                                 "Debug",
+                                                                                 "Non Maskable Interrupt",
+                                                                                 "Breakpoint",
+                                                                                 "Into Detected Overflow",
+                                                                                 "Out of Bounds",
+                                                                                 "Invalid Opcode",
+                                                                                 "No Coprocessor",
+                                                                                 "Double Fault",
+                                                                                 "Coprocessor Segment Overrun",
+                                                                                 "Bad TSS",
+                                                                                 "Segment Not Present",
+                                                                                 "Stack Fault",
+                                                                                 "General Protection Fault",
+                                                                                 "Page Fault",
+                                                                                 "Unknown Interrupt",
+                                                                                 "Coprocessor Fault",
+                                                                                 "Alignment Check",
+                                                                                 "Machine Check",
+                                                                                 "Reserved",
+                                                                                 "Reserved",
+                                                                                 "Reserved",
+                                                                                 "Reserved",
+                                                                                 "Reserved",
+                                                                                 "Reserved",
+                                                                                 "Reserved",
+                                                                                 "Reserved",
+                                                                                 "Reserved",
+                                                                                 "Reserved",
+                                                                                 "Reserved",
+                                                                                 "Reserved",
+                                                                                 "Reserved" };
 
     /**
      *
      */
     extern "C" [[noreturn]] void handleException(ExceptionInfo exceptionInfo);
-}
+}// namespace kernel::boot::idt
 
-#endif //HEPHAISTOS_EXCEPTION_HANDLER_H
+#endif// HEPHAISTOS_EXCEPTION_HANDLER_H

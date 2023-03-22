@@ -18,8 +18,8 @@
 #ifndef HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_FORMAT_STATE_H
 #define HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_FORMAT_STATE_H
 
-#include "iterator.h"
 #include "formatter/formatter.h"
+#include "iterator.h"
 
 namespace std {
 
@@ -46,7 +46,7 @@ namespace std {
         BasicFormatArguments<BasicFormatState> arguments_;
         OutputIterator& outputIterator_;
 
-    public:
+      public:
         using Iterator = OutputIterator;
 
         template<class T>
@@ -54,28 +54,22 @@ namespace std {
         using CharacterType = Type;
 
         // Constructors
-        explicit BasicFormatState(
-            BasicFormatArguments<BasicFormatState>& arguments,
-            OutputIterator& outputIterator
-        ) : arguments_(arguments), outputIterator_(outputIterator) { }
+        explicit BasicFormatState(BasicFormatArguments<BasicFormatState>& arguments, OutputIterator& outputIterator)
+            : arguments_(arguments), outputIterator_(outputIterator) {}
 
         // Accessors
         auto argument(std::size_t index) const -> BasicFormatArgument<BasicFormatState> {
             return arguments_.get(index);
         }
 
-        auto out() -> Iterator {
-            return outputIterator_;
-        }
+        auto out() -> Iterator { return outputIterator_; }
 
-        void advanceTo(Iterator iterator) {
-            outputIterator_ = iterator;
-        }
+        void advanceTo(Iterator iterator) { outputIterator_ = iterator; }
     };
 
     // Declaration of a char based format state.
     using FormatState = BasicFormatState<char, char*>;
-}
+}// namespace std
 
 
-#endif // HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_FORMAT_STATE_H
+#endif// HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_FORMAT_STATE_H

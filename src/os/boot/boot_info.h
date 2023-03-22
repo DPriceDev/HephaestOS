@@ -32,6 +32,6 @@ namespace kernel::boot {
         uintptr_t bootStartLocation;
         uintptr_t bootEndLocation;
     };
-}
+}// namespace kernel::boot
 
-#endif //HEPHAISTOS_BOOT_INFO_H
+#endif// HEPHAISTOS_BOOT_INFO_H
