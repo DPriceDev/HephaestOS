@@ -26,10 +26,10 @@
 namespace kernel::boot {
 
     auto loadModules(
-        const std::Span <ModuleEntry>& bootModules,
+        const std::Span<ModuleEntry>& bootModules,
         BootAllocator& allocator,
         const BootInfo& bootInfo
-    ) -> std::Result <uintptr_t> {
+    ) -> std::Result<uintptr_t> {
         std::print("INFO: Loading {} Boot Module{}\n", bootModules.size(), (bootModules.size()) ? "" : "s");
 
         if (bootModules.empty()) {
@@ -64,7 +64,7 @@ namespace kernel::boot {
         const ModuleEntry& bootModule,
         BootAllocator& allocator,
         uintptr_t baseVirtualAddress
-    ) -> std::Result <LoadedModule> {
+    ) -> std::Result<LoadedModule> {
         const auto moduleName = std::StringView { std::bit_cast<char*>(baseVirtualAddress + bootModule.string) };
         std::print("INFO: Loading Boot Module: {}\n", moduleName);
 

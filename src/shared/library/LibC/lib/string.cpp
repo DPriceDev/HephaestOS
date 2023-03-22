@@ -24,25 +24,23 @@ int Size(T str) {
     uint8_t i(0);
 
     // count each characters in the characters.
-    for (; str[i]; i++);
+    for (; str[i]; i++) { }
 
     return i;       // return count
 }
 
 void* memset(void* pointer, int value, uint32_t length) {
-    unsigned char* ptr = static_cast<unsigned char *>(pointer);
-    while(length--)
-    {
+    unsigned char* ptr = static_cast<unsigned char*>(pointer);
+    while (length--) {
         *ptr++ = (unsigned char) value;
     }
     return pointer;
 }
 
-void *memcpy(void *dest, const void* src, size_t n) {
-    char *csrc = (char *) src;
-    char *cdest = (char *) dest;
-    while(n--)
-    {
+void* memcpy(void* dest, const void* src, size_t n) {
+    char* csrc = (char*) src;
+    char* cdest = (char*) dest;
+    while (n--) {
         *cdest++ = *csrc++;
     }
     return dest;

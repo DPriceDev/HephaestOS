@@ -28,7 +28,7 @@ namespace kernel::boot {
     extern "C" void enableInterrupts();
 
     extern "C" void init(
-        kernel::boot::MultiBootInfo * info,
+        kernel::boot::MultiBootInfo* info,
         uint32_t magic,
         uint32_t stackPointer,
         kernel::boot::BootInfo bootInfo

@@ -27,7 +27,7 @@ namespace kernel::boot::gdt {
      * includes Ring 0 and Ring 3 to defined the Kernel and UserSpace levels respectively.
      * Rings 1 and 2 are omitted as they are not used by the OS.
      */
-    enum class Privilege : uint8_t  {
+    enum class Privilege : uint8_t {
         Kernel = 0,
         UserSpace = 3
     };
@@ -35,7 +35,7 @@ namespace kernel::boot::gdt {
     /**
      * Describes the size of a x86 global descriptor, usually 32 bit except for the null descriptor.
      */
-    enum class Size : uint8_t  {
+    enum class Size : uint8_t {
         Bit16 = 0,
         Bit32 = 1
     };
@@ -183,10 +183,10 @@ namespace kernel::boot::gdt {
      * @return Global Descriptor constructed from the parameters.
      */
     GlobalDescriptor constructGlobalDescriptor(
-            uint32_t baseAddress,
-            uint32_t memoryLimit,
-            const Access &access,
-            const Flags &flags
+        uint32_t baseAddress,
+        uint32_t memoryLimit,
+        const Access& access,
+        const Flags& flags
     );
 }
 

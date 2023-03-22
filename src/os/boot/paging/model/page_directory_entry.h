@@ -26,23 +26,23 @@ namespace kernel::boot::paging {
 
     // Defines the access flags of a given Page Directory Entry.
     struct [[gnu::packed]] PageDirectoryAccess {
-        bool isPresent : 1 = false;
-        bool canWrite : 1 = false;
-        bool hasUserAccess : 1 = false;
-        bool writeThrough : 1 = false;
-        bool isCacheDisabled : 1 = false;
-        bool isAccessed : 1 = false;
-        bool isDirty : 1 = false;
-        bool isMibSize : 1 = false;
+        bool isPresent: 1 = false;
+        bool canWrite: 1 = false;
+        bool hasUserAccess: 1 = false;
+        bool writeThrough: 1 = false;
+        bool isCacheDisabled: 1 = false;
+        bool isAccessed: 1 = false;
+        bool isDirty: 1 = false;
+        bool isMibSize: 1 = false;
     };
 
     // Defines a Page Directory Entry with a set of access flags and the top 20 bits of
     // The address this entry points to.
     struct [[gnu::packed]] PageDirectoryEntry {
         PageDirectoryAccess access = PageDirectoryAccess();
-        bool global : 1 = false;
-        uint8_t unused : 3 = 0;
-        uintptr_t address : 20 = 0;
+        bool global: 1 = false;
+        uint8_t unused: 3 = 0;
+        uintptr_t address: 20 = 0;
     };
 
 }

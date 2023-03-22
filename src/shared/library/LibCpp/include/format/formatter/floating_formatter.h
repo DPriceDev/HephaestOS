@@ -53,9 +53,11 @@ namespace std {
             auto buffer = std::Array<char, DBL_MAX_10_EXP> { };
             auto result = std::toChars(buffer.begin(), buffer.end(), floating);
 
-            std::forEach(buffer.begin(), result, [&output] (char character) {
-                *output++ = character;
-            });
+            std::forEach(
+                buffer.begin(), result, [&output](char character) {
+                    *output++ = character;
+                }
+            );
 
             return output;
         }

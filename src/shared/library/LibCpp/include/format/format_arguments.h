@@ -35,7 +35,9 @@ namespace std {
 
             // Constructor
             template<class... Args>
-            explicit FormatArgumentStore(Args... arguments) : array(std::Array<BasicFormatArgument<State>, sizeof...(Args)> { arguments... }) { }
+            explicit FormatArgumentStore(Args... arguments) : array(
+                std::Array<BasicFormatArgument<State>, sizeof...(Args)> { arguments... }
+            ) { }
 
             auto size() const -> std::size_t {
                 return Size;
@@ -101,7 +103,7 @@ namespace std {
      * set of BasicFormatArgument's.
      */
     template<class State, class... Args>
-    detail::FormatArgumentStore<State, sizeof...(Args)> makeFormatArguments(Args&&... args) {
+    detail::FormatArgumentStore<State, sizeof...(Args)> makeFormatArguments(Args&& ... args) {
         return detail::FormatArgumentStore<State, sizeof...(Args)>(BasicFormatArgument<State>(args)...);
     }
 }

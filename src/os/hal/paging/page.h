@@ -19,5 +19,4 @@
 #define HEPHAISTOS_PAGE_H
 
 
-
 #endif //HEPHAISTOS_PAGE_H

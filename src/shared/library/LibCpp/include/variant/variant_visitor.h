@@ -139,7 +139,7 @@ namespace std {
 
     // todo: Comment
     template<typename... Functions>
-    struct Visitors : Functions... {
+    struct Visitors : Functions ... {
         using Functions::operator()...;
     };
 

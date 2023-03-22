@@ -19,5 +19,4 @@
 #define HEPHAISTOS_STDIO_H
 
 
-
 #endif //HEPHAISTOS_STDIO_H

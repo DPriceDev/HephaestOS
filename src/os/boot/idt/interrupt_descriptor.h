@@ -61,7 +61,7 @@ namespace kernel::boot::idt {
      * for exceptions.
      * @return an interrupt descriptor setup to call the provided method on the interrupt firing.
      */
-    auto constructInterruptDescriptor(int (*handler)(), GateType type) -> InterruptDescriptor;
+    auto constructInterruptDescriptor(int (* handler)(), GateType type) -> InterruptDescriptor;
 }
 
 #endif // HEPHAIST_OS_KERNEL_BOOT_IDT_INTERRUPT_DESCRIPTOR_H

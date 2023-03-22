@@ -31,18 +31,18 @@ pid_t fork(void);
  * Stubbed execv.
  * Stubbed to allow GCC to compile, just needs to exist at this point without an implementation.
  */
-int execv(const char *, char *const []);
+int execv(const char*, char* const[]);
 
 /**
  * Stubbed execve.
  * Stubbed to allow GCC to compile, just needs to exist at this point without an implementation.
  */
-int execve(const char *, char *const [], char *const []);
+int execve(const char*, char* const[], char* const[]);
 
 /**
  * Stubbed execvp.
  * Stubbed to allow GCC to compile, just needs to exist at this point without an implementation.
  */
-int execvp(const char *, char *const []);
+int execvp(const char*, char* const[]);
 
 #endif // HEPHAIST_OS_USER_LIB_C_UNISTD_H

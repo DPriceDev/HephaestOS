@@ -26,8 +26,8 @@
 namespace kernel::boot {
 
     struct BootInfo {
-        paging::PageDirectoryEntry *pageDirectory;
-        paging::PageTableEntry *bootPageTable;
+        paging::PageDirectoryEntry* pageDirectory;
+        paging::PageTableEntry* bootPageTable;
         uintptr_t baseVirtualAddress;
         uintptr_t bootStartLocation;
         uintptr_t bootEndLocation;

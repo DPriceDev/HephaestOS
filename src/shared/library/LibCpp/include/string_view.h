@@ -139,7 +139,7 @@ namespace std {
         // Operations
         // todo as required
 
-       // todo: constexpr auto startsWith()
+        // todo: constexpr auto startsWith()
 
         constexpr int compare(BaseStringView other) const noexcept {
             const SizeType minSize = std::min(length(), other.length());

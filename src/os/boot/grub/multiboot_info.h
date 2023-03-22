@@ -23,22 +23,26 @@
 namespace kernel::boot {
 
     static constexpr uint8_t MULTIBOOT_MEMORY_AVAILABLE = 1;
+
     static constexpr uint8_t MULTIBOOT_MEMORY_RESERVED = 2;
+
     static constexpr uint8_t MULTIBOOT_MEMORY_ACPI_RECLAIMABLE = 3;
+
     static constexpr uint8_t MULTIBOOT_MEMORY_NVS = 4;
+
     static constexpr uint8_t MULTIBOOT_MEMORY_BAD_RAM = 5;
 
     struct [[gnu::packed]] MultiBootFlags {
-        bool isPageAligned : 1;
-        bool isMemoryAvailable : 1;
-        bool isVideoModeAvailable : 1;
-        bool unusedFlagA : 1;
-        bool unusedFlagB : 1;
-        bool unusedFlagC : 1;
-        bool isMemoryMapAvailable : 1;
-        uint32_t unusedLowerFlags : 9;
-        bool hasExecutableHeader : 1;
-        uint32_t unusedUpperFlags : 15;
+        bool isPageAligned: 1;
+        bool isMemoryAvailable: 1;
+        bool isVideoModeAvailable: 1;
+        bool unusedFlagA: 1;
+        bool unusedFlagB: 1;
+        bool unusedFlagC: 1;
+        bool isMemoryMapAvailable: 1;
+        uint32_t unusedLowerFlags: 9;
+        bool hasExecutableHeader: 1;
+        uint32_t unusedUpperFlags: 15;
     };
 
     struct [[gnu::packed]] BootDevice {

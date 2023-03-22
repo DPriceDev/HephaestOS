@@ -29,18 +29,20 @@ namespace kernel::boot::paging {
 
     struct EntryAddressMask {
         uint16_t : 12;
-        uint32_t top : 20;
+        uint32_t top: 20;
     };
 
     // Initialize all page table entries to empty entries.
     void zeroPageDirectory(std::Span<PageDirectoryEntry>& pageDirectory) {
-        std::forEach(pageDirectory.begin(), pageDirectory.end(), [] (auto & element) {
-            element = PageDirectoryEntry {
-                .access = PageDirectoryAccess {
-                    .canWrite = true
-                },
-            };
-        });
+        std::forEach(
+            pageDirectory.begin(), pageDirectory.end(), [](auto& element) {
+                element = PageDirectoryEntry {
+                    .access = PageDirectoryAccess {
+                        .canWrite = true
+                    },
+                };
+            }
+        );
     }
 
     // Setup each entry of the first page table to map identically to the physical address.
@@ -56,15 +58,17 @@ namespace kernel::boot::paging {
         uint32_t startIndex = (virtualStartAddress & 0xFFFFFFF) / PAGE_SIZE;
         uint32_t endIndex = startIndex + ((endAddress / PAGE_SIZE) - (startAddress / PAGE_SIZE));
 
-        std::forEach(pageTable.begin() + startIndex, pageTable.begin() + endIndex + 1, [&address] (auto & entry) {
-            entry = PageTableEntry {
-                .access = PageTableAccess {
-                    .isPresent = true
-                },
-                .address = std::bit_cast<EntryAddressMask>(address).top
-            };
-            address += PAGE_SIZE;
-        });
+        std::forEach(
+            pageTable.begin() + startIndex, pageTable.begin() + endIndex + 1, [&address](auto& entry) {
+                entry = PageTableEntry {
+                    .access = PageTableAccess {
+                        .isPresent = true
+                    },
+                    .address = std::bit_cast<EntryAddressMask>(address).top
+                };
+                address += PAGE_SIZE;
+            }
+        );
     }
 
     // Assign the first page table to the first entry in the page directory.
@@ -124,7 +128,7 @@ namespace kernel::boot::paging {
     }
 
     void initializePaging(
-        MultiBootInfo *,
+        MultiBootInfo*,
         PageDirectoryEntry* pageDirectoryPointer,
         PageTableEntry* kernelPageTablePointer,
         uintptr_t virtualKernelBaseAddress,
@@ -137,7 +141,9 @@ namespace kernel::boot::paging {
 
         setupIdentityPage(pageDirectoryPointer, kernelStartAddress, kernelEndAddress);
 
-        setupHigherHalfPage(pageDirectoryPointer, kernelPageTablePointer, virtualKernelBaseAddress, kernelStartAddress, kernelEndAddress);
+        setupHigherHalfPage(
+            pageDirectoryPointer, kernelPageTablePointer, virtualKernelBaseAddress, kernelStartAddress, kernelEndAddress
+        );
 
         // enable paging
         loadPageDirectory(pageDirectory.data());

@@ -25,9 +25,12 @@ namespace std {
 
     class StandardOutputIterator {
         const void* data_ { nullptr };
-        void (*onDereference_) (const void*) { nullptr };
-        void (*onIncrement_) (const void*) { nullptr };
-        void (*onAssignCharacter_) (const void*, char) { nullptr };
+
+        void (* onDereference_)(const void*) { nullptr };
+
+        void (* onIncrement_)(const void*) { nullptr };
+
+        void (* onAssignCharacter_)(const void*, char) { nullptr };
 
     public:
         using pointer = void;
@@ -39,13 +42,13 @@ namespace std {
 
         explicit StandardOutputIterator(
             const void* output,
-            void (*onDereference) (const void*) = [] (const void*) { /* no-op */ },
-            void (*onAssignCharacter) (const void*, char) = [] (const void*, char) { /* no-op */ },
-            void (*onIncrement) (const void*) = [] (const void*) { /* no-op */ }
+            void (* onDereference)(const void*) = [](const void*) { /* no-op */ },
+            void (* onAssignCharacter)(const void*, char) = [](const void*, char) { /* no-op */ },
+            void (* onIncrement)(const void*) = [](const void*) { /* no-op */ }
         ) : data_(output),
-        onDereference_(onDereference),
-        onIncrement_(onIncrement),
-        onAssignCharacter_(onAssignCharacter) { }
+            onDereference_(onDereference),
+            onIncrement_(onIncrement),
+            onAssignCharacter_(onAssignCharacter) { }
 
         StandardOutputIterator& operator=(char character) {
             onAssignCharacter_(data_, character);

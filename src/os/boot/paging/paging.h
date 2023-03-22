@@ -40,7 +40,7 @@ namespace kernel::boot::paging {
      * loads the paging directory into cr3 and enables paging.
      */
     extern "C" void initializePaging(
-        MultiBootInfo * info,
+        MultiBootInfo* info,
         paging::PageDirectoryEntry* pageDirectory,
         paging::PageTableEntry* kernelPageTable,
         uintptr_t virtualKernelBaseAddress,

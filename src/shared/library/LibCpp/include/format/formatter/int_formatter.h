@@ -77,9 +77,11 @@ namespace std {
             auto buffer = std::Array<char, DIGIT_OUTPUT_SIZE> { };
             auto result = std::toChars(buffer.begin(), buffer.end(), digit, static_cast<int>(base));
 
-            std::forEach(buffer.begin(), result, [&outputIterator] (char character) {
-                *outputIterator++ = character;
-            });
+            std::forEach(
+                buffer.begin(), result, [&outputIterator](char character) {
+                    *outputIterator++ = character;
+                }
+            );
 
             return outputIterator;
         }

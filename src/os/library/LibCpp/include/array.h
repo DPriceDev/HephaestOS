@@ -29,7 +29,7 @@ namespace std {
 
         [[nodiscard]]
         constexpr auto at(typename Array<Type, Length>::sizeType index) -> std::Result<Type&> {
-            if(index >= 0 && index < Length) {
+            if (index >= 0 && index < Length) {
                 return std::Result<Type&>::success(this->operator[](index));
             }
             return std::Result<Type&>::failure();
@@ -37,7 +37,7 @@ namespace std {
 
         [[nodiscard]]
         constexpr auto at(typename Array<Type, Length>::sizeType index) const -> const std::Result<Type&> {
-            if(index >= 0 && index < Length) {
+            if (index >= 0 && index < Length) {
                 return std::Result<Type&>::success(this->operator[](index));
             }
             return std::Result<Type&>::failure();

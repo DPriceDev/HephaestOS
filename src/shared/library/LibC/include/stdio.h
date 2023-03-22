@@ -42,33 +42,33 @@ extern FILE* stderr;
 
 #define EOF -1
 
-int fclose(FILE *stream);
+int fclose(FILE* stream);
 
-FILE *fopen(const char *filename, const char *mode);
+FILE* fopen(const char* filename, const char* mode);
 
-size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream);
+size_t fread(void* ptr, size_t size, size_t nmemb, FILE* stream);
 
-int fseek(FILE *stream, long int offset, int whence);
+int fseek(FILE* stream, long int offset, int whence);
 
-long int ftell(FILE *stream);
+long int ftell(FILE* stream);
 
-size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream);
+size_t fwrite(const void* ptr, size_t size, size_t nmemb, FILE* stream);
 
-void setbuf(FILE *stream, char *buffer);
+void setbuf(FILE* stream, char* buffer);
 
-int vfprintf(FILE *stream, const char *format, va_list arg);
+int vfprintf(FILE* stream, const char* format, va_list arg);
 
 /**
  * Stubbed fflush.
  * Stubbed to allow GCC to compile, just needs to exist at this point without an implementation.
  */
-int fflush(FILE *stream);
+int fflush(FILE* stream);
 
 /**
  * Stubbed fprintf.
  * Stubbed to allow GCC to compile, just needs to exist at this point without an implementation.
  */
-int fprintf(FILE *stream, const char *format, ...);
+int fprintf(FILE* stream, const char* format, ...);
 
 #ifdef __cplusplus
 }

@@ -42,76 +42,76 @@ namespace kernel::boot::gdt {
 
     // Describes access for a null segment, all values are zero.
     constexpr Access zeroAccess {
-            .accessed = false,
-            .readWritable = false,
-            .isConforming = false,
-            .isExecutable = false,
-            .descriptorType = DescriptorType::System,
-            .privilege = Privilege::Kernel,
-            .present = false
+        .accessed = false,
+        .readWritable = false,
+        .isConforming = false,
+        .isExecutable = false,
+        .descriptorType = DescriptorType::System,
+        .privilege = Privilege::Kernel,
+        .present = false
     };
 
     // Describes access for a Kernel Code segment, set as readable, executable, and non-conforming,
     // in ring 0.
     constexpr Access codeKernelAccess {
-            .accessed = false,
-            .readWritable = true,
-            .isConforming = false,
-            .isExecutable = true,
-            .descriptorType = DescriptorType::CodeOrData,
-            .privilege = Privilege::Kernel,
-            .present = true
+        .accessed = false,
+        .readWritable = true,
+        .isConforming = false,
+        .isExecutable = true,
+        .descriptorType = DescriptorType::CodeOrData,
+        .privilege = Privilege::Kernel,
+        .present = true
     };
 
     // Describes access for a Kernel Data segment, set as writable and non-conforming, in ring 0.
     constexpr Access dataKernelAccess {
-            .accessed = false,
-            .readWritable = true,
-            .isConforming = false,
-            .isExecutable = false,
-            .descriptorType = DescriptorType::CodeOrData,
-            .privilege = Privilege::Kernel,
-            .present = true
+        .accessed = false,
+        .readWritable = true,
+        .isConforming = false,
+        .isExecutable = false,
+        .descriptorType = DescriptorType::CodeOrData,
+        .privilege = Privilege::Kernel,
+        .present = true
     };
 
     // Describes access for a Kernel Code segment, set as readable, executable, and non-conforming,
     // in ring 3.
     constexpr Access codeUserAccess {
-            .accessed = false,
-            .readWritable = true,
-            .isConforming = false,
-            .isExecutable = true,
-            .descriptorType = DescriptorType::CodeOrData,
-            .privilege = Privilege::UserSpace,
-            .present = true
+        .accessed = false,
+        .readWritable = true,
+        .isConforming = false,
+        .isExecutable = true,
+        .descriptorType = DescriptorType::CodeOrData,
+        .privilege = Privilege::UserSpace,
+        .present = true
     };
 
     // Describes access for a Kernel Data segment, set as writable and non-conforming, in ring 3.
     constexpr Access dataUserAccess {
-            .accessed = false,
-            .readWritable = true,
-            .isConforming = false,
-            .isExecutable = false,
-            .descriptorType = DescriptorType::CodeOrData,
-            .privilege = Privilege::UserSpace,
-            .present = true
+        .accessed = false,
+        .readWritable = true,
+        .isConforming = false,
+        .isExecutable = false,
+        .descriptorType = DescriptorType::CodeOrData,
+        .privilege = Privilege::UserSpace,
+        .present = true
     };
 
     // Describes attributes for a null segment, all values are zero.
     constexpr Flags zeroFlags {
-            .available = false,
-            .longMode = false,
-            .size = Size::Bit16,
-            .granularity = Granularity::Byte
+        .available = false,
+        .longMode = false,
+        .size = Size::Bit16,
+        .granularity = Granularity::Byte
     };
 
     // Describes attributes for a Code/Data segment. Segment is available, 32 bits, and uses page
     // sizing of 4Kib.
     constexpr Flags Page32BitFlags {
-            .available = true,
-            .longMode = false,
-            .size = Size::Bit32,
-            .granularity = Granularity::Page
+        .available = true,
+        .longMode = false,
+        .size = Size::Bit32,
+        .granularity = Granularity::Page
     };
 
     // Maximum memory limit for a 32 bit os - 4GB from a 4KiB page size.

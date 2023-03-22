@@ -118,25 +118,31 @@ namespace debug {
 
         setBaudRate(baudRate);
 
-        setLineControl(LineControl {
-            .dataLength = DataLength::EIGHT_BITS,
-            .stopBit = StopBit::ONE,
-            .parity = Parity::NONE
-        });
+        setLineControl(
+            LineControl {
+                .dataLength = DataLength::EIGHT_BITS,
+                .stopBit = StopBit::ONE,
+                .parity = Parity::NONE
+            }
+        );
 
-        setFIFOControl(FIFOControl {
-            .isEnabled = true,
-            .clearReceive = true,
-            .clearTransmit = true,
-            .interruptThreshold = FIFOInterruptThreshold::BYTE_14
-        });
+        setFIFOControl(
+            FIFOControl {
+                .isEnabled = true,
+                .clearReceive = true,
+                .clearTransmit = true,
+                .interruptThreshold = FIFOInterruptThreshold::BYTE_14
+            }
+        );
 
-        setModemControl({
-            .dataTerminalReady = true,
-            .requestToSend = true,
-            .interruptsEnabled = true,
-            .isLoopback = true
-        });
+        setModemControl(
+            {
+                .dataTerminalReady = true,
+                .requestToSend = true,
+                .interruptsEnabled = true,
+                .isLoopback = true
+            }
+        );
 
         // Test serial chip
         constexpr static uint8_t testChar = 0xAE;
@@ -146,12 +152,14 @@ namespace debug {
         }
 
         // If serial is not faulty set it in normal operation mode
-        setModemControl({
-            .dataTerminalReady = true,
-            .requestToSend = true,
-            .outputOne = true,
-            .interruptsEnabled = true
-        });
+        setModemControl(
+            {
+                .dataTerminalReady = true,
+                .requestToSend = true,
+                .outputOne = true,
+                .interruptsEnabled = true
+            }
+        );
 
         return true;
     }

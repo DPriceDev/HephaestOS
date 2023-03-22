@@ -28,6 +28,7 @@ namespace kernel::boot::tss {
     extern "C" void jumpUserMode();
 
     auto initializeTaskStateSegment(uint32_t stackPointer) -> void;
+
     auto getTaskStateSegmentDescriptor() -> gdt::GlobalDescriptor;
 
     /**

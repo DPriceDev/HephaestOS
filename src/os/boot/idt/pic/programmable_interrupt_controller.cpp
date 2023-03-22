@@ -23,8 +23,8 @@ namespace kernel::boot::idt {
 
     // Maps the overlapping interrupts to after the exceptions.
     void remapProgrammableInterruptController(
-            uint8_t masterOffset,
-            uint8_t slaveOffset
+        uint8_t masterOffset,
+        uint8_t slaveOffset
     ) {
         // initialize pic todo: Comment second command
         hal::writeToPort(masterPicAddress, initializeCommand | ICW1_ICW4);
@@ -63,7 +63,7 @@ namespace kernel::boot::idt {
      * @param interruptCode
      */
     void sendEoiFlag(uint32_t interruptCode) {
-        if(interruptCode >= 8) {
+        if (interruptCode >= 8) {
             hal::writeToPort(slavePicAddress, picEoiFlag);
         }
 

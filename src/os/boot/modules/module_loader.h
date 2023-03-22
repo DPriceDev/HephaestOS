@@ -28,16 +28,16 @@ namespace kernel::boot {
     };
 
     auto loadModules(
-        const std::Span <ModuleEntry>& bootModules,
+        const std::Span<ModuleEntry>& bootModules,
         BootAllocator& allocator,
         const BootInfo& bootInfo
-    ) -> std::Result <uintptr_t>;
+    ) -> std::Result<uintptr_t>;
 
     auto loadBootModule(
         const ModuleEntry& bootModule,
         BootAllocator& allocator,
         uintptr_t baseVirtualAddress
-    ) -> std::Result <LoadedModule>;
+    ) -> std::Result<LoadedModule>;
 
     auto loadElf(const elf::StaticExecutableElf& elf, const BootAllocator&) -> uintptr_t;
 

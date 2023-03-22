@@ -82,7 +82,7 @@ namespace std {
 
     template<forwardIterator Iterator>
     constexpr Iterator maxElement(Iterator first, Iterator last) {
-        if (first == last) return last;
+        if (first == last) { return last; }
 
         Iterator largest = first;
         ++first;

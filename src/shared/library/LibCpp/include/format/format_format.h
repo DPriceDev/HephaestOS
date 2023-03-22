@@ -234,7 +234,7 @@ namespace std {
         std::StringView format,
         BasicFormatArguments<BasicFormatState<char, OutputIterator>> args
     ) {
-        auto parsingState = BasicParseState<char>{ format, args.count() };
+        auto parsingState = BasicParseState<char> { format, args.count() };
         auto formatState = BasicFormatState<char, OutputIterator> { args, output };
 
         const auto* iterator = parsingState.begin();

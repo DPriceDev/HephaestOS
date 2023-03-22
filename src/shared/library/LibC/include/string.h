@@ -27,24 +27,24 @@ typedef long unsigned int size_t;
  * Stubbed strlen.
  * Stubbed to allow GCC to compile, just needs to exist at this point without an implementation.
  */
-size_t strlen(const char *str);
+size_t strlen(const char* str);
 
 /**
  * Stubbed memset.
  * Stubbed to allow GCC to compile, just needs to exist at this point without an implementation.
  */
-void *memset(void* pointer, int value, uint32_t length);
+void* memset(void* pointer, int value, uint32_t length);
 
 /**
  * Stubbed memcpy.
  * Stubbed to allow GCC to compile, just needs to exist at this point without an implementation.
  */
-void *memcpy(void *dest, const void * src, size_t n);
+void* memcpy(void* dest, const void* src, size_t n);
 
 /**
  * Stubbed strcpy.
  * Stubbed to allow GCC to compile, just needs to exist at this point without an implementation.
  */
-char *strcpy(char *dest, const char *src);
+char* strcpy(char* dest, const char* src);
 
 #endif // HEPHAIST_OS_USER_LIB_C_STRING_H

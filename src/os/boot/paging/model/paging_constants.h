@@ -24,7 +24,9 @@ namespace kernel::boot::paging {
 
     // Page directory
     static constexpr std::size_t PAGE_DIRECTORY_SIZE = 1024;
+
     static constexpr std::size_t PAGE_TABLE_SIZE = 1024;
+
     static constexpr std::size_t PAGE_SIZE = 0x1000;
 }
 

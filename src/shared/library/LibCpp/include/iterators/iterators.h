@@ -204,15 +204,15 @@ namespace std {
      */
     template<class Iterator>
     concept contiguousIterator =
-        std::randomAccessIterator<Iterator>
-        && std::is_lvalue_reference_v<Iterator&>
-        && std::same_as<
-            std::iteratorValueType<Iterator>,
-            std::remove_cvref_t<iteratorReferenceType < Iterator>>
-        >
-        && requires(const Iterator& iterator) {
-            { std::toAddress(iterator) } -> std::same_as<std::add_pointer_t<std::iteratorReferenceType<Iterator>>>;
-        };
+    std::randomAccessIterator<Iterator>
+    && std::is_lvalue_reference_v<Iterator&>
+    && std::same_as<
+        std::iteratorValueType<Iterator>,
+        std::remove_cvref_t<iteratorReferenceType<Iterator>>
+    >
+    && requires(const Iterator& iterator) {
+        { std::toAddress(iterator) } -> std::same_as<std::add_pointer_t<std::iteratorReferenceType<Iterator>>>;
+    };
 
     template<class Container>
     class BackInsertIterator {

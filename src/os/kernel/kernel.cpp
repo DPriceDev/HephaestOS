@@ -22,7 +22,9 @@ namespace kernel {
 
     // todo: Should this live in a config file somewhere?
     constexpr uint32_t majorVersion = 1;
+
     constexpr uint32_t minorVersion = 0;
+
     constexpr uint32_t fixVersion = 0;
 
     extern "C" [[maybe_unused]] void kernelMain(
@@ -59,7 +61,7 @@ namespace kernel {
         // TODO: Unload this bit of kernel code?
 
         // todo: Remove and add an error message here, should never get here?
-        while(true) {
+        while (true) {
             /* Endless Loop */
         }
 

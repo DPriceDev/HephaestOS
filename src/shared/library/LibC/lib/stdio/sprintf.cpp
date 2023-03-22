@@ -17,7 +17,7 @@
 
 #include "stdio/sprintf.h"
 
-char * reverseBuffer(char * buffer, uint32_t length) {
+char* reverseBuffer(char* buffer, uint32_t length) {
     for (uint32_t index = 0; index < length / 2; ++index) {
         char character = buffer[index];
         buffer[index] = buffer[length - index - 1];
@@ -34,14 +34,14 @@ char * reverseBuffer(char * buffer, uint32_t length) {
  * @param base
  * @return
  */
-char * convertNumberToString(
-        int32_t value,
-        char * buffer,
-        int32_t base
+char* convertNumberToString(
+    int32_t value,
+    char* buffer,
+    int32_t base
 ) {
-    char * bufferStart = buffer;
+    char* bufferStart = buffer;
     auto shouldAddMinus = value < 0 && base == 10;
-    if(shouldAddMinus) {
+    if (shouldAddMinus) {
         value *= -1;
     }
 
@@ -52,7 +52,7 @@ char * convertNumberToString(
         value /= base;
     } while (value);
 
-    if(shouldAddMinus) {
+    if (shouldAddMinus) {
         *buffer = '-';
         ++buffer;
     }
@@ -62,7 +62,7 @@ char * convertNumberToString(
 }
 
 
-int sprintf(char *str, const char *format, ...) {
+int sprintf(char* str, const char* format, ...) {
     // todo
     return 0;
 }

@@ -33,22 +33,22 @@ namespace kernel::boot::gdt {
      * @return Global Descriptor constructed from the parameters.
      */
     auto constructGlobalDescriptor(
-            const uint32_t baseAddress,
-            const uint32_t memoryLimit,
-            const Access &access,
-            const Flags &flags
+        const uint32_t baseAddress,
+        const uint32_t memoryLimit,
+        const Access& access,
+        const Flags& flags
     ) -> GlobalDescriptor {
         return GlobalDescriptor {
-                .lowerLimit     = static_cast<uint16_t>((memoryLimit & Mask16Bit)),
-                .lowerBase      = static_cast<uint16_t>((baseAddress & Mask16Bit)),
-                .midBase        = static_cast<uint8_t>((baseAddress >> Offset16Bit) & Mask8Bit),
-                .access         = access,
-                .upperLimit     = static_cast<uint8_t>((memoryLimit >> Offset16Bit) & Mask4Bit),
-                .available      = flags.available,
-                .longMode       = flags.longMode,
-                .size           = flags.size,
-                .granularity    = flags.granularity,
-                .upperBase      = static_cast<uint8_t>((baseAddress >> Offset24Bit) & Mask8Bit)
+            .lowerLimit     = static_cast<uint16_t>((memoryLimit & Mask16Bit)),
+            .lowerBase      = static_cast<uint16_t>((baseAddress & Mask16Bit)),
+            .midBase        = static_cast<uint8_t>((baseAddress >> Offset16Bit) & Mask8Bit),
+            .access         = access,
+            .upperLimit     = static_cast<uint8_t>((memoryLimit >> Offset16Bit) & Mask4Bit),
+            .available      = flags.available,
+            .longMode       = flags.longMode,
+            .size           = flags.size,
+            .granularity    = flags.granularity,
+            .upperBase      = static_cast<uint8_t>((baseAddress >> Offset24Bit) & Mask8Bit)
         };
     }
 }

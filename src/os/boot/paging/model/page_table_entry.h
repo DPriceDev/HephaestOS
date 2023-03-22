@@ -24,23 +24,23 @@ namespace kernel::boot::paging {
 
     // Defines the access flags of a given Page Table Entry.
     struct [[gnu::packed]] PageTableAccess {
-        bool isPresent : 1 = false;
-        bool canWrite : 1 = false;
-        bool hasUserAccess : 1 = false;
-        bool writeThrough : 1 = false;
-        bool isCacheDisabled : 1 = false;
-        bool isAccessed : 1 = false;
-        bool isDirty : 1 = false;
-        bool pageAttributeTable : 1 = false;
+        bool isPresent: 1 = false;
+        bool canWrite: 1 = false;
+        bool hasUserAccess: 1 = false;
+        bool writeThrough: 1 = false;
+        bool isCacheDisabled: 1 = false;
+        bool isAccessed: 1 = false;
+        bool isDirty: 1 = false;
+        bool pageAttributeTable: 1 = false;
     };
 
     // Defines a Page Table Entry with a set of access flags and the top 20 bits of
     // The address this entry points to.
     struct [[gnu::packed]] PageTableEntry {
         PageTableAccess access = PageTableAccess();
-        bool global : 1 = false;
-        uint8_t unused : 3 = 0;
-        uint32_t address : 20 = 0x0;
+        bool global: 1 = false;
+        uint8_t unused: 3 = 0;
+        uint32_t address: 20 = 0x0;
     };
 }
 
