@@ -54,8 +54,8 @@ namespace kernel::boot::elf {
         return ElfInfo { extractExecutableElf(header, headerAddress) };
     }
 
-    size_t getProgramSize(const std::Span<const Elf32_Phdr> headers) {
-        size_t memorySize = 0;
+    std::size_t getProgramSize(const std::Span<const Elf32_Phdr> headers) {
+        std::size_t memorySize = 0;
         for (const auto& header : headers) {
             memorySize += header.p_memsz;
         }

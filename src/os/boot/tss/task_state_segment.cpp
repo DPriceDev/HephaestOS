@@ -15,6 +15,7 @@
  * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <bit>
 #include <cstdint>
 #include <string.h>
 
@@ -36,7 +37,7 @@ namespace kernel::boot::tss {
     };
 
     //
-    static const uintptr_t tssEntryPtr = reinterpret_cast<uintptr_t>(&tssEntry);
+    static const uintptr_t tssEntryPtr = std::bit_cast<uintptr_t>(&tssEntry);
 
     /**
      *

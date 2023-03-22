@@ -37,7 +37,7 @@ namespace std {
      * decrementing the @tparam TypeIndex until it is 0. When @tparam TypeIndex
      * is 0 it will call a specialized version of this struct.
      */
-    template<size_t TypeIndex, class NextType, class... NextTypes>
+    template<std::size_t TypeIndex, class NextType, class... NextTypes>
     struct VariantType : VariantType<TypeIndex - 1, NextTypes...> { };
 
     /**
@@ -58,7 +58,7 @@ namespace std {
      * until the @tparam TypeToMatch is equal to the @tparam NextType.
      * These are matched in a specialized version of this struct.
      */
-    template<size_t Index, class TypeToMatch, class NextType, class... NextTypes>
+    template<std::size_t Index, class TypeToMatch, class NextType, class... NextTypes>
     struct VariantIndex : VariantIndex<Index + 1, TypeToMatch, NextTypes...> { };
 
     /**
@@ -67,9 +67,9 @@ namespace std {
      * we have found the matched type and we can set the @param index as the
      * @tparam Index from walking the pack.
      */
-    template<size_t Index, class MatchedType, class... UnusedTypes>
+    template<std::size_t Index, class MatchedType, class... UnusedTypes>
     struct VariantIndex<Index, MatchedType, MatchedType, UnusedTypes...> {
-        size_t index = Index;
+        std::size_t index = Index;
     };
 
     namespace detail {
@@ -79,16 +79,16 @@ namespace std {
          * todo: is it possible to build this as a const eval array of lambdas
          * todo: that take the data and index and calls the function pointer.
          */
-        template<size_t>
-        auto destroyLinear(size_t, void*) -> void { /* No destructor */ }
+        template<std::size_t>
+        auto destroyLinear(std::size_t, void*) -> void { /* No destructor */ }
 
         /**
          * Takes the @tparam Type, Types and checks whether the @tparam Index
          * matches the current variant.h @param index and calls its
          * destructor if it matches.
          */
-        template<size_t Index, class Type, class... Types>
-        constexpr auto destroyLinear(size_t index, void* pointer) -> void {
+        template<std::size_t Index, class Type, class... Types>
+        constexpr auto destroyLinear(std::size_t index, void* pointer) -> void {
             if (index == Index) {
                 static_cast<Type*>(pointer)->~Type();
                 return;
@@ -106,7 +106,7 @@ namespace std {
         template<std::size_t Size>
         struct VariantStorage {
             char data[Size] { };
-            size_t index { 0 };
+            std::size_t index { 0 };
         };
     }
 
@@ -120,7 +120,7 @@ namespace std {
      */
     template<typename FirstType, typename... Types>
     class Variant {
-        enum : size_t {
+        enum : std::size_t {
             size = std::max({ sizeof(FirstType), sizeof(Types)... })
         };
 
@@ -132,7 +132,7 @@ namespace std {
         }
 
         [[nodiscard]]
-        constexpr auto index() const noexcept -> size_t {
+        constexpr auto index() const noexcept -> std::size_t {
             return storage.index;
         }
 

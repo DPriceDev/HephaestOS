@@ -15,9 +15,9 @@
  * along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <stdoffset.h>
-
+#include <bit>
 #include "interrupt_descriptor.h"
+#include <stdoffset.h>
 
 namespace kernel::boot::idt {
 
@@ -35,7 +35,7 @@ namespace kernel::boot::idt {
      */
     auto constructInterruptDescriptor(int (*handler)(), GateType type) -> InterruptDescriptor {
         return InterruptDescriptor {
-                .lowerOffset = static_cast<uint16_t>(reinterpret_cast<uintptr_t>(handler) & Mask16Bit),
+                .lowerOffset = static_cast<uint16_t>(std::bit_cast<uintptr_t>(handler) & Mask16Bit),
                 .selector = InterruptSegment,
                 .zero = 0,
                 .gateType = TypeAttributes {
@@ -44,7 +44,7 @@ namespace kernel::boot::idt {
                         .descriptorPrivilege = DescriptorPrivilege::Kernel,
                         .isPresent = true
                 },
-                .higherOffset = static_cast<uint16_t>((reinterpret_cast<uintptr_t>(handler) >> Offset16Bit) & Mask16Bit)
+                .higherOffset = static_cast<uint16_t>((std::bit_cast<uintptr_t>(handler) >> Offset16Bit) & Mask16Bit)
         };
     }
 }

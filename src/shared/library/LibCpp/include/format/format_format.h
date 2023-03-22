@@ -44,7 +44,7 @@ namespace std {
          * after the '{' of the format field.
          */
         struct ArgumentIndex {
-            size_t index;
+            std::size_t index;
             const char* nextCharacter;
         };
 
@@ -157,7 +157,7 @@ namespace std {
                 return std::Result<ArgumentIndex>::failure();
             }
 
-            size_t index;
+            std::size_t index;
             if (position == iterator) {
                 auto result = parseState.nextArgumentIndex();
                 if (result.isNotValid()) {
@@ -165,7 +165,7 @@ namespace std {
                 }
                 index = result.get();
             } else {
-                auto result = std::fromChars<size_t>(iterator, position);
+                auto result = std::fromChars<std::size_t>(iterator, position);
                 if (!result.isValid()) {
                     return std::Result<ArgumentIndex>::failure();
                 }

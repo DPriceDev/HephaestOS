@@ -99,12 +99,12 @@ namespace std {
     constexpr std::Result<Type, Error> fromChars(
         const char* first,
         const char* last,
-        size_t base = 10
+        std::size_t base = 10
     ) {
-        auto view = std::StringView(first, static_cast<size_t>(last - first));
+        auto view = std::StringView(first, static_cast<std::size_t>(last - first));
 
-        size_t running = 0;
-        size_t power = 1;
+        std::size_t running = 0;
+        std::size_t power = 1;
         std::forEach(
             view.rbegin(), view.rend(), [&](auto& character) {
                 running += (Type(character) - 48) * power; // todo: Handle errors / overflow

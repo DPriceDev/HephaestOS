@@ -66,7 +66,7 @@ namespace std {
      */
     template<class State>
     class BasicFormatArguments {
-        size_t size { };
+        std::size_t size { };
         const BasicFormatArgument<State>* data;
 
     public:

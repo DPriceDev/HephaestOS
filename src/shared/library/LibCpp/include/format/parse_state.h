@@ -80,12 +80,12 @@ namespace std {
          * This sets the counting type to automatic. If the counting type is already set to
          * manual, then a failure result is returned.
          */
-        constexpr auto nextArgumentIndex() -> std::Result<size_t> {
+        constexpr auto nextArgumentIndex() -> std::Result<std::size_t> {
             if (countingType == CountingType::MANUAL || argumentIndex >= argumentCount) {
-                return std::Result<size_t>::failure();
+                return std::Result<std::size_t>::failure();
             }
             countingType = CountingType::AUTOMATIC;
-            return std::Result<size_t>::success(argumentIndex++);
+            return std::Result<std::size_t>::success(argumentIndex++);
         }
 
         /**
@@ -95,12 +95,12 @@ namespace std {
          * This sets the counting type to manual. If the counting type is already set to
          * automatic, then a failure result is returned.
          */
-        constexpr std::Result<size_t> checkArgumentIndex(size_t index) {
+        constexpr std::Result<std::size_t> checkArgumentIndex(size_t index) {
             if (index >= argumentCount || countingType == CountingType::AUTOMATIC) {
-                return std::Result<size_t>::failure();
+                return std::Result<std::size_t>::failure();
             }
             countingType = CountingType::MANUAL;
-            return std::Result<size_t>::success(index);
+            return std::Result<std::size_t>::success(index);
         }
     };
 

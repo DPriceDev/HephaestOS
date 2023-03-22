@@ -18,9 +18,10 @@
 #ifndef HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_POINTER_FORMATTER_H
 #define HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_POINTER_FORMATTER_H
 
+#include <bit>
+#include <charconv.h>
 #include "formatter.h"
 #include "int_formatter.h"
-#include "charconv.h"
 
 namespace std {
 
@@ -50,8 +51,8 @@ namespace std {
             *output++ = 'x';
             state.advanceTo(output);
 
-            auto address = reinterpret_cast<std::uintptr_t>(pointer);
-            return Formatter<int>().format(address, state);
+            const auto address = std::bit_cast<std::uintptr_t>(pointer);
+            return Formatter<std::uintptr_t>().format(address, state);
         }
     };
 }

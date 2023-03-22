@@ -28,7 +28,7 @@ namespace std {
      * current active Variant Type, an exception is thrown.
      * @tparam Types are the Variants stored in @param variant.
      */
-    template<size_t TypeIndex, class... Types>
+    template<std::size_t TypeIndex, class... Types>
     constexpr auto getIf(std::Variant<Types...>& variant) -> auto* {
         if (variant.index() != TypeIndex) {
             return nullptr;
@@ -58,7 +58,7 @@ namespace std {
      * If the active index in the variant.h is not the same as the @tparam TypeIndex, then
      * a failure result is returned.
      */
-    template<size_t TypeIndex, class... Types, class ResultType>
+    template<std::size_t TypeIndex, class... Types, class ResultType>
     constexpr auto get(std::Variant<Types...>& variant) -> std::Result<ResultType> {
         if (variant.index() != TypeIndex) {
             return std::Result<ResultType>::failure();

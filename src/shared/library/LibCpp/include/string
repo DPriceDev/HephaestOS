@@ -30,7 +30,7 @@ namespace std {
             static constexpr std::size_t length(const CharacterType* string) {
                 const CharacterType* runner = string;
                 while (*(runner) != '\0') { ++runner; }
-                return static_cast<size_t>(runner - string);
+                return static_cast<std::size_t>(runner - string);
             }
 
             static constexpr auto compare(
