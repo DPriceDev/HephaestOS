@@ -69,6 +69,7 @@ namespace boot {
                 &connection,
                 [](const void*) { /* Serial port cannot be de-referenced. */ },
                 [](const void* pointer, char character) {
+                    // todo: std::any here?
                     static_cast<const debug::SerialPortConnection*>(pointer)->write(character);
                 },
                 [](const void*) { /* Serial Port self increments. */ },

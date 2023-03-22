@@ -27,13 +27,13 @@ namespace boot {
     )
         : currentAddress(physicalAddress), virtualAddress(virtualBaseAddress), pageTable(kernelPageTable) {}
 
-    auto BootAllocator::allocate(std::size_t count, std::size_t alignment) -> void* {
+    auto BootAllocator::allocate(std::size_t count, std::size_t alignment) -> std::byte* {
         const auto startAddress = (currentAddress / alignment) + (currentAddress % alignment ? alignment : 0);
         const auto endAddress = startAddress + count;
 
         mapAddressRangeInTable(pageTable, virtualAddress + currentAddress, currentAddress, endAddress);
 
         currentAddress = endAddress;
-        return std::bit_cast<void*>(virtualAddress + startAddress);
+        return std::bit_cast<std::byte*>(virtualAddress + startAddress);
     }
 }// namespace boot

@@ -84,8 +84,8 @@ namespace boot {
 
     void loadExecutableElf(uintptr_t headerAddress, std::Span<const Elf32_Phdr> programHeaders, uintptr_t loadAddress) {
         for (const auto& programHeader : programHeaders) {
-            const auto* programAddress = std::bit_cast<void*>(headerAddress + programHeader.p_offset);
-            auto* memoryAddress = std::bit_cast<void*>(loadAddress);
+            const auto* programAddress = std::bit_cast<std::byte*>(headerAddress + programHeader.p_offset);
+            auto* memoryAddress = std::bit_cast<std::byte*>(loadAddress);
             memset(memoryAddress, 0, programHeader.p_memsz + programHeader.p_vaddr);
             memcpy(memoryAddress, programAddress, programHeader.p_filesz);
         }

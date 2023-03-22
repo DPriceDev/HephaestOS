@@ -19,6 +19,7 @@
 #define HEPHAISTOS_BOOTALLOCATOR_H
 
 #include "paging/paging.h"
+#include "cstddef"
 #include <cstdint>
 
 namespace boot {
@@ -35,7 +36,7 @@ namespace boot {
             PageTableEntry* kernelPageTable
         );
 
-        auto allocate(std::size_t count, std::size_t alignment = 1) -> void*;
+        auto allocate(std::size_t count, std::size_t alignment = 1) -> std::byte*;
     };
 }// namespace boot
 
