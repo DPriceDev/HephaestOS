@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16...3.24.2)
-#cmake_policy(SET CMP0135 NEW)
+cmake_policy(SET CMP0135 NEW)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_C_STANDARD 17)
