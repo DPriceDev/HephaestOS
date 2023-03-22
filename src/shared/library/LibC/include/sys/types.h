@@ -21,4 +21,4 @@
 /* pid_t is the definition of a process ID */
 typedef signed int pid_t;
 
-#endif // HEPHAIST_OS_USER_LIB_C_SYS_TYPES_H
+#endif// HEPHAIST_OS_USER_LIB_C_SYS_TYPES_H

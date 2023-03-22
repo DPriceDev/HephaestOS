@@ -20,4 +20,4 @@
 
 /* Stubbed to allow GCC to compile, errno.h just needs to exist at this point */
 
-#endif // HEPHAIST_OS_USER_LIB_C_ERRNO_H
+#endif// HEPHAIST_OS_USER_LIB_C_ERRNO_H

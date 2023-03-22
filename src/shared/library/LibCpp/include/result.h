@@ -22,39 +22,31 @@
 
 namespace std {
 
-    struct None { };
+    struct None {};
 
     template<class Type, class Error = None>
     struct Result {
-    private:
+      private:
         Type resultValue;
         Error errorValue;
         bool isResult;
 
-        explicit Result(Type result) : resultValue { result }, isResult { true } { }
+        explicit Result(Type result) : resultValue { result }, isResult { true } {}
 
-        explicit Result(Error error) : errorValue { error }, isResult { false } { }
+        explicit Result(Error error) : errorValue { error }, isResult { false } {}
 
-    public:
+      public:
         explicit Result() = default;
 
         // Initializers
-        static constexpr auto success(Type result) -> Result<Type, Error> {
-            return Result(result);
-        }
+        static constexpr auto success(Type result) -> Result<Type, Error> { return Result(result); }
 
-        static constexpr auto failure() -> Result<Type, Error> {
-            return Result(Error());
-        }
+        static constexpr auto failure() -> Result<Type, Error> { return Result(Error()); }
 
-        static constexpr auto failure(Error error) -> Result<Type, Error> {
-            return Result(error);
-        }
+        static constexpr auto failure(Error error) -> Result<Type, Error> { return Result(error); }
 
         // Accessors
-        [[nodiscard]] constexpr auto get() const noexcept {
-            return resultValue;
-        }
+        [[nodiscard]] constexpr auto& get() const noexcept { return resultValue; }
 
         template<class Function>
         auto getOr(Function onError) -> Type& {
@@ -64,17 +56,11 @@ namespace std {
             return resultValue;
         }
 
-        [[nodiscard]] constexpr auto error() const noexcept {
-            return errorValue;
-        }
+        [[nodiscard]] constexpr auto error() const noexcept { return errorValue; }
 
-        [[nodiscard]] constexpr bool isValid() const noexcept {
-            return isResult;
-        }
+        [[nodiscard]] constexpr bool isValid() const noexcept { return isResult; }
 
-        [[nodiscard]] constexpr bool isNotValid() const noexcept {
-            return !isResult;
-        }
+        [[nodiscard]] constexpr bool isNotValid() const noexcept { return !isResult; }
 
         // Functional Interface
         template<class ResultFunction, class ErrorFunction>
@@ -111,6 +97,6 @@ namespace std {
             return function(resultValue);
         }
     };
-}
+}// namespace std
 
-#endif // HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_RESULT_H
+#endif// HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_RESULT_H

@@ -27,7 +27,7 @@
  * @param length
  * @return
  */
-char * reverseBuffer(char * buffer, uint32_t length);
+char* reverseBuffer(char* buffer, uint32_t length);
 
 /**
  * TODO: Comment
@@ -37,7 +37,7 @@ char * reverseBuffer(char * buffer, uint32_t length);
  * @param base
  * @return
  */
-char * convertNumberToString(int32_t value,char * buffer, int32_t base);
+char* convertNumberToString(int32_t value, char* buffer, int32_t base);
 
 /**
  *
@@ -46,7 +46,7 @@ char * convertNumberToString(int32_t value,char * buffer, int32_t base);
  * @param ...
  * @return
  */
-int sprintf(char *str, const char *format, ...);
+int sprintf(char* str, const char* format, ...);
 
 
-#endif // HEPHAIST_OS_KERNEL_LIB_STDIO_SPRINTF_H
+#endif// HEPHAIST_OS_KERNEL_LIB_STDIO_SPRINTF_H

@@ -18,8 +18,8 @@
 #ifndef HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_FLOATING_FORMATTER_H
 #define HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_FLOATING_FORMATTER_H
 
-#include <limits>
 #include <cfloat>
+#include <limits>
 
 #include "formatter.h"
 
@@ -50,16 +50,14 @@ namespace std {
 
         auto format(std::floating_point auto& floating, auto& state) {
             auto output = state.out();
-            auto buffer = std::Array<char, DBL_MAX_10_EXP> { };
+            auto buffer = std::Array<char, DBL_MAX_10_EXP> {};
             auto result = std::toChars(buffer.begin(), buffer.end(), floating);
 
-            std::forEach(buffer.begin(), result, [&output] (char character) {
-                *output++ = character;
-            });
+            std::forEach(buffer.begin(), result, [&output](char character) { *output++ = character; });
 
             return output;
         }
     };
-}
+}// namespace std
 
-#endif // HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_FLOATING_FORMATTER_H
+#endif// HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_FLOATING_FORMATTER_H

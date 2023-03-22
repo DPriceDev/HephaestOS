@@ -29,10 +29,7 @@ namespace std {
          * todo:
          */
         template<std::inputIterator Iterator>
-        constexpr void advance(
-            Iterator& it,
-            typename std::iteratorDifferenceType<Iterator> count
-        ) {
+        constexpr void advance(Iterator& it, typename std::iteratorDifferenceType<Iterator> count) {
             while (count > 0) {
                 --count;
                 ++it;
@@ -43,10 +40,7 @@ namespace std {
          * todo:
          */
         template<std::bidirectionalIterator Iterator>
-        constexpr void advance(
-            Iterator& it,
-            typename std::iteratorDifferenceType<Iterator> count
-        ) {
+        constexpr void advance(Iterator& it, typename std::iteratorDifferenceType<Iterator> count) {
             while (count > 0) {
                 --count;
                 ++it;
@@ -61,13 +55,10 @@ namespace std {
          * todo:
          */
         template<std::randomAccessIterator Iterator>
-        constexpr void advance(
-            Iterator& iterator,
-            typename std::iteratorDifferenceType<Iterator> count
-        ) {
+        constexpr void advance(Iterator& iterator, typename std::iteratorDifferenceType<Iterator> count) {
             iterator += count;
         }
-    }
+    }// namespace detail
 
     /**
      * todo:
@@ -81,10 +72,7 @@ namespace std {
      * todo:
      */
     template<std::inputIterator Iterator>
-    constexpr Iterator next(
-        Iterator iterator,
-        typename std::iteratorDifferenceType<Iterator> count = 1
-    ) {
+    constexpr Iterator next(Iterator iterator, typename std::iteratorDifferenceType<Iterator> count = 1) {
         std::advance(iterator, count);
         return iterator;
     }
@@ -93,13 +81,10 @@ namespace std {
      * todo:
      */
     template<std::bidirectionalIterator Iterator>
-    constexpr Iterator prev(
-        Iterator& iterator,
-        typename std::iteratorDifferenceType<Iterator> count = 1
-    ) {
+    constexpr Iterator prev(Iterator& iterator, typename std::iteratorDifferenceType<Iterator> count = 1) {
         std::advance(iterator, -count);
         return iterator;
     }
-}
+}// namespace std
 
-#endif // HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_ITERATORS_ITERATOR_OPERATIONS_H
+#endif// HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_ITERATORS_ITERATOR_OPERATIONS_H

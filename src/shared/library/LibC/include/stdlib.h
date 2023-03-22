@@ -29,13 +29,13 @@ typedef long unsigned int size_t;
  * @param size
  * @return
  */
-void *malloc(size_t size);
+void* malloc(size_t size);
 
 /**
  * Stubbed free.
  * Stubbed to allow GCC to compile, just needs to exist at this point without an implementation.
  */
-void free(void *ptr);
+void free(void* ptr);
 
 /**
  * Stubbed Abort.
@@ -53,12 +53,12 @@ int atexit(void (*func)(void));
  * Stubbed atoi.
  * Stubbed to allow GCC to compile, just needs to exist at this point without an implementation.
  */
-int atoi(const char *str);
+int atoi(const char* str);
 
 /**
  * Stubbed getenv.
  * Stubbed to allow GCC to compile, just needs to exist at this point without an implementation.
  */
-char *getenv(const char *name);
+char* getenv(const char* name);
 
-#endif // HEPHAIST_OS_USER_LIB_C_STDLIB_H
+#endif// HEPHAIST_OS_USER_LIB_C_STDLIB_H

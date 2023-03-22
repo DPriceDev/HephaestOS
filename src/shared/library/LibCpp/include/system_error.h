@@ -19,9 +19,7 @@
 #define HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_SYSTEM_ERROR_H
 
 namespace std {
-    enum class Error {
-        INVALID_ARGUMENT
-    };
+    enum class Error { INVALID_ARGUMENT };
 }
 
-#endif // HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_SYSTEM_ERROR_H
+#endif// HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_SYSTEM_ERROR_H

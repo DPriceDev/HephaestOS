@@ -26,33 +26,52 @@ namespace std {
         template<class CharacterType>
         class BaseCharacterTraits {
 
-        public:
+          public:
             static constexpr std::size_t length(const CharacterType* string) {
-                auto runner = string;
+                const CharacterType* runner = string;
                 while (*(runner) != '\0') { ++runner; }
-                return runner - string;
+                return static_cast<std::size_t>(runner - string);
             }
+
+            static constexpr auto compare(const CharacterType* s1, const CharacterType* s2, std::size_t count) -> int {
+                while (--count) {
+                    if (!equal(*s1, *s2)) {
+                        if (lessThan(*s1, *s2)) {
+                            return -1;
+                        } else {
+                            return 1;
+                        }
+                    }
+                    ++s1;
+                    ++s2;
+                }
+                return 0;
+            }
+
+            static constexpr auto equal(CharacterType a, CharacterType b) noexcept -> bool { return a == b; }
+
+            static constexpr auto lessThan(CharacterType a, CharacterType b) noexcept -> bool { return a < b; }
         };
-    }
+    }// namespace detail
 
     /**
      * todo: add member functions as used?
      * @tparam CharacterType
      */
     template<class CharacterType>
-    class CharacterTraits : public detail::BaseCharacterTraits<CharacterType> { };
+    class CharacterTraits : public detail::BaseCharacterTraits<CharacterType> {};
 
     /**
      * char specialization of character traits
      */
     template<>
     class CharacterTraits<char> : public detail::BaseCharacterTraits<char> {
-        using characterType = char;
-        using integerType = int;
-        using offsetType = int;
-        using positionType = int;
-        using stateType = int;
+        using CharacterType = char;
+        using IntegerType = int;
+        using OffsetType = int;
+        using PositionType = int;
+        using StateType = int;
     };
-}
+}// namespace std
 
-#endif // HEPHAIST_OS_SHARED_LIBRARY_CPP_STRING_H
+#endif// HEPHAIST_OS_SHARED_LIBRARY_CPP_STRING_H

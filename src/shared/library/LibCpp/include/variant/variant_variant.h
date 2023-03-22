@@ -18,6 +18,7 @@
 #ifndef HEPHAIST_OS_SHARED_LIBRARY_CPP_VARIANT_VARIANT_H
 #define HEPHAIST_OS_SHARED_LIBRARY_CPP_VARIANT_VARIANT_H
 
+#include <algorithm.h>
 #include <concepts>
 #include <type_traits>
 
@@ -29,15 +30,15 @@ namespace std {
      * MonoState can be a default state for a variant.h. This can be used to denote
      * an empty value if required.
      */
-    struct MonoState { };
+    struct MonoState {};
 
     /**
      * Variant Type takes an initial @tparam TypeIndex and walks @tparam NextTypes,
      * decrementing the @tparam TypeIndex until it is 0. When @tparam TypeIndex
      * is 0 it will call a specialized version of this struct.
      */
-    template<size_t TypeIndex, class NextType, class... NextTypes>
-    struct VariantType : VariantType<TypeIndex - 1, NextTypes...> { };
+    template<std::size_t TypeIndex, class NextType, class... NextTypes>
+    struct VariantType : VariantType<TypeIndex - 1, NextTypes...> {};
 
     /**
      * Specialized Variant Type for when the Type index has reached 0. When it
@@ -57,8 +58,8 @@ namespace std {
      * until the @tparam TypeToMatch is equal to the @tparam NextType.
      * These are matched in a specialized version of this struct.
      */
-    template<size_t Index, class TypeToMatch, class NextType, class... NextTypes>
-    struct VariantIndex : VariantIndex<Index + 1, TypeToMatch, NextTypes...> { };
+    template<std::size_t Index, class TypeToMatch, class NextType, class... NextTypes>
+    struct VariantIndex : VariantIndex<Index + 1, TypeToMatch, NextTypes...> {};
 
     /**
      * Specialized Variant Index where the @tparam MatchedType is both the
@@ -66,9 +67,9 @@ namespace std {
      * we have found the matched type and we can set the @param index as the
      * @tparam Index from walking the pack.
      */
-    template<size_t Index, class MatchedType, class... UnusedTypes>
+    template<std::size_t Index, class MatchedType, class... UnusedTypes>
     struct VariantIndex<Index, MatchedType, MatchedType, UnusedTypes...> {
-        size_t index = Index;
+        std::size_t index = Index;
     };
 
     namespace detail {
@@ -78,16 +79,17 @@ namespace std {
          * todo: is it possible to build this as a const eval array of lambdas
          * todo: that take the data and index and calls the function pointer.
          */
-        template<size_t>
-        auto destroyLinear(size_t, void*) -> void { /* No destructor */ }
+        template<std::size_t>
+        auto destroyLinear(std::size_t, void*) -> void { /* No destructor */
+        }
 
         /**
          * Takes the @tparam Type, Types and checks whether the @tparam Index
          * matches the current variant.h @param index and calls its
          * destructor if it matches.
          */
-        template<size_t Index, class Type, class... Types>
-        constexpr auto destroyLinear(size_t index, void* pointer) -> void {
+        template<std::size_t Index, class Type, class... Types>
+        constexpr auto destroyLinear(std::size_t index, void* pointer) -> void {
             if (index == Index) {
                 static_cast<Type*>(pointer)->~Type();
                 return;
@@ -104,10 +106,10 @@ namespace std {
          */
         template<std::size_t Size>
         struct VariantStorage {
-            char data[Size] { };
-            size_t index { 0 };
+            char data[Size] {};
+            std::size_t index { 0 };
         };
-    }
+    }// namespace detail
 
     /**
      * Variant holds a Type which is part of the pack of @tparam Types
@@ -119,21 +121,14 @@ namespace std {
      */
     template<typename FirstType, typename... Types>
     class Variant {
-        enum : size_t {
-            size = std::max({ sizeof(FirstType), sizeof(Types)... })
-        };
+        enum : std::size_t { size = std::max({ sizeof(FirstType), sizeof(Types)... }) };
 
-        detail::VariantStorage<size> storage { };
+        detail::VariantStorage<size> storage {};
 
-    public:
-        constexpr auto data() noexcept -> void* {
-            return storage.data;
-        }
+      public:
+        constexpr auto data() noexcept -> void* { return storage.data; }
 
-        [[nodiscard]]
-        constexpr auto index() const noexcept -> int {
-            return storage.index;
-        }
+        [[nodiscard]] constexpr auto index() const noexcept -> std::size_t { return storage.index; }
 
         constexpr Variant() noexcept {
             auto* pointer = static_cast<FirstType*>(data());
@@ -141,15 +136,13 @@ namespace std {
         }
 
         template<class Type>
-        explicit constexpr Variant(Type initialValue) noexcept:
-            storage { .index = VariantIndex<0, Type, FirstType, Types...>().index } {
+        explicit constexpr Variant(Type initialValue) noexcept
+            : storage { .index = VariantIndex<0, Type, FirstType, Types...>().index } {
             auto* pointer = static_cast<Type*>(data());
             std::construct_at(pointer, initialValue);
         }
 
-        ~Variant() {
-            detail::destroyLinear<0, FirstType, Types...>(index(), data());
-        }
+        ~Variant() { detail::destroyLinear<0, FirstType, Types...>(index(), data()); }
 
         /**
          * This replaces the held Variant Type with a new value of type
@@ -159,7 +152,7 @@ namespace std {
          * @return a reference to the newly held type.
          */
         template<class Type, class... Args>
-        constexpr auto emplace(Args&& ... args) -> Type& {
+        constexpr auto emplace(Args&&... args) -> Type& {
             // Search the Type pack and call the Type destructor.
             detail::destroyLinear<0, FirstType, Types...>(index(), data());
 
@@ -170,7 +163,7 @@ namespace std {
             return *pointer;
         }
     };
-}
+}// namespace std
 
 
-#endif // HEPHAIST_OS_SHARED_LIBRARY_CPP_VARIANT_VARIANT_H
+#endif// HEPHAIST_OS_SHARED_LIBRARY_CPP_VARIANT_VARIANT_H

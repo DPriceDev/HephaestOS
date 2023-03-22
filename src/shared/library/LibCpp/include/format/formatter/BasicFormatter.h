@@ -18,8 +18,8 @@
 #ifndef HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_BASIC_FORMATTER_H
 #define HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_BASIC_FORMATTER_H
 
-#include "format/parse_state.h"
 #include "format/format_state.h"
+#include "format/parse_state.h"
 
 namespace std {
 
@@ -33,19 +33,17 @@ namespace std {
      * return an iterator to the end of the outputted value.
      */
     template<class Formatter, class Arg>
-    concept BasicFormatter =
-    std::is_default_constructible_v<Formatter>
-    && std::is_copy_constructible_v<Formatter>
-    && std::is_copy_assignable_v<Formatter>
-    && std::is_destructible_v<Formatter>
-    && std::is_swappable_v<Formatter>
-    && requires(Formatter formatter, std::ParseState state) {
-        { formatter.parse(state) } -> std::same_as<ParseState::iterator>;
-    };
+    concept BasicFormatter = std::is_default_constructible_v<Formatter> && std::is_copy_constructible_v<Formatter>
+                          && std::is_copy_assignable_v<Formatter> && std::is_destructible_v<Formatter>
+                          && std::is_swappable_v<Formatter> && requires(Formatter formatter, std::ParseState state) {
+                                                                   {
+                                                                       formatter.parse(state)
+                                                                   } -> std::same_as<ParseState::iterator>;
+                                                               };
     // todo: Need to constrain format
-//        && requires (Formatter formatter, Arg arg, std::FormatState state) {
-//            { formatter.format(arg, state) } -> std::same_as<std::FormatState::iterator>;
-//        };
-}
+    //        && requires (Formatter formatter, Arg arg, std::FormatState state) {
+    //            { formatter.format(arg, state) } -> std::same_as<std::FormatState::iterator>;
+    //        };
+}// namespace std
 
-#endif // HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_BASIC_FORMATTER_H
+#endif// HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_BASIC_FORMATTER_H

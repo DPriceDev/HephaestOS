@@ -18,9 +18,9 @@
 #ifndef HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_H
 #define HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_H
 
-#include "format/format_format.h"
-#include "format/formatter/formatter.h"
 #include "format/format_arguments.h"
+#include "format/format_format.h"
 #include "format/format_state.h"
+#include "format/formatter/formatter.h"
 
-#endif // HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_H
+#endif// HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_H

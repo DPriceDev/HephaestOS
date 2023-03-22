@@ -71,9 +71,7 @@ namespace std {
 
         auto format(const char* string, auto& state) {
             auto output = state.out();
-            while (*string != '\0') {
-                *output++ = *string++;
-            }
+            while (*string != '\0') { *output++ = *string++; }
             return output;
         }
     };
@@ -100,12 +98,10 @@ namespace std {
 
         auto format(BaseStringView<char> view, auto& state) {
             auto output = state.out();
-            for (char character: view) {
-                *output++ = character;
-            }
+            for (char character : view) { *output++ = character; }
             return output;
         }
     };
-}
+}// namespace std
 
-#endif // HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_CHAR_FORMATTER_H
+#endif// HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_CHAR_FORMATTER_H
