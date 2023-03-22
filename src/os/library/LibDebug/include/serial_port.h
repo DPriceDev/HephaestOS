@@ -48,19 +48,19 @@ namespace debug {
     };
 
     struct [[gnu::packed]] ModemControl {
-        bool dataTerminalReady : 1;
-        bool requestToSend : 1;
-        bool outputOne : 1;
-        bool interruptsEnabled : 1;
-        bool isLoopback : 1;
+        bool dataTerminalReady : 1 = false;
+        bool requestToSend : 1 = false;
+        bool outputOne : 1 = false;
+        bool interruptsEnabled : 1 = false;
+        bool isLoopback : 1 = false;
         uint8_t /* Unused padding */ : 3;
     };
 
     struct [[gnu::packed]] EnabledInterrupts {
-        bool dataAvailable : 1;
-        bool transmitterEmpty : 1;
-        bool breakOrError : 1;
-        bool statusChanged : 1;
+        bool dataAvailable : 1 = false;
+        bool transmitterEmpty : 1 = false;
+        bool breakOrError : 1 = false;
+        bool statusChanged : 1 = false;
         uint8_t /* Unused padding */ : 4;
 
         static EnabledInterrupts None() {
@@ -69,14 +69,14 @@ namespace debug {
     };
 
     struct [[gnu::packed]] LineStatus {
-        bool dataReady : 1;
-        bool overrunError : 1;
-        bool parityError : 1;
-        bool framingError : 1;
-        bool breakIndicator : 1;
-        bool transmitterBufferEmpty : 1;
-        bool transmitterEmpty : 1;
-        bool impendingError : 1;
+        bool dataReady : 1 = false;
+        bool overrunError : 1 = false;
+        bool parityError : 1 = false;
+        bool framingError : 1 = false;
+        bool breakIndicator : 1 = false;
+        bool transmitterBufferEmpty : 1 = false;
+        bool transmitterEmpty : 1 = false;
+        bool impendingError : 1 = false;
     };
 
     enum class StopBit {
@@ -84,7 +84,7 @@ namespace debug {
         TWO = 1
     };
 
-    enum class DataLength {
+    enum class DataLength : uint8_t {
         FIVE_BITS = 0,
         SIX_BITS = 1,
         SEVEN_BITS = 2,
@@ -100,15 +100,15 @@ namespace debug {
     };
 
     struct [[gnu::packed]] LineControl {
-        DataLength dataLength: 2;
-        StopBit stopBit : 1;
-        Parity parity : 3;
-        bool isBreakEnable: 1;
+        DataLength dataLength: 2 = DataLength::FIVE_BITS;
+        StopBit stopBit : 1 = StopBit::ONE;
+        Parity parity : 3 = Parity::NONE;
+        bool isBreakEnable: 1 = false;
         // DLAB
-        bool divisorLatchAccess : 1;
+        bool divisorLatchAccess : 1 = false;
     };
 
-    enum class FIFOInterruptThreshold {
+    enum class FIFOInterruptThreshold : uint8_t {
         BYTE_1,
         BYTE_4,
         BYTE_8,
@@ -116,12 +116,12 @@ namespace debug {
     };
 
     struct [[gnu::packed]] FIFOControl {
-        bool isEnabled: 1;
-        bool clearReceive: 1;
-        bool clearTransmit: 1;
-        bool isDMAMode: 1;
+        bool isEnabled: 1 = false;
+        bool clearReceive: 1 = false;
+        bool clearTransmit: 1 = false;
+        bool isDMAMode: 1 = false;
         bool /* unused */ : 1;
-        bool is64Bit : 1;
+        bool is64Bit : 1 = false;
         FIFOInterruptThreshold interruptThreshold: 2;
     };
 
@@ -159,7 +159,7 @@ namespace debug {
 
         SerialPortConnection& operator=(SerialPortConnection&&) noexcept = default;
 
-        [[nodiscard]] bool open(int32_t baudRate = DEFAULT_BAUD_RATE) const;
+        [[nodiscard]] bool open(uint32_t baudRate = DEFAULT_BAUD_RATE) const;
 
         void write(char character) const;
 

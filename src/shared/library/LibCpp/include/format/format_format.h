@@ -311,13 +311,9 @@ namespace std {
         Args&& ... args
     ) {
         using State = BasicFormatState<char, OutputIterator>;
-        return dynamicFormatTo(
-            output,
-            std::StringView { format },
-            BasicFormatArguments<State> {
-                makeFormatArguments<State>(args...)
-            }
-        );
+        const auto formatArgs = makeFormatArguments<State>(args...);
+        const auto baseArgs = BasicFormatArguments<State>(formatArgs);
+        return dynamicFormatTo(output, std::StringView { format }, baseArgs);
     }
 }
 

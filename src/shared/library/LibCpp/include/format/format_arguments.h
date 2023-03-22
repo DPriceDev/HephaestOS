@@ -24,20 +24,41 @@
 
 namespace std {
 
-    /**
-     * Temporary format arguments storage class used when constructing the
-     * initial arguments.
-     */
-    template<class State, class... Args>
-    struct FormatArgumentStore {
-        std::Array<BasicFormatArgument<State>, sizeof...(Args)> args;
+    namespace detail {
+        /**
+            * Temporary format arguments storage class used when constructing the
+            * initial arguments.
+            */
+        template<class State, std::size_t Size>
+        struct FormatArgumentStore {
+            std::Array<BasicFormatArgument<State>, Size> array;
 
-        // Constructor
-        explicit FormatArgumentStore(
-            std::Array<BasicFormatArgument<State>,
-                sizeof...(Args)> arguments
-        ) : args(arguments) { };
-    };
+            // Constructor
+            template<class... Args>
+            explicit FormatArgumentStore(Args... arguments) : array(std::Array<BasicFormatArgument<State>, sizeof...(Args)> { arguments... }) { }
+
+            auto size() const -> std::size_t {
+                return Size;
+            }
+
+            auto data() const -> const BasicFormatArgument<State>* {
+                return array.data();
+            }
+        };
+
+        template<class State>
+        struct FormatArgumentStore<State, 0> {
+            explicit FormatArgumentStore() = default;
+
+            auto size() const -> std::size_t {
+                return 0;
+            }
+
+            auto data() const -> const BasicFormatArgument<State>* {
+                return nullptr;
+            }
+        };
+    }
 
     /**
      * Arguments class that stores the format arguments and allows access to get
@@ -56,10 +77,10 @@ namespace std {
          * Constructs the arguments for an argument store. This is an implicit construction
          * which allows the argument store to be converted directly to the arguments.
          */
-        template<class... Args>
-        BasicFormatArguments(const std::FormatArgumentStore<State, Args...>& store) noexcept
-            : size(store.args.size()),
-              data(store.args.data()) { }
+        template<std::size_t Size>
+        BasicFormatArguments(const detail::FormatArgumentStore<State, Size>& store) noexcept
+            : size(store.size()),
+              data(store.data()) { }
 
         // Accessors
         BasicFormatArgument<State> get(std::size_t index) const noexcept {
@@ -80,13 +101,8 @@ namespace std {
      * set of BasicFormatArgument's.
      */
     template<class State, class... Args>
-    std::FormatArgumentStore<State, Args...> makeFormatArguments(Args&& ... args) {
-
-        return std::FormatArgumentStore<State, Args...>(
-            std::Array<BasicFormatArgument<State>, sizeof...(Args)> {
-                BasicFormatArgument<State>(args)...
-            }
-        );
+    detail::FormatArgumentStore<State, sizeof...(Args)> makeFormatArguments(Args&&... args) {
+        return detail::FormatArgumentStore<State, sizeof...(Args)>(BasicFormatArgument<State>(args)...);
     }
 }
 

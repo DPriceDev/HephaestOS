@@ -27,7 +27,7 @@ namespace kernel::boot::gdt {
      * includes Ring 0 and Ring 3 to defined the Kernel and UserSpace levels respectively.
      * Rings 1 and 2 are omitted as they are not used by the OS.
      */
-    enum class Privilege {
+    enum class Privilege : uint8_t  {
         Kernel = 0,
         UserSpace = 3
     };
@@ -35,7 +35,7 @@ namespace kernel::boot::gdt {
     /**
      * Describes the size of a x86 global descriptor, usually 32 bit except for the null descriptor.
      */
-    enum class Size {
+    enum class Size : uint8_t  {
         Bit16 = 0,
         Bit32 = 1
     };
@@ -43,25 +43,25 @@ namespace kernel::boot::gdt {
     /**
      * Describes the amount that the memory limit is scaled by.
      */
-    enum class Granularity {
+    enum class Granularity : uint8_t {
         // Limit scaled by Byte, then the limit is equivalent to its value in Bytes, i.e. a limit
         // of 100 will be 100 Bytes in size.
-        Byte = 0,
+        Byte = 0u,
         // Limit scaled by Page the limit is equivalent to its value in 4KiB Pages, i.e. a limit
         // of 100 will be 409600 Bytes or 400 Kibibytes.
-        Page = 1
+        Page = 1u
     };
 
     /**
      * Describes the type of descriptor being defined, either a os or a code/Data descriptor.
      */
-    enum class DescriptorType {
+    enum class DescriptorType : uint8_t {
         // Provides x86 specific definitions, such as a Task State Segment Descriptor.
-        System = 0,
+        System = 0x0,
         // Used for segment descriptors which define segments of memory that defined to be used for
         // read only code, and memory available for Data segments which allows the mutable data
         // to be added and removed.
-        CodeOrData = 1
+        CodeOrData = 0x1
     };
 
     /**

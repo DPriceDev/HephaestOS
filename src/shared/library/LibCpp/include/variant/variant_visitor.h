@@ -111,7 +111,7 @@ namespace std {
          * the array.
          */
         template<class Visitor, class Variant, class... Types>
-        constexpr auto getVisitorArray(std::Variant<Types...>& variant) -> decltype(auto) {
+        constexpr auto getVisitorArray(std::Variant<Types...>&) -> decltype(auto) {
             return VariantVisitorArray<Visitor, Variant, sizeof...(Types), Types...>::array;
         }
     }

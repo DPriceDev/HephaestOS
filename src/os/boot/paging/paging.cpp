@@ -15,6 +15,7 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
+#include <bit>
 #include "paging.h"
 #include <cstdint>
 #include <algorithm.h>
@@ -25,6 +26,11 @@
 #include "span.h"
 
 namespace kernel::boot::paging {
+
+    struct EntryAddressMask {
+        uint16_t : 12;
+        uint32_t top : 20;
+    };
 
     // Initialize all page table entries to empty entries.
     void zeroPageDirectory(std::Span<PageDirectoryEntry>& pageDirectory) {
@@ -55,7 +61,7 @@ namespace kernel::boot::paging {
                 .access = PageTableAccess {
                     .isPresent = true
                 },
-                .address = (address >> Offset12Bit) & Mask20Bit
+                .address = std::bit_cast<EntryAddressMask>(address).top
             };
             address += PAGE_SIZE;
         });
@@ -63,18 +69,18 @@ namespace kernel::boot::paging {
 
     // Assign the first page table to the first entry in the page directory.
     void updateTableInDirectory(
-        std::Span<PageDirectoryEntry>& pageDirectory,
+        std::Span<PageDirectoryEntry>& directory,
         uintptr_t virtualAddress,
-        PageTableEntry* pageTablePointer
+        PageTableEntry* table
     ) {
-        auto address = reinterpret_cast<unsigned int>(pageTablePointer);
+        auto address = std::bit_cast<uintptr_t>(table);
         auto index = (virtualAddress >> Offset22Bit) & Mask10Bit;
-        pageDirectory[index] = {
+        directory[index] = {
             .access = PageDirectoryAccess {
                 .isPresent = true,
                 .canWrite = true
             },
-            .address = (address >> Offset12Bit) & Mask20Bit
+            .address = std::bit_cast<EntryAddressMask>(address).top
         };
     }
 
@@ -84,7 +90,7 @@ namespace kernel::boot::paging {
         uintptr_t kernelEndAddress
     ) {
         auto pageDirectory = std::Span(pageDirectoryPointer, PAGE_DIRECTORY_SIZE);
-        PageTableEntry identityMappedPageTableArray[PAGE_TABLE_SIZE] __attribute__ ((aligned (4096)));
+        [[gnu::aligned(4096)]] PageTableEntry identityMappedPageTableArray[PAGE_TABLE_SIZE];
         auto identityMappedPageTable = std::Span(identityMappedPageTableArray, PAGE_TABLE_SIZE);
 
         mapAddressRangeInTable(
@@ -118,7 +124,7 @@ namespace kernel::boot::paging {
     }
 
     void initializePaging(
-        MultiBootInfo * info,
+        MultiBootInfo *,
         PageDirectoryEntry* pageDirectoryPointer,
         PageTableEntry* kernelPageTablePointer,
         uintptr_t virtualKernelBaseAddress,
@@ -138,7 +144,7 @@ namespace kernel::boot::paging {
         enablePaging();
     }
 
-    void unmapPageTable(std::Span<PageDirectoryEntry, std::dynamicExtent> pageDirectory, int index) {
+    void unmapPageTable(std::Span<PageDirectoryEntry, std::dynamicExtent>, int) {
 
     }
 

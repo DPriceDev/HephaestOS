@@ -132,7 +132,7 @@ namespace std {
         }
 
         [[nodiscard]]
-        constexpr auto index() const noexcept -> int {
+        constexpr auto index() const noexcept -> size_t {
             return storage.index;
         }
 

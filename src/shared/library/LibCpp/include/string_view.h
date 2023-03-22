@@ -122,7 +122,7 @@ namespace std {
         }
 
         [[nodiscard]] constexpr sizeType length() const noexcept {
-            return stringEnd - stringStart;
+            return static_cast<sizeType>(stringEnd - stringStart);
         }
 
         [[nodiscard]] constexpr sizeType maxSize() const noexcept {
@@ -178,5 +178,3 @@ namespace std {
 }
 
 #endif // HEPHAIST_OS_SHARED_LIBRARY_CPP_STRING_VIEW_H
-
-#pragma clang diagnostic pop

@@ -39,13 +39,13 @@ namespace std {
          */
         template<class Type, std::size_t Size>
         struct SpanStorage {
-            Type* dataPointer = nullptr;
+            Type* data = nullptr;
             static constexpr std::size_t size = Size;
 
             constexpr SpanStorage() noexcept = default;
 
-            constexpr SpanStorage(Type* dataPointer) noexcept
-                : dataPointer(dataPointer) { }
+            constexpr SpanStorage(Type* data) noexcept
+                : data(data) { }
         };
 
         /**
@@ -55,13 +55,13 @@ namespace std {
          */
         template<class Type>
         struct SpanStorage<Type, dynamicExtent> {
-            Type* dataPointer = nullptr;
+            Type* data = nullptr;
             std::size_t size = 0;
 
             constexpr SpanStorage() noexcept = default;
 
-            constexpr SpanStorage(Type* dataPointer, std::size_t size) noexcept
-                : dataPointer(dataPointer), size(size) { }
+            constexpr SpanStorage(Type* data, std::size_t size) noexcept
+                : data(data), size(size) { }
         };
     }
 
@@ -110,7 +110,7 @@ namespace std {
          * difference between the pointers.
          */
         explicit(extent != std::dynamicExtent)
-        constexpr Span(pointer first, pointer last) : storage(first, last - first) { }
+        constexpr Span(pointer first, pointer last) : storage(first, static_cast<sizeType>(last - first)) { }
 
         /**
          * Constructs a static span from an @param array parameter with a statically
@@ -159,20 +159,12 @@ namespace std {
             return data() + size();
         }
 
-        auto cbegin() const -> const iterator {
-            return data();
-        }
-
-        auto cend() const -> const iterator {
-            return data() + size();
-        }
-
         auto rbegin() -> reverseIterator {
             return reverseIterator(data() + size());
         }
 
         auto rend() -> reverseIterator {
-            reverseIterator(data());
+            reverseIterator(storage.data);
         }
 
         // Element Access
@@ -189,7 +181,7 @@ namespace std {
         }
 
         constexpr auto data() const noexcept -> pointer {
-            return storage.dataPointer;
+            return storage.data;
         }
 
         // Observers

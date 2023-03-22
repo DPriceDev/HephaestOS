@@ -18,9 +18,9 @@
 #ifndef HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_INT_FORMATTER_H
 #define HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_INT_FORMATTER_H
 
-#include <limits>
-
 #include "formatter.h"
+#include <limits>
+#include <type_traits>
 
 namespace std {
 
@@ -61,7 +61,7 @@ namespace std {
          * @return an iterator to the end of the outputted integer.
          */
         template<class OutputIterator, formatableIntegral Type>
-        auto formatInteger(OutputIterator iterator, Type value, int32_t base) -> OutputIterator {
+        auto formatInteger(OutputIterator iterator, Type value, auto base) -> OutputIterator {
             auto reduction = value / base;
 
             OutputIterator outputIterator = iterator;
@@ -75,7 +75,7 @@ namespace std {
 
             // use to chars to convert to string
             auto buffer = std::Array<char, DIGIT_OUTPUT_SIZE> { };
-            auto result = std::toChars(buffer.begin(), buffer.end(), digit, base);
+            auto result = std::toChars(buffer.begin(), buffer.end(), digit, static_cast<int>(base));
 
             std::forEach(buffer.begin(), result, [&outputIterator] (char character) {
                 *outputIterator++ = character;
@@ -94,13 +94,13 @@ namespace std {
     template<std::integral Type>
     struct Formatter<Type> {
 
-        enum OutputType {
+        enum class OutputType : uint32_t {
             DECIMAL = 10,
             HEX = 16,
             BINARY = 2
         };
 
-        OutputType outputType = DECIMAL;
+        OutputType outputType = OutputType::DECIMAL;
 
         constexpr auto parse(auto& state) {
             auto iterator { state.begin() };
@@ -109,10 +109,10 @@ namespace std {
             while (iterator != end && *iterator != '}') {
                 switch (*iterator) {
                     case 'x':
-                        outputType = HEX;
+                        outputType = OutputType::HEX;
                         break;
                     case 'b':
-                        outputType = BINARY;
+                        outputType = OutputType::BINARY;
                         break;
                 }
                 ++iterator;
@@ -124,17 +124,18 @@ namespace std {
         auto format(auto& integer, auto& state) {
             auto output = state.out();
 
-            if (outputType == HEX) {
+            if (outputType == OutputType::HEX) {
                 *output++ = '0';
                 *output++ = 'x';
             }
 
-            if (outputType == BINARY) {
+            if (outputType == OutputType::BINARY) {
                 *output++ = '0';
                 *output++ = 'b';
             }
 
-            return detail::formatInteger(output, integer, outputType);
+            const auto base = static_cast<std::underlying_type_t<OutputType>>(outputType);
+            return detail::formatInteger(output, integer, static_cast<std::remove_cvref_t<decltype(integer)>>(base));
         }
     };
 }

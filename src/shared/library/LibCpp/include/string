@@ -28,9 +28,9 @@ namespace std {
 
         public:
             static constexpr std::size_t length(const CharacterType* string) {
-                auto runner = string;
+                const CharacterType* runner = string;
                 while (*(runner) != '\0') { ++runner; }
-                return runner - string;
+                return static_cast<size_t>(runner - string);
             }
 
             static constexpr auto compare(

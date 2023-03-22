@@ -96,16 +96,16 @@ namespace debug {
      * @param baudRate
      */
     auto SerialPortConnection::setBaudRate(uint32_t baudRate) const -> void {
-        setLineControl({ .divisorLatchAccess = true });
+        setLineControl(LineControl { .divisorLatchAccess = true });
 
         constexpr static uint32_t MAX_BAUD_RATE = 115200;
-        uint16_t divisor = MAX_BAUD_RATE / baudRate;
-        auto settings = std::bit_cast<DivisorLatchSettings>(divisor);
+        const auto divisor = static_cast<uint16_t>(MAX_BAUD_RATE / baudRate);
+        const auto settings = std::bit_cast<DivisorLatchSettings>(divisor);
 
         hal::writeToPort(portAddress + DLAB_LOW_BYTE_OFFSET, settings.low);
         hal::writeToPort(portAddress + DLAB_HIGH_BYTE_OFFSET, settings.high);
 
-        setLineControl({ .divisorLatchAccess = false });
+        setLineControl(LineControl { .divisorLatchAccess = false });
     }
 
     /**
@@ -113,7 +113,7 @@ namespace debug {
      * @param baudRate
      * @return
      */
-    bool SerialPortConnection::open(int32_t baudRate) const {
+    bool SerialPortConnection::open(uint32_t baudRate) const {
         setEnabledInterrupts(EnabledInterrupts::None());
 
         setBaudRate(baudRate);
@@ -163,6 +163,6 @@ namespace debug {
     void SerialPortConnection::write(char character) const {
         while (getLineStatus().transmitterBufferEmpty == false) { };
 
-        writeToDataRegister(character);
+        writeToDataRegister(static_cast<uint8_t>(character));
     }
 }

@@ -40,16 +40,18 @@ namespace std {
     ) {
         const char* characters = "0123456789abcdefghijklmnopqrstuvwxyz";
 
-        if (value < 0) {
-            *first++ = '-';
-            value *= -1;
+        if constexpr (std::is_signed_v<decltype(value)>) {
+            if (value < 0) {
+                *first++ = '-';
+                value *= -1;
+            }
         }
 
         auto initialFirst = first;
         decltype(value) remainder;
         do {
-            remainder = value % base;
-            value = value / base;
+            remainder = value % static_cast<decltype(value)>(base);
+            value = value / static_cast<decltype(value)>(base);
             *first++ = characters[remainder];
         } while (value != 0 && first != last);
 
@@ -73,10 +75,10 @@ namespace std {
         auto* next = toChars(first, last, wholeNumber);
         *next++ = '.';
 
-        auto decimalNumber = value - wholeNumber;
+        auto decimalNumber = value - static_cast<decltype(value)>(wholeNumber);
 
         auto remainder = decimalNumber;
-        while (remainder != 0.0) {
+        while (remainder != 0) {
             decimalNumber *= 10;
             remainder = decimalNumber - static_cast<unsigned long long>(decimalNumber);
         }
@@ -97,12 +99,12 @@ namespace std {
     constexpr std::Result<Type, Error> fromChars(
         const char* first,
         const char* last,
-        int base = 10
+        size_t base = 10
     ) {
-        auto view = std::StringView(first, last - first);
+        auto view = std::StringView(first, static_cast<size_t>(last - first));
 
-        auto running = 0;
-        auto power = 1;
+        size_t running = 0;
+        size_t power = 1;
         std::forEach(
             view.rbegin(), view.rend(), [&](auto& character) {
                 running += (Type(character) - 48) * power; // todo: Handle errors / overflow
