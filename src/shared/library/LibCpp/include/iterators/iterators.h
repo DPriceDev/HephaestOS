@@ -216,30 +216,30 @@ namespace std {
 
     template<class Container>
     class BackInsertIterator {
-        Container* container { nullptr };
+        Container* container_ { nullptr };
 
     public:
-        using valueType = void;
+        using value_type = void;
         using difference_type = std::ptrdiff_t;
         using pointer = void;
         using reference = void;
-        using containerType = Container;
+        using container_type = Container;
 
         // Constructors
         BackInsertIterator() = default;
 
-        explicit constexpr BackInsertIterator(Container& container) : container(std::addressof(container)) { }
+        explicit constexpr BackInsertIterator(Container& container) : container_(std::addressof(container)) { }
 
         constexpr BackInsertIterator& operator*() {
             return *this;
         }
 
-        constexpr BackInsertIterator& operator=(const typename Container::valueType& value) {
+        constexpr BackInsertIterator& operator=(const typename Container::valueType&) {
             // todo: Push back?
             return *this;
         }
 
-        constexpr BackInsertIterator& operator=(typename Container::valueType&& value) {
+        constexpr BackInsertIterator& operator=(typename Container::valueType&&) {
             return *this;
         }
 
@@ -251,6 +251,6 @@ namespace std {
             return *this;
         }
     };
-};
+}
 
 #endif // HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_ITERATORS_ITERATORS_H

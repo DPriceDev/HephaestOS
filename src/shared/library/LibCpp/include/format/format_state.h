@@ -41,35 +41,35 @@ namespace std {
      * It also contains the indexed arguments that are used by the format methods to
      * get the required argument for the Formatter.
      */
-    template<class CharacterType, class OutputIterator>
+    template<class Type, class OutputIterator>
     class BasicFormatState {
-        BasicFormatArguments<BasicFormatState> arguments;
-        OutputIterator& outputIterator;
+        BasicFormatArguments<BasicFormatState> arguments_;
+        OutputIterator& outputIterator_;
 
     public:
-        using iterator = OutputIterator;
-        using characterType = CharacterType;
+        using Iterator = OutputIterator;
 
         template<class T>
-        using formatterType = std::Formatter<T, CharacterType>;
+        using FormatterType = std::Formatter<T, Type>;
+        using CharacterType = Type;
 
         // Constructors
         explicit BasicFormatState(
             BasicFormatArguments<BasicFormatState>& arguments,
             OutputIterator& outputIterator
-        ) : arguments(arguments), outputIterator(outputIterator) { }
+        ) : arguments_(arguments), outputIterator_(outputIterator) { }
 
         // Accessors
         auto argument(std::size_t index) const -> BasicFormatArgument<BasicFormatState> {
-            return arguments.get(index);
+            return arguments_.get(index);
         }
 
-        auto out() -> iterator {
-            return outputIterator;
+        auto out() -> Iterator {
+            return outputIterator_;
         }
 
-        void advanceTo(iterator iterator) {
-            outputIterator = iterator;
+        void advanceTo(Iterator iterator) {
+            outputIterator_ = iterator;
         }
     };
 

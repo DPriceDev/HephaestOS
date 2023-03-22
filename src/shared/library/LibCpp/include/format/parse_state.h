@@ -38,37 +38,37 @@ namespace std {
      * format string, and advances the begin iterator to each format field as
      * required.
      */
-    template<class CharacterType>
+    template<class Type>
     class BasicParseState {
         enum class CountingType { NOT_SET, MANUAL, AUTOMATIC };
 
-        std::BaseStringView<CharacterType> format;
-        std::size_t argumentCount;
-        std::size_t argumentIndex { 0 };
-        CountingType countingType { CountingType::NOT_SET };
+        std::BaseStringView<Type> format_;
+        std::size_t argumentCount_;
+        std::size_t argumentIndex_ { 0 };
+        CountingType countingType_ { CountingType::NOT_SET };
 
     public:
-        using characterType = CharacterType;
-        using iterator = typename std::BaseStringView<CharacterType>::iterator;
-        using constIterator = typename std::BaseStringView<CharacterType>::constIterator;
+        using CharacterType = Type;
+        using Iterator = typename std::BaseStringView<CharacterType>::Iterator;
+        using ConstIterator = typename std::BaseStringView<CharacterType>::ConstIterator;
 
         // Constructor
         explicit BasicParseState(
             std::BaseStringView<CharacterType> format,
             std::size_t argumentCount = 0
-        ) : format(format), argumentCount(argumentCount) { }
+        ) : format_(format), argumentCount_(argumentCount) { }
 
         // Accessors
-        constexpr auto begin() const noexcept -> constIterator {
-            return format.begin();
+        constexpr auto begin() const noexcept -> ConstIterator {
+            return format_.begin();
         }
 
-        constexpr auto end() const noexcept -> constIterator {
-            return format.end();
+        constexpr auto end() const noexcept -> ConstIterator {
+            return format_.end();
         }
 
-        constexpr void advanceTo(constIterator location) {
-            format = std::BaseStringView<CharacterType> { location };
+        constexpr void advanceTo(ConstIterator location) {
+            format_ = std::BaseStringView<CharacterType> { location };
         }
 
         // Operations
@@ -81,11 +81,11 @@ namespace std {
          * manual, then a failure result is returned.
          */
         constexpr auto nextArgumentIndex() -> std::Result<std::size_t> {
-            if (countingType == CountingType::MANUAL || argumentIndex >= argumentCount) {
+            if (countingType_ == CountingType::MANUAL || argumentIndex_ >= argumentCount_) {
                 return std::Result<std::size_t>::failure();
             }
-            countingType = CountingType::AUTOMATIC;
-            return std::Result<std::size_t>::success(argumentIndex++);
+            countingType_ = CountingType::AUTOMATIC;
+            return std::Result<std::size_t>::success(argumentIndex_++);
         }
 
         /**
@@ -96,10 +96,10 @@ namespace std {
          * automatic, then a failure result is returned.
          */
         constexpr std::Result<std::size_t> checkArgumentIndex(size_t index) {
-            if (index >= argumentCount || countingType == CountingType::AUTOMATIC) {
+            if (index >= argumentCount_ || countingType_ == CountingType::AUTOMATIC) {
                 return std::Result<std::size_t>::failure();
             }
-            countingType = CountingType::MANUAL;
+            countingType_ = CountingType::MANUAL;
             return std::Result<std::size_t>::success(index);
         }
     };

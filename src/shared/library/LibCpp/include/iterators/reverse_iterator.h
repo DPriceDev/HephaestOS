@@ -28,7 +28,7 @@ namespace std {
      */
     template<std::bidirectionalIterator Iterator>
     class reverseIterator {
-        Iterator iterator { };
+        Iterator iterator_ { };
 
     public:
         using iteratorType = Iterator;
@@ -40,24 +40,24 @@ namespace std {
         /**
          * Constructs a reverse iterator from a given @param iterator.
          */
-        constexpr explicit reverseIterator(Iterator iterator) : iterator(iterator) { }
+        constexpr explicit reverseIterator(Iterator iterator) : iterator_(iterator) { }
 
         constexpr reference operator*() const {
-            auto temp = iterator;
+            auto temp = iterator_;
             return *std::prev(temp);
         }
 
         constexpr pointer operator->() const {
-            return std::prev(iterator);
+            return std::prev(iterator_);
         }
 
         constexpr auto& operator++() {
-            --iterator;
+            --iterator_;
             return *this;
         }
 
         auto& operator++(int) {
-            --iterator;
+            --iterator_;
             return *this;
         }
 
@@ -65,7 +65,7 @@ namespace std {
             reverseIterator<Iterator> first,
             reverseIterator<Iterator> second
         ) {
-            return first.iterator != second.iterator;
+            return first.iterator_ != second.iterator_;
         }
     };
 

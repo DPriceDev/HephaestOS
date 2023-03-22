@@ -30,107 +30,107 @@ namespace std {
     class BaseStringView {
 
     public:
-        using traitsType = Traits;
-        using valueType = CharacterType;
-        using pointer = CharacterType*;
-        using constPointer = const CharacterType*;
-        using reference = CharacterType&;
-        using constReference = const CharacterType&;
-        using constIterator = const CharacterType*;
-        using iterator = constIterator;
-        using constReverseIterator = std::reverseIterator<constIterator>;
-        using reverseIterator = std::reverseIterator<constIterator>;
-        using sizeType = std::size_t;
-        using differenceType = std::ptrdiff_t;
+        using TraitsType = Traits;
+        using ValueType = CharacterType;
+        using Pointer = CharacterType*;
+        using ConstPointer = const CharacterType*;
+        using Reference = CharacterType&;
+        using ConstReference = const CharacterType&;
+        using ConstIterator = const CharacterType*;
+        using Iterator = ConstIterator;
+        using ConstReverseIterator = std::reverseIterator<ConstIterator>;
+        using ReverseIterator = std::reverseIterator<ConstIterator>;
+        using SizeType = std::size_t;
+        using DifferenceType = std::ptrdiff_t;
 
         // Constructors
 
-        constexpr BaseStringView() noexcept: stringStart(nullptr), stringEnd(nullptr) { }
+        constexpr BaseStringView() noexcept: start_(nullptr), end_(nullptr) { }
 
-        constexpr BaseStringView(const CharacterType* string, sizeType count) :
-            stringStart(string),
-            stringEnd(string + count) { }
+        constexpr BaseStringView(const CharacterType* string, SizeType count) :
+            start_(string),
+            end_(string + count) { }
 
         constexpr BaseStringView(const CharacterType* string) :
-            stringStart(string),
-            stringEnd(string + Traits::length(string)) { }
+            start_(string),
+            end_(string + Traits::length(string)) { }
 
         template<contiguousIterator Iterator, sizedSentinelFor<Iterator> End>
-        constexpr BaseStringView(Iterator first, End last) : stringStart(first), stringEnd(last) { }
+        constexpr BaseStringView(Iterator first, End last) : start_(first), end_(last) { }
 
         // Iterators
-        constexpr auto begin() const noexcept -> constIterator {
-            return stringStart;
+        constexpr auto begin() const noexcept -> ConstIterator {
+            return start_;
         }
 
-        constexpr auto cbegin() const noexcept -> constIterator {
-            return stringStart;
+        constexpr auto cbegin() const noexcept -> ConstIterator {
+            return start_;
         }
 
-        constexpr auto end() const noexcept -> constIterator {
-            return stringEnd;
+        constexpr auto end() const noexcept -> ConstIterator {
+            return end_;
         }
 
-        constexpr auto cend() const noexcept -> constIterator {
-            return stringEnd;
+        constexpr auto cend() const noexcept -> ConstIterator {
+            return end_;
         }
 
-        constexpr auto rbegin() const noexcept -> constReverseIterator {
-            return std::reverseIterator(stringEnd);
+        constexpr auto rbegin() const noexcept -> ConstReverseIterator {
+            return std::reverseIterator(end_);
         }
 
-        constexpr auto crbegin() const noexcept -> constReverseIterator {
-            return std::reverseIterator(stringEnd);
+        constexpr auto crbegin() const noexcept -> ConstReverseIterator {
+            return std::reverseIterator(end_);
         }
 
-        constexpr auto rend() const noexcept -> constReverseIterator {
-            return std::reverseIterator(stringStart);
+        constexpr auto rend() const noexcept -> ConstReverseIterator {
+            return std::reverseIterator(start_);
         }
 
-        constexpr auto crend() const noexcept -> constReverseIterator {
-            return std::reverseIterator(stringEnd);
+        constexpr auto crend() const noexcept -> ConstReverseIterator {
+            return std::reverseIterator(end_);
         }
 
         // Element Access
-        constexpr auto operator[](sizeType index) const -> constReference {
+        constexpr auto operator[](SizeType index) const -> ConstReference {
             return *(data() + index);
         }
 
         // todo: Move to implementation? or wrap later on? make protected and expose in child?
-        constexpr std::Result<constReference> at(sizeType index) const {
+        constexpr std::Result<ConstReference> at(SizeType index) const {
             if (index >= 0 && index < size()) {
-                return std::Result<constReference>::success(this->operator[](index));
+                return std::Result<ConstReference>::success(this->operator[](index));
             }
-            return std::Result<constReference>::failure();
+            return std::Result<ConstReference>::failure();
         }
 
-        constexpr auto front() const -> constReference {
-            return *stringStart;
+        constexpr auto front() const -> ConstReference {
+            return *start_;
         }
 
-        constexpr auto back() const -> constReference {
-            return *stringEnd;
+        constexpr auto back() const -> ConstReference {
+            return *end_;
         }
 
-        constexpr auto data() const noexcept -> constPointer {
-            return stringStart;
+        constexpr auto data() const noexcept -> ConstPointer {
+            return start_;
         }
 
         // Capacity
-        [[nodiscard]] constexpr sizeType size() const noexcept {
-            return stringEnd - stringStart;
+        [[nodiscard]] constexpr SizeType size() const noexcept {
+            return end_ - start_;
         }
 
-        [[nodiscard]] constexpr sizeType length() const noexcept {
-            return static_cast<sizeType>(stringEnd - stringStart);
+        [[nodiscard]] constexpr SizeType length() const noexcept {
+            return static_cast<SizeType>(end_ - start_);
         }
 
-        [[nodiscard]] constexpr sizeType maxSize() const noexcept {
+        [[nodiscard]] constexpr SizeType maxSize() const noexcept {
             return std::numeric_limits<CharacterType>::max();
         }
 
         [[nodiscard]] constexpr bool empty() const noexcept {
-            return (stringEnd - stringStart) <= 0;
+            return (end_ - start_) <= 0;
         }
 
         // Modifiers
@@ -142,8 +142,8 @@ namespace std {
        // todo: constexpr auto startsWith()
 
         constexpr int compare(BaseStringView other) const noexcept {
-            const sizeType minSize = std::min(length(), other.length());
-            const auto compared = traitsType::compare(data(), other.data(), minSize);
+            const SizeType minSize = std::min(length(), other.length());
+            const auto compared = TraitsType::compare(data(), other.data(), minSize);
             if (compared != 0) {
                 return compared;
             }
@@ -165,8 +165,8 @@ namespace std {
         }
 
     private:
-        constIterator stringStart;
-        constIterator stringEnd;
+        ConstIterator start_;
+        ConstIterator end_;
     };
 
     using StringView = BaseStringView<char>;

@@ -74,11 +74,11 @@ namespace std {
      */
     template<>
     class CharacterTraits<char> : public detail::BaseCharacterTraits<char> {
-        using characterType = char;
-        using integerType = int;
-        using offsetType = int;
-        using positionType = int;
-        using stateType = int;
+        using CharacterType = char;
+        using IntegerType = int;
+        using OffsetType = int;
+        using PositionType = int;
+        using StateType = int;
     };
 }
 

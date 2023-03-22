@@ -63,13 +63,13 @@ namespace std {
     public:
         class handle;
 
-        using characterType = typename State::characterType;
+        using CharacterType = typename State::CharacterType;
 
         // Defines a variant.h type that accepts all standard format types, and the handle type.
         using ArgumentVariant = std::Variant<
             std::MonoState,
             bool,
-            characterType,
+            CharacterType,
             int,
             unsigned int,
             long int,
@@ -78,14 +78,14 @@ namespace std {
             float,
             double,
             long double,
-            const characterType*,
-            BaseStringView<characterType>,
+            const CharacterType*,
+            BaseStringView<CharacterType>,
             const void*,
             handle
         >;
 
         // Constructors
-        BasicFormatArgument() : value(
+        BasicFormatArgument() : value_(
             ArgumentVariant(std::MonoState())
         ) { }
 
@@ -93,8 +93,8 @@ namespace std {
          * Constructs any standard argument (not a handle type) by directly
          * passing the @param type into the variant.h.
          */
-        template<StandardFormatArgument<typename State::characterType> Type>
-        explicit BasicFormatArgument(Type&& type) : value(
+        template<StandardFormatArgument<typename State::CharacterType> Type>
+        explicit BasicFormatArgument(Type&& type) : value_(
             ArgumentVariant(std::forward<Type>(type))
         ) { }
 
@@ -102,8 +102,8 @@ namespace std {
          * Constructs any custom type, by wrapping the @param type in the handle
          * class and then passing it into the variant.h.
          */
-        template<CustomFormatArgument<typename State::characterType> Type>
-        explicit BasicFormatArgument(Type&& type) : value(
+        template<CustomFormatArgument<typename State::CharacterType> Type>
+        explicit BasicFormatArgument(Type&& type) : value_(
             ArgumentVariant(handle(std::forward<Type>(type)))
         ) { }
 
@@ -113,7 +113,7 @@ namespace std {
 
         // todo: friend getVisitorArray?
 
-        ArgumentVariant value;
+        ArgumentVariant value_;
 
         // todo: operator bool
     };
@@ -124,13 +124,15 @@ namespace std {
      */
     template<class State>
     class BasicFormatArgument<State>::handle {
-        using characterType = typename State::characterType;
+        using CharacterType = typename State::CharacterType;
 
         // Type erased pointer to the stored Type that will be recast and used in formatType.
-        const void* data { nullptr };
+        // todo: replace with std::any?
+        const void* data_ { nullptr };
 
         // Function pointer that will contain formatType for a given Type.
-        void (* formatFunction)(BasicParseState<characterType>&, State&, const void*) { nullptr };
+        // todo: replace with std function?
+        void (* formatFunction_)(BasicParseState<CharacterType>&, State&, const void*) { nullptr };
 
         /**
          * Static method that can be specialized for a given @tparam Type; the @tparam Type will be
@@ -139,11 +141,11 @@ namespace std {
          */
         template<class Type>
         static void formatType(
-            BasicParseState<characterType>& parseState,
+            BasicParseState<CharacterType>& parseState,
             State& formatState,
             const void* pointer
         ) {
-            typename State::template formatterType<Type> formatter;
+            typename State::template FormatterType<Type> formatter;
             parseState.advanceTo(formatter.parse(parseState));
             auto newType = *static_cast<const Type*>(pointer);
             formatState.advanceTo(formatter.format(newType, formatState));
@@ -158,17 +160,17 @@ namespace std {
          * Passes a pointer to the static method formatType specialized for the @tparam Type to formatFunction.
          */
         template<class Type>
-        explicit handle(Type type) : formatFunction(this->formatType<Type>) {
+        explicit handle(Type type) : formatFunction_(this->formatType<Type>) {
             auto temp = std::addressof(type);
-            data = temp;
+            data_ = temp;
         }
 
         /**
          * This can be called to format the stored data, to the output stored in the @param formatState.
          * This calls the underlying formatFunction with the provided states, and the erased data.
          */
-        void format(BasicParseState<characterType>& parseState, State& formatState) const {
-            formatFunction(parseState, formatState, data);
+        void format(BasicParseState<CharacterType>& parseState, State& formatState) const {
+            formatFunction_(parseState, formatState, data_);
         }
     };
 
@@ -187,7 +189,7 @@ namespace std {
 
                 return visitor(result.get());
             },
-            argument.value
+            argument.value_
         );
     }
 }

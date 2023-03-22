@@ -39,13 +39,13 @@ namespace std {
          */
         template<class Type, std::size_t Size>
         struct SpanStorage {
-            Type* data = nullptr;
+            Type* data_ = nullptr;
             static constexpr std::size_t size = Size;
 
             constexpr SpanStorage() noexcept = default;
 
             constexpr SpanStorage(Type* data) noexcept
-                : data(data) { }
+                : data_(data) { }
         };
 
         /**
@@ -55,13 +55,13 @@ namespace std {
          */
         template<class Type>
         struct SpanStorage<Type, dynamicExtent> {
-            Type* data = nullptr;
-            std::size_t size = 0;
+            Type* data_ = nullptr;
+            std::size_t size_ = 0;
 
             constexpr SpanStorage() noexcept = default;
 
             constexpr SpanStorage(Type* data, std::size_t size) noexcept
-                : data(data), size(size) { }
+                : data_(data), size_(size) { }
         };
     }
 
@@ -164,7 +164,7 @@ namespace std {
         }
 
         auto rend() -> reverseIterator {
-            reverseIterator(storage.data);
+            reverseIterator(storage.data_);
         }
 
         // Element Access
@@ -181,12 +181,12 @@ namespace std {
         }
 
         constexpr auto data() const noexcept -> pointer {
-            return storage.data;
+            return storage.data_;
         }
 
         // Observers
         [[nodiscard]] constexpr auto size() const noexcept -> sizeType {
-            return storage.size;
+            return storage.size_;
         }
 
         [[nodiscard]] constexpr auto sizeInBytes() const noexcept -> sizeType {
