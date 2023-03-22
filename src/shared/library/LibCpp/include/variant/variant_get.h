@@ -19,6 +19,7 @@
 #define HEPHAIST_OS_SHARED_LIBRARY_CPP_VARIANT_VARIANT_GET_H
 
 #include "variant_variant.h"
+#include "result.h"
 
 namespace std {
 

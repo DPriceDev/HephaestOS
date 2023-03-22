@@ -18,7 +18,11 @@
 #ifndef HEPHAISTOS_MODULE_LOADER_H
 #define HEPHAISTOS_MODULE_LOADER_H
 
+#include "boot_info.h"
+#include "grub/multiboot_info.h"
+#include "memory/boot_allocator.h"
 #include <elf/boot_elf_loader.h>
+#include <string_view.h>
 
 namespace kernel::boot {
 

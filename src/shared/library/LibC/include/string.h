@@ -18,6 +18,8 @@
 #ifndef HEPHAIST_OS_USER_LIB_C_STRING_H
 #define HEPHAIST_OS_USER_LIB_C_STRING_H
 
+#include "stdint.h"
+
 /**
  * size_t is the maximum size an object could be.
  */
