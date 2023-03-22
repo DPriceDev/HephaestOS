@@ -14,7 +14,7 @@ jobs:
             - toolchain-v1
       - run:
           name: "Update libraries"
-          command: "sudo apt-get update && sudo apt-get install nasm graphviz doxygen ccache libmpfr-dev libmpc-dev doxygen --no-install-recommends -y"
+          command: "sudo apt-get update && sudo apt-get install nasm graphviz doxygen ccache cmake libmpfr-dev libmpc-dev doxygen --no-install-recommends -y"
       - run:
           name: "Setup and configure cmake for Toolchain"
           command: "mkdir -p cmake-build-release && cmake -DCMAKE_BUILD_TYPE=Release -B cmake-build-release"
