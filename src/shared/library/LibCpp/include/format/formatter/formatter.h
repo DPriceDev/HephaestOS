@@ -30,6 +30,6 @@ namespace std {
      */
     template<class Type, class CharacterType = char>
     struct Formatter;
-}
+}// namespace std
 
-#endif // HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_FORMATTER_H
+#endif// HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_FORMATTER_H

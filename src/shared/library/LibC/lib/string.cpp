@@ -15,8 +15,8 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#include "stdint.h"
 #include "string.h"
+#include "stdint.h"
 
 template<typename T>
 int Size(T str) {
@@ -24,26 +24,20 @@ int Size(T str) {
     uint8_t i(0);
 
     // count each characters in the characters.
-    for (; str[i]; i++);
+    for (; str[i]; i++) {}
 
-    return i;       // return count
+    return i;// return count
 }
 
 void* memset(void* pointer, int value, uint32_t length) {
-    unsigned char* ptr = static_cast<unsigned char *>(pointer);
-    while(length--)
-    {
-        *ptr++ = (unsigned char) value;
-    }
+    unsigned char* ptr = static_cast<unsigned char*>(pointer);
+    while (length--) { *ptr++ = (unsigned char) value; }
     return pointer;
 }
 
-void *memcpy(void *dest, const void* src, size_t n) {
-    char *csrc = (char *) src;
-    char *cdest = (char *) dest;
-    while(n--)
-    {
-        *cdest++ = *csrc++;
-    }
+void* memcpy(void* dest, const void* src, size_t n) {
+    char* csrc = (char*) src;
+    char* cdest = (char*) dest;
+    while (n--) { *cdest++ = *csrc++; }
     return dest;
 }

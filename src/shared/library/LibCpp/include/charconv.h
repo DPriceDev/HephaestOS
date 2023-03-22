@@ -18,10 +18,10 @@
 #ifndef HEPHAIST_OS_SHARED_LIBRARY_CPP_STRING_CHARCONV_H
 #define HEPHAIST_OS_SHARED_LIBRARY_CPP_STRING_CHARCONV_H
 
-#include "result.h"
-#include "system_error.h"
-#include "span.h"
 #include "algorithm.h"
+#include "result.h"
+#include "span.h"
+#include "system_error.h"
 
 namespace std {
 
@@ -32,24 +32,21 @@ namespace std {
      * The base is defaulted to decimal 10, but can be changed to a range of
      * 2 to 36 to output in a different base.
      */
-    constexpr char* toChars(
-        char* first,
-        char* last,
-        std::integral auto value,
-        int base = 10
-    ) {
+    constexpr char* toChars(char* first, char* last, std::integral auto value, int base = 10) {
         const char* characters = "0123456789abcdefghijklmnopqrstuvwxyz";
 
-        if (value < 0) {
-            *first++ = '-';
-            value *= -1;
+        if constexpr (std::is_signed_v<decltype(value)>) {
+            if (value < 0) {
+                *first++ = '-';
+                value *= -1;
+            }
         }
 
         auto initialFirst = first;
         decltype(value) remainder;
         do {
-            remainder = value % base;
-            value = value / base;
+            remainder = value % static_cast<decltype(value)>(base);
+            value = value / static_cast<decltype(value)>(base);
             *first++ = characters[remainder];
         } while (value != 0 && first != last);
 
@@ -64,19 +61,15 @@ namespace std {
      * starting from @param first and ending at @param last.
      * This will output the entire length of the number.
      */
-    constexpr char* toChars(
-        char* first,
-        char* last,
-        std::floating_point auto value
-    ) {
+    constexpr char* toChars(char* first, char* last, std::floating_point auto value) {
         long wholeNumber = static_cast<long>(value);
         auto* next = toChars(first, last, wholeNumber);
         *next++ = '.';
 
-        auto decimalNumber = value - wholeNumber;
+        auto decimalNumber = value - static_cast<decltype(value)>(wholeNumber);
 
         auto remainder = decimalNumber;
-        while (remainder != 0.0) {
+        while (remainder != 0) {
             decimalNumber *= 10;
             remainder = decimalNumber - static_cast<unsigned long long>(decimalNumber);
         }
@@ -94,24 +87,18 @@ namespace std {
      * interpreted, and will construct the integer result from the correct base.
      */
     template<std::integral Type>
-    constexpr std::Result<Type, Error> fromChars(
-        const char* first,
-        const char* last,
-        int base = 10
-    ) {
-        auto view = std::StringView(first, last - first);
+    constexpr std::Result<Type, Error> fromChars(const char* first, const char* last, std::size_t base = 10) {
+        auto view = std::StringView(first, static_cast<std::size_t>(last - first));
 
-        auto running = 0;
-        auto power = 1;
-        std::forEach(
-            view.rbegin(), view.rend(), [&](auto& character) {
-                running += (Type(character) - 48) * power; // todo: Handle errors / overflow
-                power *= base; // todo: handle int is too big / overflow?
-            }
-        );
+        std::size_t running = 0;
+        std::size_t power = 1;
+        std::forEach(view.rbegin(), view.rend(), [&](auto& character) {
+            running += (Type(character) - 48) * power;// todo: Handle errors / overflow
+            power *= base;// todo: handle int is too big / overflow?
+        });
 
         return std::Result<std::size_t, Error>::success(running);
     }
-}
+}// namespace std
 
-#endif // HEPHAIST_OS_SHARED_LIBRARY_CPP_STRING_CHARCONV_H
+#endif// HEPHAIST_OS_SHARED_LIBRARY_CPP_STRING_CHARCONV_H

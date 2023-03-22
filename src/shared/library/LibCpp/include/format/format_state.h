@@ -18,8 +18,8 @@
 #ifndef HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_FORMAT_STATE_H
 #define HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_FORMAT_STATE_H
 
-#include "iterator.h"
 #include "formatter/formatter.h"
+#include "iterator.h"
 
 namespace std {
 
@@ -41,41 +41,35 @@ namespace std {
      * It also contains the indexed arguments that are used by the format methods to
      * get the required argument for the Formatter.
      */
-    template<class CharacterType, class OutputIterator>
+    template<class Type, class OutputIterator>
     class BasicFormatState {
-        BasicFormatArguments<BasicFormatState> arguments;
-        OutputIterator& outputIterator;
+        BasicFormatArguments<BasicFormatState> arguments_;
+        OutputIterator& outputIterator_;
 
-    public:
-        using iterator = OutputIterator;
-        using characterType = CharacterType;
+      public:
+        using Iterator = OutputIterator;
 
         template<class T>
-        using formatterType = std::Formatter<T, CharacterType>;
+        using FormatterType = std::Formatter<T, Type>;
+        using CharacterType = Type;
 
         // Constructors
-        explicit BasicFormatState(
-            BasicFormatArguments<BasicFormatState>& arguments,
-            OutputIterator& outputIterator
-        ) : arguments(arguments), outputIterator(outputIterator) { }
+        explicit BasicFormatState(BasicFormatArguments<BasicFormatState>& arguments, OutputIterator& outputIterator)
+            : arguments_(arguments), outputIterator_(outputIterator) {}
 
         // Accessors
         auto argument(std::size_t index) const -> BasicFormatArgument<BasicFormatState> {
-            return arguments.get(index);
+            return arguments_.get(index);
         }
 
-        auto out() -> iterator {
-            return outputIterator;
-        }
+        auto out() -> Iterator { return outputIterator_; }
 
-        void advanceTo(iterator iterator) {
-            outputIterator = iterator;
-        }
+        void advanceTo(Iterator iterator) { outputIterator_ = iterator; }
     };
 
     // Declaration of a char based format state.
     using FormatState = BasicFormatState<char, char*>;
-}
+}// namespace std
 
 
-#endif // HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_FORMAT_STATE_H
+#endif// HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_FORMAT_STATE_H

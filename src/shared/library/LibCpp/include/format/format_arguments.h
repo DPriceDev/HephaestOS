@@ -15,29 +15,43 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#include "format_state.h"
-#include "format_argument.h"
 #include "array_base.h"
+#include "format_argument.h"
+#include "format_state.h"
 
 #ifndef HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_FORMAT_ARGUMENTS_H
 #define HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_FORMAT_ARGUMENTS_H
 
 namespace std {
 
-    /**
-     * Temporary format arguments storage class used when constructing the
-     * initial arguments.
-     */
-    template<class State, class... Args>
-    struct FormatArgumentStore {
-        std::Array<BasicFormatArgument<State>, sizeof...(Args)> args;
+    namespace detail {
+        /**
+         * Temporary format arguments storage class used when constructing the
+         * initial arguments.
+         */
+        template<class State, std::size_t Size>
+        struct FormatArgumentStore {
+            std::Array<BasicFormatArgument<State>, Size> array;
 
-        // Constructor
-        explicit FormatArgumentStore(
-            std::Array<BasicFormatArgument<State>,
-                sizeof...(Args)> arguments
-        ) : args(arguments) { };
-    };
+            // Constructor
+            template<class... Args>
+            explicit FormatArgumentStore(Args... arguments)
+                : array(std::Array<BasicFormatArgument<State>, sizeof...(Args)> { arguments... }) {}
+
+            auto size() const -> std::size_t { return Size; }
+
+            auto data() const -> const BasicFormatArgument<State>* { return array.data(); }
+        };
+
+        template<class State>
+        struct FormatArgumentStore<State, 0> {
+            explicit FormatArgumentStore() = default;
+
+            auto size() const -> std::size_t { return 0; }
+
+            auto data() const -> const BasicFormatArgument<State>* { return nullptr; }
+        };
+    }// namespace detail
 
     /**
      * Arguments class that stores the format arguments and allows access to get
@@ -45,10 +59,10 @@ namespace std {
      */
     template<class State>
     class BasicFormatArguments {
-        size_t size { };
+        std::size_t size {};
         const BasicFormatArgument<State>* data;
 
-    public:
+      public:
         // Constructors
         BasicFormatArguments() noexcept = default;
 
@@ -56,10 +70,9 @@ namespace std {
          * Constructs the arguments for an argument store. This is an implicit construction
          * which allows the argument store to be converted directly to the arguments.
          */
-        template<class... Args>
-        BasicFormatArguments(const std::FormatArgumentStore<State, Args...>& store) noexcept
-            : size(store.args.size()),
-              data(store.args.data()) { }
+        template<std::size_t Size>
+        BasicFormatArguments(const detail::FormatArgumentStore<State, Size>& store) noexcept
+            : size(store.size()), data(store.data()) {}
 
         // Accessors
         BasicFormatArgument<State> get(std::size_t index) const noexcept {
@@ -67,9 +80,7 @@ namespace std {
             return data[index];
         }
 
-        auto count() -> std::size_t {
-            return size;
-        }
+        auto count() -> std::size_t { return size; }
     };
 
     // Defines the format arguments for a char based state.
@@ -80,14 +91,9 @@ namespace std {
      * set of BasicFormatArgument's.
      */
     template<class State, class... Args>
-    std::FormatArgumentStore<State, Args...> makeFormatArguments(Args&& ... args) {
-
-        return std::FormatArgumentStore<State, Args...>(
-            std::Array<BasicFormatArgument<State>, sizeof...(Args)> {
-                BasicFormatArgument<State>(args)...
-            }
-        );
+    detail::FormatArgumentStore<State, sizeof...(Args)> makeFormatArguments(Args&&... args) {
+        return detail::FormatArgumentStore<State, sizeof...(Args)>(BasicFormatArgument<State>(args)...);
     }
-}
+}// namespace std
 
-#endif //HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_FORMAT_ARGUMENTS_H
+#endif// HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_FORMAT_ARGUMENTS_H

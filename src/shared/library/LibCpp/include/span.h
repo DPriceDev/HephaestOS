@@ -18,9 +18,9 @@
 #ifndef HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_SPAN_H
 #define HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_SPAN_H
 
+#include "iterator.h"
 #include <concepts>
 #include <limits>
-#include "iterator.h"
 
 namespace std {
 
@@ -39,13 +39,12 @@ namespace std {
          */
         template<class Type, std::size_t Size>
         struct SpanStorage {
-            Type* dataPointer = nullptr;
+            Type* data_ = nullptr;
             static constexpr std::size_t size = Size;
 
             constexpr SpanStorage() noexcept = default;
 
-            constexpr SpanStorage(Type* dataPointer) noexcept
-                : dataPointer(dataPointer) { }
+            constexpr SpanStorage(Type* data) noexcept : data_(data) {}
         };
 
         /**
@@ -55,15 +54,14 @@ namespace std {
          */
         template<class Type>
         struct SpanStorage<Type, dynamicExtent> {
-            Type* dataPointer = nullptr;
-            std::size_t size = 0;
+            Type* data_ = nullptr;
+            std::size_t size_ = 0;
 
             constexpr SpanStorage() noexcept = default;
 
-            constexpr SpanStorage(Type* dataPointer, std::size_t size) noexcept
-                : dataPointer(dataPointer), size(size) { }
+            constexpr SpanStorage(Type* data, std::size_t size) noexcept : data_(data), size_(size) {}
         };
-    }
+    }// namespace detail
 
     /**
      * Span defines a container that does not own the data it contains. It usually takes
@@ -75,7 +73,7 @@ namespace std {
     class Span {
         detail::SpanStorage<Type, Extent> storage;
 
-    public:
+      public:
         // Container Definitions
         using elementType = Type;
         using valueType = std::remove_cv_t<elementType>;
@@ -96,52 +94,50 @@ namespace std {
         /**
          * Constructs an empty span with null data and a size of 0.
          */
-        explicit(extent == 0 || extent == std::dynamicExtent)
-        constexpr Span() noexcept: storage(nullptr, 0) { }
+        explicit(extent == 0 || extent == std::dynamicExtent) constexpr Span() noexcept : storage(nullptr, 0) {}
 
         /**
          * Constructs a dynamic span starting at @param first with a size of @param size.
          */
-        explicit(extent != std::dynamicExtent)
-        constexpr Span(pointer first, sizeType size) : storage(first, size) { }
+        explicit(extent != std::dynamicExtent) constexpr Span(pointer first, sizeType size) : storage(first, size) {}
 
         /**
          * Constructs a dynamic span from two pointers, with the size of the span being the
          * difference between the pointers.
          */
-        explicit(extent != std::dynamicExtent)
-        constexpr Span(pointer first, pointer last) : storage(first, last - first) { }
+        explicit(extent != std::dynamicExtent) constexpr Span(pointer first, pointer last)
+            : storage(first, static_cast<sizeType>(last - first)) {}
 
         /**
          * Constructs a static span from an @param array parameter with a statically
          * defined @tparam Size.
          */
         template<std::size_t Size>
-        constexpr Span(elementType (& array)[Size]) noexcept : storage(array, Size) { }
+        constexpr Span(elementType (&array)[Size]) noexcept : storage(array, Size) {}
 
         // todo: Add after implementing std::array
-//        template<class U, std::size_t N>
-//        constexpr Span(std::array<U, N>& arr ) noexcept {
-//            /* todo */
-//        }
+        //        template<class U, std::size_t N>
+        //        constexpr Span(std::array<U, N>& arr ) noexcept {
+        //            /* todo */
+        //        }
 
         // todo: Add after implementing std::array
-//        template< class U, std::size_t N >
-//        constexpr span( const std::array<U, N>& arr ) noexcept {
-//            /* todo */
-//        }
+        //        template< class U, std::size_t N >
+        //        constexpr span( const std::array<U, N>& arr ) noexcept {
+        //            /* todo */
+        //        }
 
         // todo: Add after implementing ranges?
-//        template< class R >
-//        explicit(extent != std::dynamic_extent)
-//        constexpr span( R&& range );
+        //        template< class R >
+        //        explicit(extent != std::dynamic_extent)
+        //        constexpr span( R&& range );
 
-//      todo: const from other span?
-//        template<std::size_t Size>
-//        explicit(extent != std::dynamicExtent && Size == std::dynamicExtent)
-//        constexpr Span(const std::Span<Type, Size>& source) noexcept {
-//            /* todo */
-//        }
+        //      todo: const from other span?
+        //        template<std::size_t Size>
+        //        explicit(extent != std::dynamicExtent && Size == std::dynamicExtent)
+        //        constexpr Span(const std::Span<Type, Size>& source) noexcept {
+        //            /* todo */
+        //        }
 
         constexpr Span(const Span& other) noexcept = default;
 
@@ -151,63 +147,32 @@ namespace std {
         constexpr Span& operator=(const Span& other) noexcept = default;
 
         // Iterators
-        auto begin() const -> iterator {
-            return data();
-        }
+        auto begin() const -> iterator { return data(); }
 
-        auto end() const -> iterator {
-            return data() + size();
-        }
+        auto end() const -> iterator { return data() + size(); }
 
-        auto cbegin() const -> const iterator {
-            return data();
-        }
+        auto rbegin() -> reverseIterator { return reverseIterator(data() + size()); }
 
-        auto cend() const -> const iterator {
-            return data() + size();
-        }
-
-        auto rbegin() -> reverseIterator {
-            return reverseIterator(data() + size());
-        }
-
-        auto rend() -> reverseIterator {
-            reverseIterator(data());
-        }
+        auto rend() -> reverseIterator { reverseIterator(storage.data_); }
 
         // Element Access
-        auto front() -> reference {
-            return *data();
-        }
+        auto front() -> reference { return *data(); }
 
-        auto back() -> reference {
-            return *(data() + size());
-        }
+        auto back() -> reference { return *(data() + size()); }
 
-        constexpr auto operator[](sizeType index) const -> reference {
-            return *(data() + index);
-        }
+        constexpr auto operator[](sizeType index) const -> reference { return *(data() + index); }
 
-        constexpr auto data() const noexcept -> pointer {
-            return storage.dataPointer;
-        }
+        constexpr auto data() const noexcept -> pointer { return storage.data_; }
 
         // Observers
-        [[nodiscard]] constexpr auto size() const noexcept -> sizeType {
-            return storage.size;
-        }
+        [[nodiscard]] constexpr auto size() const noexcept -> sizeType { return storage.size_; }
 
-        [[nodiscard]] constexpr auto sizeInBytes() const noexcept -> sizeType {
-            return size() * sizeof(elementType);
-        }
+        [[nodiscard]] constexpr auto sizeInBytes() const noexcept -> sizeType { return size() * sizeof(elementType); }
 
-        [[nodiscard]] constexpr auto empty() const noexcept -> bool {
-            return size() == 0;
-        }
+        [[nodiscard]] constexpr auto empty() const noexcept -> bool { return size() == 0; }
 
         // todo: Subviews
-
     };
-}
+}// namespace std
 
-#endif // HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_SPAN_H
+#endif// HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_SPAN_H

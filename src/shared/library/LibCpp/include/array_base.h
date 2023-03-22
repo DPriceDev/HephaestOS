@@ -18,9 +18,9 @@
 #ifndef HEPHAIST_OS_SHARED_LIBRARY_CPP_ARRAY_H
 #define HEPHAIST_OS_SHARED_LIBRARY_CPP_ARRAY_H
 
-#include <cstdint>
-#include "iterator.h"
 #include "algorithm.h"
+#include "iterator.h"
+#include <cstdint>
 
 namespace std::detail {
 
@@ -43,113 +43,60 @@ namespace std::detail {
         using constReverseIterator = std::reverseIterator<constIterator>;
 
         // Element Access
-        constexpr auto operator[](sizeType index) -> reference {
-            return array[index];
-        }
+        constexpr auto operator[](sizeType index) -> reference { return array[index]; }
 
-        constexpr auto operator[](sizeType index) const -> constReference {
-            return array[index];
-        }
+        constexpr auto operator[](sizeType index) const -> constReference { return array[index]; }
 
-        constexpr auto data() noexcept -> pointer {
-            return array;
-        }
+        constexpr auto data() noexcept -> pointer { return array; }
 
-        constexpr auto data() const noexcept -> constPointer {
-            return array;
-        }
+        constexpr auto data() const noexcept -> constPointer { return array; }
 
-        constexpr auto front() -> reference {
-            return *data();
-        }
+        constexpr auto front() -> reference { return *data(); }
 
-        constexpr auto front() const -> constReference {
-            return *data();
-        }
+        constexpr auto front() const -> constReference { return *data(); }
 
-        constexpr auto back() -> reference {
-            return *(data() + size());
-        }
+        constexpr auto back() -> reference { return *(data() + size()); }
 
-        constexpr auto back() const -> constReference {
-            return *(data() + size());
-        }
+        constexpr auto back() const -> constReference { return *(data() + size()); }
 
         // Iterators
-        constexpr auto begin() noexcept -> iterator {
-            return data();
-        }
+        constexpr auto begin() noexcept -> iterator { return data(); }
 
-        constexpr auto begin() const noexcept -> constIterator {
-            return data();
-        }
+        constexpr auto begin() const noexcept -> constIterator { return data(); }
 
-        constexpr auto cbegin() const noexcept -> constIterator {
-            return data();
-        }
+        constexpr auto cbegin() const noexcept -> constIterator { return data(); }
 
-        constexpr auto end() noexcept -> iterator {
-            return data() + size();
-        }
+        constexpr auto end() noexcept -> iterator { return data() + size(); }
 
-        constexpr auto end() const noexcept -> constIterator {
-            return data() + size();
-        }
+        constexpr auto end() const noexcept -> constIterator { return data() + size(); }
 
-        constexpr auto cend() const noexcept -> constIterator {
-            return data() + size();
-        }
+        constexpr auto cend() const noexcept -> constIterator { return data() + size(); }
 
-        constexpr auto rbegin() noexcept -> reverseIterator {
-            return constReverseIterator(data() + size());
-        }
+        constexpr auto rbegin() noexcept -> reverseIterator { return constReverseIterator(data() + size()); }
 
-        constexpr auto rbegin() const noexcept -> constReverseIterator {
-            return constReverseIterator(data() + size());
-        }
+        constexpr auto rbegin() const noexcept -> constReverseIterator { return constReverseIterator(data() + size()); }
 
         constexpr auto crbegin() const noexcept -> constReverseIterator {
             return constReverseIterator(data() + size());
         }
 
-        constexpr auto rend() noexcept -> reverseIterator {
-            return reverseIterator(data());
-        }
+        constexpr auto rend() noexcept -> reverseIterator { return reverseIterator(data()); }
 
-        constexpr auto rend() const noexcept -> constReverseIterator {
-            return constReverseIterator(data());
-        }
+        constexpr auto rend() const noexcept -> constReverseIterator { return constReverseIterator(data()); }
 
-        constexpr auto crend() const noexcept -> constReverseIterator {
-            return constReverseIterator(data());
-        }
+        constexpr auto crend() const noexcept -> constReverseIterator { return constReverseIterator(data()); }
 
         // Capacity
-        [[nodiscard]]
-        constexpr auto size() const noexcept -> sizeType {
-            return Length;
-        }
+        [[nodiscard]] constexpr auto size() const noexcept -> sizeType { return Length; }
 
-        [[nodiscard]]
-        constexpr auto lastIndex() const noexcept -> sizeType {
-            return Length > 0 ? Length - 1 : 0;
-        }
+        [[nodiscard]] constexpr auto lastIndex() const noexcept -> sizeType { return Length > 0 ? Length - 1 : 0; }
 
-        [[nodiscard]]
-        constexpr bool empty() const noexcept {
-            return size() == 0;
-        }
+        [[nodiscard]] constexpr bool empty() const noexcept { return size() == 0; }
 
         // Operations
         constexpr void fill(const Type& value) {
-            std::forEach(
-                begin(), end(), [value](auto& element) {
-                    element = value;
-                }
-            );
+            std::forEach(begin(), end(), [value](auto& element) { element = value; });
         }
-
-
     };
-}
-#endif // HEPHAIST_OS_SHARED_LIBRARY_CPP_ARRAY_H
+}// namespace std::detail
+#endif// HEPHAIST_OS_SHARED_LIBRARY_CPP_ARRAY_H

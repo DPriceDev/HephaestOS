@@ -18,6 +18,7 @@
 #ifndef HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_MEMORY_H
 #define HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_MEMORY_H
 
+#include <bits/move.h>
 #include <type_traits>
 
 namespace std {
@@ -29,10 +30,10 @@ namespace std {
     }
 
     template<class Type, class... Args>
-    constexpr Type* construct_at(Type* pointer, Args&& ... args) {
+    constexpr Type* construct_at(Type* pointer, Args&&... args) {
         *pointer = Type(std::forward<Args>(args)...);
         return pointer;
     }
-}
+}// namespace std
 
-#endif // HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_MEMORY_H
+#endif// HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_MEMORY_H

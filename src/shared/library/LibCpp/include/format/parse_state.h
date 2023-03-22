@@ -38,38 +38,30 @@ namespace std {
      * format string, and advances the begin iterator to each format field as
      * required.
      */
-    template<class CharacterType>
+    template<class Type>
     class BasicParseState {
         enum class CountingType { NOT_SET, MANUAL, AUTOMATIC };
 
-        std::BaseStringView<CharacterType> format;
-        std::size_t argumentCount;
-        std::size_t argumentIndex { 0 };
-        CountingType countingType { CountingType::NOT_SET };
+        std::BaseStringView<Type> format_;
+        std::size_t argumentCount_;
+        std::size_t argumentIndex_ { 0 };
+        CountingType countingType_ { CountingType::NOT_SET };
 
-    public:
-        using characterType = CharacterType;
-        using iterator = typename std::BaseStringView<CharacterType>::iterator;
-        using constIterator = typename std::BaseStringView<CharacterType>::constIterator;
+      public:
+        using CharacterType = Type;
+        using Iterator = typename std::BaseStringView<CharacterType>::Iterator;
+        using ConstIterator = typename std::BaseStringView<CharacterType>::ConstIterator;
 
         // Constructor
-        explicit BasicParseState(
-            std::BaseStringView<CharacterType> format,
-            std::size_t argumentCount = 0
-        ) : format(format), argumentCount(argumentCount) { }
+        explicit BasicParseState(std::BaseStringView<CharacterType> format, std::size_t argumentCount = 0)
+            : format_(format), argumentCount_(argumentCount) {}
 
         // Accessors
-        constexpr auto begin() const noexcept -> constIterator {
-            return format.begin();
-        }
+        constexpr auto begin() const noexcept -> ConstIterator { return format_.begin(); }
 
-        constexpr auto end() const noexcept -> constIterator {
-            return format.end();
-        }
+        constexpr auto end() const noexcept -> ConstIterator { return format_.end(); }
 
-        constexpr void advanceTo(constIterator location) {
-            format = std::BaseStringView<CharacterType> { location };
-        }
+        constexpr void advanceTo(ConstIterator location) { format_ = std::BaseStringView<CharacterType> { location }; }
 
         // Operations
 
@@ -80,12 +72,12 @@ namespace std {
          * This sets the counting type to automatic. If the counting type is already set to
          * manual, then a failure result is returned.
          */
-        constexpr auto nextArgumentIndex() -> std::Result<size_t> {
-            if (countingType == CountingType::MANUAL || argumentIndex >= argumentCount) {
-                return std::Result<size_t>::failure();
+        constexpr auto nextArgumentIndex() -> std::Result<std::size_t> {
+            if (countingType_ == CountingType::MANUAL || argumentIndex_ >= argumentCount_) {
+                return std::Result<std::size_t>::failure();
             }
-            countingType = CountingType::AUTOMATIC;
-            return std::Result<size_t>::success(argumentIndex++);
+            countingType_ = CountingType::AUTOMATIC;
+            return std::Result<std::size_t>::success(argumentIndex_++);
         }
 
         /**
@@ -95,16 +87,16 @@ namespace std {
          * This sets the counting type to manual. If the counting type is already set to
          * automatic, then a failure result is returned.
          */
-        constexpr std::Result<size_t> checkArgumentIndex(size_t index) {
-            if (index >= argumentCount || countingType == CountingType::AUTOMATIC) {
-                return std::Result<size_t>::failure();
+        constexpr std::Result<std::size_t> checkArgumentIndex(size_t index) {
+            if (index >= argumentCount_ || countingType_ == CountingType::AUTOMATIC) {
+                return std::Result<std::size_t>::failure();
             }
-            countingType = CountingType::MANUAL;
-            return std::Result<size_t>::success(index);
+            countingType_ = CountingType::MANUAL;
+            return std::Result<std::size_t>::success(index);
         }
     };
 
     // Declaration of a char based parse state.
     using ParseState = BasicParseState<char>;
-}
-#endif // HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_PARSE_STATE_H
+}// namespace std
+#endif// HEPHAIST_OS_SHARED_LIBRARY_CPP_FORMAT_PARSE_STATE_H
