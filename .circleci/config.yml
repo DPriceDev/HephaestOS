@@ -17,7 +17,7 @@ jobs:
           command: "sudo apt-get update && sudo apt-get install nasm graphviz doxygen ccache libmpfr-dev libmpc-dev doxygen --no-install-recommends -y"
       - run:
           name: "Update Cmake to latest"
-          command: "wget https://github.com/Kitware/CMake/releases/download/v3.26.0/cmake-3.26.0-linux-x86_64.tar.gz && tar -zxvf cmake-3.26.0-linux-x86_64.tar.gz && cd cmake-3.26.0-linux-x86_64 && cp -r bin /usr/ && cp -r doc /usr/share/ && cp -r man /usr/share/ && cp -r share /usr/ && cmake --version"
+          command: "wget https://github.com/Kitware/CMake/releases/download/v3.26.0/cmake-3.26.0-linux-x86_64.tar.gz && tar -zxvf cmake-3.26.0-linux-x86_64.tar.gz && sudo cd cmake-3.26.0-linux-x86_64 && sudo cp -r bin /usr/ && sudo cp -r doc /usr/share/ && cp -r man /usr/share/ && sudo cp -r share /usr/ && cmake --version"
       - run:
           name: "Setup and configure cmake for Toolchain"
           command: "mkdir -p cmake-build-release && cmake -DCMAKE_BUILD_TYPE=Release -B cmake-build-release"
