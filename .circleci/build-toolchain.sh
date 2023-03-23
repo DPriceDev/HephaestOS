@@ -16,6 +16,7 @@ sudo cp -r doc /usr/share/
 sudo cp -r man /usr/share/
 sudo cp -r share /usr/
 
+cd "$CIRCLE_WORKING_DIRECTORY" || exit 1
 mkdir -p cmake-build-release
 cmake -DCMAKE_BUILD_TYPE=Release -B cmake-build-release
 cmake --build cmake-build-release --target gcc-12.2.0
