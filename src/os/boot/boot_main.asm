@@ -65,7 +65,7 @@ loader:
                 call            initializePaging - virtualBase
 
                 ; jump to higher kernel
-                lea             eax, enterHigherKernel
+                lea             eax, [enterHigherKernel]
                 push            eax
                 jmp             eax
 end:
