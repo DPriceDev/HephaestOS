@@ -13,7 +13,7 @@ jobs:
       - restore_cache:
           name: Restore Toolchain
           keys:
-            - v1-cache-toolchain-{{ checksum "toolchain/CMakeLists.txt" "toolchain/patches/binutils.patch" "toolchain/patches/gcc.patch" }}
+            - v1-cache-toolchain-{{ checksum "toolchain/CMakeLists.txt" }}
             - v1-cache-toolchain-
             - toolchain-v1
       - run:
@@ -23,7 +23,7 @@ jobs:
           name: Cache Toolchain
           paths:
             - "$CIRCLE_WORKING_DIRECTORY/cmake-build-release/toolchain/output"
-          key: v1-cache-toolchain-{{ checksum "toolchain/CMakeLists.txt" "toolchain/patches/binutils.patch" "toolchain/patches/gcc.patch" }}
+          key: v1-cache-toolchain-{{ checksum "toolchain/CMakeLists.txt" }}
 
   build-hephaestOS:
     docker:
@@ -34,7 +34,7 @@ jobs:
       - restore_cache:
           name: Restore Toolchain
           keys:
-            - cache-toolchain-{{ checksum "toolchain/CMakeLists.txt" "toolchain/patches/binutils.patch" "toolchain/patches/gcc.patch" }}
+            - cache-toolchain-{{ checksum "toolchain/CMakeLists.txt" }}
             - cache-toolchain-
       - run:
           name: "Update libraries"
