@@ -1,9 +1,9 @@
 #!/bin/bash
 
-if [ -d "cmake-build-release/toolchain/output" ]
-then
-  exit 0
-fi
+#if [ -d "cmake-build-release/toolchain/output" ]
+#then
+#  exit 0
+#fi
 
 sudo apt-get update
 sudo apt-get install texinfo flex bison nasm graphviz doxygen ccache libmpfr-dev libmpc-dev doxygen --no-install-recommends -y

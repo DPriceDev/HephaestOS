@@ -19,7 +19,7 @@ jobs:
       - save_cache:
           name: Cache Toolchain
           paths:
-            - "$CIRCLE_WORKING_DIRECTORY/cmake-build-release/toolchain/output"
+            - "cmake-build-release/toolchain/output"
           key: v1-cache-toolchain-{{ checksum "toolchain/CMakeLists.txt" }}
 
   build-hephaestOS:
@@ -31,8 +31,8 @@ jobs:
       - restore_cache:
           name: Restore Toolchain
           keys:
-            - cache-toolchain-{{ checksum "toolchain/CMakeLists.txt" }}
-            - cache-toolchain-
+            - v1-cache-toolchain-{{ checksum "toolchain/CMakeLists.txt" }}
+            - v1-cache-toolchain-
       - run:
           name: "Update libraries"
           command: "sudo apt-get update && sudo apt-get install texinfo flex bison nasm graphviz doxygen ccache libmpfr-dev libmpc-dev doxygen grub-common xorriso --no-install-recommends -y"
