@@ -14,7 +14,7 @@ jobs:
             - toolchain-v1
       - run:
           name: "Update libraries"
-          command: "sudo apt-get update && sudo apt-get install texinfo nasm graphviz doxygen ccache libmpfr-dev libmpc-dev doxygen --no-install-recommends -y"
+          command: "sudo apt-get update && sudo apt-get install texinfo flex nasm graphviz doxygen ccache libmpfr-dev libmpc-dev doxygen --no-install-recommends -y"
       - run:
           name: "Update Cmake to latest"
           command: "wget https://github.com/Kitware/CMake/releases/download/v3.26.0/cmake-3.26.0-linux-x86_64.tar.gz && tar -zxvf cmake-3.26.0-linux-x86_64.tar.gz && cd cmake-3.26.0-linux-x86_64 && sudo cp -r bin /usr/ && sudo cp -r doc /usr/share/ && sudo cp -r man /usr/share/ && sudo cp -r share /usr/ && cmake --version"
