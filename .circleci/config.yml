@@ -15,7 +15,7 @@ jobs:
             - toolchain-v1
       - run:
           name: "Build toolchain if does not exist"
-          command: "sh $CIRCLE_WORKING_DIRECTORY/.circleci/build-toolchain.sh"
+          command: "$CIRCLE_WORKING_DIRECTORY/.circleci/build-toolchain.sh"
       - save_cache:
           name: Cache Toolchain
           paths:
