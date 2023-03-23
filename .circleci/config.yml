@@ -10,17 +10,17 @@ jobs:
       - restore_cache:
           name: Restore Toolchain
           keys:
-            - cache-toolchain-{{ checksum "/home/circleci/project/toolchain/**" }}
+            - cache-toolchain-{{ checksum "$CIRCLE_WORKING_DIRECTORY/toolchain/**" }}
             - cache-toolchain-
             - toolchain-v1
       - run:
           name: "Build toolchain if does not exist"
-          command: "sudo ./home/circleci/project/.circleci/build-toolchain.sh"
+          command: "sudo .$CIRCLE_WORKING_DIRECTORY/.circleci/build-toolchain.sh"
       - save_cache:
           name: Cache Toolchain
           paths:
-            - "/home/circleci/project/cmake-build-release/toolchain/output"
-          key: cache-toolchain-{{ checksum "/home/circleci/project/toolchain/**" }}
+            - "$CIRCLE_WORKING_DIRECTORY/cmake-build-release/toolchain/output"
+          key: cache-toolchain-{{ checksum "$CIRCLE_WORKING_DIRECTORY/toolchain/**" }}
 
   build-hephaestOS:
     docker:
@@ -31,6 +31,7 @@ jobs:
       - restore_cache:
           name: Restore Toolchain
           keys:
+            - cache-toolchain-{{ checksum "$CIRCLE_WORKING_DIRECTORY/toolchain/**" }}
             - cache-toolchain-
       - run:
           name: "Update libraries"
