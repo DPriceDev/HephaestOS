@@ -7,9 +7,6 @@ jobs:
     resource_class: medium+
     steps:
       - checkout
-      - run:
-          name: "Build toolchain if does not exist"
-          command: "ls"
       - restore_cache:
           name: Restore Toolchain
           keys:
@@ -18,7 +15,7 @@ jobs:
             - toolchain-v1
       - run:
           name: "Build toolchain if does not exist"
-          command: "sudo .$CIRCLE_WORKING_DIRECTORY/.circleci/build-toolchain.sh"
+          command: "sh $CIRCLE_WORKING_DIRECTORY/.circleci/build-toolchain.sh"
       - save_cache:
           name: Cache Toolchain
           paths:
