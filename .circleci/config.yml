@@ -7,10 +7,13 @@ jobs:
     resource_class: medium+
     steps:
       - checkout
+      - run:
+          name: "Build toolchain if does not exist"
+          command: "ls"
       - restore_cache:
           name: Restore Toolchain
           keys:
-            - cache-toolchain-{{ checksum "~/home/circleci/project/toolchain/**" }}
+            - cache-toolchain-{{ checksum "~/home/circleci/project/toolchain/*" }}
             - cache-toolchain-
             - toolchain-v1
       - run:
