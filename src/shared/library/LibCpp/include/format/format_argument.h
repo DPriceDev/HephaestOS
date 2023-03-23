@@ -113,7 +113,6 @@ namespace std {
         using CharacterType = typename State::CharacterType;
 
         // Type erased pointer to the stored Type that will be recast and used in formatType.
-        // todo: replace with std::any?
         const void* data_ { nullptr };
 
         // Function pointer that will contain formatType for a given Type.
