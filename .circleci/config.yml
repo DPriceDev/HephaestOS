@@ -15,7 +15,7 @@ jobs:
             - toolchain-v1
       - run:
           name: "Build toolchain if does not exist"
-          command: ".circleci/build-toolchain.sh"
+          command: "chmod u+x .circleci/build-toolchain.sh && .circleci/build-toolchain.sh"
       - save_cache:
           name: Cache Toolchain
           paths:
