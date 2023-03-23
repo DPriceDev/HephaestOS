@@ -17,11 +17,8 @@
 
 #include "module_loader.h"
 #include <bit>
-#include <boot_info.h>
-#include <elf.h>
-#include <elf/boot_elf_loader.h>
+#include <elf/elf.h>
 #include <format.h>
-#include <memory/boot_allocator.h>
 
 namespace boot {
     auto loadModules(const std::Span<ModuleEntry>& bootModules, BootAllocator& allocator, const BootInfo& bootInfo)
