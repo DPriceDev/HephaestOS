@@ -1,7 +1,9 @@
-cmake_minimum_required(VERSION 3.16...3.24.2)
-cmake_policy(SET CMP0135 NEW)
+cmake_minimum_required(VERSION 3.20...3.26)
+if(POLICY CMP0135)
+    cmake_policy(SET CMP0135 NEW)
+endif()
 
-set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_CXX_COMPILER_WORKS 1)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -22,12 +24,12 @@ project_options(
         ENABLE_CACHE
         ${ENABLE_CPPCHECK}
         ${ENABLE_CLANG_TIDY}
-        ENABLE_INTERPROCEDURAL_OPTIMIZATION
+#        ENABLE_INTERPROCEDURAL_OPTIMIZATION
         ${ENABLE_DOXYGEN}
         WARNINGS_AS_ERRORS
 )
 
-target_compile_features(project_options INTERFACE cxx_std_${CMAKE_CXX_STANDARD})
+target_compile_features(project_options INTERFACE cxx_std_20)
 set_target_properties(project_options PROPERTIES NASM_OBJ_FORMAT elf32-i386)
 set(CMAKE_ASM_NASM_COMPILE_OBJECT "<CMAKE_ASM_NASM_COMPILER> <INCLUDES> <FLAGS> -o <OBJECT> <SOURCE>")
 

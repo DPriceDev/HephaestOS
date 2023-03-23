@@ -15,7 +15,7 @@ set(PARALLEL_MAKE_JOBS 1)
 ProcessorCount(PARALLEL_MAKE_JOBS)
 
 ExternalProject_Add(binutils-${BINUTILS_VERSION}
-        URL             https://ftp.gnu.org/gnu/binutils/binutils-${BINUTILS_VERSION}.tar.gz
+        URL             https://sourceware.org/pub/binutils/releases/binutils-${BINUTILS_VERSION}.tar.gz
         URL_HASH        MD5=1e55743d73c100b7a0d67ffb32398cdb
         BINARY_DIR      ${CMAKE_CURRENT_BINARY_DIR}/binutils-${BINUTILS_VERSION}-prefix/src/binutils-${BINUTILS_VERSION}-build
         CONFIGURE_COMMAND
@@ -36,7 +36,7 @@ ExternalProject_Add(binutils-${BINUTILS_VERSION}
 )
 
 ExternalProject_Add(gcc-${GCC_VERSION}
-        URL             https://ftp.gnu.org/gnu/gcc/gcc-${GCC_VERSION}/gcc-${GCC_VERSION}.tar.gz
+        URL             https://sourceware.org/pub/gcc/releases/gcc-${GCC_VERSION}/gcc-${GCC_VERSION}.tar.gz
         URL_HASH        MD5=d7644b494246450468464ffc2c2b19c3
         DEPENDS         binutils-${BINUTILS_VERSION} CopySysRoot
         BINARY_DIR      ${CMAKE_CURRENT_BINARY_DIR}/gcc-${GCC_VERSION}-prefix/src/gcc-${GCC_VERSION}-build

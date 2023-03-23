@@ -26,7 +26,7 @@ add_executable(
         memory/boot_allocator.cpp
         elf/boot_elf_loader.cpp
         modules/module_loader.cpp
-)
+        elf/elf.h)
 
 target_link_libraries(boot.elf PRIVATE os_options) # project_warnings)
 target_link_libraries(boot.elf PUBLIC KLibC KLibCpp KLibDebug KLibHal gcc)

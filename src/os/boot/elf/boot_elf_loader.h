@@ -19,7 +19,7 @@
 #define HEPHAISTOS_BOOT_ELF_LOADER_H
 
 #include <cstdint>
-#include <elf.h>
+#include <elf/elf.h>
 #include <span.h>
 #include <variant_base.h>
 
@@ -29,13 +29,13 @@ namespace boot {
         std::uintptr_t entryAddress;
         std::uintptr_t headerAddress;
         size_t memorySize;
-        std::Span<const Elf32_Phdr> programHeaders;
+        std::Span<const ProgramHeader> programHeaders;
     };
 
     struct DynamicExecutableElf {
         std::uintptr_t headerAddress;
         size_t memorySize;
-        std::Span<const Elf32_Phdr> programHeaders;
+        std::Span<const ProgramHeader> programHeaders;
     };
 
     using ElfInfo = std::Variant<StaticExecutableElf, DynamicExecutableElf>;

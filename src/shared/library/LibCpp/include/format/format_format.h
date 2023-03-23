@@ -82,7 +82,7 @@ namespace std {
                     } else if constexpr (std::same_as<
                                              decltype(arg),
                                              typename BasicFormatArgument<
-                                                 BasicFormatState<CharacterType, OutputIterator>>::handle>) {
+                                                 BasicFormatState<CharacterType, OutputIterator>>::Handle>) {
                         // Call formatter from the handle for custom types
                         arg.format(parseState, formatState);
                         return Result<OutputIterator>::success(formatState.out());
