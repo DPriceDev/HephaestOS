@@ -15,7 +15,7 @@ sudo cp -r bin /usr/
 sudo cp -r doc /usr/share/
 sudo cp -r man /usr/share/
 sudo cp -r share /usr/
-cmake --version
 
-mkdir -p cmake-build-release && cmake -DCMAKE_BUILD_TYPE=Release -B cmake-build-release
+mkdir -p cmake-build-release
+cmake -DCMAKE_BUILD_TYPE=Release -B cmake-build-release
 cmake --build cmake-build-release --target gcc-12.2.0
