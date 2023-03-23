@@ -29,7 +29,7 @@ project_options(
         WARNINGS_AS_ERRORS
 )
 
-target_compile_features(project_options INTERFACE cxx_std_23)
+target_compile_features(project_options INTERFACE cxx_std_20)
 set_target_properties(project_options PROPERTIES NASM_OBJ_FORMAT elf32-i386)
 set(CMAKE_ASM_NASM_COMPILE_OBJECT "<CMAKE_ASM_NASM_COMPILER> <INCLUDES> <FLAGS> -o <OBJECT> <SOURCE>")
 
