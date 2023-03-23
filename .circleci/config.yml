@@ -13,8 +13,8 @@ jobs:
       - restore_cache:
           name: Restore Toolchain
           keys:
-            - cache-toolchain-{{ checksum "toolchain/**" }}
-            - cache-toolchain-
+            - v1-cache-toolchain-{{ checksum "toolchain" }}
+            - v1-cache-toolchain-
             - toolchain-v1
       - run:
           name: "Build toolchain if does not exist"
@@ -23,7 +23,7 @@ jobs:
           name: Cache Toolchain
           paths:
             - "$CIRCLE_WORKING_DIRECTORY/cmake-build-release/toolchain/output"
-          key: cache-toolchain-{{ checksum "toolchain/**" }}
+          key: v1-cache-toolchain-{{ checksum "toolchain" }}
 
   build-hephaestOS:
     docker:
