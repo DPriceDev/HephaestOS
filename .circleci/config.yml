@@ -5,42 +5,34 @@ jobs:
     docker:
       - image: cimg/base:stable
     resource_class: medium+
-
     steps:
       - checkout
       - restore_cache:
           name: Restore Toolchain
           keys:
+            - v2-cache-toolchain-{{ checksum "toolchain/CMakeLists.txt" }}
+            - v2-cache-toolchain-
             - toolchain-v1
       - run:
-          name: "Update libraries"
-          command: "sudo apt-get update && sudo apt-get install texinfo flex bison nasm graphviz doxygen ccache libmpfr-dev libmpc-dev doxygen --no-install-recommends -y"
-      - run:
-          name: "Update Cmake to latest"
-          command: "wget https://github.com/Kitware/CMake/releases/download/v3.26.0/cmake-3.26.0-linux-x86_64.tar.gz && tar -zxvf cmake-3.26.0-linux-x86_64.tar.gz && cd cmake-3.26.0-linux-x86_64 && sudo cp -r bin /usr/ && sudo cp -r doc /usr/share/ && sudo cp -r man /usr/share/ && sudo cp -r share /usr/ && cmake --version"
-      - run:
-          name: "Setup and configure cmake for Toolchain"
-          command: "mkdir -p cmake-build-release && cmake -DCMAKE_BUILD_TYPE=Release -B cmake-build-release"
-      - run:
-          name: "Build Gcc Compiler and freestanding C library"
-          command: "cmake --build cmake-build-release --target gcc-12.2.0"
+          name: "Build toolchain if does not exist"
+          command: "chmod u+x .circleci/build-toolchain.sh && .circleci/build-toolchain.sh"
       - save_cache:
           name: Cache Toolchain
           paths:
-            - "/home/circleci/project/cmake-build-release/toolchain"
-          key: toolchain-v1
+            - "cmake-build-release/toolchain/output"
+          key: v2-cache-toolchain-{{ checksum "toolchain/CMakeLists.txt" }}
 
-  build-hephaistos:
+  build-hephaestOS:
     docker:
       - image: cimg/base:stable
     resource_class: small
-     
     steps:
       - checkout
       - restore_cache:
           name: Restore Toolchain
           keys:
-            - toolchain-v1
+            - v2-cache-toolchain-{{ checksum "toolchain/CMakeLists.txt" }}
+            - v2-cache-toolchain-
       - run:
           name: "Update libraries"
           command: "sudo apt-get update && sudo apt-get install texinfo flex bison nasm graphviz doxygen ccache libmpfr-dev libmpc-dev doxygen grub-common xorriso --no-install-recommends -y"
@@ -55,11 +47,12 @@ jobs:
           command: "cmake --build cmake-build-release --target HephaistOS.iso"
       - store_artifacts:
           path: /home/circleci/project/cmake-build-release/HephaistOS.iso
+
 workflows:
   version: 2
-  build-hephaistOS-workflow:
+  build-hephaestOS-workflow:
     jobs:
       - build-toolchain
-      - build-hephaistos:
+      - build-hephaestOS:
           requires:
             - build-toolchain
