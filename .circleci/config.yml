@@ -10,8 +10,8 @@ jobs:
       - restore_cache:
           name: Restore Toolchain
           keys:
-            - v1-cache-toolchain-{{ checksum "toolchain/CMakeLists.txt" }}
-            - v1-cache-toolchain-
+            - v2-cache-toolchain-{{ checksum "toolchain/CMakeLists.txt" }}
+            - v2-cache-toolchain-
             - toolchain-v1
       - run:
           name: "Build toolchain if does not exist"
@@ -20,7 +20,7 @@ jobs:
           name: Cache Toolchain
           paths:
             - "cmake-build-release/toolchain/output"
-          key: v1-cache-toolchain-{{ checksum "toolchain/CMakeLists.txt" }}
+          key: v2-cache-toolchain-{{ checksum "toolchain/CMakeLists.txt" }}
 
   build-hephaestOS:
     docker:
@@ -31,8 +31,8 @@ jobs:
       - restore_cache:
           name: Restore Toolchain
           keys:
-            - v1-cache-toolchain-{{ checksum "toolchain/CMakeLists.txt" }}
-            - v1-cache-toolchain-
+            - v2-cache-toolchain-{{ checksum "toolchain/CMakeLists.txt" }}
+            - v2-cache-toolchain-
       - run:
           name: "Update libraries"
           command: "sudo apt-get update && sudo apt-get install texinfo flex bison nasm graphviz doxygen ccache libmpfr-dev libmpc-dev doxygen grub-common xorriso --no-install-recommends -y"
