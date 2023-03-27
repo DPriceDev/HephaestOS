@@ -26,7 +26,7 @@
 #include <serial_port.h>
 #include <tss/task_state_segment.h>
 
-extern "C" void init(boot::MultiBootInfo* info, uint32_t magic, uint32_t stackPointer, boot::BootInfo bootInfo) {
+extern "C" void init(boot::MultiBootInfo& info, uint32_t magic, uint32_t stackPointer, boot::BootInfo bootInfo) {
     boot::initializeSerialPort();
     std::print("INFO: System init\n");
 
@@ -38,7 +38,7 @@ extern "C" void init(boot::MultiBootInfo* info, uint32_t magic, uint32_t stackPo
 
     boot::initializeDescriptorTables(stackPointer);
 
-    const auto bootModules = std::Span<boot::ModuleEntry> { info->modulePtr, info->moduleCount };
+    const auto bootModules = std::Span<boot::ModuleEntry> { info.modulePtr, info.moduleCount };
     const auto nextAvailableMemory = findNextAvailableMemory(bootModules, bootInfo);
 
     auto allocator = boot::BootAllocator(bootInfo.baseVirtualAddress, nextAvailableMemory, bootInfo.bootPageTable);
@@ -50,7 +50,7 @@ extern "C" void init(boot::MultiBootInfo* info, uint32_t magic, uint32_t stackPo
         std::print("ERROR: Failed to enter kernel module\n");
         return;
     }
-    boot::enterKernelModule(kernelAddress.get(), bootInfo);
+    boot::enterKernelModule(kernelAddress.get(), info, bootInfo, allocator);
 }
 
 namespace boot {
@@ -101,11 +101,14 @@ namespace boot {
         return address;
     }
 
-    void enterKernelModule(uintptr_t kernelAddress, const BootInfo&) {
+    void enterKernelModule(uintptr_t kernelAddress, const MultiBootInfo& multiBootInfo, const BootInfo& bootInfo, BootAllocator& allocator) {
         using EnterKernel = void (*)(
             const std::StandardOutputIterator&,
             uintptr_t,
-            uintptr_t
+            uintptr_t,
+            const std::Span<MemoryMapEntry>*,
+            PageDirectoryEntry*,
+            PageTableEntry*
         );
 
         const auto enterKernel = std::bit_cast<EnterKernel>(kernelAddress);
@@ -113,6 +116,14 @@ namespace boot {
         const auto& output = std::KernelFormatOutput::getInstance().out();
         loadKernelSegment();
         enableInterrupts();
-        enterKernel(output, 2, 3);
+        const std::Span<MemoryMapEntry> memoryMap { multiBootInfo.memoryMapPtr, multiBootInfo.memoryMapLength };
+        enterKernel(
+            output,
+            bootInfo.baseVirtualAddress,
+            allocator.nextAvailableMemory(),
+            &memoryMap,
+            bootInfo.pageDirectory,
+            bootInfo.bootPageTable
+        );
     }
 }// namespace boot

@@ -37,6 +37,8 @@ namespace boot {
         );
 
         auto allocate(std::size_t count, std::size_t alignment = 1) -> std::byte*;
+
+        [[nodiscard]] auto nextAvailableMemory() const -> uintptr_t;
     };
 }// namespace boot
 

@@ -20,20 +20,33 @@
 
 namespace kernel {
 
-    struct InitInfo {
+    enum class MemoryType {
+        MEMORY_AVAILABLE = 1,
+        MEMORY_RESERVED = 2,
+        MEMORY_ACPI_RECLAIMABLE = 3,
+        MEMORY_NVS = 4,
+        MEMORY_BAD_RAM = 5
+    };
+
+    struct [[gnu::packed]] MemoryBlock {
+        uint32_t size;
+        uint64_t address;
+        uint64_t length;
+        MemoryType type;
+    };
+
+    struct [[gnu::packed]] InitInfo {
         uintptr_t baseVirtualAddress;
         uintptr_t nextMemoryAddress;
-        // todo: base virtual address
-        // todo: next free memory address
-        // todo: initial page directory
-        // todo: initial page table
-        // todo: memory map
+        const std::Span<MemoryBlock>* memoryBlocks;
+        uintptr_t pageDirectoryAddress;
+        uintptr_t pageTableAddress;
         // todo: modules
     };
 
     extern "C" [[maybe_unused]] void kernelMain(
         const std::StandardOutputIterator& outputIterator,
-        const InitInfo& initInfo
+        const InitInfo initInfo
     ) {
         std::KernelFormatOutput::getInstance().setStandardOutputIterator(outputIterator);
 
@@ -41,6 +54,7 @@ namespace kernel {
         std::print("INFO: Version 1.0\n");
 
         std::print("INFO: Test {:x}", initInfo.baseVirtualAddress);
+        std::print("INFO: Test {:x}", initInfo.nextMemoryAddress);
 
         // todo: Init process table
 
