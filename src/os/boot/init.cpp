@@ -50,7 +50,7 @@ extern "C" void init(boot::MultiBootInfo* info, uint32_t magic, uint32_t stackPo
         std::print("ERROR: Failed to enter kernel module\n");
         return;
     }
-    boot::enterKernelModule(kernelAddress.get());
+    boot::enterKernelModule(kernelAddress.get(), bootInfo);
 }
 
 namespace boot {
@@ -101,14 +101,18 @@ namespace boot {
         return address;
     }
 
-    void enterKernelModule(uintptr_t kernelAddress) {
-        using EnterKernel = void (*)(const std::StandardOutputIterator&);
+    void enterKernelModule(uintptr_t kernelAddress, const BootInfo&) {
+        using EnterKernel = void (*)(
+            const std::StandardOutputIterator&,
+            uintptr_t,
+            uintptr_t
+        );
 
         const auto enterKernel = std::bit_cast<EnterKernel>(kernelAddress);
         std::print("INFO: Entering kernel module at address: {:x}\n", kernelAddress);
         const auto& output = std::KernelFormatOutput::getInstance().out();
         loadKernelSegment();
         enableInterrupts();
-        enterKernel(output);
+        enterKernel(output, 2, 3);
     }
 }// namespace boot

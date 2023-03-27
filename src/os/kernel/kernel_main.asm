@@ -28,7 +28,12 @@ section .bss
 section .text
 
 loader:
-                mov             eax, [esp+4]
-                push            eax
+                mov             eax, esp
+                mov             ebx, [eax+4]
+                push            ebx
+                mov             ebx, [eax+8]
+                push            ebx
+                mov             ebx, [eax+12]
+                push            ebx
                 call            kernelMain
 end:

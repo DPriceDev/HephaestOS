@@ -40,7 +40,7 @@ namespace boot {
                 bootModule.moduleEnd
             );
 
-            const auto loadedModule = loadBootModule(bootModule, allocator, bootInfo.baseVirtualAddress);
+            const auto loadedModule = loadBootModule(bootModule, allocator, bootInfo);
             if (loadedModule.isValid() && loadedModule.get().name == "kernel") {
                 kernelAddress = loadedModule.get().address;
             }
@@ -53,12 +53,12 @@ namespace boot {
         return std::Result<uintptr_t>::success(kernelAddress);
     }
 
-    auto loadBootModule(const ModuleEntry& bootModule, BootAllocator& allocator, uintptr_t baseVirtualAddress)
+    auto loadBootModule(const ModuleEntry& bootModule, BootAllocator& allocator, const BootInfo& bootInfo)
         -> std::Result<LoadedModule> {
-        const auto moduleName = std::StringView { std::bit_cast<char*>(baseVirtualAddress + bootModule.string) };
+        const auto moduleName = std::StringView { std::bit_cast<char*>(bootInfo.baseVirtualAddress + bootModule.string) };
         std::print("INFO: Loading Boot Module: {}\n", moduleName);
 
-        const auto elfAddress = baseVirtualAddress + bootModule.moduleStart;
+        const auto elfAddress = bootInfo.baseVirtualAddress + bootModule.moduleStart;
         const auto elfInfoResult = getElfInfo(elfAddress);
 
         if (elfInfoResult.isNotValid()) {
@@ -68,20 +68,27 @@ namespace boot {
 
         ElfInfo elfInfo = elfInfoResult.get();
 
-        const auto elfVisitor = [&allocator](const auto& elf) { return loadElf(elf.get(), allocator); };
+        const auto elfVisitor = [&allocator, &bootInfo](const auto& elf) { return loadElf(elf.get(), allocator, bootInfo); };
 
         const auto entryAddress = std::visit(elfVisitor, elfInfo);
         return std::Result<LoadedModule>::success({ moduleName, entryAddress });
     }
 
-    auto loadElf(const StaticExecutableElf& elf, const BootAllocator&) -> uintptr_t {
-        // todo: remove or add page allocation
+    auto loadElf(const StaticExecutableElf& elf, const BootAllocator&, const BootInfo& bootInfo) -> uintptr_t {
+        const auto physicalStart = elf.entryAddress - bootInfo.baseVirtualAddress;
+        const auto physicalEnd = physicalStart + elf.memorySize;
+        mapAddressRangeInTable(
+            bootInfo.bootPageTable,
+            elf.entryAddress,
+            physicalStart,
+            physicalEnd
+        );
+        enablePaging();
         loadElf(elf);
         return elf.entryAddress;
     }
 
-
-    auto loadElf(const DynamicExecutableElf& elf, BootAllocator& allocator) -> uintptr_t {
+    auto loadElf(const DynamicExecutableElf& elf, BootAllocator& allocator, const BootInfo&) -> uintptr_t {
         const auto address = std::bit_cast<uintptr_t>(allocator.allocate(elf.memorySize));
         loadElf(elf, address);
         return address;

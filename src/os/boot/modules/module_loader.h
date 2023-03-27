@@ -33,12 +33,15 @@ namespace boot {
     auto loadModules(const std::Span<ModuleEntry>& bootModules, BootAllocator& allocator, const BootInfo& bootInfo)
         -> std::Result<uintptr_t>;
 
-    auto loadBootModule(const ModuleEntry& bootModule, BootAllocator& allocator, uintptr_t baseVirtualAddress)
-        -> std::Result<LoadedModule>;
+    auto loadBootModule(
+        const ModuleEntry& bootModule,
+        BootAllocator& allocator,
+        const BootInfo& bootInfo
+    ) -> std::Result<LoadedModule>;
 
-    auto loadElf(const StaticExecutableElf& elf, const BootAllocator&) -> uintptr_t;
+    auto loadElf(const StaticExecutableElf& elf, const BootAllocator& bootAllocator, const BootInfo& bootInfo) -> uintptr_t;
 
-    auto loadElf(const DynamicExecutableElf& elf, BootAllocator&) -> uintptr_t;
+    auto loadElf(const DynamicExecutableElf& elf, BootAllocator& bootAllocator, const BootInfo& bootInfo) -> uintptr_t;
 }// namespace boot
 
 #endif// HEPHAISTOS_MODULE_LOADER_H

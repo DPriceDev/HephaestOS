@@ -86,7 +86,7 @@ namespace boot {
         for (const auto& programHeader : programHeaders) {
             const auto* programAddress = std::bit_cast<std::byte*>(headerAddress + programHeader.dataOffset);
             auto* memoryAddress = std::bit_cast<std::byte*>(loadAddress);
-            memset(memoryAddress, 0, programHeader.memorySize + programHeader.virtualAddress);
+            memset(memoryAddress, 0, programHeader.memorySize);
             memcpy(memoryAddress, programAddress, programHeader.fileSize);
         }
     }

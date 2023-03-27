@@ -20,40 +20,35 @@
 
 namespace kernel {
 
-    // todo: Should this live in a config file somewhere?
-    constexpr uint32_t majorVersion = 1;
+    struct InitInfo {
+        uintptr_t baseVirtualAddress;
+        uintptr_t nextMemoryAddress;
+        // todo: base virtual address
+        // todo: next free memory address
+        // todo: initial page directory
+        // todo: initial page table
+        // todo: memory map
+        // todo: modules
+    };
 
-    constexpr uint32_t minorVersion = 0;
-
-    constexpr uint32_t fixVersion = 0;
-
-    extern "C" [[maybe_unused]] void kernelMain(const std::StandardOutputIterator& outputIterator) {
+    extern "C" [[maybe_unused]] void kernelMain(
+        const std::StandardOutputIterator& outputIterator,
+        const InitInfo& initInfo
+    ) {
         std::KernelFormatOutput::getInstance().setStandardOutputIterator(outputIterator);
 
         std::print("INFO: HephaistOS\n");
         std::print("INFO: Version 1.0\n");
 
-        // TODO: Register timer with timer interrupt
-
-        // todo: Init Timer? (or in init.LibCpp)
-
-        // todo: Init IPC?
-
-        // todo: Init memory manager? basic manager, user space memory manager
-
-        // todo: Init page manager? Basic pages, linked to memory manager? proxy?
+        std::print("INFO: Test {:x}", initInfo.baseVirtualAddress);
 
         // todo: Init process table
 
-        // Something something Syscalls something?
+        // todo: create first root task
 
-        // todo: Load Ram Disk
-
-        // Register ram disk root process
+        // todo: Register ram disk root process
 
         // todo: Jump to ram disk main in ring 3
-
-        // boot::tss::jumpUserMode();
 
         // todo: Unload boot code
         // TODO: Unload this bit of kernel code?
