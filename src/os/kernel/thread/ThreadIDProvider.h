@@ -1,4 +1,4 @@
-// Copyright (C) 2022 David Price - All Rights Reserved
+// Copyright (C) 2023 David Price - All Rights Reserved
 // This file is part of HephaistOS.
 //
 // HephaistOS is free software: you can redistribute it and/or modify
@@ -15,23 +15,20 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#ifndef HEPHAISTOS_BOOT_INFO_H
-#define HEPHAISTOS_BOOT_INFO_H
+#ifndef HEPHAISTOS_THREADIDPROVIDER_H
+#define HEPHAISTOS_THREADIDPROVIDER_H
 
-#include <cstdint>
+#include <stdint.h>
 
-#include "paging/model/page_directory_entry.h"
-#include "paging/model/page_table_entry.h"
+namespace kernel {
 
-namespace boot {
+    class ThreadIDProvider {
 
-    struct BootInfo {
-        PageDirectoryEntry* pageDirectory;
-        PageTableEntry* pageTable;
-        uintptr_t virtualBase;
-        uintptr_t bootStart;
-        uintptr_t bootEnd;
+      public:
+        auto getId() -> uint64_t;
+
+        void returnId(uint64_t id);
     };
-}// namespace boot
+}
 
-#endif// HEPHAISTOS_BOOT_INFO_H
+#endif// HEPHAISTOS_THREADIDPROVIDER_H

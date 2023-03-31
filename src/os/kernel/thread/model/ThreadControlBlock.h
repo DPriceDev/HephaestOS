@@ -1,4 +1,4 @@
-// Copyright (C) 2022 David Price - All Rights Reserved
+// Copyright (C) 2023 David Price - All Rights Reserved
 // This file is part of HephaistOS.
 //
 // HephaistOS is free software: you can redistribute it and/or modify
@@ -15,23 +15,26 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#ifndef HEPHAISTOS_BOOT_INFO_H
-#define HEPHAISTOS_BOOT_INFO_H
+#ifndef HEPHAISTOS_THREADCONTROLBLOCK_H
+#define HEPHAISTOS_THREADCONTROLBLOCK_H
 
-#include <cstdint>
+#include <stdint.h>
 
-#include "paging/model/page_directory_entry.h"
-#include "paging/model/page_table_entry.h"
+namespace kernel {
 
-namespace boot {
+    using TID = uint64_t;
 
-    struct BootInfo {
-        PageDirectoryEntry* pageDirectory;
-        PageTableEntry* pageTable;
-        uintptr_t virtualBase;
-        uintptr_t bootStart;
-        uintptr_t bootEnd;
+    // todo: Abstract
+    struct ThreadRegisters {
+        uint32_t eax = 0;
     };
-}// namespace boot
 
-#endif// HEPHAISTOS_BOOT_INFO_H
+    struct ThreadControlBlock {
+        TID id = 0;
+        uintptr_t stack = 0;
+        uintptr_t instruction = 0;
+        ThreadRegisters registers = ThreadRegisters { };
+    };
+}
+
+#endif// HEPHAISTOS_THREADCONTROLBLOCK_H

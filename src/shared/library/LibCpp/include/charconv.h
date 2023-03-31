@@ -71,7 +71,8 @@ namespace std {
         auto remainder = decimalNumber;
         while (remainder != 0) {
             decimalNumber *= 10;
-            remainder = decimalNumber - static_cast<unsigned long long>(decimalNumber);
+            const auto whole = static_cast<unsigned long long>(decimalNumber);
+            remainder = decimalNumber - static_cast<decltype(value)>(whole);
         }
 
         // todo: Some sort of rounding here?

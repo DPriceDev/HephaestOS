@@ -1,4 +1,4 @@
-// Copyright (C) 2022 David Price - All Rights Reserved
+// Copyright (C) 2023 David Price - All Rights Reserved
 // This file is part of HephaistOS.
 //
 // HephaistOS is free software: you can redistribute it and/or modify
@@ -15,23 +15,13 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#ifndef HEPHAISTOS_BOOT_INFO_H
-#define HEPHAISTOS_BOOT_INFO_H
-
-#include <cstdint>
-
-#include "paging/model/page_directory_entry.h"
-#include "paging/model/page_table_entry.h"
-
-namespace boot {
-
-    struct BootInfo {
-        PageDirectoryEntry* pageDirectory;
-        PageTableEntry* pageTable;
-        uintptr_t virtualBase;
-        uintptr_t bootStart;
-        uintptr_t bootEnd;
-    };
-}// namespace boot
-
-#endif// HEPHAISTOS_BOOT_INFO_H
+#include "ThreadTable.h"
+auto kernel::ThreadTable::registerThreadControlBlock(kernel::ThreadControlBlock*) -> bool {
+    return true;
+}
+auto kernel::ThreadTable::getThreadControlBlock(kernel::TID) -> std::Result<ThreadControlBlock*> {
+    return std::Result<ThreadControlBlock*>::failure();
+}
+void kernel::ThreadTable::removeThreadControlBlock(kernel::TID) {
+    // todo
+}

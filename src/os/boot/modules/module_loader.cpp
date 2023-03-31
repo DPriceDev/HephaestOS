@@ -34,8 +34,8 @@ namespace boot {
         for (const auto& bootModule : bootModules) {
 
             mapAddressRangeInTable(
-                bootInfo.bootPageTable,
-                bootInfo.baseVirtualAddress + bootModule.moduleStart,
+                bootInfo.pageTable,
+                bootInfo.virtualBase + bootModule.moduleStart,
                 bootModule.moduleStart,
                 bootModule.moduleEnd
             );
@@ -55,10 +55,10 @@ namespace boot {
 
     auto loadBootModule(const ModuleEntry& bootModule, BootAllocator& allocator, const BootInfo& bootInfo)
         -> std::Result<LoadedModule> {
-        const auto moduleName = std::StringView { std::bit_cast<char*>(bootInfo.baseVirtualAddress + bootModule.string) };
+        const auto moduleName = std::StringView { std::bit_cast<char*>(bootInfo.virtualBase + bootModule.string) };
         std::print("INFO: Loading Boot Module: {}\n", moduleName);
 
-        const auto elfAddress = bootInfo.baseVirtualAddress + bootModule.moduleStart;
+        const auto elfAddress = bootInfo.virtualBase + bootModule.moduleStart;
         const auto elfInfoResult = getElfInfo(elfAddress);
 
         if (elfInfoResult.isNotValid()) {
@@ -75,10 +75,10 @@ namespace boot {
     }
 
     auto loadElf(const StaticExecutableElf& elf, const BootAllocator&, const BootInfo& bootInfo) -> uintptr_t {
-        const auto physicalStart = elf.entryAddress - bootInfo.baseVirtualAddress;
+        const auto physicalStart = elf.entryAddress - bootInfo.virtualBase;
         const auto physicalEnd = physicalStart + elf.memorySize;
         mapAddressRangeInTable(
-            bootInfo.bootPageTable,
+            bootInfo.pageTable,
             elf.entryAddress,
             physicalStart,
             physicalEnd

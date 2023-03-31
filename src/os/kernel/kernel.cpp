@@ -16,7 +16,9 @@
  */
 
 #include <format.h>
-#include <stdoffset.h>
+#include <thread/ThreadIDProvider.h>
+#include <thread/ThreadTable.h>
+#include <thread/model/ThreadControlBlock.h>
 
 namespace kernel {
 
@@ -36,12 +38,13 @@ namespace kernel {
     };
 
     struct [[gnu::packed]] InitInfo {
-        uintptr_t baseVirtualAddress;
-        uintptr_t nextMemoryAddress;
+        uintptr_t virtualBase;
+        uintptr_t nextMemory;
         const std::Span<MemoryBlock>* memoryBlocks;
-        uintptr_t pageDirectoryAddress;
-        uintptr_t pageTableAddress;
+        uintptr_t pageDirectory;
+        uintptr_t pageTable;
         // todo: modules
+        uintptr_t stack;
     };
 
     extern "C" [[maybe_unused]] void kernelMain(
@@ -53,23 +56,29 @@ namespace kernel {
         std::print("INFO: HephaistOS\n");
         std::print("INFO: Version 1.0\n");
 
-        std::print("INFO: Test {:x}", initInfo.baseVirtualAddress);
-        std::print("INFO: Test {:x}", initInfo.nextMemoryAddress);
+        // todo: need to store this somewhere, inject? singleton?
+        auto threadTable = ThreadTable();
 
-        // todo: Init process table
+        auto threadIDProvider = ThreadIDProvider();
+        auto initialTCB = ThreadControlBlock {
+            .id = threadIDProvider.getId(),
+            .stack = initInfo.stack,
+            // todo: add instruction pointer (point to initial task module)
+        };
+        const auto isRegistered = threadTable.registerThreadControlBlock(&initialTCB);
+        if (!isRegistered) {
+            std::print("ERROR: Failed to register initial TCB in Thread table");
+            return;
+        }
 
-        // todo: create first root task
+        // todo: Do I need to setup the TSS here with the stack info?
 
-        // todo: Register ram disk root process
+        // todo: enter intial task by jumping to instruction pointer and userspace
 
-        // todo: Jump to ram disk main in ring 3
-
-        // todo: Unload boot code
-        // TODO: Unload this bit of kernel code?
+        // todo: Unload boot code and unused code
 
         // todo: Remove and add an error message here, should never get here?
-        while (true) { /* Endless Loop */
-        }
+        while (true) { /* Endless Loop */ }
 
         std::print("ERROR: Reached end of kernel code!");
     }
