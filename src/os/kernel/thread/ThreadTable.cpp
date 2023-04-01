@@ -28,7 +28,7 @@ auto kernel::ThreadTable::registerThreadControlBlock(kernel::ThreadControlBlock*
 auto kernel::ThreadTable::getThreadControlBlock(kernel::TID tid) -> std::Optional<ThreadControlBlock*> {
     const auto entry = table.at(tid);
     if (!entry || entry->get() == nullptr) {
-        return std::nullOption;
+        return std::nullOptional;
     }
 
     return std::Optional<ThreadControlBlock*>(entry->get());

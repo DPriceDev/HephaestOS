@@ -27,7 +27,7 @@ namespace boot {
 
         if (bootModules.empty()) {
             std::print("ERROR: No Boot Modules Found\n");
-            return std::Optional<uintptr_t>();
+            return std::nullOptional;
         }
 
         uintptr_t kernelAddress = 0;// todo: Make optional?
@@ -47,7 +47,7 @@ namespace boot {
         }
 
         if (kernelAddress == 0) {
-            return std::Optional<uintptr_t>();
+            return std::nullOptional;
         }
 
         return std::Optional<uintptr_t>(kernelAddress);
@@ -63,7 +63,7 @@ namespace boot {
 
         if (!elfInfoResult) {
             std::print("ERROR: Failed to load boot module: {}\n", moduleName);
-            return std::nullOption;
+            return std::nullOptional;
         }
 
         ElfInfo elfInfo = elfInfoResult.value();

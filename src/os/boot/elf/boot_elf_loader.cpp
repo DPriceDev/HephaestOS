@@ -36,11 +36,11 @@ namespace boot {
         const auto& identifier = elfHeader->identifier;
         const auto isElf = identifier[0] == 'E' && identifier[1] == 'L' && identifier[2] == 'F';
         if (!isElf) {
-            return std::Optional<ElfInfo>();
+            return std::nullOptional;
         }
 
         if (elfHeader->type != ElfType::EXECUTABLE) {
-            return std::Optional<ElfInfo>();
+            return std::nullOptional;
         }
 
         return std::Optional<ElfInfo>(getExecutableElfInfo(elfHeader, headerAddress));

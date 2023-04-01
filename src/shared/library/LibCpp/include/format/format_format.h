@@ -123,7 +123,7 @@ namespace std {
 
                 default:
                     // fails if format string is invalid (does not have : or })
-                    return std::Optional<bool>();
+                    return std::nullOptional;
             }
 
             return std::Optional<bool>(*nextCharacter == ':');
@@ -152,25 +152,25 @@ namespace std {
 
             // Invalid if a formatting : or end of argument } is not found
             if (position == end) {
-                return std::Optional<ArgumentIndex>();
+                return std::nullOptional;
             }
 
             std::size_t index;
             if (position == iterator) {
                 auto result = parseState.nextArgumentIndex();
                 if (!result) {
-                    return std::Optional<ArgumentIndex>();
+                    return std::nullOptional;
                 }
                 index = *result;
             } else {
                 auto result = std::fromChars<std::size_t>(iterator, position);
                 if (!result) {
-                    return std::Optional<ArgumentIndex>();
+                    return std::nullOptional;
                 }
                 index = *result;
 
                 if (!parseState.checkArgumentIndex(index)) {
-                    return std::Optional<ArgumentIndex>();
+                    return std::nullOptional;
                 }
             }
 

@@ -30,14 +30,14 @@ namespace std {
 
         [[nodiscard]] constexpr auto at(typename Array<Type, Length>::sizeType index) -> std::Optional<std::ReferenceWrapper<Type>> {
             if (index < 0 && index >= Length) {
-                return std::nullOption;
+                return std::nullOptional;
             }
             return std::Optional<std::ReferenceWrapper<Type>>(this->operator[](index));
         }
 
         [[nodiscard]] constexpr auto at(typename Array<Type, Length>::sizeType index) const -> const std::Optional<std::ReferenceWrapper<Type>> {
             if (index < 0 && index >= Length) {
-                return std::nullOption;
+                return std::nullOptional;
             }
             return std::Optional<std::ReferenceWrapper<Type>>(this->operator[](index));
         }

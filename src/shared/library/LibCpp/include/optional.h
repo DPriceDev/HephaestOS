@@ -24,7 +24,7 @@ namespace std {
 
     struct NullOptional {};
 
-    inline constexpr NullOptional nullOption {};
+    inline constexpr NullOptional nullOptional {};
 
     template<class Type>
     class Optional {
@@ -36,7 +36,7 @@ namespace std {
 
     public:
         // Constructors
-        constexpr Optional() noexcept : nullValue_(nullOption), hasResult(false) { }
+        constexpr Optional() noexcept : nullValue_(nullOptional), hasResult(false) { }
         explicit(false) constexpr Optional(std::NullOptional nullValue) noexcept : nullValue_(nullValue), hasResult(false) { }
 
         template <class U = Type>

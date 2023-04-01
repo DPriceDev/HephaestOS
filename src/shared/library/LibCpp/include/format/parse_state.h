@@ -74,7 +74,7 @@ namespace std {
          */
         constexpr auto nextArgumentIndex() -> std::Optional<std::size_t> {
             if (countingType_ == CountingType::MANUAL || argumentIndex_ >= argumentCount_) {
-                return std::Optional<std::size_t>();
+                return std::nullOptional;
             }
             countingType_ = CountingType::AUTOMATIC;
             return std::Optional<std::size_t>(argumentIndex_++);
@@ -89,7 +89,7 @@ namespace std {
          */
         constexpr std::Optional<std::size_t> checkArgumentIndex(size_t index) {
             if (index >= argumentCount_ || countingType_ == CountingType::AUTOMATIC) {
-                return std::Optional<std::size_t>();
+                return std::nullOptional;
             }
             countingType_ = CountingType::MANUAL;
             return std::Optional<std::size_t>(index);
