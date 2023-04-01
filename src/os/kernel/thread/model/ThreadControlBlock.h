@@ -18,7 +18,8 @@
 #ifndef HEPHAISTOS_THREADCONTROLBLOCK_H
 #define HEPHAISTOS_THREADCONTROLBLOCK_H
 
-#include <stdint.h>
+#include <cstdint>
+#include <cstddef>
 
 namespace kernel {
 
@@ -33,8 +34,8 @@ namespace kernel {
         TID id = 0;
         uintptr_t stack = 0;
         uintptr_t instruction = 0;
-        ThreadRegisters registers = ThreadRegisters { };
+        ThreadRegisters registers = ThreadRegisters {};
     };
-}
+}// namespace kernel
 
 #endif// HEPHAISTOS_THREADCONTROLBLOCK_H

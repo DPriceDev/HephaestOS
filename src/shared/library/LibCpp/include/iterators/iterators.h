@@ -36,11 +36,11 @@ namespace std {
      */
     template<class Type>
     concept weaklyIncrementable = std::movable<Type> && requires(Type iterator) {
-                                                            // todo: typename iteratorDifferenceType<Type>; - need to do
-                                                            // for back inserter todo: is signed integer like
-                                                            { ++iterator } -> std::same_as<Type&>;
-                                                            iterator++;
-                                                        };
+        // todo: typename iteratorDifferenceType<Type>; - need to do
+        // for back inserter todo: is signed integer like
+        { ++iterator } -> std::same_as<Type&>;
+        iterator++;
+    };
 
     /**
      * Incrementable defines that Type @tparam Iterator can be incremented using pre and post operators
@@ -48,10 +48,8 @@ namespace std {
      */
     template<class Type>
     concept incrementable = std::regular<Type> && std::weaklyIncrementable<Type> && requires(Type type) {
-                                                                                        {
-                                                                                            type++
-                                                                                        } -> std::same_as<Type>;
-                                                                                    };
+        { type++ } -> std::same_as<Type>;
+    };
 
     /**
      * Input Or Output Iterator is the base @tparam Iterator Type that all Iterators will satisfy.
@@ -60,10 +58,10 @@ namespace std {
      */
     template<class Iterator>
     concept inputOrOutputIterator = requires(Iterator iterator) {
-                                        *iterator;
-                                        //{ *iterator } -> std::same_as<Iterator&>; // todo: Need to define
-                                        // referencable, i.e. not void?
-                                    } && std::weaklyIncrementable<Iterator>;
+        *iterator;
+        //{ *iterator } -> std::same_as<Iterator&>; // todo: Need to define
+        // referencable, i.e. not void?
+    } && std::weaklyIncrementable<Iterator>;
 
     /**
      * Defines a @tparam Type that can be "read" by calling the * operator. This requires that the
@@ -85,14 +83,13 @@ namespace std {
      * @tparam Type
      */
     template<class Output, class Type>
-    concept indirectlyWritable =
-        requires(Output&& output, Type&& type) {
-            *output = std::forward<Type>(type);
-            *std::forward<Output>(output) = std::forward<Type>(type);
-            const_cast<const std::iteratorReferenceType<Output>&&>(*output) = std::forward<Type>(type);
-            const_cast<const std::iteratorReferenceType<Output>&&>(*std::forward<Output>(output)) =
-                std::forward<Type>(type);
-        };
+    concept indirectlyWritable = requires(Output&& output, Type&& type) {
+        *output = std::forward<Type>(type);
+        *std::forward<Output>(output) = std::forward<Type>(type);
+        const_cast<const std::iteratorReferenceType<Output>&&>(*output) = std::forward<Type>(type);
+        const_cast<const std::iteratorReferenceType<Output>&&>(*std::forward<Output>(output)) =
+            std::forward<Type>(type);
+    };
 
     /**
      * todo comment
@@ -134,9 +131,9 @@ namespace std {
      */
     template<class Iterator>
     concept bidirectionalIterator = std::forwardIterator<Iterator> && requires(Iterator iterator) {
-                                                                          { --iterator } -> std::same_as<Iterator&>;
-                                                                          { iterator-- } -> std::same_as<Iterator>;
-                                                                      };
+        { --iterator } -> std::same_as<Iterator&>;
+        { iterator-- } -> std::same_as<Iterator>;
+    };
 
     template<class Iterator, class Sentinel>
     inline constexpr bool disable_sized_sentinel_for = false;

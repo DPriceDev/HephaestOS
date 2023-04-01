@@ -16,9 +16,9 @@
  */
 
 #include <format.h>
+#include <thread/model/ThreadControlBlock.h>
 #include <thread/ThreadIDProvider.h>
 #include <thread/ThreadTable.h>
-#include <thread/model/ThreadControlBlock.h>
 
 namespace kernel {
 
@@ -47,10 +47,8 @@ namespace kernel {
         uintptr_t stack;
     };
 
-    extern "C" [[maybe_unused]] void kernelMain(
-        const std::StandardOutputIterator& outputIterator,
-        const InitInfo initInfo
-    ) {
+    extern "C" [[maybe_unused]] void
+        kernelMain(const std::StandardOutputIterator& outputIterator, const InitInfo initInfo) {
         std::KernelFormatOutput::getInstance().setStandardOutputIterator(outputIterator);
 
         std::print("INFO: HephaistOS\n");
@@ -61,8 +59,7 @@ namespace kernel {
 
         auto threadIDProvider = ThreadIDProvider();
         auto initialTCB = ThreadControlBlock {
-            .id = threadIDProvider.getId(),
-            .stack = initInfo.stack,
+            .id = threadIDProvider.getId(), .stack = initInfo.stack,
             // todo: add instruction pointer (point to initial task module)
         };
         const auto isRegistered = threadTable.registerThreadControlBlock(&initialTCB);
@@ -78,7 +75,8 @@ namespace kernel {
         // todo: Unload boot code and unused code
 
         // todo: Remove and add an error message here, should never get here?
-        while (true) { /* Endless Loop */ }
+        while (true) { /* Endless Loop */
+        }
 
         std::print("ERROR: Reached end of kernel code!");
     }

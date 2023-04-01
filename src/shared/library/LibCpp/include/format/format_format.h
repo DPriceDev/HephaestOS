@@ -20,8 +20,8 @@
 
 #include "algorithm.h"
 #include "charconv.h"
-#include "iterator.h"
 #include "expected.h"
+#include "iterator.h"
 #include "string_view.h"
 
 #include "format/format_arguments.h"
@@ -202,10 +202,7 @@ namespace std {
             }
 
             return formatArgument<OutputIterator>(
-                parseState,
-                formatState,
-                formatState.argument(argumentIndex.index),
-                shouldParseResult.value()
+                parseState, formatState, formatState.argument(argumentIndex.index), shouldParseResult.value()
             );
         }
     }// namespace detail

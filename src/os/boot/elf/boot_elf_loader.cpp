@@ -82,7 +82,11 @@ namespace boot {
         return { programHeader, header->programHeaderCount };
     }
 
-    void loadExecutableElf(uintptr_t headerAddress, std::Span<const ProgramHeader> programHeaders, uintptr_t loadAddress) {
+    void loadExecutableElf(
+        uintptr_t headerAddress,
+        std::Span<const ProgramHeader> programHeaders,
+        uintptr_t loadAddress
+    ) {
         for (const auto& programHeader : programHeaders) {
             const auto* programAddress = std::bit_cast<std::byte*>(headerAddress + programHeader.dataOffset);
             auto* memoryAddress = std::bit_cast<std::byte*>(loadAddress);

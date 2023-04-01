@@ -101,7 +101,13 @@ namespace boot {
         return address;
     }
 
-    void enterKernelModule(uintptr_t stackPointer, uintptr_t kernelAddress, const MultiBootInfo& multiBootInfo, const BootInfo& bootInfo, BootAllocator& allocator) {
+    void enterKernelModule(
+        uintptr_t stackPointer,
+        uintptr_t kernelAddress,
+        const MultiBootInfo& multiBootInfo,
+        const BootInfo& bootInfo,
+        BootAllocator& allocator
+    ) {
         using EnterKernel = void (*)(
             const std::StandardOutputIterator&,
             uintptr_t,

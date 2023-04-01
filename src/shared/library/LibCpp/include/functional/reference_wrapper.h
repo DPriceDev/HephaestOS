@@ -25,30 +25,31 @@ namespace std {
 
     namespace detail {
         // todo: What is this doing? casting T to U? can i use a concept?
-        template <class T> constexpr T& FUN(T& t) noexcept { return t; }
-        template <class T> void FUN(T&&) = delete;
-    }
+        template<class T>
+        constexpr T& FUN(T& t) noexcept {
+            return t;
+        }
+        template<class T>
+        void FUN(T&&) = delete;
+    }// namespace detail
 
-    template <class Type>
+    template<class Type>
     class ReferenceWrapper {
       public:
         using type = Type;
 
         // Constructors
         template<class U>
-        constexpr ReferenceWrapper(U&& reference) /* todo: noexcept(...) */ : value(std::addressof(detail::FUN<Type>(std::forward<U>(reference)))) { }
+        constexpr ReferenceWrapper(U&& reference) /* todo: noexcept(...) */
+            : value(std::addressof(detail::FUN<Type>(std::forward<U>(reference)))) {}
 
-        constexpr operator Type& () const noexcept {
-            return *value;
-        }
+        constexpr operator Type&() const noexcept { return *value; }
 
-        constexpr Type& get() const noexcept {
-            return *value;
-        }
+        constexpr Type& get() const noexcept { return *value; }
 
       private:
         Type* value;
     };
-}
+}// namespace std
 
 #endif// HEPHAEST_OS_SHARED_LIBRARY_CPP_FUNCTIONAL_REFERENCE_WRAPPER_H

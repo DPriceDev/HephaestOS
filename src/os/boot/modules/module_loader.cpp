@@ -17,7 +17,6 @@
 
 #include "module_loader.h"
 #include <bit>
-#include <elf/elf.h>
 #include <format.h>
 
 namespace boot {
@@ -53,8 +52,7 @@ namespace boot {
         return std::Optional<uintptr_t>(kernelAddress);
     }
 
-    auto loadBootModule(const ModuleEntry& bootModule, BootAllocator& allocator, const BootInfo& bootInfo)
-        -> std::Optional<LoadedModule> {
+    auto loadBootModule(const ModuleEntry& bootModule, BootAllocator& allocator, const BootInfo& bootInfo) -> std::Optional<LoadedModule> {
         const auto moduleName = std::StringView { std::bit_cast<char*>(bootInfo.virtualBase + bootModule.string) };
         std::print("INFO: Loading Boot Module: {}\n", moduleName);
 
@@ -68,7 +66,9 @@ namespace boot {
 
         ElfInfo elfInfo = elfInfoResult.value();
 
-        const auto elfVisitor = [&allocator, &bootInfo](const auto& elf) { return loadElf(elf.value(), allocator, bootInfo); };
+        const auto elfVisitor = [&allocator, &bootInfo](const auto& elf) {
+            return loadElf(elf.value(), allocator, bootInfo);
+        };
 
         const auto entryAddress = std::visit(elfVisitor, elfInfo);
         return std::Optional<LoadedModule>({ moduleName, entryAddress });
@@ -77,12 +77,7 @@ namespace boot {
     auto loadElf(const StaticExecutableElf& elf, const BootAllocator&, const BootInfo& bootInfo) -> uintptr_t {
         const auto physicalStart = elf.entryAddress - bootInfo.virtualBase;
         const auto physicalEnd = physicalStart + elf.memorySize;
-        mapAddressRangeInTable(
-            bootInfo.pageTable,
-            elf.entryAddress,
-            physicalStart,
-            physicalEnd
-        );
+        mapAddressRangeInTable(bootInfo.pageTable, elf.entryAddress, physicalStart, physicalEnd);
         enablePaging();
         loadElf(elf);
         return elf.entryAddress;

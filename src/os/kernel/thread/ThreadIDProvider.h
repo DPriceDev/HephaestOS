@@ -18,8 +18,8 @@
 #ifndef HEPHAISTOS_THREADIDPROVIDER_H
 #define HEPHAISTOS_THREADIDPROVIDER_H
 
-#include <cstdint>
 #include <cstddef>
+#include <cstdint>
 
 namespace kernel {
 
@@ -31,6 +31,6 @@ namespace kernel {
 
         void returnId(std::size_t tid);
     };
-}
+}// namespace kernel
 
 #endif// HEPHAISTOS_THREADIDPROVIDER_H

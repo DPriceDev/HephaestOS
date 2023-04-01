@@ -19,8 +19,8 @@
 #define HEPHAISTOS_ARRAY_H
 
 #include "array_base.h"
-#include "optional.h"
 #include "functional.h"
+#include "optional.h"
 #include <cstdint>
 
 namespace std {
@@ -28,14 +28,16 @@ namespace std {
     template<typename Type, std::size_t Length>
     struct Array : public detail::Array<Type, Length> {
 
-        [[nodiscard]] constexpr auto at(typename Array<Type, Length>::sizeType index) -> std::Optional<std::ReferenceWrapper<Type>> {
+        [[nodiscard]] constexpr auto at(typename Array<Type, Length>::sizeType index)
+            -> std::Optional<std::ReferenceWrapper<Type>> {
             if (index < 0 && index >= Length) {
                 return std::nullOptional;
             }
             return std::Optional<std::ReferenceWrapper<Type>>(this->operator[](index));
         }
 
-        [[nodiscard]] constexpr auto at(typename Array<Type, Length>::sizeType index) const -> const std::Optional<std::ReferenceWrapper<Type>> {
+        [[nodiscard]] constexpr auto at(typename Array<Type, Length>::sizeType index) const
+            -> const std::Optional<std::ReferenceWrapper<Type>> {
             if (index < 0 && index >= Length) {
                 return std::nullOptional;
             }

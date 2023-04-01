@@ -20,9 +20,9 @@
 
 #include <cstdint>
 #include <elf/elf.h>
+#include <optional.h>
 #include <span.h>
 #include <variant_base.h>
-#include <optional.h>
 
 namespace boot {
 

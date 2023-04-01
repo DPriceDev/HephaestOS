@@ -18,8 +18,8 @@
 #ifndef HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_RESULT_H
 #define HEPHAIST_OS_SHARED_LIBRARY_LIB_CPP_RESULT_H
 
-#include <cstddef>
 #include "bits/move.h"
+#include <cstddef>
 
 namespace std {
 
@@ -27,8 +27,8 @@ namespace std {
     class Unexpected {
         Error error_;
 
-    public:
-        explicit Unexpected(Error error) : error_(error) { }
+      public:
+        explicit Unexpected(Error error) : error_(error) {}
 
         auto error() -> Error& { return error_; }
     };
@@ -41,11 +41,11 @@ namespace std {
         };
         bool hasResult;
 
-    public:
+      public:
         // Constructors
-        explicit Expected(Type result) : value_(result), hasResult { true } { }
+        explicit Expected(Type result) : value_(result), hasResult { true } {}
 
-        explicit(false) Expected(Unexpected<Error> error) : error_(error.error()), hasResult { false } { }
+        explicit(false) Expected(Unexpected<Error> error) : error_(error.error()), hasResult { false } {}
 
         // Accessors
         [[nodiscard]] constexpr auto& value() const noexcept { return value_; }
@@ -62,7 +62,6 @@ namespace std {
 
         // Validators
         [[nodiscard]] constexpr bool hasValue() const noexcept { return hasResult; }
-
     };
 }// namespace std
 

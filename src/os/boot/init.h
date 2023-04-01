@@ -37,7 +37,13 @@ namespace boot {
 
     auto findNextAvailableMemory(const std::Span<ModuleEntry>& bootModules, const BootInfo& bootInfo) -> uintptr_t;
 
-    void enterKernelModule(uintptr_t stackPointer, uintptr_t kernelAddress, const MultiBootInfo& multiBootInfo, const BootInfo& bootInfo, BootAllocator& allocator);
+    void enterKernelModule(
+        uintptr_t stackPointer,
+        uintptr_t kernelAddress,
+        const MultiBootInfo& multiBootInfo,
+        const BootInfo& bootInfo,
+        BootAllocator& allocator
+    );
 }// namespace boot
 
 #endif// HEPHAISTOS_INIT_H

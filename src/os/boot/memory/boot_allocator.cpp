@@ -37,7 +37,5 @@ namespace boot {
         return std::bit_cast<std::byte*>(virtualAddress + startAddress);
     }
 
-    auto BootAllocator::nextAvailableMemory() const -> uintptr_t {
-        return currentAddress;
-    }
+    auto BootAllocator::nextAvailableMemory() const -> uintptr_t { return currentAddress; }
 }// namespace boot

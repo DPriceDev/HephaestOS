@@ -34,18 +34,17 @@ namespace std {
         };
         bool hasResult;
 
-    public:
+      public:
         // Constructors
-        constexpr Optional() noexcept : nullValue_(nullOptional), hasResult(false) { }
-        explicit(false) constexpr Optional(std::NullOptional nullValue) noexcept : nullValue_(nullValue), hasResult(false) { }
+        constexpr Optional() noexcept : nullValue_(nullOptional), hasResult(false) {}
+        explicit(false) constexpr Optional(std::NullOptional nullValue) noexcept
+            : nullValue_(nullValue), hasResult(false) {}
 
-        template <class U = Type>
-        explicit constexpr Optional(U&& value) : value_(std::forward<U>(value)), hasResult(true) { }
+        template<class U = Type>
+        explicit constexpr Optional(U&& value) : value_(std::forward<U>(value)), hasResult(true) {}
 
         // Destructor
-        constexpr ~Optional() {
-            value().Type::~Type();
-        }
+        constexpr ~Optional() { value().Type::~Type(); }
 
         // Operators
         constexpr const Type* operator->() const noexcept { return &value_; }
@@ -65,11 +64,11 @@ namespace std {
         // Accessors
         constexpr Type& value() & { return value_; }
 
-        constexpr const Type& value() const & { return value_; }
+        constexpr const Type& value() const& { return value_; }
 
         constexpr Type&& value() && { return value_; }
 
-        constexpr const Type&& value() const && { return value_; }
+        constexpr const Type&& value() const&& { return value_; }
 
         template<class U>
         constexpr Type valueOr(U&& defaultValue) const& {
@@ -90,6 +89,6 @@ namespace std {
         // Validators
         [[nodiscard]] constexpr bool hasValue() const noexcept { return hasResult; }
     };
-}
+}// namespace std
 
-#endif //HEPHAISTOS_OPTIONAL_H
+#endif// HEPHAISTOS_OPTIONAL_H

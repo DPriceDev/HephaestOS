@@ -36,10 +36,8 @@ namespace std {
     concept BasicFormatter = std::is_default_constructible_v<Formatter> && std::is_copy_constructible_v<Formatter>
                           && std::is_copy_assignable_v<Formatter> && std::is_destructible_v<Formatter>
                           && std::is_swappable_v<Formatter> && requires(Formatter formatter, std::ParseState state) {
-                                                                   {
-                                                                       formatter.parse(state)
-                                                                   } -> std::same_as<ParseState::iterator>;
-                                                               };
+                                 { formatter.parse(state) } -> std::same_as<ParseState::iterator>;
+                             };
     // todo: Need to constrain format
     //        && requires (Formatter formatter, Arg arg, std::FormatState state) {
     //            { formatter.format(arg, state) } -> std::same_as<std::FormatState::iterator>;
