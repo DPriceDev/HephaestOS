@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="QEMU Kernel Debug" type="com.jetbrains.cidr.embedded.customgdbserver.type" factoryName="com.jetbrains.cidr.embedded.customgdbserver.factory" PROGRAM_PARAMS="-S -gdb tcp::9000 -cdrom cmake-build-debug/HephaestOS.iso -m 32M -d int -no-reboot -no-shutdown --chardev stdio,id=char0,logfile=serial.log -serial chardev:char0" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" WORKING_DIR="file://$PROJECT_DIR$/" PASS_PARENT_ENVS_2="true" PROJECT_NAME="HephaestOS" TARGET_NAME="HephaestOS.iso" CONFIG_NAME="Debug" version="1" RUN_TARGET_PROJECT_NAME="HephaestOS" RUN_TARGET_NAME="boot.elf">
+    <custom-gdb-server version="1" gdb-connect="127.0.0.1:9000" executable="/usr/bin/qemu-system-i386" warmup-ms="0" download-type="NONE" reset-cmd="monitor reset" reset-type="NEVER">
+      <debugger kind="GDB" isBundled="true" />
+    </custom-gdb-server>
+    <method v="2">
+      <option name="CLION.COMPOUND.BUILD" enabled="true" />
+    </method>
+  </configuration>
+</component>
