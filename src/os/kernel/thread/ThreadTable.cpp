@@ -15,31 +15,27 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#ifndef HEPHAISTOS_BOOTALLOCATOR_H
-#define HEPHAISTOS_BOOTALLOCATOR_H
+#include "ThreadTable.h"
+auto kernel::ThreadTable::registerThreadControlBlock(kernel::ThreadControlBlock* block) -> bool {
+    auto entry = table.at(block->id);
+    if (!entry || entry->get() != nullptr) {
+        return false;
+    }
 
-#include <cstddef>
-#include <cstdint>
-#include <paging/paging.h>
+    entry->get() = block;
+    return true;
+}
+auto kernel::ThreadTable::getThreadControlBlock(kernel::TID tid) -> std::Optional<ThreadControlBlock*> {
+    const auto entry = table.at(tid);
+    if (!entry || entry->get() == nullptr) {
+        return std::nullOptional;
+    }
 
-namespace boot {
-
-    class BootAllocator {
-        std::uintptr_t currentAddress;
-        std::uintptr_t virtualAddress;
-        PageTableEntry* pageTable;
-
-      public:
-        BootAllocator(
-            std::uintptr_t baseVirtualAddress,
-            std::uintptr_t physicalAddress,
-            PageTableEntry* kernelPageTable
-        );
-
-        auto allocate(std::size_t count, std::size_t alignment = 1) -> std::byte*;
-
-        [[nodiscard]] auto nextAvailableMemory() const -> uintptr_t;
-    };
-}// namespace boot
-
-#endif// HEPHAISTOS_BOOTALLOCATOR_H
+    return std::Optional<ThreadControlBlock*>(entry->get());
+}
+void kernel::ThreadTable::removeThreadControlBlock(kernel::TID tid) {
+    const auto entry = table.at(tid);
+    if (entry) {
+        entry->get() = nullptr;
+    }
+}

@@ -27,10 +27,10 @@ namespace boot {
 
     struct BootInfo {
         PageDirectoryEntry* pageDirectory;
-        PageTableEntry* bootPageTable;
-        uintptr_t baseVirtualAddress;
-        uintptr_t bootStartLocation;
-        uintptr_t bootEndLocation;
+        PageTableEntry* pageTable;
+        uintptr_t virtualBase;
+        uintptr_t bootStart;
+        uintptr_t bootEnd;
     };
 }// namespace boot
 

@@ -1,8 +1,13 @@
 ENTRY (loader)
 
+virtualBase = 0xC0000000;
+staticStart = 0x310000;
 
 SECTIONS
 {
+    . += virtualBase;
+    . += staticStart;
+
     .text BLOCK(4k): ALIGN (4k) {
         *(.text)
     }

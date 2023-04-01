@@ -1,4 +1,4 @@
-// Copyright (C) 2022 David Price - All Rights Reserved
+// Copyright (C) 2023 David Price - All Rights Reserved
 // This file is part of HephaistOS.
 //
 // HephaistOS is free software: you can redistribute it and/or modify
@@ -15,12 +15,27 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#ifndef HEPHAEST_OS_SHARED_LIBRARY_CPP_FORMAT_H
-#define HEPHAEST_OS_SHARED_LIBRARY_CPP_FORMAT_H
+#ifndef HEPHAISTOS_THREADTABLE_H
+#define HEPHAISTOS_THREADTABLE_H
 
-#include "format/format_arguments.h"
-#include "format/format_format.h"
-#include "format/format_state.h"
-#include "format/formatter/formatter.h"
+#include "thread/model/ThreadControlBlock.h"
+#include <array.h>
+#include <expected.h>
+#include <stdint.h>
 
-#endif// HEPHAEST_OS_SHARED_LIBRARY_CPP_FORMAT_H
+namespace kernel {
+
+    class ThreadTable {
+        std::Array<ThreadControlBlock*, 10> table {};
+
+      public:
+        auto registerThreadControlBlock(/* todo: Make this a unique pointer */ ThreadControlBlock* threadControlBlock)
+            -> bool;
+
+        auto getThreadControlBlock(TID tid) -> std::Optional<ThreadControlBlock*>;
+
+        void removeThreadControlBlock(TID tid);
+    };
+}// namespace kernel
+
+#endif// HEPHAISTOS_THREADTABLE_H

@@ -28,7 +28,7 @@ section .bss
 section .text
 
 loader:
-                mov             eax, [esp+4]
-                push            eax
+                ; pass arguments onto next function
+                add             esp, 4
                 call            kernelMain
 end:

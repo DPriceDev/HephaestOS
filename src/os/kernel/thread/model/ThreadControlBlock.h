@@ -1,4 +1,4 @@
-// Copyright (C) 2022 David Price - All Rights Reserved
+// Copyright (C) 2023 David Price - All Rights Reserved
 // This file is part of HephaistOS.
 //
 // HephaistOS is free software: you can redistribute it and/or modify
@@ -15,12 +15,27 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#ifndef HEPHAEST_OS_SHARED_LIBRARY_CPP_FORMAT_H
-#define HEPHAEST_OS_SHARED_LIBRARY_CPP_FORMAT_H
+#ifndef HEPHAISTOS_THREADCONTROLBLOCK_H
+#define HEPHAISTOS_THREADCONTROLBLOCK_H
 
-#include "format/format_arguments.h"
-#include "format/format_format.h"
-#include "format/format_state.h"
-#include "format/formatter/formatter.h"
+#include <cstdint>
+#include <cstddef>
 
-#endif// HEPHAEST_OS_SHARED_LIBRARY_CPP_FORMAT_H
+namespace kernel {
+
+    using TID = std::size_t;
+
+    // todo: Abstract
+    struct ThreadRegisters {
+        uint32_t eax = 0;
+    };
+
+    struct ThreadControlBlock {
+        TID id = 0;
+        uintptr_t stack = 0;
+        uintptr_t instruction = 0;
+        ThreadRegisters registers = ThreadRegisters {};
+    };
+}// namespace kernel
+
+#endif// HEPHAISTOS_THREADCONTROLBLOCK_H

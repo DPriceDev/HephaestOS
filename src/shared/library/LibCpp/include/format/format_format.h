@@ -20,8 +20,8 @@
 
 #include "algorithm.h"
 #include "charconv.h"
+#include "expected.h"
 #include "iterator.h"
-#include "result.h"
 #include "string_view.h"
 
 #include "format/format_arguments.h"
@@ -68,7 +68,7 @@ namespace std {
          * formatted ranges.
          */
         template<std::outputIterator<const char&> OutputIterator, class CharacterType>
-        std::Result<OutputIterator> formatArgument(
+        std::Optional<OutputIterator> formatArgument(
             BasicParseState<CharacterType>& parseState,// todo: Switch to template param
             BasicFormatState<CharacterType, OutputIterator>& formatState,// todo: Switch to template param
             const BasicFormatArgument<BasicFormatState<CharacterType, OutputIterator>>&& argument,
@@ -78,14 +78,14 @@ namespace std {
                 [&parseState, &formatState, &shouldParse](auto arg) {
                     if constexpr (std::same_as<decltype(arg), MonoState>) {
                         // Fail if argument is not present.
-                        return std::Result<OutputIterator>::failure();
+                        return std::Optional<OutputIterator>();
                     } else if constexpr (std::same_as<
                                              decltype(arg),
                                              typename BasicFormatArgument<
                                                  BasicFormatState<CharacterType, OutputIterator>>::Handle>) {
                         // Call formatter from the handle for custom types
                         arg.format(parseState, formatState);
-                        return Result<OutputIterator>::success(formatState.out());
+                        return Optional<OutputIterator>(formatState.out());
                     } else {
                         // Get the formatter for this type and format the argument.
                         Formatter<decltype(arg), char> formatter;
@@ -95,7 +95,7 @@ namespace std {
                         }
 
                         auto result = formatter.format(arg, formatState);
-                        return Result<OutputIterator>::success(result);
+                        return Optional<OutputIterator>(result);
                     }
                 },
                 argument
@@ -111,7 +111,7 @@ namespace std {
          * argument. If neither of these identifiers is present, then the result is failure.
          */
         template<class CharacterType>
-        std::Result<bool> shouldParse(BasicParseState<CharacterType>& parseState, const char* nextCharacter) {
+        std::Optional<bool> shouldParse(BasicParseState<CharacterType>& parseState, const char* nextCharacter) {
             switch (*nextCharacter) {
                 case '}':
                     parseState.advanceTo(nextCharacter);
@@ -123,10 +123,10 @@ namespace std {
 
                 default:
                     // fails if format string is invalid (does not have : or })
-                    return std::Result<bool>::failure();
+                    return std::nullOptional;
             }
 
-            return std::Result<bool>::success(*nextCharacter == ':');
+            return std::Optional<bool>(*nextCharacter == ':');
         }
 
         /**
@@ -142,7 +142,7 @@ namespace std {
          * result is returned.
          */
         template<std::outputIterator<const char&> OutputIterator, class CharacterType>
-        std::Result<ArgumentIndex> getArgumentIndex(
+        std::Optional<ArgumentIndex> getArgumentIndex(
             BasicParseState<CharacterType>& parseState,
             const char* iterator,// todo: Extract to character type template param
             const char* end// todo: Extract to character type template param
@@ -152,29 +152,29 @@ namespace std {
 
             // Invalid if a formatting : or end of argument } is not found
             if (position == end) {
-                return std::Result<ArgumentIndex>::failure();
+                return std::nullOptional;
             }
 
             std::size_t index;
             if (position == iterator) {
                 auto result = parseState.nextArgumentIndex();
-                if (result.isNotValid()) {
-                    return std::Result<ArgumentIndex>::failure();
+                if (!result) {
+                    return std::nullOptional;
                 }
-                index = result.get();
+                index = *result;
             } else {
                 auto result = std::fromChars<std::size_t>(iterator, position);
-                if (!result.isValid()) {
-                    return std::Result<ArgumentIndex>::failure();
+                if (!result) {
+                    return std::nullOptional;
                 }
-                index = result.get();
+                index = *result;
 
-                if (!parseState.checkArgumentIndex(index).isValid()) {
-                    return std::Result<ArgumentIndex>::failure();
+                if (!parseState.checkArgumentIndex(index)) {
+                    return std::nullOptional;
                 }
             }
 
-            return std::Result<ArgumentIndex>::success(ArgumentIndex { index, position });
+            return std::Optional<ArgumentIndex>(ArgumentIndex { index, position });
         }
 
         /**
@@ -184,25 +184,25 @@ namespace std {
          * @return
          */
         template<std::outputIterator<const char&> OutputIterator, class CharacterType>
-        std::Result<OutputIterator> handleFormatField(
+        std::Optional<OutputIterator> handleFormatField(
             const char* iterator,// todo: Extract to character type template param
             const char* end,// todo: Extract to character type template param
             BasicParseState<CharacterType>& parseState,
             BasicFormatState<CharacterType, OutputIterator>& formatState
         ) {
             auto result = getArgumentIndex<OutputIterator>(parseState, iterator, end);
-            if (!result.isValid()) {
-                return std::Result<OutputIterator>::failure();
+            if (!result) {
+                return std::Optional<OutputIterator>();
             }
-            auto argumentIndex = result.get();
+            auto argumentIndex = *result;
 
             auto shouldParseResult = shouldParse(parseState, argumentIndex.nextCharacter);
-            if (!shouldParseResult.isValid()) {
-                return std::Result<OutputIterator>::failure();
+            if (!shouldParseResult) {
+                return std::Optional<OutputIterator>();
             }
 
             return formatArgument<OutputIterator>(
-                parseState, formatState, formatState.argument(argumentIndex.index), shouldParseResult.get()
+                parseState, formatState, formatState.argument(argumentIndex.index), shouldParseResult.value()
             );
         }
     }// namespace detail
@@ -224,7 +224,7 @@ namespace std {
      * - Output iterator overflows the output memory.
      */
     template<class OutputIterator>
-    std::Result<OutputIterator> dynamicFormatTo(
+    std::Optional<OutputIterator> dynamicFormatTo(
         OutputIterator output,
         std::StringView format,
         BasicFormatArguments<BasicFormatState<char, OutputIterator>> args
@@ -251,16 +251,16 @@ namespace std {
                 auto result = detail::handleFormatField<OutputIterator>(iterator, end, parsingState, formatState);
 
                 // Return failure if failed to format argument
-                if (!result.isValid()) {
+                if (!result) {
                     return result;
                 }
 
-                output = result.get();
+                output = *result;
                 iterator = parsingState.begin();
 
                 // Return failed if the format string did not have a closing } for the last argument
                 if (*iterator != '}') {
-                    return std::Result<OutputIterator>::failure();
+                    return std::Optional<OutputIterator>();
                 }
 
                 ++iterator;
@@ -272,7 +272,7 @@ namespace std {
                 ++iterator;
 
                 if (*iterator != '}' || iterator == end) {
-                    return std::Result<OutputIterator>::failure();
+                    return std::Optional<OutputIterator>();
                 }
             }
 
@@ -280,7 +280,7 @@ namespace std {
             *output++ = *iterator++;
         }
 
-        return std::Result<OutputIterator>::success(output);
+        return std::Optional<OutputIterator>(output);
     }
 
     /**
@@ -300,7 +300,7 @@ namespace std {
      * - Output iterator overflows the output memory.
      */
     template<std::convertableToStringView CharacterType, class OutputIterator, class... Args>
-    std::Result<OutputIterator> formatTo(OutputIterator output, CharacterType* format, Args&&... args) {
+    std::Optional<OutputIterator> formatTo(OutputIterator output, CharacterType* format, Args&&... args) {
         using State = BasicFormatState<char, OutputIterator>;
         const auto formatArgs = makeFormatArguments<State>(args...);
         const auto baseArgs = BasicFormatArguments<State>(formatArgs);

@@ -1,4 +1,4 @@
-// Copyright (C) 2022 David Price - All Rights Reserved
+// Copyright (C) 2023 David Price - All Rights Reserved
 // This file is part of HephaistOS.
 //
 // HephaistOS is free software: you can redistribute it and/or modify
@@ -15,12 +15,13 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#ifndef HEPHAEST_OS_SHARED_LIBRARY_CPP_FORMAT_H
-#define HEPHAEST_OS_SHARED_LIBRARY_CPP_FORMAT_H
+#include "ThreadIDProvider.h"
+auto kernel::ThreadIDProvider::getId() -> std::size_t {
+    std::size_t const tid = current;
+    current++;
+    return tid;
+}
 
-#include "format/format_arguments.h"
-#include "format/format_format.h"
-#include "format/format_state.h"
-#include "format/formatter/formatter.h"
-
-#endif// HEPHAEST_OS_SHARED_LIBRARY_CPP_FORMAT_H
+void kernel::ThreadIDProvider::returnId(std::size_t) {
+    // todo: Return id for reuse
+}

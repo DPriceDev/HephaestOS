@@ -73,10 +73,6 @@ namespace boot {
         uint32_t len_low;
         uint32_t len_high;
         uint32_t type;
-
-        // bool operator==(const MemoryMapEntry& rhs) const = default;
-
-        // auto operator<=>(const MemoryMapEntry&) const = default;
     };
 
     /**

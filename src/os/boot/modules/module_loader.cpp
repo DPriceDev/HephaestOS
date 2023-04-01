@@ -17,71 +17,73 @@
 
 #include "module_loader.h"
 #include <bit>
-#include <elf/elf.h>
 #include <format.h>
 
 namespace boot {
     auto loadModules(const std::Span<ModuleEntry>& bootModules, BootAllocator& allocator, const BootInfo& bootInfo)
-        -> std::Result<uintptr_t> {
+        -> std::Optional<uintptr_t> {
         std::print("INFO: Loading {} Boot Module{}\n", bootModules.size(), (bootModules.size()) ? "" : "s");
 
         if (bootModules.empty()) {
             std::print("ERROR: No Boot Modules Found\n");
-            return std::Result<uintptr_t>::failure();
+            return std::nullOptional;
         }
 
         uintptr_t kernelAddress = 0;// todo: Make optional?
         for (const auto& bootModule : bootModules) {
 
             mapAddressRangeInTable(
-                bootInfo.bootPageTable,
-                bootInfo.baseVirtualAddress + bootModule.moduleStart,
+                bootInfo.pageTable,
+                bootInfo.virtualBase + bootModule.moduleStart,
                 bootModule.moduleStart,
                 bootModule.moduleEnd
             );
 
-            const auto loadedModule = loadBootModule(bootModule, allocator, bootInfo.baseVirtualAddress);
-            if (loadedModule.isValid() && loadedModule.get().name == "kernel") {
-                kernelAddress = loadedModule.get().address;
+            const auto loadedModule = loadBootModule(bootModule, allocator, bootInfo);
+            if (loadedModule && loadedModule->name == "kernel") {
+                kernelAddress = loadedModule->address;
             }
         }
 
         if (kernelAddress == 0) {
-            return std::Result<uintptr_t>::failure();
+            return std::nullOptional;
         }
 
-        return std::Result<uintptr_t>::success(kernelAddress);
+        return std::Optional<uintptr_t>(kernelAddress);
     }
 
-    auto loadBootModule(const ModuleEntry& bootModule, BootAllocator& allocator, uintptr_t baseVirtualAddress)
-        -> std::Result<LoadedModule> {
-        const auto moduleName = std::StringView { std::bit_cast<char*>(baseVirtualAddress + bootModule.string) };
+    auto loadBootModule(const ModuleEntry& bootModule, BootAllocator& allocator, const BootInfo& bootInfo) -> std::Optional<LoadedModule> {
+        const auto moduleName = std::StringView { std::bit_cast<char*>(bootInfo.virtualBase + bootModule.string) };
         std::print("INFO: Loading Boot Module: {}\n", moduleName);
 
-        const auto elfAddress = baseVirtualAddress + bootModule.moduleStart;
+        const auto elfAddress = bootInfo.virtualBase + bootModule.moduleStart;
         const auto elfInfoResult = getElfInfo(elfAddress);
 
-        if (elfInfoResult.isNotValid()) {
+        if (!elfInfoResult) {
             std::print("ERROR: Failed to load boot module: {}\n", moduleName);
-            return std::Result<LoadedModule>::failure();
+            return std::nullOptional;
         }
 
-        ElfInfo elfInfo = elfInfoResult.get();
+        ElfInfo elfInfo = elfInfoResult.value();
 
-        const auto elfVisitor = [&allocator](const auto& elf) { return loadElf(elf.get(), allocator); };
+        const auto elfVisitor = [&allocator, &bootInfo](const auto& elf) {
+            return loadElf(elf.value(), allocator, bootInfo);
+        };
 
         const auto entryAddress = std::visit(elfVisitor, elfInfo);
-        return std::Result<LoadedModule>::success({ moduleName, entryAddress });
+        return std::Optional<LoadedModule>({ moduleName, entryAddress });
     }
 
-    auto loadElf(const StaticExecutableElf& elf, const BootAllocator&) -> uintptr_t {
-        // todo: remove or add page allocation
+    auto loadElf(const StaticExecutableElf& elf, const BootAllocator&, const BootInfo& bootInfo) -> uintptr_t {
+        const auto physicalStart = elf.entryAddress - bootInfo.virtualBase;
+        const auto physicalEnd = physicalStart + elf.memorySize;
+        mapAddressRangeInTable(bootInfo.pageTable, elf.entryAddress, physicalStart, physicalEnd);
+        enablePaging();
         loadElf(elf);
         return elf.entryAddress;
     }
 
-
-    auto loadElf(const DynamicExecutableElf& elf, BootAllocator& allocator) -> uintptr_t {
+    auto loadElf(const DynamicExecutableElf& elf, BootAllocator& allocator, const BootInfo&) -> uintptr_t {
         const auto address = std::bit_cast<uintptr_t>(allocator.allocate(elf.memorySize));
         loadElf(elf, address);
         return address;

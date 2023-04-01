@@ -16,47 +16,63 @@
  */
 
 #include <format.h>
-#include <stdoffset.h>
+#include <thread/model/ThreadControlBlock.h>
+#include <thread/ThreadIDProvider.h>
+#include <thread/ThreadTable.h>
 
 namespace kernel {
 
-    // todo: Should this live in a config file somewhere?
-    constexpr uint32_t majorVersion = 1;
+    enum class MemoryType {
+        MEMORY_AVAILABLE = 1,
+        MEMORY_RESERVED = 2,
+        MEMORY_ACPI_RECLAIMABLE = 3,
+        MEMORY_NVS = 4,
+        MEMORY_BAD_RAM = 5
+    };
 
-    constexpr uint32_t minorVersion = 0;
+    struct [[gnu::packed]] MemoryBlock {
+        uint32_t size;
+        uint64_t address;
+        uint64_t length;
+        MemoryType type;
+    };
 
-    constexpr uint32_t fixVersion = 0;
+    struct [[gnu::packed]] InitInfo {
+        uintptr_t virtualBase;
+        uintptr_t nextMemory;
+        const std::Span<MemoryBlock>* memoryBlocks;
+        uintptr_t pageDirectory;
+        uintptr_t pageTable;
+        // todo: modules
+        uintptr_t stack;
+    };
 
-    extern "C" [[maybe_unused]] void kernelMain(const std::StandardOutputIterator& outputIterator) {
+    extern "C" [[maybe_unused]] void
+        kernelMain(const std::StandardOutputIterator& outputIterator, const InitInfo initInfo) {
         std::KernelFormatOutput::getInstance().setStandardOutputIterator(outputIterator);
 
         std::print("INFO: HephaistOS\n");
         std::print("INFO: Version 1.0\n");
 
-        // TODO: Register timer with timer interrupt
+        // todo: need to store this somewhere, inject? singleton?
+        auto threadTable = ThreadTable();
 
-        // todo: Init Timer? (or in init.LibCpp)
+        auto threadIDProvider = ThreadIDProvider();
+        auto initialTCB = ThreadControlBlock {
+            .id = threadIDProvider.getId(), .stack = initInfo.stack,
+            // todo: add instruction pointer (point to initial task module)
+        };
+        const auto isRegistered = threadTable.registerThreadControlBlock(&initialTCB);
+        if (!isRegistered) {
+            std::print("ERROR: Failed to register initial TCB in Thread table");
+            return;
+        }
 
-        // todo: Init IPC?
+        // todo: Do I need to setup the TSS here with the stack info?
 
-        // todo: Init memory manager? basic manager, user space memory manager
+        // todo: enter intial task by jumping to instruction pointer and userspace
 
-        // todo: Init page manager? Basic pages, linked to memory manager? proxy?
-
-        // todo: Init process table
-
-        // Something something Syscalls something?
-
-        // todo: Load Ram Disk
-
-        // Register ram disk root process
-
-        // todo: Jump to ram disk main in ring 3
-
-        // boot::tss::jumpUserMode();
-
-        // todo: Unload boot code
-        // TODO: Unload this bit of kernel code?
+        // todo: Unload boot code and unused code
 
         // todo: Remove and add an error message here, should never get here?
         while (true) { /* Endless Loop */

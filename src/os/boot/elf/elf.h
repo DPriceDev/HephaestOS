@@ -18,28 +18,17 @@
 #ifndef HEPHAISTOS_ELF_H
 #define HEPHAISTOS_ELF_H
 
-#include <cstdint>
 #include <array.h>
+#include <cstdint>
 #include <span.h>
 
 namespace boot {
 
-    enum class BitSize {
-        BIT_32 = 1,
-        BIT_64 = 2
-    };
+    enum class BitSize { BIT_32 = 1, BIT_64 = 2 };
 
-    enum class Endian {
-        LITTLE = 1,
-        BIG = 2
-    };
+    enum class Endian { LITTLE = 1, BIG = 2 };
 
-    enum class ElfType {
-        RELOCATABLE = 1,
-        EXECUTABLE = 2,
-        SHARED = 3,
-        CORE = 4
-    };
+    enum class ElfType { RELOCATABLE = 1, EXECUTABLE = 2, SHARED = 3, CORE = 4 };
 
     enum class InstructionSet {
         UNSPECIFIED = 0,
@@ -65,11 +54,7 @@ namespace boot {
     };
 
     // todo: Might need to be struct
-    enum class ProgramFlags {
-        EXECUTABLE = 1,
-        WRITABLE = 2,
-        READABLE = 4
-    };
+    enum class ProgramFlags { EXECUTABLE = 1, WRITABLE = 2, READABLE = 4 };
 
     struct [[gnu::packed]] ProgramHeader {
         SegmentType segmentType;
@@ -105,19 +90,19 @@ namespace boot {
 
     struct SectionFlags {
         bool isWritable : 1;
-        bool isAllocated: 1;
-        bool isInstructions: 1;
+        bool isAllocated : 1;
+        bool isInstructions : 1;
         bool : 1;
-        bool canBeMerged: 1;
-        bool containsStrings: 1;
-        bool containsSHTIndex: 1;
-        bool preserveLinkOrder: 1;
-        bool isNonOSConforming: 1;
-        bool isInGroup: 1;
-        bool hasThreadLocalStorage: 1;
+        bool canBeMerged : 1;
+        bool containsStrings : 1;
+        bool containsSHTIndex : 1;
+        bool preserveLinkOrder : 1;
+        bool isNonOSConforming : 1;
+        bool isInGroup : 1;
+        bool hasThreadLocalStorage : 1;
         uint32_t : 19;
         bool isOrdered : 1;
-        bool isExcluded: 1;
+        bool isExcluded : 1;
     };
 
     struct [[gnu::packed]] SectionHeader {
@@ -158,6 +143,6 @@ namespace boot {
         uint16_t sectionHeaderCount;
         uint16_t sectionHeaderIndex;
     };
-}
+}// namespace boot
 
 #endif// HEPHAISTOS_ELF_H

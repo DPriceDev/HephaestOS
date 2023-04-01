@@ -1,11 +1,11 @@
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(CMAKE_ASM_NASM_COMPILE_OBJECT "<CMAKE_ASM_NASM_COMPILER> <INCLUDES> -felf32 -g -F dwarf -o <OBJECT> <SOURCE>")
-endif()
+endif ()
 
 if (CMAKE_BUILD_TYPE STREQUAL "Release")
     set(CMAKE_ASM_NASM_COMPILE_OBJECT "<CMAKE_ASM_NASM_COMPILER> <INCLUDES> -felf32 -O3 -o <OBJECT> <SOURCE>")
-endif()
+endif ()
 
 add_library(os_options INTERFACE)
 target_link_libraries(os_options INTERFACE project_options project_warnings)

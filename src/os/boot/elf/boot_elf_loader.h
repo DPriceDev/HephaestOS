@@ -20,6 +20,7 @@
 
 #include <cstdint>
 #include <elf/elf.h>
+#include <optional.h>
 #include <span.h>
 #include <variant_base.h>
 
@@ -41,7 +42,7 @@ namespace boot {
     using ElfInfo = std::Variant<StaticExecutableElf, DynamicExecutableElf>;
 
     // get elf info
-    auto getElfInfo(uintptr_t headerAddress) -> std::Result<ElfInfo>;
+    auto getElfInfo(uintptr_t headerAddress) -> std::Optional<ElfInfo>;
 
     // load static elf to memory
     void loadElf(const StaticExecutableElf& elf);

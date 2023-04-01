@@ -46,8 +46,8 @@ namespace std {
 
     template<class Iterator>
         requires(!requires { typename Iterator::difference_type; }) && requires(const Iterator& a, const Iterator& b) {
-                                                                           { a - b } -> std::integral;
-                                                                       }
+            { a - b } -> std::integral;
+        }
     struct incrementableTraits<Iterator> {
         using differenceType = std::make_signed_t<decltype(std::declval<Iterator>() - std::declval<Iterator>())>;
     };

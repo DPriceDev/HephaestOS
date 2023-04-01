@@ -18,7 +18,7 @@
 #ifndef HEPHAIST_OS_SHARED_LIBRARY_CPP_VARIANT_VARIANT_GET_H
 #define HEPHAIST_OS_SHARED_LIBRARY_CPP_VARIANT_VARIANT_GET_H
 
-#include "result.h"
+#include "optional.h"
 #include "variant_variant.h"
 
 namespace std {
@@ -60,13 +60,13 @@ namespace std {
      * a failure result is returned.
      */
     template<std::size_t TypeIndex, class... Types, class ResultType>
-    constexpr auto get(std::Variant<Types...>& variant) -> std::Result<ResultType> {
+    constexpr auto get(std::Variant<Types...>& variant) -> std::Optional<ResultType> {
         if (variant.index() != TypeIndex) {
-            return std::Result<ResultType>::failure();
+            return std::Optional<ResultType>();
         }
 
         using Type = typename VariantType<TypeIndex, Types...>::type;
-        return std::Result<ResultType>::success(*static_cast<Type*>(variant.data()));
+        return std::Optional<ResultType>(*static_cast<Type*>(variant.data()));
     }
 
     /**
@@ -75,12 +75,12 @@ namespace std {
      * result is returned.
      */
     template<class Type, class... Types>
-    constexpr auto get(std::Variant<Types...>& variant) -> std::Result<Type> {
+    constexpr auto get(std::Variant<Types...>& variant) -> std::Optional<Type> {
         auto getIndex = VariantIndex<0, Type, Types...>().index;
         if (getIndex != variant.index()) {
-            return std::Result<Type>::failure();
+            return std::Optional<Type>();
         }
-        return std::Result<Type>::success(*static_cast<Type*>(variant.data()));
+        return std::Optional<Type>(*static_cast<Type*>(variant.data()));
     }
 }// namespace std
 

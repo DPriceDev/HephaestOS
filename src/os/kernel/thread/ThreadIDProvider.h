@@ -1,4 +1,4 @@
-// Copyright (C) 2022 David Price - All Rights Reserved
+// Copyright (C) 2023 David Price - All Rights Reserved
 // This file is part of HephaistOS.
 //
 // HephaistOS is free software: you can redistribute it and/or modify
@@ -15,12 +15,22 @@
 // along with HephaistOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#ifndef HEPHAEST_OS_SHARED_LIBRARY_CPP_FORMAT_H
-#define HEPHAEST_OS_SHARED_LIBRARY_CPP_FORMAT_H
+#ifndef HEPHAISTOS_THREADIDPROVIDER_H
+#define HEPHAISTOS_THREADIDPROVIDER_H
 
-#include "format/format_arguments.h"
-#include "format/format_format.h"
-#include "format/format_state.h"
-#include "format/formatter/formatter.h"
+#include <cstddef>
+#include <cstdint>
 
-#endif// HEPHAEST_OS_SHARED_LIBRARY_CPP_FORMAT_H
+namespace kernel {
+
+    class ThreadIDProvider {
+        std::size_t current = 0;
+
+      public:
+        auto getId() -> std::size_t;
+
+        void returnId(std::size_t tid);
+    };
+}// namespace kernel
+
+#endif// HEPHAISTOS_THREADIDPROVIDER_H

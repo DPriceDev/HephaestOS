@@ -19,7 +19,7 @@
 #define HEPHAIST_OS_SHARED_LIBRARY_CPP_STRING_CHARCONV_H
 
 #include "algorithm.h"
-#include "result.h"
+#include "expected.h"
 #include "span.h"
 #include "system_error.h"
 
@@ -71,7 +71,8 @@ namespace std {
         auto remainder = decimalNumber;
         while (remainder != 0) {
             decimalNumber *= 10;
-            remainder = decimalNumber - static_cast<unsigned long long>(decimalNumber);
+            const auto whole = static_cast<unsigned long long>(decimalNumber);
+            remainder = decimalNumber - static_cast<decltype(value)>(whole);
         }
 
         // todo: Some sort of rounding here?
@@ -87,7 +88,7 @@ namespace std {
      * interpreted, and will construct the integer result from the correct base.
      */
     template<std::integral Type>
-    constexpr std::Result<Type, Error> fromChars(const char* first, const char* last, std::size_t base = 10) {
+    constexpr std::Optional<Type> fromChars(const char* first, const char* last, std::size_t base = 10) {
         auto view = std::StringView(first, static_cast<std::size_t>(last - first));
 
         std::size_t running = 0;
@@ -97,7 +98,7 @@ namespace std {
             power *= base;// todo: handle int is too big / overflow?
         });
 
-        return std::Result<std::size_t, Error>::success(running);
+        return std::Optional<std::size_t>(running);
     }
 }// namespace std
 

@@ -22,7 +22,7 @@
 #include "compare"
 #include "iterator.h"
 #include "limits"
-#include "result.h"
+#include "optional.h"
 #include "string"
 
 namespace std {
@@ -75,11 +75,11 @@ namespace std {
         constexpr auto operator[](SizeType index) const -> ConstReference { return *(data() + index); }
 
         // todo: Move to implementation? or wrap later on? make protected and expose in child?
-        constexpr std::Result<ConstReference> at(SizeType index) const {
+        constexpr std::Optional<ConstReference> at(SizeType index) const {
             if (index >= 0 && index < size()) {
-                return std::Result<ConstReference>::success(this->operator[](index));
+                return std::Optional<ConstReference>(this->operator[](index));
             }
-            return std::Result<ConstReference>::failure();
+            return std::Optional<ConstReference>();
         }
 
         constexpr auto front() const -> ConstReference { return *start_; }

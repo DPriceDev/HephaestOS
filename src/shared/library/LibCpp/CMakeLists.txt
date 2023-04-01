@@ -1,3 +1,3 @@
-add_library(sharedLibCpp INTERFACE)
+add_library(sharedLibCpp INTERFACE include/optional.h)
 target_include_directories(sharedLibCpp INTERFACE include)
 target_link_libraries(sharedLibCpp INTERFACE project_options)
