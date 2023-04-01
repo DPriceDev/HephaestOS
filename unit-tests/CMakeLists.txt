@@ -5,28 +5,28 @@ else()
     include(${CONAN_CATCH2_ROOT}/lib/cmake/Catch2/Catch.cmake)
 endif()
 
-add_library(hephaist_os_catch_main STATIC catch_test_runner.cpp)
-target_link_libraries(hephaist_os_catch_main
+add_library(hephaest_os_catch_main STATIC catch_test_runner.cpp)
+target_link_libraries(hephaest_os_catch_main
         PRIVATE
         project_options
 #        project_warnings
         CONAN_PKG::catch2)
 
-add_executable(hephaist_os_unit_tests kernel/lib/stdio/sprintf_test.cpp)
+add_executable(hephaest_os_unit_tests kernel/lib/stdio/sprintf_test.cpp)
 
-target_link_libraries(hephaist_os_unit_tests
+target_link_libraries(hephaest_os_unit_tests
         PRIVATE
-        hephaist_os_catch_main
+        hephaest_os_catch_main
         project_options
 #        project_warnings
         CONAN_PKG::catch2)
 
-target_include_directories(hephaist_os_unit_tests
+target_include_directories(hephaest_os_unit_tests
         PRIVATE
         ../src)
 
 catch_discover_tests(
-        hephaist_os_unit_tests
+        hephaest_os_unit_tests
         TEST_PREFIX
         "unittests."
         REPORTER
