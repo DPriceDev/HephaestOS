@@ -1,4 +1,4 @@
-; Copyright (C) 2022 David Price - All Rights Reserved
+; Copyright (C) 2023 David Price - All Rights Reserved
 ; This file is part of HephaestOS.
 ;
 ; HephaestOS is free software: you can redistribute it and/or modify
