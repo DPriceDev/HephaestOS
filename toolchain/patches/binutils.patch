@@ -7,13 +7,13 @@ index 30087e3b..3b432b82 100644
      want64=true
      ;;
 +#endif
-+  i[3-7]86-*-hephaistos*)
++  i[3-7]86-*-hephaestos*)
 +    targ_defvec=i386_elf32_vec
 +    targ_selvecs=
 +    targ64_selvecs=x86_64_elf64_vec
 +    ;;
 +#ifdef BFD64
-+  x86_64-*-hephaistos*)
++  x86_64-*-hephaestos*)
 +    targ_defvec=x86_64_elf64_vec
 +    targ_selvecs=i386_elf32_vec
 +    want64=true
@@ -30,7 +30,7 @@ index 7384e919..f4687e4a 100755
  	     | hiux* | abug | nacl* | netware* | windows* \
  	     | os9* | macos* | osx* | ios* \
 -	     | mpw* | magic* | mmixware* | mon960* | lnews* \
-+	     | mpw* | magic* | mmixware* | mon960* | lnews* | hephaistos* \
++	     | mpw* | magic* | mmixware* | mon960* | lnews* | hephaestos* \
  	     | amigaos* | amigados* | msdos* | newsos* | unicos* | aof* \
  	     | aos* | aros* | cloudabi* | sortix* | twizzler* \
  	     | nindy* | vxsim* | vxworks* | ebmon* | hms* | mvs* \
@@ -42,7 +42,7 @@ index 338892ad..33ff26ca 100644
    i386-*-elfiamcu)			fmt=elf arch=iamcu ;;
    i386-*-elf*)				fmt=elf ;;
    i386-*-fuchsia*)			fmt=elf ;;
-+  i386-*-hephaistos*)       fmt=elf ;;
++  i386-*-hephaestos*)       fmt=elf ;;
    i386-*-genode*)			fmt=elf ;;
    i386-*-bsd*)				fmt=aout em=386bsd ;;
    i386-*-netbsdpe*)			fmt=coff em=pe ;;
@@ -54,7 +54,7 @@ index f8e99325..37c4fb2b 100644
  	eelf_i386_fbsd.c \
  	eelf_i386_ldso.c \
  	eelf_i386_sol2.c \
-+    eelf_i386_hephaistos.c \
++    eelf_i386_hephaestos.c \
  	eelf_i386_vxworks.c \
  	eelf_iamcu.c \
  	eelf_s390.c \
@@ -62,7 +62,7 @@ index f8e99325..37c4fb2b 100644
  	eelf_k1om.c \
  	eelf_k1om_fbsd.c \
  	eelf_x86_64.c \
-+    eelf_x86_64_hephaistos.c \
++    eelf_x86_64_hephaestos.c \
  	eelf_x86_64_cloudabi.c \
  	eelf_x86_64_fbsd.c \
  	eelf_x86_64_sol2.c \
@@ -74,7 +74,7 @@ index ef2e99e0..e8098f6e 100644
  	eelf_i386_fbsd.c \
  	eelf_i386_ldso.c \
  	eelf_i386_sol2.c \
-+	eelf_i386_hephaistos.c \
++	eelf_i386_hephaestos.c \
  	eelf_i386_vxworks.c \
  	eelf_iamcu.c \
  	eelf_s390.c \
@@ -82,7 +82,7 @@ index ef2e99e0..e8098f6e 100644
  	eelf_k1om.c \
  	eelf_k1om_fbsd.c \
  	eelf_x86_64.c \
-+    eelf_x86_64_hephaistos.c \
++    eelf_x86_64_hephaestos.c \
  	eelf_x86_64_cloudabi.c \
  	eelf_x86_64_fbsd.c \
  	eelf_x86_64_sol2.c \
@@ -94,34 +94,34 @@ index 6205d7c9..ae4f067c 100644
  			;;
  hppa*-*-openbsd*)	targ_emul=hppaobsd
  			;;
-+i[3-7]86-*-hephaistos*)
-+			targ_emul=elf_i386_hephaistos
++i[3-7]86-*-hephaestos*)
++			targ_emul=elf_i386_hephaestos
 +			targ_extra_emuls=elf_i386
-+			targ64_extra_emuls="elf_x86_64_hephaistos elf_x86_64"
++			targ64_extra_emuls="elf_x86_64_hephaestos elf_x86_64"
 +			;;
-+x86_64-*-hephaistos*)
-+			targ_emul=elf_x86_64_hephaistos
-+			targ_extra_emuls="elf_i386_hephaistos elf_x86_64 elf_i386"
++x86_64-*-hephaestos*)
++			targ_emul=elf_x86_64_hephaestos
++			targ_extra_emuls="elf_i386_hephaestos elf_x86_64 elf_i386"
 +			;;
  i[3-7]86-*-nto-qnx*)	targ_emul=i386nto
  			;;
  i[3-7]86-*-go32)	targ_emul=i386go32
-diff --git a/ld/emulparams/elf_i386_hephaistos.sh b/ld/emulparams/elf_i386_hephaistos.sh
+diff --git a/ld/emulparams/elf_i386_hephaestos.sh b/ld/emulparams/elf_i386_hephaestos.sh
 new file mode 100644
 index 00000000..b2f038cd
 --- /dev/null
-+++ b/ld/emulparams/elf_i386_hephaistos.sh
++++ b/ld/emulparams/elf_i386_hephaestos.sh
 @@ -0,0 +1,4 @@
 +. ${srcdir}/emulparams/elf_i386.sh
 +GENERATE_SHLIB_SCRIPT=yes
 +GENERATE_PIE_SCRIPT=yes
 +TEXT_START_ADDR=0x40000000
 \ No newline at end of file
-diff --git a/ld/emulparams/elf_x86_64_hephaistos.sh b/ld/emulparams/elf_x86_64_hephaistos.sh
+diff --git a/ld/emulparams/elf_x86_64_hephaestos.sh b/ld/emulparams/elf_x86_64_hephaestos.sh
 new file mode 100644
 index 00000000..ba338a7c
 --- /dev/null
-+++ b/ld/emulparams/elf_x86_64_hephaistos.sh
++++ b/ld/emulparams/elf_x86_64_hephaestos.sh
 @@ -0,0 +1,2 @@
 +. ${srcdir}/emulparams/elf_x86_64.sh
 +TEXT_START_ADDR=0x40000000

@@ -9,7 +9,7 @@ set(CMAKE_CXX_COMPILER_WORKS 1)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 enable_language(ASM_NASM)
-project(HephaistOS LANGUAGES ASM_NASM CXX VERSION 1.0.0)
+project(HephaestOS LANGUAGES ASM_NASM CXX VERSION 1.0.0)
 
 include(FetchContent)
 FetchContent_Declare(_project_options URL https://github.com/aminya/project_options/archive/refs/tags/v0.26.3.zip)
@@ -48,6 +48,6 @@ add_subdirectory(toolchain)
 
 #if(ENABLE_TESTING)
 #    enable_testing()
-#    message("Building HephaistOS Tests.")
+#    message("Building HephaestOS Tests.")
 #    add_subdirectory(unit-tests PRIVATE)
 #endif()

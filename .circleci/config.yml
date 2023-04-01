@@ -10,9 +10,8 @@ jobs:
       - restore_cache:
           name: Restore Toolchain
           keys:
-            - v2-cache-toolchain-{{ checksum "toolchain/CMakeLists.txt" }}
-            - v2-cache-toolchain-
-            - toolchain-v1
+            - v3-cache-toolchain-{{ checksum "toolchain/CMakeLists.txt" }}
+            - v3-cache-toolchain-
       - run:
           name: "Build toolchain if does not exist"
           command: "chmod u+x .circleci/build-toolchain.sh && .circleci/build-toolchain.sh"
@@ -20,7 +19,7 @@ jobs:
           name: Cache Toolchain
           paths:
             - "cmake-build-release/toolchain/output"
-          key: v2-cache-toolchain-{{ checksum "toolchain/CMakeLists.txt" }}
+          key: v3-cache-toolchain-{{ checksum "toolchain/CMakeLists.txt" }}
 
   build-hephaestOS:
     docker:
@@ -31,8 +30,8 @@ jobs:
       - restore_cache:
           name: Restore Toolchain
           keys:
-            - v2-cache-toolchain-{{ checksum "toolchain/CMakeLists.txt" }}
-            - v2-cache-toolchain-
+            - v3-cache-toolchain-{{ checksum "toolchain/CMakeLists.txt" }}
+            - v3-cache-toolchain-
       - run:
           name: "Update libraries"
           command: "sudo apt-get update && sudo apt-get install texinfo flex bison nasm graphviz doxygen ccache libmpfr-dev libmpc-dev doxygen grub-common xorriso --no-install-recommends -y"
@@ -41,12 +40,12 @@ jobs:
           command: "wget https://github.com/Kitware/CMake/releases/download/v3.26.0/cmake-3.26.0-linux-x86_64.tar.gz && tar -zxvf cmake-3.26.0-linux-x86_64.tar.gz && cd cmake-3.26.0-linux-x86_64 && sudo cp -r bin /usr/ && sudo cp -r doc /usr/share/ && sudo cp -r man /usr/share/ && sudo cp -r share /usr/ && cmake --version"
       - run:
           name: "Setup and configure cmake for OS"
-          command: "cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=/home/circleci/project/cmake-build-release/toolchain/output/bin/i386-pc-hephaistos-gcc -DCMAKE_CXX_COMPILER=/home/circleci/project/cmake-build-release/toolchain/output/bin/i386-pc-hephaistos-g++ -B cmake-build-release"
+          command: "cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=/home/circleci/project/cmake-build-release/toolchain/output/bin/i386-pc-hephaestos-gcc -DCMAKE_CXX_COMPILER=/home/circleci/project/cmake-build-release/toolchain/output/bin/i386-pc-hephaestos-g++ -B cmake-build-release"
       - run:
           name: "Build OS ISO"
-          command: "cmake --build cmake-build-release --target HephaistOS.iso"
+          command: "cmake --build cmake-build-release --target HephaestOS.iso"
       - store_artifacts:
-          path: /home/circleci/project/cmake-build-release/HephaistOS.iso
+          path: /home/circleci/project/cmake-build-release/HephaestOS.iso
 
 workflows:
   version: 2
