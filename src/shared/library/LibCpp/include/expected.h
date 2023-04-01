@@ -47,6 +47,21 @@ namespace std {
 
         explicit(false) Expected(Unexpected<Error> error) : error_(error.error()), hasResult { false } {}
 
+        // Operators
+        constexpr const Type* operator->() const noexcept { return &value_; }
+
+        constexpr Type* operator->() noexcept { return &value_; }
+
+        constexpr const Type& operator*() const& noexcept { return &value_; }
+
+        constexpr Type& operator*() & noexcept { return &value_; }
+
+        constexpr const Type&& operator*() const&& noexcept { return &value_; }
+
+        constexpr Type&& operator*() && noexcept { return &value_; }
+
+        constexpr explicit operator bool() const noexcept { return hasResult; }
+
         // Accessors
         [[nodiscard]] constexpr auto& value() const noexcept { return value_; }
 
