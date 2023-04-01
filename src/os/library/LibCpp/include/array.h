@@ -19,7 +19,8 @@
 #define HEPHAISTOS_ARRAY_H
 
 #include "array_base.h"
-#include "result.h"
+#include "optional.h"
+#include "functional.h"
 #include <cstdint>
 
 namespace std {
@@ -27,19 +28,18 @@ namespace std {
     template<typename Type, std::size_t Length>
     struct Array : public detail::Array<Type, Length> {
 
-        [[nodiscard]] constexpr auto at(typename Array<Type, Length>::sizeType index) -> std::Result<Type&> {
-            if (index >= 0 && index < Length) {
-                return std::Result<Type&>::success(this->operator[](index));
+        [[nodiscard]] constexpr auto at(typename Array<Type, Length>::sizeType index) -> std::Optional<std::ReferenceWrapper<Type>> {
+            if (index < 0 && index >= Length) {
+                return std::nullOption;
             }
-            return std::Result<Type&>::failure();
+            return std::Optional<std::ReferenceWrapper<Type>>(this->operator[](index));
         }
 
-        [[nodiscard]] constexpr auto at(typename Array<Type, Length>::sizeType index) const
-            -> const std::Result<Type&> {
-            if (index >= 0 && index < Length) {
-                return std::Result<Type&>::success(this->operator[](index));
+        [[nodiscard]] constexpr auto at(typename Array<Type, Length>::sizeType index) const -> const std::Optional<std::ReferenceWrapper<Type>> {
+            if (index < 0 && index >= Length) {
+                return std::nullOption;
             }
-            return std::Result<Type&>::failure();
+            return std::Optional<std::ReferenceWrapper<Type>>(this->operator[](index));
         }
 
         // todo: constexpr auto swap(Array<Type, Length>& other) noexcept;

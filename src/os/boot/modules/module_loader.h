@@ -31,13 +31,13 @@ namespace boot {
     };
 
     auto loadModules(const std::Span<ModuleEntry>& bootModules, BootAllocator& allocator, const BootInfo& bootInfo)
-        -> std::Result<uintptr_t>;
+        -> std::Optional<uintptr_t>;
 
     auto loadBootModule(
         const ModuleEntry& bootModule,
         BootAllocator& allocator,
         const BootInfo& bootInfo
-    ) -> std::Result<LoadedModule>;
+    ) -> std::Optional<LoadedModule>;
 
     auto loadElf(const StaticExecutableElf& elf, const BootAllocator& bootAllocator, const BootInfo& bootInfo) -> uintptr_t;
 

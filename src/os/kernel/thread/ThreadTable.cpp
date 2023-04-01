@@ -16,12 +16,26 @@
 //
 
 #include "ThreadTable.h"
-auto kernel::ThreadTable::registerThreadControlBlock(kernel::ThreadControlBlock*) -> bool {
+auto kernel::ThreadTable::registerThreadControlBlock(kernel::ThreadControlBlock* block) -> bool {
+    auto entry = table.at(block->id);
+    if (!entry || entry->get() != nullptr) {
+        return false;
+    }
+
+    entry->get() = block;
     return true;
 }
-auto kernel::ThreadTable::getThreadControlBlock(kernel::TID) -> std::Result<ThreadControlBlock*> {
-    return std::Result<ThreadControlBlock*>::failure();
+auto kernel::ThreadTable::getThreadControlBlock(kernel::TID tid) -> std::Optional<ThreadControlBlock*> {
+    const auto entry = table.at(tid);
+    if (!entry || entry->get() == nullptr) {
+        return std::nullOption;
+    }
+
+    return std::Optional<ThreadControlBlock*>(entry->get());
 }
-void kernel::ThreadTable::removeThreadControlBlock(kernel::TID) {
-    // todo
+void kernel::ThreadTable::removeThreadControlBlock(kernel::TID tid) {
+    const auto entry = table.at(tid);
+    if (entry) {
+        entry->get() = nullptr;
+    }
 }

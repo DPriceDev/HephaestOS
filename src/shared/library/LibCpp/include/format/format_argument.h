@@ -161,11 +161,11 @@ namespace std {
     auto visitFormatArgument(Visitor&& visitor, std::BasicFormatArgument<State> argument) {
         return std::visit(
             [&visitor](auto result) -> decltype(auto) {
-                if (!result.isValid()) {
+                if (!result) {
                     return visitor(std::MonoState());
                 }
 
-                return visitor(result.get());
+                return visitor(result.value());
             },
             argument.value_
         );

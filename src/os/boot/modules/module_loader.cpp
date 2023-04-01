@@ -22,12 +22,12 @@
 
 namespace boot {
     auto loadModules(const std::Span<ModuleEntry>& bootModules, BootAllocator& allocator, const BootInfo& bootInfo)
-        -> std::Result<uintptr_t> {
+        -> std::Optional<uintptr_t> {
         std::print("INFO: Loading {} Boot Module{}\n", bootModules.size(), (bootModules.size()) ? "" : "s");
 
         if (bootModules.empty()) {
             std::print("ERROR: No Boot Modules Found\n");
-            return std::Result<uintptr_t>::failure();
+            return std::Optional<uintptr_t>();
         }
 
         uintptr_t kernelAddress = 0;// todo: Make optional?
@@ -41,37 +41,37 @@ namespace boot {
             );
 
             const auto loadedModule = loadBootModule(bootModule, allocator, bootInfo);
-            if (loadedModule.isValid() && loadedModule.get().name == "kernel") {
-                kernelAddress = loadedModule.get().address;
+            if (loadedModule && loadedModule->name == "kernel") {
+                kernelAddress = loadedModule->address;
             }
         }
 
         if (kernelAddress == 0) {
-            return std::Result<uintptr_t>::failure();
+            return std::Optional<uintptr_t>();
         }
 
-        return std::Result<uintptr_t>::success(kernelAddress);
+        return std::Optional<uintptr_t>(kernelAddress);
     }
 
     auto loadBootModule(const ModuleEntry& bootModule, BootAllocator& allocator, const BootInfo& bootInfo)
-        -> std::Result<LoadedModule> {
+        -> std::Optional<LoadedModule> {
         const auto moduleName = std::StringView { std::bit_cast<char*>(bootInfo.virtualBase + bootModule.string) };
         std::print("INFO: Loading Boot Module: {}\n", moduleName);
 
         const auto elfAddress = bootInfo.virtualBase + bootModule.moduleStart;
         const auto elfInfoResult = getElfInfo(elfAddress);
 
-        if (elfInfoResult.isNotValid()) {
+        if (!elfInfoResult) {
             std::print("ERROR: Failed to load boot module: {}\n", moduleName);
-            return std::Result<LoadedModule>::failure();
+            return std::nullOption;
         }
 
-        ElfInfo elfInfo = elfInfoResult.get();
+        ElfInfo elfInfo = elfInfoResult.value();
 
-        const auto elfVisitor = [&allocator, &bootInfo](const auto& elf) { return loadElf(elf.get(), allocator, bootInfo); };
+        const auto elfVisitor = [&allocator, &bootInfo](const auto& elf) { return loadElf(elf.value(), allocator, bootInfo); };
 
         const auto entryAddress = std::visit(elfVisitor, elfInfo);
-        return std::Result<LoadedModule>::success({ moduleName, entryAddress });
+        return std::Optional<LoadedModule>({ moduleName, entryAddress });
     }
 
     auto loadElf(const StaticExecutableElf& elf, const BootAllocator&, const BootInfo& bootInfo) -> uintptr_t {

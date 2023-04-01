@@ -18,16 +18,18 @@
 #ifndef HEPHAISTOS_THREADIDPROVIDER_H
 #define HEPHAISTOS_THREADIDPROVIDER_H
 
-#include <stdint.h>
+#include <cstdint>
+#include <cstddef>
 
 namespace kernel {
 
     class ThreadIDProvider {
+        std::size_t current = 0;
 
       public:
-        auto getId() -> uint64_t;
+        auto getId() -> std::size_t;
 
-        void returnId(uint64_t id);
+        void returnId(std::size_t tid);
     };
 }
 

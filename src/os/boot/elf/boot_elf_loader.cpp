@@ -17,7 +17,7 @@
 
 #include "boot_elf_loader.h"
 #include <bit>
-#include <result.h>
+#include <expected.h>
 #include <string.h>
 
 namespace boot {
@@ -30,20 +30,20 @@ namespace boot {
 
     auto extractProgramHeaders(const ElfHeader* header, uintptr_t headerAddress) -> std::Span<const ProgramHeader>;
 
-    auto getElfInfo(uintptr_t headerAddress) -> std::Result<ElfInfo> {
+    auto getElfInfo(uintptr_t headerAddress) -> std::Optional<ElfInfo> {
         const auto* elfHeader = std::bit_cast<ElfHeader*>(headerAddress);
 
         const auto& identifier = elfHeader->identifier;
         const auto isElf = identifier[0] == 'E' && identifier[1] == 'L' && identifier[2] == 'F';
         if (!isElf) {
-            return std::Result<ElfInfo>::failure();
+            return std::Optional<ElfInfo>();
         }
 
         if (elfHeader->type != ElfType::EXECUTABLE) {
-            return std::Result<ElfInfo>::failure();
+            return std::Optional<ElfInfo>();
         }
 
-        return std::Result<ElfInfo>::success(getExecutableElfInfo(elfHeader, headerAddress));
+        return std::Optional<ElfInfo>(getExecutableElfInfo(elfHeader, headerAddress));
     }
 
     auto getExecutableElfInfo(const ElfHeader* header, uintptr_t headerAddress) -> ElfInfo {

@@ -22,7 +22,7 @@
 
 namespace kernel {
 
-    using TID = uint64_t;
+    using TID = std::size_t;
 
     // todo: Abstract
     struct ThreadRegisters {

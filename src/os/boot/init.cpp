@@ -46,11 +46,11 @@ extern "C" void init(boot::MultiBootInfo& info, uint32_t magic, uint32_t stackPo
 
     boot::unmapLowerKernel(bootInfo.pageDirectory);
 
-    if (!kernelAddress.isValid()) {
+    if (!kernelAddress) {
         std::print("ERROR: Failed to enter kernel module\n");
         return;
     }
-    boot::enterKernelModule(stackPointer, kernelAddress.get(), info, bootInfo, allocator);
+    boot::enterKernelModule(stackPointer, kernelAddress.value(), info, bootInfo, allocator);
 }
 
 namespace boot {

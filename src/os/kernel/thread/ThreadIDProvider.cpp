@@ -16,10 +16,12 @@
 //
 
 #include "ThreadIDProvider.h"
-auto kernel::ThreadIDProvider::getId() -> uint64_t {
-    return 0;
+auto kernel::ThreadIDProvider::getId() -> std::size_t {
+    std::size_t const tid = current;
+    current++;
+    return tid;
 }
 
-void kernel::ThreadIDProvider::returnId(uint64_t) {
-
+void kernel::ThreadIDProvider::returnId(std::size_t) {
+    // todo: Return id for reuse
 }

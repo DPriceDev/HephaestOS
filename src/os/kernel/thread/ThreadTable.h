@@ -19,19 +19,21 @@
 #define HEPHAISTOS_THREADTABLE_H
 
 #include <stdint.h>
-#include <result.h>
+#include <expected.h>
+#include <array.h>
 #include "thread/model/ThreadControlBlock.h"
 
 namespace kernel {
 
     class ThreadTable {
+        std::Array<ThreadControlBlock*, 10> table { };
 
       public:
         auto registerThreadControlBlock(/* todo: Make this a unique pointer */ ThreadControlBlock* threadControlBlock) -> bool;
 
-        auto getThreadControlBlock(TID id) -> std::Result<ThreadControlBlock*>;
+        auto getThreadControlBlock(TID tid) -> std::Optional<ThreadControlBlock*>;
 
-        void removeThreadControlBlock(TID id);
+        void removeThreadControlBlock(TID tid);
     };
 }
 
