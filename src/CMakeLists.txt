@@ -1,6 +1,7 @@
 add_subdirectory(os)
 add_subdirectory(shared)
 add_subdirectory(sysroot)
+add_subdirectory(userspace)
 
 add_custom_target(
         HephaestOS.iso

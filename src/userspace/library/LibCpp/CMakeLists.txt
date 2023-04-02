@@ -1,0 +1,3 @@
+add_library(LibCpp INTERFACE)
+target_link_libraries(LibCpp INTERFACE user_options sharedLibCpp gcc)
+target_include_directories(LibCpp INTERFACE include)
