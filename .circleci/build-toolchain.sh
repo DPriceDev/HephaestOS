@@ -6,7 +6,7 @@ then
 fi
 
 sudo apt-get update
-sudo apt-get install texinfo flex bison nasm graphviz doxygen ccache libmpfr-dev libmpc-dev doxygen --no-install-recommends -y
+sudo apt-get install texinfo flex bison nasm graphviz doxygen ccache libmpfr-dev libmpc-dev doxygen ninja-build --no-install-recommends -y
 
 wget https://github.com/Kitware/CMake/releases/download/v3.30.5/cmake-3.30.5-linux-x86_64.tar.gz
 tar -zxvf cmake-3.30.5-linux-x86_64.tar.gz

@@ -32,13 +32,13 @@ jobs:
             - v4-cache-toolchain-{{ checksum "toolchain/CMakeLists.txt" }}
       - run:
           name: "Update libraries"
-          command: "sudo apt-get update && sudo apt-get install texinfo flex bison nasm graphviz doxygen ccache libmpfr-dev libmpc-dev doxygen grub-common xorriso --no-install-recommends -y"
+          command: "sudo apt-get update && sudo apt-get install texinfo flex bison nasm graphviz doxygen ccache libmpfr-dev libmpc-dev doxygen grub-common xorriso ninja-build --no-install-recommends -y"
       - run:
           name: "Update Cmake to latest"
           command: "wget https://github.com/Kitware/CMake/releases/download/v3.30.5/cmake-3.30.5-linux-x86_64.tar.gz && tar -zxvf cmake-3.30.5-linux-x86_64.tar.gz && cd cmake-3.30.5-linux-x86_64 && sudo cp -r bin /usr/ && sudo cp -r doc /usr/share/ && sudo cp -r man /usr/share/ && sudo cp -r share /usr/ && cmake --version"
       - run:
           name: "Setup and configure cmake for OS"
-          command: "cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=/home/circleci/project/cmake-build-release/toolchain/output/bin/i386-pc-hephaestos-gcc -DCMAKE_CXX_COMPILER=/home/circleci/project/cmake-build-release/toolchain/output/bin/i386-pc-hephaestos-g++ -B cmake-build-release"
+          command: "cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=/home/circleci/project/cmake-build-release/toolchain/output/bin/i386-pc-hephaestos-gcc -DCMAKE_CXX_COMPILER=/home/circleci/project/cmake-build-release/toolchain/output/bin/i386-pc-hephaestos-g++ -B cmake-build-release -G Ninja"
       - run:
           name: "Build OS ISO"
           command: "cmake --build cmake-build-release --target HephaestOS.iso"
