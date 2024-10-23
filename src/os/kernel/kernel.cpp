@@ -47,8 +47,7 @@ namespace kernel {
         uintptr_t stack;
     };
 
-    extern "C" [[maybe_unused]] void
-        kernelMain(const std::StandardOutputIterator& outputIterator, const InitInfo initInfo) {
+    extern "C" [[maybe_unused]] void kernelMain(const std::StandardOutputIterator& outputIterator, const InitInfo initInfo) {
         std::KernelFormatOutput::getInstance().setStandardOutputIterator(outputIterator);
 
         std::print("INFO: HephaestOS\n");
