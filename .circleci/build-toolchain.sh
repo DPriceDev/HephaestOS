@@ -19,4 +19,4 @@ sudo cp -r share /usr/
 cd .. || exit 1
 mkdir -p cmake-build-release
 cmake -DCMAKE_BUILD_TYPE=Release -B cmake-build-release
-cmake --build cmake-build-release --target gcc-14.2.0
+cmake --build cmake-build-release --target gcc-14.2.0 -G Ninja

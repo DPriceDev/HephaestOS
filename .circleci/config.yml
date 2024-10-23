@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   build-toolchain:
     docker:
-      - image: cimg/base:stable
+      - image: cimg/base:edge
     resource_class: medium+
     steps:
       - checkout
@@ -12,7 +12,7 @@ jobs:
           keys:
             - v4-cache-toolchain-{{ checksum "toolchain/CMakeLists.txt" }}
       - run:
-          name: "Build toolchain if does not exist"
+          name: "Build toolchain (if toolchain not present)"
           command: "chmod u+x .circleci/build-toolchain.sh && .circleci/build-toolchain.sh"
       - save_cache:
           name: Cache Toolchain
@@ -22,7 +22,7 @@ jobs:
 
   build-hephaestOS:
     docker:
-      - image: cimg/base:stable
+      - image: cimg/base:edge
     resource_class: small
     steps:
       - checkout
@@ -31,11 +31,11 @@ jobs:
           keys:
             - v4-cache-toolchain-{{ checksum "toolchain/CMakeLists.txt" }}
       - run:
-          name: "Update libraries"
-          command: "sudo apt-get update && sudo apt-get install texinfo flex bison nasm graphviz doxygen ccache libmpfr-dev libmpc-dev doxygen grub-common xorriso ninja-build --no-install-recommends -y"
+          name: "Download dependencies"
+          command: "chmod u+x .circleci/download-dependencies.sh && .circleci/download-dependencies.sh"
       - run:
-          name: "Update Cmake to latest"
-          command: "wget https://github.com/Kitware/CMake/releases/download/v3.30.5/cmake-3.30.5-linux-x86_64.tar.gz && tar -zxvf cmake-3.30.5-linux-x86_64.tar.gz && cd cmake-3.30.5-linux-x86_64 && sudo cp -r bin /usr/ && sudo cp -r doc /usr/share/ && sudo cp -r man /usr/share/ && sudo cp -r share /usr/ && cmake --version"
+          name: "Update Cmake"
+          command: "chmod u+x .circleci/update-cmake.sh && .circleci/update-cmake.sh"
       - run:
           name: "Setup and configure cmake for OS"
           command: "cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=/home/circleci/project/cmake-build-release/toolchain/output/bin/i386-pc-hephaestos-gcc -DCMAKE_CXX_COMPILER=/home/circleci/project/cmake-build-release/toolchain/output/bin/i386-pc-hephaestos-g++ -B cmake-build-release -G Ninja"
