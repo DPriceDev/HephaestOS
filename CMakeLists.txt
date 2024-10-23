@@ -8,8 +8,8 @@ set(CMAKE_C_STANDARD 17)
 set(CMAKE_CXX_COMPILER_WORKS 1)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-enable_language(ASM_NASM)
 project(HephaestOS LANGUAGES ASM_NASM CXX VERSION 1.0.0)
+enable_language(ASM_NASM)
 
 include(FetchContent)
 FetchContent_Declare(_project_options URL https://github.com/aminya/project_options/archive/refs/tags/v0.26.3.zip)
