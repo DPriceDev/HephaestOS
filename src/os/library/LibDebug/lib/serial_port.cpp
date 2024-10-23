@@ -16,9 +16,10 @@
 //
 
 #include "serial_port.h"
-#include "io.h"
 #include <bit>
 #include <type_traits>
+
+import os.hal.io;
 
 namespace debug {
 

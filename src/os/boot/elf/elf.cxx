@@ -15,14 +15,15 @@
 // along with HephaestOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#ifndef HEPHAEST_OS_ELF_H
-#define HEPHAEST_OS_ELF_H
+module;
 
 #include <array.h>
 #include <cstdint>
 #include <span.h>
 
-namespace boot {
+export module os.boot.elf;
+
+export namespace boot {
 
     enum class BitSize { BIT_32 = 1, BIT_64 = 2 };
 
@@ -144,5 +145,3 @@ namespace boot {
         uint16_t sectionHeaderIndex;
     };
 }// namespace boot
-
-#endif// HEPHAEST_OS_ELF_H

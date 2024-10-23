@@ -15,7 +15,23 @@
 // along with HephaestOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#include "ThreadIDProvider.h"
+module;
+
+#include <cstdint>
+
+export module os.kernel.thread.id;
+
+namespace kernel {
+    export class ThreadIDProvider {
+        std::size_t current = 0;
+
+    public:
+        auto getId() -> std::size_t;
+
+        void returnId(std::size_t tid);
+    };
+}
+
 auto kernel::ThreadIDProvider::getId() -> std::size_t {
     std::size_t const tid = current;
     current++;

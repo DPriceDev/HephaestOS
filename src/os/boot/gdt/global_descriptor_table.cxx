@@ -15,25 +15,27 @@
  * along with HephaestOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef HEPHAEST_OS_KERNEL_BOOT_GDT_GLOBAL_DESCRIPTOR_TABLE_H
-#define HEPHAEST_OS_KERNEL_BOOT_GDT_GLOBAL_DESCRIPTOR_TABLE_H
+module;
 
-#include "global_descriptor.h"
-#include <stdoffset.h>
+#include "array.h"
+
+export import os.boot.gdt.descriptor;
+
+export module os.boot.gdt.table;
 
 namespace boot {
 
     /**
-     * Defines a pointer to the first Global Descriptor in an array of Global Descriptors that make
-     * up the Global Descriptor table (in order). Wrapped with the size of the GDT.
-     */
-    struct [[gnu::packed]] GdtPointer {
+    * Defines a pointer to the first Global Descriptor in an array of Global Descriptors that make
+    * up the Global Descriptor table (in order). Wrapped with the size of the GDT.
+    */
+    export struct [[gnu::packed]] GdtPointer {
 
-        // Size of the Global descriptor table in bytes.
-        uint16_t size;
+     // Size of the Global descriptor table in bytes.
+     uint16_t size;
 
-        // Pointer to the first Global descriptor in the Global descriptor table array.
-        GlobalDescriptor* address;
+     // Pointer to the first Global descriptor in the Global descriptor table array.
+     GlobalDescriptor* address;
     };
 
     /**
@@ -103,6 +105,19 @@ namespace boot {
     // Maximum memory limit for a 32 bit os - 4GB from a 4KiB page size.
     constexpr uint32_t MaximumMemoryLimit = 0xFFFFF;
 
+    // Array of Global Descriptors that defines the Global Descriptor Table.
+    std::Array<GlobalDescriptor, 6> globalDescriptorTable {
+     constructGlobalDescriptor(0, 0, zeroAccess, zeroFlags),
+     constructGlobalDescriptor(0, MaximumMemoryLimit, codeKernelAccess, Page32BitFlags),
+     constructGlobalDescriptor(0, MaximumMemoryLimit, dataKernelAccess, Page32BitFlags),
+     constructGlobalDescriptor(0, MaximumMemoryLimit, codeUserAccess, Page32BitFlags),
+     constructGlobalDescriptor(0, MaximumMemoryLimit, dataUserAccess, Page32BitFlags)
+    };
+
+    // Structure holding the Global descriptor Table array pointer and size of the array.
+    static const GdtPointer gdtPointer { .size = sizeof(globalDescriptorTable) - 1,
+                                         .address = globalDescriptorTable.data() };
+
     /**
      * Methods
      */
@@ -112,7 +127,7 @@ namespace boot {
      *
      * @param pointer points to the Global descriptor tables pointer and size.
      */
-    extern "C" void loadGdtTable(const GdtPointer* pointer);
+     extern "C" void loadGdtTable(const GdtPointer* pointer);
 
     /**
      * Initializes the CPU's Global Descriptor Table with the minimum required segments for the
@@ -127,7 +142,13 @@ namespace boot {
      *
      * @param tssDescriptor provides the task state segments descriptor to be added to the array.
      */
-    void initializeGlobalDescriptorTable(const GlobalDescriptor& tssDescriptor);
-}// namespace boot
+    export void initializeGlobalDescriptorTable(const GlobalDescriptor& tssDescriptor) {
 
-#endif// HEPHAEST_OS_KERNEL_BOOT_GDT_GLOBAL_DESCRIPTOR_TABLE_H
+        // Initialize the GDT with the null, kernel code, kernel data, userspace code, userspace
+        // data, and tss segment descriptors.
+        globalDescriptorTable[5] = tssDescriptor;
+
+        // Load the GDT from the pointer into the CPU Registers.
+        loadGdtTable(&gdtPointer);
+    }
+}// namespace boot

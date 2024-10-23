@@ -15,10 +15,88 @@
  * along with HephaestOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "interrupt_descriptor_table.h"
+module;
+
 #include "array.h"
 
+import os.boot.interrupts.descriptor;
+
+export module os.boot.interrupts.table;
+
 namespace boot {
+
+     /**
+     *
+     */
+    struct [[gnu::packed]] IdtPointer {
+        uint16_t size;
+        const InterruptDescriptor* pointer;
+    };
+
+    //
+    constexpr uint32_t IDT_TABLE_LENGTH = 256;
+
+    /**
+     *
+     * @param pointer
+     */
+    extern "C" void loadIdtTable(const IdtPointer* pointer);
+
+    /**
+     *
+     */
+    extern "C" int fireException0();
+    extern "C" int fireException1();
+    extern "C" int fireException2();
+    extern "C" int fireException3();
+    extern "C" int fireException4();
+    extern "C" int fireException5();
+    extern "C" int fireException6();
+    extern "C" int fireException7();
+    extern "C" int fireException8();
+    extern "C" int fireException9();
+    extern "C" int fireException10();
+    extern "C" int fireException11();
+    extern "C" int fireException12();
+    extern "C" int fireException13();
+    extern "C" int fireException14();
+    extern "C" int fireException15();
+    extern "C" int fireException16();
+    extern "C" int fireException17();
+    extern "C" int fireException18();
+    extern "C" int fireException19();
+    extern "C" int fireException20();
+    extern "C" int fireException21();
+    extern "C" int fireException22();
+    extern "C" int fireException23();
+    extern "C" int fireException24();
+    extern "C" int fireException25();
+    extern "C" int fireException26();
+    extern "C" int fireException27();
+    extern "C" int fireException28();
+    extern "C" int fireException29();
+    extern "C" int fireException30();
+    extern "C" int fireException31();
+
+    /**
+     *
+     */
+    extern "C" int fireInterruptRequest0();
+    extern "C" int fireInterruptRequest1();
+    extern "C" int fireInterruptRequest2();
+    extern "C" int fireInterruptRequest3();
+    extern "C" int fireInterruptRequest4();
+    extern "C" int fireInterruptRequest5();
+    extern "C" int fireInterruptRequest6();
+    extern "C" int fireInterruptRequest7();
+    extern "C" int fireInterruptRequest8();
+    extern "C" int fireInterruptRequest9();
+    extern "C" int fireInterruptRequest10();
+    extern "C" int fireInterruptRequest11();
+    extern "C" int fireInterruptRequest12();
+    extern "C" int fireInterruptRequest13();
+    extern "C" int fireInterruptRequest14();
+    extern "C" int fireInterruptRequest15();
 
     // Array of Interrupt Descriptors that defines the Interrupt Descriptor Table.
     static const std::Array<InterruptDescriptor, IDT_TABLE_LENGTH> interruptDescriptorTable {
@@ -81,5 +159,5 @@ namespace boot {
     /**
      *
      */
-    void initializeInterruptDescriptorTable() { loadIdtTable(&idtPointer); }
+    export void initializeInterruptDescriptorTable() { loadIdtTable(&idtPointer); }
 }// namespace boot

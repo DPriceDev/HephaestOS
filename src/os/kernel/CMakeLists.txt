@@ -3,7 +3,15 @@ add_executable(
 
         kernel_main.asm
         kernel.cpp
-        thread/ThreadTable.cpp thread/ThreadIDProvider.cpp)
+        thread/ThreadTable.cxx thread/ThreadIDProvider.cxx)
+
+target_sources(kernel.elf PUBLIC
+        FILE_SET CXX_MODULES
+        FILES
+        thread/ThreadIDProvider.cxx
+        thread/ThreadTable.cxx
+        thread/model/ThreadControlBlock.cxx
+)
 
 target_link_libraries(kernel.elf PRIVATE os_options) # project_warnings)
 target_link_libraries(kernel.elf PUBLIC KLibC KLibCpp KLibDebug KLibHal gcc)

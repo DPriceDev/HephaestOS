@@ -14,27 +14,23 @@
  * You should have received a copy of the GNU General Public License
  * along with HephaestOS.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef HEPHAEST_OS_KERNEL_BOOT_TSS_H
-#define HEPHAEST_OS_KERNEL_BOOT_TSS_H
 
-#include "gdt/global_descriptor.h"
+module;
+
+#include <bit>
 #include <cstdint>
+#include <string.h>
+
+import os.boot.gdt.descriptor;
+
+export module os.boot.tss;
 
 namespace boot {
-
-    extern "C" void loadTaskRegister(Segment segment, Privilege privilege);
-
-    // todo: Move this out to a user space class?
-    extern "C" void jumpUserMode();
-
-    auto initializeTaskStateSegment(uint32_t stackPointer) -> void;
-
-    auto getTaskStateSegmentDescriptor() -> GlobalDescriptor;
 
     /**
      *
      */
-    struct [[gnu::packed]] TssEntry {
+    export struct [[gnu::packed]] TssEntry {
         uint32_t previousTss = 0;
 
         //
@@ -86,6 +82,47 @@ namespace boot {
                                       .descriptorType = DescriptorType::System,
                                       .privilege = Privilege::Kernel,
                                       .present = true };
-}// namespace boot
 
-#endif// HEPHAEST_OS_KERNEL_BOOT_TSS_H
+    //
+    // todo: should be in boot class / struct?
+    TssEntry tssEntry { .ss0 = 0x10,// Set the kernel stack segment.
+                        .es = 0x13,//
+                        .cs = 0x0b,
+                        .ss = 0x13,
+                        .ds = 0x13,
+                        .fs = 0x13,
+                        .gs = 0x13,
+                        .ioMapBase = sizeof(TssEntry) };
+
+    //
+    static const uintptr_t tssEntryPtr = std::bit_cast<uintptr_t>(&tssEntry);
+
+    extern "C" void loadTaskRegister(Segment segment, Privilege privilege);
+
+    // todo: Move this out to a user space class?
+    export extern "C" void jumpUserMode();
+
+    /**
+     *
+     * @param stackPointer
+     */
+    export void initializeTaskStateSegment(uint32_t stackPointer) {
+        // Clear TSS memory to all zeroes.
+        memset(&tssEntry, 0, sizeof(tssEntry));
+
+        //
+        tssEntry.esp0 = stackPointer;
+
+        //
+        loadTaskRegister(Segment::Tss, Privilege::Kernel);
+    }
+
+    /**
+     *
+     * @return
+     */
+    export auto getTaskStateSegmentDescriptor() -> GlobalDescriptor {
+        //
+        return constructGlobalDescriptor(tssEntryPtr, sizeof(TssEntry), tssEntryAccess, tssFlags);
+    }
+}// namespace boot

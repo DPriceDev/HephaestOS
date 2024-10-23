@@ -15,12 +15,13 @@
 // along with HephaestOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#ifndef HEPHAEST_OS_KERNEL_BOOT_PAGING_PAGE_TABLE_ENTRY_H
-#define HEPHAEST_OS_KERNEL_BOOT_PAGING_PAGE_TABLE_ENTRY_H
+module;
 
 #include <cstdint>
 
-namespace boot {
+export module os.boot.paging.table;
+
+export namespace boot {
 
     // Defines the access flags of a given Page Table Entry.
     struct [[gnu::packed]] PageTableAccess {
@@ -44,4 +45,3 @@ namespace boot {
     };
 }// namespace boot
 
-#endif// HEPHAEST_OS_KERNEL_BOOT_PAGING_PAGE_TABLE_ENTRY_H

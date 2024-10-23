@@ -15,22 +15,20 @@
 // along with HephaestOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#ifndef HEPHAEST_OS_THREADIDPROVIDER_H
-#define HEPHAEST_OS_THREADIDPROVIDER_H
+module;
 
-#include <cstddef>
 #include <cstdint>
 
-namespace kernel {
+export module os.hal.io;
 
-    class ThreadIDProvider {
-        std::size_t current = 0;
+export namespace hal {
 
-      public:
-        auto getId() -> std::size_t;
+    extern "C" auto readFromPort(uint32_t port) -> uint8_t;
 
-        void returnId(std::size_t tid);
-    };
-}// namespace kernel
+    extern "C" void writeToPort(uint32_t port, uint8_t value);
 
-#endif// HEPHAEST_OS_THREADIDPROVIDER_H
+    inline void waitForIO() {
+        constexpr static uint32_t TEST_POST_CODES_PORT = 0x80;
+        writeToPort(TEST_POST_CODES_PORT, 0);
+    }
+}// namespace hal

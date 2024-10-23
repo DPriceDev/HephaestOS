@@ -15,27 +15,44 @@
 // along with HephaestOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#ifndef HEPHAEST_OS_THREADTABLE_H
-#define HEPHAEST_OS_THREADTABLE_H
+module;
 
-#include "thread/model/ThreadControlBlock.h"
-#include <array.h>
-#include <expected.h>
-#include <stdint.h>
+#include <cstdint>
 
-namespace kernel {
+export module os.boot.interrupt.registers;
 
-    class ThreadTable {
-        std::Array<ThreadControlBlock*, 10> table {};
+export namespace boot {
 
-      public:
-        auto registerThreadControlBlock(/* todo: Make this a unique pointer */ ThreadControlBlock* threadControlBlock)
-            -> bool;
-
-        auto getThreadControlBlock(TID tid) -> std::Optional<ThreadControlBlock*>;
-
-        void removeThreadControlBlock(TID tid);
+    /**
+     *
+     */
+    struct [[gnu::packed]] Registers {
+        const uint32_t edi;
+        const uint32_t esi;
+        const uint32_t ebp;
+        const uint32_t esp;
+        const uint32_t ebx;
+        const uint32_t edx;
+        const uint32_t ecx;
+        const uint32_t eax;
     };
-}// namespace kernel
 
-#endif// HEPHAEST_OS_THREADTABLE_H
+    /**
+     *
+     */
+    struct [[gnu::packed]] SegmentRegisters {
+        const uint32_t gs;
+        const uint32_t fs;
+        const uint32_t es;
+        const uint32_t ds;
+    };
+
+    /**
+     *
+     */
+    struct [[gnu::packed]] CpuRegisters {
+        const uint32_t eip;
+        const uint32_t cs;
+        const uint16_t eflags;
+    };
+}// namespace boot

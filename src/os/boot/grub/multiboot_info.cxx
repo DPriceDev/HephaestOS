@@ -15,12 +15,13 @@
  * along with HephaestOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef HEPHAEST_OS_KERNEL_BOOT_MULTIBOOT_INFO_H
-#define HEPHAEST_OS_KERNEL_BOOT_MULTIBOOT_INFO_H
+module;
 
-#include <stdoffset.h>
+#include <cstdint>
 
-namespace boot {
+export module os.boot.grub.multiboot;
+
+export namespace boot {
 
     static constexpr uint8_t MULTIBOOT_MEMORY_AVAILABLE = 1;
 
@@ -101,4 +102,3 @@ namespace boot {
         uint32_t vbeInterfaceLength;
     };
 }// namespace boot
-#endif// HEPHAEST_OS_KERNEL_BOOT_MULTIBOOT_INFO_H

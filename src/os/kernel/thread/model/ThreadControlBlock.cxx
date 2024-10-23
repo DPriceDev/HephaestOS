@@ -15,31 +15,27 @@
 // along with HephaestOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#ifndef HEPHAEST_OS_BOOTALLOCATOR_H
-#define HEPHAEST_OS_BOOTALLOCATOR_H
+module;
 
-#include <cstddef>
 #include <cstdint>
-#include <paging/paging.h>
+#include <cstddef>
 
-namespace boot {
+export module os.kernel.thread.control;
 
-    class BootAllocator {
-        std::uintptr_t currentAddress;
-        std::uintptr_t virtualAddress;
-        PageTableEntry* pageTable;
+namespace kernel {
 
-      public:
-        BootAllocator(
-            std::uintptr_t baseVirtualAddress,
-            std::uintptr_t physicalAddress,
-            PageTableEntry* kernelPageTable
-        );
+    export using TID = std::size_t;
 
-        auto allocate(std::size_t count, std::size_t alignment = 1) -> std::byte*;
-
-        [[nodiscard]] auto nextAvailableMemory() const -> uintptr_t;
+    // todo: Abstract
+    export struct ThreadRegisters {
+        uint32_t eax = 0;
     };
-}// namespace boot
 
-#endif// HEPHAEST_OS_BOOTALLOCATOR_H
+    export struct ThreadControlBlock {
+        TID id = 0;
+        uintptr_t stack = 0;
+        uintptr_t instruction = 0;
+        ThreadRegisters registers = ThreadRegisters {};
+    };
+}// namespace kernel
+

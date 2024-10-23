@@ -1,18 +1,19 @@
-cmake_minimum_required(VERSION 3.20...3.26)
+cmake_minimum_required(VERSION 3.20...3.31)
 if(POLICY CMP0135)
     cmake_policy(SET CMP0135 NEW)
 endif()
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_CXX_COMPILER_WORKS 1)
 set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_CXX_SCAN_FOR_MODULES ON)
 
 project(HephaestOS LANGUAGES ASM_NASM CXX VERSION 1.0.0)
 enable_language(ASM_NASM)
 
 include(FetchContent)
-FetchContent_Declare(_project_options URL https://github.com/aminya/project_options/archive/refs/tags/v0.26.3.zip)
+FetchContent_Declare(_project_options URL https://github.com/aminya/project_options/archive/refs/tags/v0.40.0.zip)
 FetchContent_MakeAvailable(_project_options)
 include(${_project_options_SOURCE_DIR}/Index.cmake)
 
@@ -24,7 +25,8 @@ project_options(
         ENABLE_CACHE
         ${ENABLE_CPPCHECK}
         ${ENABLE_CLANG_TIDY}
-#        ENABLE_INTERPROCEDURAL_OPTIMIZATION
+        # ENABLE_INTERPROCEDURAL_OPTIMIZATION
+        # ENABLE_NATIVE_OPTIMIZATION
         ${ENABLE_DOXYGEN}
         WARNINGS_AS_ERRORS
 )

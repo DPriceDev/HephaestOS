@@ -16,9 +16,9 @@
  */
 
 #include <format.h>
-#include <thread/model/ThreadControlBlock.h>
-#include <thread/ThreadIDProvider.h>
-#include <thread/ThreadTable.h>
+
+import os.kernel.thread.id;
+import os.kernel.thread.table;
 
 namespace kernel {
 

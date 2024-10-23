@@ -15,27 +15,23 @@
 // along with HephaestOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#ifndef HEPHAEST_OS_THREADCONTROLBLOCK_H
-#define HEPHAEST_OS_THREADCONTROLBLOCK_H
+module;
 
 #include <cstdint>
-#include <cstddef>
 
-namespace kernel {
+export module os.boot;
 
-    using TID = std::size_t;
+import os.boot.paging.table;
+import os.boot.paging.directory;
 
-    // todo: Abstract
-    struct ThreadRegisters {
-        uint32_t eax = 0;
+export namespace boot {
+
+    struct BootInfo {
+        PageDirectoryEntry* pageDirectory;
+        PageTableEntry* pageTable;
+        uintptr_t virtualBase;
+        uintptr_t bootStart;
+        uintptr_t bootEnd;
     };
+}// namespace boot
 
-    struct ThreadControlBlock {
-        TID id = 0;
-        uintptr_t stack = 0;
-        uintptr_t instruction = 0;
-        ThreadRegisters registers = ThreadRegisters {};
-    };
-}// namespace kernel
-
-#endif// HEPHAEST_OS_THREADCONTROLBLOCK_H

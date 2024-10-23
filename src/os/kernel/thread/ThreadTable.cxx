@@ -15,7 +15,30 @@
 // along with HephaestOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#include "ThreadTable.h"
+module;
+
+#include <array.h>
+
+export import os.kernel.thread.control;
+
+export module os.kernel.thread.table;
+
+namespace kernel {
+
+    export class ThreadTable {
+        std::Array<ThreadControlBlock*, 10> table {};
+
+    public:
+        auto registerThreadControlBlock(/* todo: Make this a unique pointer */ ThreadControlBlock* threadControlBlock)
+            -> bool;
+
+        auto getThreadControlBlock(TID tid) -> std::Optional<ThreadControlBlock*>;
+
+        void removeThreadControlBlock(TID tid);
+    };
+}// namespace kernel
+
+
 auto kernel::ThreadTable::registerThreadControlBlock(kernel::ThreadControlBlock* block) -> bool {
     auto entry = table.at(block->id);
     if (!entry || entry->get() != nullptr) {
