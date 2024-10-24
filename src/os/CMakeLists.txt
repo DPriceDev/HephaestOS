@@ -12,7 +12,7 @@ target_link_libraries(os_options INTERFACE project_options project_warnings)
 target_compile_options(os_options INTERFACE -ffreestanding -nostdlib -fno-rtti -fno-exceptions -fcommon -fpie)
 
 set(MY_DEBUG_OPTIONS -g3)
-set(MY_RELEASE_OPTIONS -s -o3)
+set(MY_RELEASE_OPTIONS -s -O3)
 target_compile_options(os_options INTERFACE "$<$<CONFIG:DEBUG>:${MY_DEBUG_OPTIONS}>")
 target_compile_options(os_options INTERFACE "$<$<CONFIG:RELEASE>:${MY_RELEASE_OPTIONS}>")
 
