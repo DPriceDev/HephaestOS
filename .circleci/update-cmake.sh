@@ -11,5 +11,4 @@ sudo cp -r share /usr/
 cd ..
 wget https://github.com/ninja-build/ninja/releases/download/v1.12.1/ninja-linux.zip
 unzip ninja-linux.zip
-cd ninja-linux || exit 1
-sudo cp ninja /usr/bin
+sudo cp ninja /usr/bin || exit 1
