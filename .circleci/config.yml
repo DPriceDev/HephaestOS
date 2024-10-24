@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   build-toolchain:
     docker:
-      - image: cimg/base:edge
+      - image: cimg/base:current-22.04
     resource_class: medium+
     steps:
       - checkout
@@ -22,7 +22,7 @@ jobs:
 
   build-hephaestOS:
     docker:
-      - image: cimg/base:edge
+      - image: cimg/base:current-22.04
     resource_class: small
     steps:
       - checkout

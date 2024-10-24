@@ -18,6 +18,7 @@
 #include <bit>
 #include <format.h>
 #include <serial_port.h>
+#include <span.h>
 
 import os.boot;
 import os.boot.gdt.table;
@@ -34,12 +35,12 @@ extern "C" void loadKernelSegment();
 extern "C" void enableInterrupts();
 
 namespace boot {
-    static const debug::SerialPortConnection connection { debug::SerialPort::COM1 };
+    static const debug::SerialPortConnection CONNECTION { debug::SerialPort::COM1 };
 
     void initializeSerialPort() {
-        if (connection.open()) {
+        if (CONNECTION.open()) {
             std::KernelFormatOutput::getInstance().setStandardOutputIterator(std::StandardOutputIterator {
-                &connection,
+                &CONNECTION,
                 [](const void*) { /* Serial port cannot be de-referenced. */ },
                 [](const void* pointer, char character) {
                     // todo: std::any here?
@@ -128,17 +129,17 @@ extern "C" void init(boot::MultiBootInfo& info, uint32_t magic, uint32_t stackPo
 
     boot::initializeDescriptorTables(stackPointer);
 
-    const auto bootModules = std::Span<boot::ModuleEntry> { info.modulePtr, info.moduleCount };
+    const auto bootModules = std::Span { info.modulePtr, info.moduleCount };
     const auto nextAvailableMemory = findNextAvailableMemory(bootModules, bootInfo);
 
     auto allocator = boot::BootAllocator(bootInfo.virtualBase, nextAvailableMemory, bootInfo.pageTable);
     const auto kernelAddress = loadModules(bootModules, allocator, bootInfo);
 
-    boot::unmapLowerKernel(bootInfo.pageDirectory);
+    unmapLowerKernel(bootInfo.pageDirectory);
 
     if (!kernelAddress) {
         std::print("ERROR: Failed to enter kernel module\n");
         return;
     }
-    boot::enterKernelModule(stackPointer, kernelAddress.value(), info, bootInfo, allocator);
+    enterKernelModule(stackPointer, kernelAddress.value(), info, bootInfo, allocator);
 }

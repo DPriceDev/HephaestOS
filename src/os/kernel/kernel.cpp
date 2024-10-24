@@ -54,10 +54,10 @@ namespace kernel {
         std::print("INFO: Version 1.0\n");
 
         // todo: need to store this somewhere, inject? singleton?
-        auto threadTable = ThreadTable();
+        auto threadTable = thread_table();
 
-        auto threadIDProvider = ThreadIDProvider();
-        auto initialTCB = ThreadControlBlock {
+        auto threadIDProvider = thread_id_provider();
+        auto initialTCB = thread_control_block {
             .id = threadIDProvider.getId(), .stack = initInfo.stack,
             // todo: add instruction pointer (point to initial task module)
         };

@@ -13,7 +13,7 @@ add_executable(
 
 
         paging/paging.asm
-        GlobalConstructors.cpp
+        global_constructors.cpp
 )
 
 target_sources(boot.elf PUBLIC

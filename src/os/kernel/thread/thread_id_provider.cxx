@@ -22,7 +22,7 @@ module;
 export module os.kernel.thread.id;
 
 namespace kernel {
-    export class ThreadIDProvider {
+    export class thread_id_provider {
         std::size_t current = 0;
 
     public:
@@ -32,12 +32,12 @@ namespace kernel {
     };
 }
 
-auto kernel::ThreadIDProvider::getId() -> std::size_t {
+auto kernel::thread_id_provider::getId() -> std::size_t {
     std::size_t const tid = current;
     current++;
     return tid;
 }
 
-void kernel::ThreadIDProvider::returnId(std::size_t) {
+void kernel::thread_id_provider::returnId(std::size_t) {
     // todo: Return id for reuse
 }

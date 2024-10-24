@@ -3,14 +3,14 @@ add_executable(
 
         kernel_main.asm
         kernel.cpp
-        thread/ThreadTable.cxx thread/ThreadIDProvider.cxx)
+        thread/thread_table.cxx thread/thread_id_provider.cxx)
 
 target_sources(kernel.elf PUBLIC
         FILE_SET CXX_MODULES
         FILES
-        thread/ThreadIDProvider.cxx
-        thread/ThreadTable.cxx
-        thread/model/ThreadControlBlock.cxx
+        thread/thread_id_provider.cxx
+        thread/thread_table.cxx
+        thread/model/thread_control_block.cxx
 )
 
 target_link_libraries(kernel.elf PRIVATE os_options) # project_warnings)

@@ -31,7 +31,7 @@ namespace kernel {
         uint32_t eax = 0;
     };
 
-    export struct ThreadControlBlock {
+    export struct thread_control_block {
         TID id = 0;
         uintptr_t stack = 0;
         uintptr_t instruction = 0;
