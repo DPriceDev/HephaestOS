@@ -15,23 +15,44 @@
 // along with HephaestOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#ifndef HEPHAEST_OS_BOOT_INFO_H
-#define HEPHAEST_OS_BOOT_INFO_H
+module;
 
 #include <cstdint>
 
-#include "paging/model/page_directory_entry.h"
-#include "paging/model/page_table_entry.h"
+export module os.boot.interrupt.registers;
 
-namespace boot {
+export namespace boot {
 
-    struct BootInfo {
-        PageDirectoryEntry* pageDirectory;
-        PageTableEntry* pageTable;
-        uintptr_t virtualBase;
-        uintptr_t bootStart;
-        uintptr_t bootEnd;
+    /**
+     *
+     */
+    struct [[gnu::packed]] Registers {
+        const uint32_t edi;
+        const uint32_t esi;
+        const uint32_t ebp;
+        const uint32_t esp;
+        const uint32_t ebx;
+        const uint32_t edx;
+        const uint32_t ecx;
+        const uint32_t eax;
+    };
+
+    /**
+     *
+     */
+    struct [[gnu::packed]] SegmentRegisters {
+        const uint32_t gs;
+        const uint32_t fs;
+        const uint32_t es;
+        const uint32_t ds;
+    };
+
+    /**
+     *
+     */
+    struct [[gnu::packed]] CpuRegisters {
+        const uint32_t eip;
+        const uint32_t cs;
+        const uint16_t eflags;
     };
 }// namespace boot
-
-#endif// HEPHAEST_OS_BOOT_INFO_H

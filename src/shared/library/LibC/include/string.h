@@ -49,4 +49,16 @@ void* memcpy(void* dest, const void* src, size_t n);
  */
 char* strcpy(char* dest, const char* src);
 
+/**
+ * Stubbed strchr.
+ * Stubbed to allow GCC to compile, just needs to exist at this point without an implementation.
+ */
+char* strchr(const char* str, int ch);
+
+/**
+ * Stubbed strcat.
+ * Stubbed to allow GCC to compile, just needs to exist at this point without an implementation.
+ */
+char * strcat(char * destination, const char * source);
+
 #endif// HEPHAEST_OS_USER_LIB_C_STRING_H

@@ -15,22 +15,44 @@
 // along with HephaestOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#include "paging.h"
-#include "model/paging_constants.h"
+module;
+
 #include <algorithm.h>
 #include <bit>
 #include <cstdint>
 #include <stdoffset.h>
 
-#include "model/page_directory_entry.h"
 #include "span.h"
 
+export import os.boot.grub.multiboot;
+export import os.boot.paging.table;
+export import os.boot.paging.directory;
+
+export module os.boot.paging;
+
 namespace boot {
+
+    export static constexpr std::size_t PAGE_DIRECTORY_SIZE = 1024;
+
+    export static constexpr std::size_t PAGE_TABLE_SIZE = 1024;
+
+    export static constexpr std::size_t PAGE_SIZE = 0x1000;
 
     struct EntryAddressMask {
         uint16_t : 12;
         uint32_t top : 20;
     };
+
+    /**
+     * Takes a pointer to the first entry in a @param pageDirectory and loads it to the
+     * cr3 register.
+     */
+    extern "C" void loadPageDirectory(PageDirectoryEntry* pageDirectory);
+
+    /**
+     * Enables paging by setting the paging flag in cr0.
+     */
+    export extern "C" void enablePaging();
 
     // Initialize all page table entries to empty entries.
     void zeroPageDirectory(std::Span<PageDirectoryEntry>& pageDirectory) {
@@ -42,7 +64,7 @@ namespace boot {
     }
 
     // Setup each entry of the first page table to map identically to the physical address.
-    void mapAddressRangeInTable(
+    export void mapAddressRangeInTable(
         PageTableEntry* pageTablePointer,
         uintptr_t virtualStartAddress,
         uintptr_t startAddress,
@@ -109,7 +131,11 @@ namespace boot {
         updateTableInDirectory(pageDirectory, virtualKernelBaseAddress, higherHalfKernelPageTable.data());
     }
 
-    void initializePaging(
+    /**
+     * Sets up the Paging directory and identity maps the first 4mb of memory, and then
+     * loads the paging directory into cr3 and enables paging.
+     */
+    export extern "C" void initializePaging(
         MultiBootInfo*,
         PageDirectoryEntry* pageDirectoryPointer,
         PageTableEntry* kernelPageTablePointer,
@@ -134,7 +160,7 @@ namespace boot {
 
     void unmapPageTable(std::Span<PageDirectoryEntry, std::dynamicExtent>, int) {}
 
-    void unmapLowerKernel(PageDirectoryEntry* pageDirectoryPointer) {
+    export void unmapLowerKernel(PageDirectoryEntry* pageDirectoryPointer) {
         auto pageDirectory = std::Span(pageDirectoryPointer, PAGE_DIRECTORY_SIZE);
         pageDirectory.front() = PageDirectoryEntry {
             .access = PageDirectoryAccess { .canWrite = true },

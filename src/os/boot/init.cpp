@@ -17,49 +17,30 @@
 
 #include <bit>
 #include <format.h>
-#include <gdt/global_descriptor_table.h>
-#include <idt/interrupt_descriptor_table.h>
-#include <idt/pic/programmable_interrupt_controller.h>
-#include <init.h>
-#include <memory/boot_allocator.h>
-#include <modules/module_loader.h>
 #include <serial_port.h>
-#include <tss/task_state_segment.h>
+#include <span.h>
 
-extern "C" void init(boot::MultiBootInfo& info, uint32_t magic, uint32_t stackPointer, boot::BootInfo bootInfo) {
-    boot::initializeSerialPort();
-    std::print("INFO: System init\n");
+import os.boot;
+import os.boot.gdt.table;
+import os.boot.interrupts.pic;
+import os.boot.interrupts.table;
+import os.boot.grub.multiboot;
+import os.boot.memory.boot_allocator;
+import os.boot.module.loader;
+import os.boot.paging;
+import os.boot.tss;
 
-    constexpr uint32_t MULTIBOOT_ONE_MAGIC_NUMBER = 0x2BADB002;
-    if (magic != MULTIBOOT_ONE_MAGIC_NUMBER) {
-        std::print("ERROR: Multiboot magic number is not correct.\n");
-        return;
-    }
+extern "C" void loadKernelSegment();
 
-    boot::initializeDescriptorTables(stackPointer);
-
-    const auto bootModules = std::Span<boot::ModuleEntry> { info.modulePtr, info.moduleCount };
-    const auto nextAvailableMemory = findNextAvailableMemory(bootModules, bootInfo);
-
-    auto allocator = boot::BootAllocator(bootInfo.virtualBase, nextAvailableMemory, bootInfo.pageTable);
-    const auto kernelAddress = loadModules(bootModules, allocator, bootInfo);
-
-    boot::unmapLowerKernel(bootInfo.pageDirectory);
-
-    if (!kernelAddress) {
-        std::print("ERROR: Failed to enter kernel module\n");
-        return;
-    }
-    boot::enterKernelModule(stackPointer, kernelAddress.value(), info, bootInfo, allocator);
-}
+extern "C" void enableInterrupts();
 
 namespace boot {
-    static const debug::SerialPortConnection connection { debug::SerialPort::COM1 };
+    static const debug::SerialPortConnection CONNECTION { debug::SerialPort::COM1 };
 
     void initializeSerialPort() {
-        if (connection.open()) {
+        if (CONNECTION.open()) {
             std::KernelFormatOutput::getInstance().setStandardOutputIterator(std::StandardOutputIterator {
-                &connection,
+                &CONNECTION,
                 [](const void*) { /* Serial port cannot be de-referenced. */ },
                 [](const void* pointer, char character) {
                     // todo: std::any here?
@@ -68,20 +49,6 @@ namespace boot {
                 [](const void*) { /* Serial Port self increments. */ },
             });
         }
-    }
-
-    void initializeDescriptorTables(uint32_t stackPointer) {
-        auto tssDescriptor = getTaskStateSegmentDescriptor();
-        initializeGlobalDescriptorTable(tssDescriptor);
-        std::print("INFO: Global Descriptor table initialized\n");
-
-        initializeTaskStateSegment(stackPointer);
-        std::print("INFO: Task State Segment initialized\n");
-
-        initializeInterruptDescriptorTable();
-        std::print("INFO: Interrupt Descriptor table initialized\n");
-
-        setupInterrupts();
     }
 
     void setupInterrupts() {
@@ -134,4 +101,45 @@ namespace boot {
             stackPointer
         );
     }
+
+    void initializeDescriptorTables(uint32_t stackPointer) {
+        auto tssDescriptor = getTaskStateSegmentDescriptor();
+        initializeGlobalDescriptorTable(tssDescriptor);
+        std::print("INFO: Global Descriptor table initialized\n");
+
+        initializeTaskStateSegment(stackPointer);
+        std::print("INFO: Task State Segment initialized\n");
+
+        initializeInterruptDescriptorTable();
+        std::print("INFO: Interrupt Descriptor table initialized\n");
+
+        setupInterrupts();
+    }
 }// namespace boot
+
+extern "C" void init(boot::MultiBootInfo& info, uint32_t magic, uint32_t stackPointer, boot::BootInfo bootInfo) {
+    boot::initializeSerialPort();
+    std::print("INFO: System init\n");
+
+    constexpr uint32_t MULTIBOOT_ONE_MAGIC_NUMBER = 0x2BADB002;
+    if (magic != MULTIBOOT_ONE_MAGIC_NUMBER) {
+        std::print("ERROR: Multiboot magic number is not correct.\n");
+        return;
+    }
+
+    boot::initializeDescriptorTables(stackPointer);
+
+    const auto bootModules = std::Span { info.modulePtr, info.moduleCount };
+    const auto nextAvailableMemory = findNextAvailableMemory(bootModules, bootInfo);
+
+    auto allocator = boot::BootAllocator(bootInfo.virtualBase, nextAvailableMemory, bootInfo.pageTable);
+    const auto kernelAddress = loadModules(bootModules, allocator, bootInfo);
+
+    unmapLowerKernel(bootInfo.pageDirectory);
+
+    if (!kernelAddress) {
+        std::print("ERROR: Failed to enter kernel module\n");
+        return;
+    }
+    enterKernelModule(stackPointer, kernelAddress.value(), info, bootInfo, allocator);
+}

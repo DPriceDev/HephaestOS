@@ -15,12 +15,36 @@
 // along with HephaestOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#include "boot_elf_loader.h"
+module;
+
 #include <bit>
+#include <cstdint>
 #include <expected.h>
+#include <optional.h>
+#include <span.h>
 #include <string.h>
+#include <variant_base.h>
+
+export import os.boot.elf;
+
+export module os.boot.elf.loader;
 
 namespace boot {
+
+    export struct StaticExecutableElf {
+        std::uintptr_t entryAddress;
+        std::uintptr_t headerAddress;
+        size_t memorySize;
+        std::Span<const ProgramHeader> programHeaders;
+    };
+
+    export struct DynamicExecutableElf {
+        std::uintptr_t headerAddress;
+        size_t memorySize;
+        std::Span<const ProgramHeader> programHeaders;
+    };
+
+    export using ElfInfo = std::Variant<StaticExecutableElf, DynamicExecutableElf>;
 
     auto getExecutableElfInfo(const ElfHeader* header, uintptr_t headerAddress) -> ElfInfo;
 
@@ -30,7 +54,7 @@ namespace boot {
 
     auto extractProgramHeaders(const ElfHeader* header, uintptr_t headerAddress) -> std::Span<const ProgramHeader>;
 
-    auto getElfInfo(uintptr_t headerAddress) -> std::Optional<ElfInfo> {
+    export auto getElfInfo(uintptr_t headerAddress) -> std::Optional<ElfInfo> {
         const auto* elfHeader = std::bit_cast<ElfHeader*>(headerAddress);
 
         const auto& identifier = elfHeader->identifier;
@@ -95,11 +119,11 @@ namespace boot {
         }
     }
 
-    void loadElf(const StaticExecutableElf& elf) {
+    export void loadElf(const StaticExecutableElf& elf) {
         loadExecutableElf(elf.headerAddress, elf.programHeaders, elf.entryAddress);
     }
 
-    void loadElf(const DynamicExecutableElf& elf, uintptr_t loadAddress) {
+    export void loadElf(const DynamicExecutableElf& elf, uintptr_t loadAddress) {
         loadExecutableElf(elf.headerAddress, elf.programHeaders, loadAddress);
     }
 }// namespace boot

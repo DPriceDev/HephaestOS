@@ -1,6 +1,4 @@
 cmake-build-*
 .idea
-.gdbinit
-/.gdbinit
 /bochslog.txt
 *.log

@@ -54,6 +54,8 @@ long int ftell(FILE* stream);
 
 size_t fwrite(const void* ptr, size_t size, size_t nmemb, FILE* stream);
 
+int feof(FILE *stream);
+
 void setbuf(FILE* stream, char* buffer);
 
 int vfprintf(FILE* stream, const char* format, va_list arg);

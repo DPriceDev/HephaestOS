@@ -15,10 +15,11 @@
  * along with HephaestOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef HEPHAEST_OS_KERNEL_BOOT_GDT_GLOBAL_DESCRIPTOR_H
-#define HEPHAEST_OS_KERNEL_BOOT_GDT_GLOBAL_DESCRIPTOR_H
+module;
 
-#include <cstdint>
+#include <stdoffset.h>
+
+export module os.boot.gdt.descriptor;
 
 namespace boot {
 
@@ -27,17 +28,17 @@ namespace boot {
      * includes Ring 0 and Ring 3 to defined the Kernel and UserSpace levels respectively.
      * Rings 1 and 2 are omitted as they are not used by the OS.
      */
-    enum class Privilege : uint8_t { Kernel = 0, UserSpace = 3 };
+    export enum class Privilege : uint8_t { Kernel = 0, UserSpace = 3 };
 
     /**
      * Describes the size of a x86 global descriptor, usually 32 bit except for the null descriptor.
      */
-    enum class Size : uint8_t { Bit16 = 0, Bit32 = 1 };
+    export enum class Size : uint8_t { Bit16 = 0, Bit32 = 1 };
 
     /**
      * Describes the amount that the memory limit is scaled by.
      */
-    enum class Granularity : uint8_t {
+    export enum class Granularity : uint8_t {
         // Limit scaled by Byte, then the limit is equivalent to its value in Bytes, i.e. a limit
         // of 100 will be 100 Bytes in size.
         Byte = 0u,
@@ -49,7 +50,7 @@ namespace boot {
     /**
      * Describes the type of descriptor being defined, either a os or a code/Data descriptor.
      */
-    enum class DescriptorType : uint8_t {
+    export enum class DescriptorType : uint8_t {
         // Provides x86 specific definitions, such as a Task State Segment Descriptor.
         System = 0x0,
         // Used for segment descriptors which define segments of memory that defined to be used for
@@ -62,7 +63,7 @@ namespace boot {
      * Defines the segments that are available in the Global Descriptor Table, associated to the
      * table offset that can be used to reference them.
      */
-    enum class Segment {
+    export enum class Segment {
         Null = 0x0,
         KernelCode = 0x8,
         KernelData = 0x10,
@@ -75,7 +76,7 @@ namespace boot {
      * Structure defines a Byte sized set of access flags that are used to describe the purpose and
      * operation of the Global Descriptor.
      */
-    struct [[gnu::packed]] Access {
+    export struct [[gnu::packed]] Access {
 
         // CPU controlled bit, default to 0 and set to 1 by the CPU when this descriptor is accessed.
         bool accessed : 1;
@@ -111,7 +112,7 @@ namespace boot {
     /**
      * Set of Flags that describe a attributes of the Global Descriptor.
      */
-    struct [[gnu::packed]] Flags {
+    export struct [[gnu::packed]] Flags {
 
         // Denotes if the segment can be accessed. True for Code/Data segments, false for System.
         bool available : 1;
@@ -130,7 +131,7 @@ namespace boot {
      * Global Descriptor describes the memory location and size of a Segment, whether it is a code,
      * data, or os segment, and the attributes that describe its use, size and access.
      */
-    struct [[gnu::packed]] GlobalDescriptor {
+    export struct [[gnu::packed]] GlobalDescriptor {
 
         // Lower 8 bits of the memory limit.
         uint16_t lowerLimit;
@@ -164,24 +165,33 @@ namespace boot {
     };
 
     /**
-     * Constructs a Global descriptor that can be inserted in a Global descriptor table. This takes
-     * a set of addresses, sizes, flags and settings to define a Global Descriptor. The x86
-     * implementation of the Global Descriptor splits the base address and limit across the
-     * structure; therefore the lower, mid, and upper sections of the baseAddress and memoryLimit
-     * are bit-masked and bit-shifted into place.
+     * Constructs a Global descriptor that can be inserted in a Global descriptor table. This takes a set of
+     * addresses, sizes, flags and settings to define a Global Descriptor. The x86 implementation of the
+     * Global Descriptor splits the base address and limit across the structure; therefore the lower, mid, and
+     * upper sections of the baseAddress and memoryLimit are bit-masked and bit-shifted into place.
      *
      * @param baseAddress is the memory address that this segment will begin at.
      * @param memoryLimit is the size of the segment in bytes.
      * @param access describe the type of segment, privilege and other parameters.
-     * @param flags describe the size (16 or 32 bit) and granularity (bit or page) of the descriptor.
+     * @param flags describe the size (16 or 32 bit) and granularity (bit or page) of the segment memory.
      * @return Global Descriptor constructed from the parameters.
      */
-    GlobalDescriptor constructGlobalDescriptor(
-        uintptr_t baseAddress,
-        uint32_t memoryLimit,
+    export auto constructGlobalDescriptor(
+        const uintptr_t baseAddress,
+        const uint32_t memoryLimit,
         const Access& access,
         const Flags& flags
-    );
+    ) -> GlobalDescriptor {
+        return GlobalDescriptor { .lowerLimit = static_cast<uint16_t>((memoryLimit & std::Mask16Bit)),
+                                  .lowerBase = static_cast<uint16_t>((baseAddress & std::Mask16Bit)),
+                                  .midBase = static_cast<uint8_t>((baseAddress >> std::Offset16Bit) & std::Mask8Bit),
+                                  .access = access,
+                                  .upperLimit = static_cast<uint8_t>((memoryLimit >> std::Offset16Bit) & std::Mask4Bit),
+                                  .available = flags.available,
+                                  .longMode = flags.longMode,
+                                  .size = flags.size,
+                                  .granularity = flags.granularity,
+                                  .upperBase =
+                                      static_cast<uint8_t>((baseAddress >> std::Offset24Bit) & std::Mask8Bit) };
+    }
 }// namespace boot
-
-#endif// HEPHAEST_OS_KERNEL_BOOT_GDT_GLOBAL_DESCRIPTOR_H

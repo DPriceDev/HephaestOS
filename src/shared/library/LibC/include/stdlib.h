@@ -32,6 +32,15 @@ typedef long unsigned int size_t;
 void* malloc(size_t size);
 
 /**
+ * Stubbed Calloc.
+ * Stubbed to allow GCC to compile, just needs to exist at this point without an implementation.
+ * @param num
+ * @param size
+ * @return
+ */
+void* calloc(size_t num, size_t size);
+
+/**
  * Stubbed free.
  * Stubbed to allow GCC to compile, just needs to exist at this point without an implementation.
  */
@@ -50,6 +59,12 @@ void abort(void);
 int atexit(void (*func)(void));
 
 /**
+ * Stubbed exit.
+ * Stubbed to allow GCC to compile, just needs to exist at this point without an implementation.
+ */
+void exit(int exit_code);
+
+/**
  * Stubbed atoi.
  * Stubbed to allow GCC to compile, just needs to exist at this point without an implementation.
  */
@@ -60,5 +75,11 @@ int atoi(const char* str);
  * Stubbed to allow GCC to compile, just needs to exist at this point without an implementation.
  */
 char* getenv(const char* name);
+
+/**
+ * Stubbed abs.
+ * Stubbed to allow GCC to compile, just needs to exist at this point without an implementation.
+ */
+int abs(int n);
 
 #endif// HEPHAEST_OS_USER_LIB_C_STDLIB_H

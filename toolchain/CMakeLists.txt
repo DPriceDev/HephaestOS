@@ -1,6 +1,6 @@
 
-set(BINUTILS_VERSION 2.37)
-set(GCC_VERSION 12.2.0)
+set(BINUTILS_VERSION 2.43)
+set(GCC_VERSION 14.2.0)
 set(TARGET i386-pc-hephaestos)
 set(SYSROOT ${CMAKE_BINARY_DIR}/src/sysroot)
 set(PATCH_DIR ${CMAKE_SOURCE_DIR}/toolchain/patches)
@@ -16,7 +16,7 @@ ProcessorCount(PARALLEL_MAKE_JOBS)
 
 ExternalProject_Add(binutils-${BINUTILS_VERSION}
         URL             https://sourceware.org/pub/binutils/releases/binutils-${BINUTILS_VERSION}.tar.gz
-        URL_HASH        MD5=1e55743d73c100b7a0d67ffb32398cdb
+        URL_HASH        MD5=7aaf8e17f2dfebabcf1d1ac103f7c149
         BINARY_DIR      ${CMAKE_CURRENT_BINARY_DIR}/binutils-${BINUTILS_VERSION}-prefix/src/binutils-${BINUTILS_VERSION}-build
         CONFIGURE_COMMAND
             export PATCH_DIR=${PATCH_DIR}
@@ -37,7 +37,7 @@ ExternalProject_Add(binutils-${BINUTILS_VERSION}
 
 ExternalProject_Add(gcc-${GCC_VERSION}
         URL             https://sourceware.org/pub/gcc/releases/gcc-${GCC_VERSION}/gcc-${GCC_VERSION}.tar.gz
-        URL_HASH        MD5=d7644b494246450468464ffc2c2b19c3
+        URL_HASH        MD5=b89ddcdaf5c1b6214abad40d9761a6ba
         DEPENDS         binutils-${BINUTILS_VERSION} CopySysRoot
         BINARY_DIR      ${CMAKE_CURRENT_BINARY_DIR}/gcc-${GCC_VERSION}-prefix/src/gcc-${GCC_VERSION}-build
         CONFIGURE_COMMAND

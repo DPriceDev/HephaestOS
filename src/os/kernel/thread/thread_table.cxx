@@ -15,8 +15,31 @@
 // along with HephaestOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#include "ThreadTable.h"
-auto kernel::ThreadTable::registerThreadControlBlock(kernel::ThreadControlBlock* block) -> bool {
+module;
+
+#include <array.h>
+
+export import os.kernel.thread.control;
+
+export module os.kernel.thread.table;
+
+namespace kernel {
+
+    export class thread_table {
+        std::Array<thread_control_block*, 10> table {};
+
+    public:
+        auto registerThreadControlBlock(/* todo: Make this a unique pointer */ thread_control_block* threadControlBlock)
+            -> bool;
+
+        auto getThreadControlBlock(TID tid) -> std::Optional<thread_control_block*>;
+
+        void removeThreadControlBlock(TID tid);
+    };
+}// namespace kernel
+
+
+auto kernel::thread_table::registerThreadControlBlock(kernel::thread_control_block* block) -> bool {
     auto entry = table.at(block->id);
     if (!entry || entry->get() != nullptr) {
         return false;
@@ -25,15 +48,15 @@ auto kernel::ThreadTable::registerThreadControlBlock(kernel::ThreadControlBlock*
     entry->get() = block;
     return true;
 }
-auto kernel::ThreadTable::getThreadControlBlock(kernel::TID tid) -> std::Optional<ThreadControlBlock*> {
+auto kernel::thread_table::getThreadControlBlock(kernel::TID tid) -> std::Optional<thread_control_block*> {
     const auto entry = table.at(tid);
     if (!entry || entry->get() == nullptr) {
         return std::nullOptional;
     }
 
-    return std::Optional<ThreadControlBlock*>(entry->get());
+    return std::Optional<thread_control_block*>(entry->get());
 }
-void kernel::ThreadTable::removeThreadControlBlock(kernel::TID tid) {
+void kernel::thread_table::removeThreadControlBlock(kernel::TID tid) {
     const auto entry = table.at(tid);
     if (entry) {
         entry->get() = nullptr;

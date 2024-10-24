@@ -11,22 +11,33 @@ add_executable(
         tss/task_state_segment.asm
         init.cpp
 
-        gdt/global_descriptor_table.cpp
-        idt/interrupt_descriptor_table.cpp
-        idt/interrupts/interrupt_handler.cpp
-        idt/pic/programmable_interrupt_controller.cpp
-        tss/task_state_segment.cpp
-        gdt/global_descriptor.cpp
-        idt/interrupt_descriptor.cpp
-        idt/exceptions/exception_handler.cpp
 
         paging/paging.asm
-        paging/paging.cpp
-        GlobalConstructors.cpp
-        memory/boot_allocator.cpp
-        elf/boot_elf_loader.cpp
-        modules/module_loader.cpp
-        elf/elf.h)
+        global_constructors.cpp
+)
+
+target_sources(boot.elf PUBLIC
+        FILE_SET CXX_MODULES
+        FILES
+        boot.cxx
+        elf/elf.cxx
+        elf/elf_loader.cxx
+        gdt/global_descriptor.cxx
+        gdt/global_descriptor_table.cxx
+        idt/exceptions/exception_handler.cxx
+        idt/interrupt_descriptor_table.cxx
+        idt/interrupt_descriptor.cxx
+        idt/interrupts/interrupt_handler.cxx
+        idt/pic/programmable_interrupt_controller.cxx
+        idt/model/handler_registers.cxx
+        grub/multiboot_info.cxx
+        memory/boot_allocator.cxx
+        modules/loader.cxx
+        paging/paging.cxx
+        paging/model/page_directory_entry.cxx
+        paging/model/page_table_entry.cxx
+        tss/task_state_segment.cxx
+)
 
 target_link_libraries(boot.elf PRIVATE os_options) # project_warnings)
 target_link_libraries(boot.elf PUBLIC KLibC KLibCpp KLibDebug KLibHal gcc)

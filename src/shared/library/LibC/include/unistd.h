@@ -28,6 +28,12 @@ typedef signed int pid_t;
 pid_t fork(void);
 
 /**
+ * Stubbed getppid.
+ * Stubbed to allow GCC to compile, just needs to exist at this point without an implementation.
+ */
+pid_t getpid(void);
+
+/**
  * Stubbed execv.
  * Stubbed to allow GCC to compile, just needs to exist at this point without an implementation.
  */

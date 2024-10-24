@@ -16,9 +16,9 @@
  */
 
 #include <format.h>
-#include <thread/model/ThreadControlBlock.h>
-#include <thread/ThreadIDProvider.h>
-#include <thread/ThreadTable.h>
+
+import os.kernel.thread.id;
+import os.kernel.thread.table;
 
 namespace kernel {
 
@@ -47,18 +47,17 @@ namespace kernel {
         uintptr_t stack;
     };
 
-    extern "C" [[maybe_unused]] void
-        kernelMain(const std::StandardOutputIterator& outputIterator, const InitInfo initInfo) {
+    extern "C" [[maybe_unused]] void kernelMain(const std::StandardOutputIterator& outputIterator, const InitInfo initInfo) {
         std::KernelFormatOutput::getInstance().setStandardOutputIterator(outputIterator);
 
         std::print("INFO: HephaestOS\n");
         std::print("INFO: Version 1.0\n");
 
         // todo: need to store this somewhere, inject? singleton?
-        auto threadTable = ThreadTable();
+        auto threadTable = thread_table();
 
-        auto threadIDProvider = ThreadIDProvider();
-        auto initialTCB = ThreadControlBlock {
+        auto threadIDProvider = thread_id_provider();
+        auto initialTCB = thread_control_block {
             .id = threadIDProvider.getId(), .stack = initInfo.stack,
             // todo: add instruction pointer (point to initial task module)
         };

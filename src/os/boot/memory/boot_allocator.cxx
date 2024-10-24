@@ -15,14 +15,19 @@
 // along with HephaestOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#ifndef HEPHAEST_OS_BOOTALLOCATOR_H
-#define HEPHAEST_OS_BOOTALLOCATOR_H
+module;
 
+#include <bit>
 #include <cstddef>
 #include <cstdint>
-#include <paging/paging.h>
 
-namespace boot {
+import os.boot.paging;
+export import os.boot.paging.table;
+import os.boot.paging.directory;
+
+export module os.boot.memory.boot_allocator;
+
+export namespace boot {
 
     class BootAllocator {
         std::uintptr_t currentAddress;
@@ -31,15 +36,21 @@ namespace boot {
 
       public:
         BootAllocator(
-            std::uintptr_t baseVirtualAddress,
+            std::uintptr_t virtualBaseAddress,
             std::uintptr_t physicalAddress,
             PageTableEntry* kernelPageTable
-        );
+        )   : currentAddress(physicalAddress), virtualAddress(virtualBaseAddress), pageTable(kernelPageTable) {}
 
-        auto allocate(std::size_t count, std::size_t alignment = 1) -> std::byte*;
+        auto allocate(std::size_t count, std::size_t alignment = 1) -> std::byte* {
+            const auto startAddress = (currentAddress / alignment) + (currentAddress % alignment ? alignment : 0);
+            const auto endAddress = startAddress + count;
 
-        [[nodiscard]] auto nextAvailableMemory() const -> uintptr_t;
+            mapAddressRangeInTable(pageTable, virtualAddress + currentAddress, currentAddress, endAddress);
+
+            currentAddress = endAddress;
+            return std::bit_cast<std::byte*>(virtualAddress + startAddress);
+        }
+
+        [[nodiscard]] auto nextAvailableMemory() const -> uintptr_t { return currentAddress; }
     };
 }// namespace boot
-
-#endif// HEPHAEST_OS_BOOTALLOCATOR_H

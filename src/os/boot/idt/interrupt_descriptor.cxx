@@ -15,11 +15,35 @@
  * along with HephaestOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "interrupt_descriptor.h"
+module;
+
 #include <bit>
 #include <stdoffset.h>
 
+export module os.boot.interrupts.descriptor;
+
 namespace boot {
+
+    constexpr uint16_t InterruptSegment = 0x08;
+
+    export enum class GateType { Interrupt = 0xE, Trap = 0xF };
+
+    export enum class DescriptorPrivilege { Kernel = 0, UserSpace = 3 };
+
+    export struct [[gnu::packed]] TypeAttributes {
+        GateType gateType : 4;
+        uint8_t storageSegment : 1;
+        DescriptorPrivilege descriptorPrivilege : 2;
+        bool isPresent : 1;
+    };
+
+    export struct [[gnu::packed]] InterruptDescriptor {
+        uint16_t lowerOffset;
+        uint16_t selector;
+        uint8_t zero;
+        TypeAttributes gateType;
+        uint16_t higherOffset;
+    };
 
     /**
      * Constructs an Interrupt Descriptor that can be inserted in a Interrupt descriptor table.
@@ -33,7 +57,7 @@ namespace boot {
      * for exceptions.
      * @return an interrupt descriptor setup to call the provided method on the interrupt firing.
      */
-    auto constructInterruptDescriptor(int (*handler)(), GateType type) -> InterruptDescriptor {
+    export auto constructInterruptDescriptor(int (*handler)(), GateType type) -> InterruptDescriptor {
         return InterruptDescriptor {
             .lowerOffset = static_cast<uint16_t>(std::bit_cast<uintptr_t>(handler) & std::Mask16Bit),
             .selector = InterruptSegment,

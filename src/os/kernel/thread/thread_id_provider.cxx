@@ -15,27 +15,29 @@
 // along with HephaestOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#ifndef HEPHAEST_OS_THREADTABLE_H
-#define HEPHAEST_OS_THREADTABLE_H
+module;
 
-#include "thread/model/ThreadControlBlock.h"
-#include <array.h>
-#include <expected.h>
-#include <stdint.h>
+#include <cstdint>
+
+export module os.kernel.thread.id;
 
 namespace kernel {
+    export class thread_id_provider {
+        std::size_t current = 0;
 
-    class ThreadTable {
-        std::Array<ThreadControlBlock*, 10> table {};
+    public:
+        auto getId() -> std::size_t;
 
-      public:
-        auto registerThreadControlBlock(/* todo: Make this a unique pointer */ ThreadControlBlock* threadControlBlock)
-            -> bool;
-
-        auto getThreadControlBlock(TID tid) -> std::Optional<ThreadControlBlock*>;
-
-        void removeThreadControlBlock(TID tid);
+        void returnId(std::size_t tid);
     };
-}// namespace kernel
+}
 
-#endif// HEPHAEST_OS_THREADTABLE_H
+auto kernel::thread_id_provider::getId() -> std::size_t {
+    std::size_t const tid = current;
+    current++;
+    return tid;
+}
+
+void kernel::thread_id_provider::returnId(std::size_t) {
+    // todo: Return id for reuse
+}

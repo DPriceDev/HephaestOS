@@ -15,13 +15,27 @@
  * along with HephaestOS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "interrupt_handler.h"
-#include "idt/pic/programmable_interrupt_controller.h"
+module;
 
-#include "../hal/io/io.h"
 #include <format.h>
 
+import os.boot.interrupt.registers;
+import os.boot.interrupts.pic;
+import os.hal.io;
+
+export module os.boot.interrupt.handler;
+
 namespace boot {
+
+    /**
+    *
+    */
+    struct [[gnu::packed]] InterruptInfo {
+        const SegmentRegisters segmentRegisters;
+        const Registers registers;
+        const uint32_t interruptCode;
+        const CpuRegisters cpuRegisters;
+    };
 
 
     void handleKeyboardPress(InterruptInfo interruptInfo) {

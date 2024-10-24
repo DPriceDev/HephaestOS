@@ -15,13 +15,27 @@
 // along with HephaestOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#include "ThreadIDProvider.h"
-auto kernel::ThreadIDProvider::getId() -> std::size_t {
-    std::size_t const tid = current;
-    current++;
-    return tid;
-}
+module;
 
-void kernel::ThreadIDProvider::returnId(std::size_t) {
-    // todo: Return id for reuse
-}
+#include <cstdint>
+#include <cstddef>
+
+export module os.kernel.thread.control;
+
+namespace kernel {
+
+    export using TID = std::size_t;
+
+    // todo: Abstract
+    export struct ThreadRegisters {
+        uint32_t eax = 0;
+    };
+
+    export struct thread_control_block {
+        TID id = 0;
+        uintptr_t stack = 0;
+        uintptr_t instruction = 0;
+        ThreadRegisters registers = ThreadRegisters {};
+    };
+}// namespace kernel
+
