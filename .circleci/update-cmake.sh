@@ -9,9 +9,7 @@ sudo cp -r man /usr/share/
 sudo cp -r share /usr/
 
 cd ..
-git clone git://github.com/ninja-build/ninja.git && cd ninja
-git checkout release
-./configure.py --bootstrap
-cmake -Bbuild-cmake
-cmake --build build-cmake
-sudo cp -r ninja /usr/bin
+wget https://github.com/ninja-build/ninja/releases/download/v1.12.1/ninja-linux.zip
+unzip ninja-linux.zip
+cd ninja-linux || exit 1
+sudo cp ninja /usr/bin
